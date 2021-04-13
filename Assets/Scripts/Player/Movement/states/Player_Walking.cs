@@ -2,17 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player_Walking : MonoBehaviour
+public class Player_Walking : PlayerState
 {
-    // Start is called before the first frame update
-    void Start()
+    public Player_Walking(Player_Movement_StateMachine playerStateMachine)
+        : base(playerStateMachine) 
     {
-        
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

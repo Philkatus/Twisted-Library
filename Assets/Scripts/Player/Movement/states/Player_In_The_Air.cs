@@ -2,17 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player_In_The_Air : MonoBehaviour
+public class Player_In_The_Air : PlayerState 
 {
-    // Start is called before the first frame update
-    void Start()
+    public Player_In_The_Air(Player_Movement_StateMachine playerStateMachine)
+       : base(playerStateMachine)
     {
-        
+
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
