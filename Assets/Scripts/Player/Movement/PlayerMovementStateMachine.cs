@@ -30,14 +30,16 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Update()
     {
-        if (Input.GetButtonDown("jump")) 
+        if (Input.GetButtonDown("Jump")) 
         {
             StartCoroutine(State.Jump());
+            Debug.Log(State.ToString() + ".jump");
         }
 
-        if (Input.GetButtonDown("interact")&&CheckForShelf()) 
+        if (Input.GetButtonDown("Interact")&&CheckForShelf()) 
         {
             StartCoroutine(State.Snap());
+            Debug.Log(State.ToString() + ".Snap");
         }
 
     }
@@ -70,6 +72,29 @@ public class PlayerMovementStateMachine : StateMachine
             return true;
         }
     }
-    
 
+    public void OnLand() 
+    {
+        SetState(new PlayerWalking(this));
+    }
+    public void OnLadderTop() 
+    {
+        SetState(new PlayerWalking(this));
+            
+    }
+    public void OnLadderBottom()
+    {
+        SetState(new PlayerWalking(this));
+
+    }
+    public void OnSnap()
+    {
+        SetState(new PlayerSliding(this));
+
+    }
+    public void OnFall()
+    {
+        SetState(new PlayerInTheAir(this));
+
+    }
 }
