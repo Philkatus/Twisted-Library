@@ -9,7 +9,7 @@ public class PlayerMovementStateMachine : StateMachine
     #endregion
 
     #region Private
-    [SerializeField] 
+
     #endregion
 
 
