@@ -4,9 +4,9 @@ using UnityEngine;
 
 public abstract class PlayerState
 {
-    protected Player_Movement_StateMachine PlayerStateMachine;
+    protected PlayerMovementStateMachine PlayerStateMachine;
 
-    public PlayerState(Player_Movement_StateMachine playerStateMachine) 
+    public PlayerState(PlayerMovementStateMachine playerStateMachine) 
     {
         playerStateMachine = PlayerStateMachine;
     }

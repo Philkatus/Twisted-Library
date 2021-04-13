@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player_Sliding : PlayerState
+public class PlayerSliding : PlayerState
 {
-    public Player_Sliding(Player_Movement_StateMachine playerStateMachine)
+    public PlayerSliding(PlayerMovementStateMachine playerStateMachine)
         : base(playerStateMachine) 
     {
 
