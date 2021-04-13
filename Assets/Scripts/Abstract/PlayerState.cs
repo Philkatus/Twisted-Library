@@ -4,6 +4,13 @@ using UnityEngine;
 
 public abstract class PlayerState
 {
+    protected Player_Movement_StateMachine PlayerStateMachine;
+
+    public PlayerState(Player_Movement_StateMachine playerStateMachine) 
+    {
+        playerStateMachine = PlayerStateMachine;
+    }
+
     public virtual IEnumerator initialize()
     {
         yield return null;
