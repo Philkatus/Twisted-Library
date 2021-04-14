@@ -11,10 +11,12 @@ public class PlayerMovementStateMachine : StateMachine
     public float jumpheight;
     public float FowardInput;
     public float SideWardsInput;
+
+    
     public Shelf closestShelf;
 
     [HideInInspector] public List<Shelf> possibleShelfs;
-
+    [HideInInspector] public Vector3 velocity;
     [HideInInspector] public bool OnGround;
     #endregion
 
@@ -30,6 +32,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Update()
     {
+
         if (Input.GetButtonDown("Jump")) 
         {
             StartCoroutine(State.Jump());
@@ -97,4 +100,5 @@ public class PlayerMovementStateMachine : StateMachine
         SetState(new PlayerInTheAir(this));
 
     }
+   
 }

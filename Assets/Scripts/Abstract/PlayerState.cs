@@ -16,14 +16,14 @@ public abstract class PlayerState
         yield return null;
     }
 
-    public virtual IEnumerator Movement()
+    public virtual void Movement()
     {
-        yield return null;
+       
     }
 
-    public virtual IEnumerator Jump()
+    public virtual void Jump()
     {
-        yield return null;
+        
     }
 
     public virtual IEnumerator Snap() 
@@ -39,5 +39,10 @@ public abstract class PlayerState
     public virtual IEnumerator Finish() 
     {
         yield return null;
+    }
+
+    public virtual void Gravitation() 
+    {
+
     }
 }
