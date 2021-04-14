@@ -7,7 +7,6 @@ public class PlayerWalking : PlayerState
 
     public PlayerWalking(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
-        PlayerStateMachine = playerStateMachine;
     }
 
     public override IEnumerator initialize()

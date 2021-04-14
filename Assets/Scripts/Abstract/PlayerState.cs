@@ -8,7 +8,7 @@ public abstract class PlayerState
 
     public PlayerState(PlayerMovementStateMachine playerStateMachine) 
     {
-        playerStateMachine = PlayerStateMachine;
+        PlayerStateMachine = playerStateMachine;
     }
 
     public virtual IEnumerator initialize()
