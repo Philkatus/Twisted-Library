@@ -42,17 +42,17 @@ public class PlayerSliding : PlayerState
         yield break;
     }
 
-    public override IEnumerator Jump()
+    public override void Jump()
     {
         //Ein Sprung 
         //eine speed mitgeben????
         //OnFall.trigger
         //OnLadderShrink.trigger
 
-        yield break;
+        //yield break;
     }
 
-    public override IEnumerator Movement()
+    public override void Movement()
     {
         while (true)
         {
@@ -78,10 +78,10 @@ public class PlayerSliding : PlayerState
             }
             // else ()
             // { timer = 0; }*/
-            yield return new WaitForEndOfFrame();
+           // yield return new WaitForEndOfFrame();
         }
 
-        yield break;
+        //yield break;
     }
 
     public PlayerSliding(PlayerMovementStateMachine playerStateMachine)
