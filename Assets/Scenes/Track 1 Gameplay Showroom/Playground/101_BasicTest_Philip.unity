@@ -373,11 +373,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3236883716803287838, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.03530117
+      value: 0.035301115
       objectReference: {fileID: 0}
     - target: {fileID: 3236883716803287838, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0021502066
+      value: -0.0021502036
       objectReference: {fileID: 0}
     - target: {fileID: 4625821938839127303, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_LocalRotation.x
@@ -385,11 +385,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4625821938839127303, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.03533437
+      value: 0.035334308
       objectReference: {fileID: 0}
     - target: {fileID: 4625821938839127303, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0015094378
+      value: -0.0015094354
       objectReference: {fileID: 0}
     - target: {fileID: 8550796576673198090, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -400,16 +400,20 @@ PrefabInstance:
       value: -0.0000038146973
       objectReference: {fileID: 0}
     - target: {fileID: 8550796576673198090, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0.07889407
+      objectReference: {fileID: 0}
+    - target: {fileID: 8550796576673198090, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.03525622
+      value: 0.03525616
       objectReference: {fileID: 0}
     - target: {fileID: 8550796576673198090, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0027919614
+      value: -0.0027919565
       objectReference: {fileID: 0}
     - target: {fileID: 8735393275430822890, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.77616453
+      value: -0.77616316
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
@@ -490,8 +494,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.06075964, y: 0.035301168, z: -0.0021502064, w: 0.9975257}
-  m_LocalPosition: {x: 0.16419601, y: 3.782, z: -11.224006}
+  m_LocalRotation: {x: 0.06075964, y: 0.035301123, z: -0.0021502036, w: 0.9975257}
+  m_LocalPosition: {x: 0.16419739, y: 3.782, z: -11.224006}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -544,6 +548,7 @@ GameObject:
   - component: {fileID: 1092740344}
   - component: {fileID: 1092740343}
   - component: {fileID: 1092740342}
+  - component: {fileID: 1092740347}
   m_Layer: 0
   m_Name: bookshelf
   m_TagString: Untagged
@@ -634,9 +639,62 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1092740341}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.04, y: 6.26, z: 15.63274}
+  m_LocalPosition: {x: 4.04, y: 6.26, z: 24.29}
   m_LocalScale: {x: 1, y: 20.34357, z: 38.824757}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1092740347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1092740341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e5ac92bc18f545cc84cd886ece82b4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  editorData:
+    _bezierPath:
+      points:
+      - {x: -0.027570244, y: 0.50000006, z: 0.9614533}
+      - {x: -0.027570244, y: 0.5000001, z: 0.6560455}
+      - {x: -0.024564043, y: 0.5000001, z: -0.6258562}
+      - {x: -0.024564043, y: 0.50000006, z: -0.97070414}
+      isClosed: 0
+      space: 0
+      controlMode: 0
+      autoControlLength: 0.3
+      boundsUpToDate: 0
+      bounds:
+        m_Center: {x: 0, y: 0, z: 0}
+        m_Extent: {x: 0, y: 0, z: 0}
+      perAnchorNormalsAngle:
+      - 0
+      - 0
+      globalNormalsAngle: 91
+      flipNormals: 0
+    vertexPathUpToDate: 0
+    vertexPathMaxAngleError: 0.3
+    vertexPathMinVertexSpacing: 0.01
+    showTransformTool: 1
+    showPathBounds: 0
+    showPerSegmentBounds: 0
+    displayAnchorPoints: 1
+    displayControlPoints: 1
+    bezierHandleScale: 9.61
+    globalDisplaySettingsFoldout: 1
+    keepConstantHandleSize: 0
+    showNormalsInVertexMode: 0
+    showBezierPathInVertexMode: 0
+    showDisplayOptions: 1
+    showPathOptions: 1
+    showVertexPathDisplayOptions: 0
+    showVertexPathOptions: 1
+    showNormals: 1
+    showNormalsHelpInfo: 0
+    tabIndex: 0
+  initialized: 1
