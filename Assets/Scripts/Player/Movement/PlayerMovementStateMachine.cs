@@ -11,10 +11,10 @@ public class PlayerMovementStateMachine : StateMachine
     public float speedOnLadder;
     public float jumpheight;
     public float FowardInput;
-    public float SideWardsInput;
+    public float SidewaysInput;
     public float HeightOnLadder;
 
-    
+
     public Shelf closestShelf;
 
     public LadderStateMachine ladderScript;
@@ -42,13 +42,13 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Update()
     {
-        if (Input.GetButtonDown("Jump")) 
+        if (Input.GetButtonDown("Jump"))
         {
             State.Jump();
             Debug.Log(State.ToString() + ".jump");
         }
 
-        if (Input.GetButtonDown("Interact")&&CheckForShelf()) 
+        if (Input.GetButtonDown("Interact") && CheckForShelf())
         {
             StartCoroutine(State.Snap());
             Debug.Log(State.ToString() + ".Snap");
@@ -59,24 +59,24 @@ public class PlayerMovementStateMachine : StateMachine
     ///<summary>
     /// A Function to determin the closest Shelf to the player. Return false if none are in range.
     ///</summary>
-    public bool CheckForShelf() 
+    public bool CheckForShelf()
     {
         if (possibleShelfs.Count == 0)
         {
             return false;
         }
-        else 
+        else
         {
             float closestDistance = Mathf.Infinity;
-            for (int i = 0; i < possibleShelfs.Count; i++) 
+            for (int i = 0; i < possibleShelfs.Count; i++)
             {
                 float distance = Vector3.Distance(possibleShelfs[i].transform.position, transform.position);
-                if ( distance < closestDistance) 
+                if (distance < closestDistance)
                 {
                     closestShelf = possibleShelfs[i];
                     closestDistance = distance;
                 }
-                
+
             }
 
 
@@ -85,14 +85,14 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
 
-    public void OnLand() 
+    public void OnLand()
     {
         SetState(new PlayerWalking(this));
     }
-    public void OnLadderTop() 
+    public void OnLadderTop()
     {
         SetState(new PlayerWalking(this));
-            
+
     }
     public void OnLadderBottom()
     {
@@ -109,5 +109,5 @@ public class PlayerMovementStateMachine : StateMachine
         SetState(new PlayerInTheAir(this));
 
     }
-   
+
 }

@@ -11,7 +11,7 @@ public class PlayerWalking : PlayerState
 
     }
 
-    public override IEnumerator initialize()
+    public override IEnumerator Initialize()
     {
         controller = PlayerStateMachine.controller;
         yield return null;
@@ -19,7 +19,7 @@ public class PlayerWalking : PlayerState
 
     public override void Movement()
     {
-        Vector3 direction = new Vector3(PlayerStateMachine.SideWardsInput, 0, PlayerStateMachine.FowardInput);
+        Vector3 direction = new Vector3(PlayerStateMachine.SidewaysInput, 0, PlayerStateMachine.FowardInput);
         controller.Move(direction * Time.fixedDeltaTime * PlayerStateMachine.movementSpeed);
         if (direction != Vector3.zero)
         {

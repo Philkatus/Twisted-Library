@@ -18,7 +18,7 @@ public class PlayerSliding : PlayerState
 
     //Wie macht man parent Swap (Braucht die Leiter und die Player dings)
 
-    public override IEnumerator initialize()
+    public override IEnumerator Initialize()
     {
         // Zuweisungen
         /*speed = PlayerStateMachine.speed;
@@ -78,7 +78,7 @@ public class PlayerSliding : PlayerState
             }
             // else ()
             // { timer = 0; }*/
-           // yield return new WaitForEndOfFrame();
+            // yield return new WaitForEndOfFrame();
         }
 
         //yield break;
