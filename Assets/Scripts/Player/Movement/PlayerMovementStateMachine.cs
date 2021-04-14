@@ -20,7 +20,6 @@ public class PlayerMovementStateMachine : StateMachine
     public LadderStateMachine ladderScript;
 
     [HideInInspector] public List<Shelf> possibleShelfs;
-    [HideInInspector] public Vector3 velocity;
     [HideInInspector] public bool OnGround;
 
     #endregion
@@ -37,13 +36,14 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void FixedUpdate()
     {
-        GetInput();
-        State.Movement();
-        velocity = controller.velocity;
+       
     }
 
     private void Update()
     {
+        GetInput();
+        State.Movement();
+       
         if (Input.GetButtonDown("Jump")) 
         {
             State.Jump();
@@ -55,7 +55,6 @@ public class PlayerMovementStateMachine : StateMachine
             StartCoroutine(State.Snap());
             Debug.Log(State.ToString() + ".Snap");
         }
-
     }
 
     public void GetInput() 
