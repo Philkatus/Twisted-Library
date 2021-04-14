@@ -7,17 +7,22 @@ public class PlayerMovementStateMachine : StateMachine
     #region public
     public CharacterController controller;
 
-    public float speed;
+    public float movementSpeed;
+    public float speedOnLadder;
     public float jumpheight;
     public float FowardInput;
     public float SideWardsInput;
+    public float HeightOnLadder;
 
     
     public Shelf closestShelf;
 
+    public LadderStateMachine ladderScript;
+
     [HideInInspector] public List<Shelf> possibleShelfs;
     [HideInInspector] public Vector3 velocity;
     [HideInInspector] public bool OnGround;
+
     #endregion
 
     #region Private
@@ -37,8 +42,6 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Update()
     {
-        
-
         if (Input.GetButtonDown("Jump")) 
         {
             State.Jump();
