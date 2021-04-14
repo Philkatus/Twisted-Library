@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 259310139372920754}
-  m_LocalRotation: {x: 0.042653073, y: 0.035334434, z: -0.0015094404, w: 0.9984638}
+  m_LocalRotation: {x: 0.042046666, y: 0.17144695, z: -0.007323989, w: 0.9842685}
   m_LocalPosition: {x: 0, y: 0, z: -0.0000019073486}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -431,16 +431,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b908167a2d2e740ab9a0e8f072d46d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 2324303222117386823}
   movementSpeed: 2
   speedOnLadder: 0
-  jumpheight: 5
+  jumpheight: 9
+  gravity: 17
   HeightOnLadder: 0
+  LadderVelocity: 0
   closestShelf: {fileID: 0}
   ladderScript: {fileID: 2074031750}
+  controller: {fileID: 2324303222117386823}
   possibleShelfs: []
   OnGround: 0
-  SideWardsInput: 0
+  SideWaysInput: 0
   ForwardInput: 0
 --- !u!1 &2324303222376295302
 GameObject:
@@ -624,7 +626,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5173761969531662439}
-  m_LocalRotation: {x: 0.060759634, y: 0.035301235, z: -0.0021502108, w: 0.9975257}
+  m_LocalRotation: {x: 0.05989581, y: 0.17128587, z: -0.010433081, w: 0.9833437}
   m_LocalPosition: {x: 0, y: 0, z: -0.0000019073486}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -706,7 +708,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6369436234874472688}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.77616584, y: 2.512, z: -10.576532}
+  m_LocalPosition: {x: -3.7125084, y: 2.512, z: -9.957329}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8550796576673198090}
@@ -1194,7 +1196,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9177417795965320302}
-  m_LocalRotation: {x: 0.07889407, y: 0.035256278, z: -0.0027919658, w: 0.99625546}
+  m_LocalRotation: {x: 0.07777241, y: 0.17106774, z: -0.013546958, w: 0.98209155}
   m_LocalPosition: {x: 0, y: 0, z: -0.0000038146973}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:

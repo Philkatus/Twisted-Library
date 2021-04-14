@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerWalking : PlayerState
 {
     CharacterController controller;
+    float coyoteTime = 0.1f;
+    float coyoteTimer = 0;
 
     public PlayerWalking(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
@@ -24,34 +26,48 @@ public class PlayerWalking : PlayerState
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
         Vector3 direction = directionForward * pSM.ForwardInput + directionRight * pSM.SideWaysInput;
-        controller.Move(direction * Time.fixedDeltaTime * pSM.movementSpeed);
+
         if (direction != Vector3.zero)
         {
             controller.transform.forward = direction;
         }
+
+        pSM.playerVelocity.y -= PlayerStateMachine.gravity * Time.deltaTime;
+
+        controller.Move(pSM.playerVelocity * Time.deltaTime
+            + direction * Time.deltaTime * pSM.movementSpeed);
+
+        if (isGroundedWithCoyoteTime())
+        {
+            PlayerStateMachine.OnFall();
+        }
+    }
+
+    bool isGroundedWithCoyoteTime()
+    {
+        if (controller.isGrounded)
+        {
+            coyoteTime = 0;
+        }
+        else
+        {
+            coyoteTime += Time.deltaTime;
+        }
+        return coyoteTimer < coyoteTime;
     }
 
     public override void Jump()
     {
-        while (true)
-        {
-            if (Input.GetButtonDown("Jump") && controller.isGrounded)
-            {
-                //onFall.trigger
-            }
-        }
+        PlayerStateMachine.playerVelocity.y = PlayerStateMachine.jumpheight;
+        PlayerStateMachine.OnFall();
     }
 
     public override IEnumerator Snap()
     {
-        while (true)
-        {
-            if (Input.GetButtonDown("Interact"))
-            {
+        PlayerStateMachine.OnSnap();
 
-            }
-            yield return null;
-        }
+        yield return null;
+
     }
 
     public override IEnumerator Finish()

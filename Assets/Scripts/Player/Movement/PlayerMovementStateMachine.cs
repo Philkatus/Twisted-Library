@@ -5,13 +5,15 @@ using UnityEngine;
 public class PlayerMovementStateMachine : StateMachine
 {
     #region public
-   
+
 
     [Header("changeable")]
     public float movementSpeed;
     public float speedOnLadder;
     public float jumpheight;
-    
+    public float gravity;
+    public Vector3 playerVelocity;
+
     [Header("for Reference")]
     public float HeightOnLadder;
     public float LadderVelocity;
@@ -48,8 +50,8 @@ public class PlayerMovementStateMachine : StateMachine
     {
         GetInput();
         State.Movement();
-       
-        if (Input.GetButtonDown("Jump")) 
+
+        if (Input.GetButtonDown("Jump") && controller.isGrounded)
         {
             State.Jump();
             Debug.Log(State.ToString() + ".jump");
