@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerMovementStateMachine : StateMachine
 {
     #region public
-    public CharacterController controller;
+   
 
     [Header("changeable")]
     public float movementSpeed;
@@ -19,6 +19,8 @@ public class PlayerMovementStateMachine : StateMachine
     public Shelf closestShelf;
 
     public LadderStateMachine ladderScript;
+
+    public CharacterController controller;
 
     [HideInInspector] public List<Shelf> possibleShelfs;
     [HideInInspector] public bool OnGround;
@@ -63,7 +65,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void GetInput()
     {
         ForwardInput = Input.GetAxis("Vertical");
-        SidewaysInput = Input.GetAxis("Horizontal");
+        SideWaysInput = Input.GetAxis("Horizontal");
     }
 
     ///<summary>
