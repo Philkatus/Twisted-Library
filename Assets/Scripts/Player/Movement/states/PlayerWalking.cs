@@ -4,34 +4,34 @@ using UnityEngine;
 
 public class PlayerWalking : PlayerState
 {
+    CharacterController controller;
 
     public PlayerWalking(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
-        PlayerStateMachine = playerStateMachine;
+
     }
 
     public override IEnumerator initialize()
     {
-
+        controller = PlayerStateMachine.controller;
         yield return null;
     }
 
     public override void Movement()
     {
         Vector3 direction = new Vector3(PlayerStateMachine.FowardInput, 0, PlayerStateMachine.SideWardsInput);
-        PlayerStateMachine.controller.Move(direction * Time.deltaTime * PlayerStateMachine.speed);
+        controller.Move(direction * Time.deltaTime * PlayerStateMachine.movementSpeed);
         if (direction != Vector3.zero)
         {
-            PlayerStateMachine.controller.transform.parent.transform.forward = direction;
+            controller.transform.parent.transform.forward = direction;
         }
-        PlayerStateMachine.CheckForShelf();
     }
 
     public override void Jump()
     {
         while (true)
         {
-            if (Input.GetButtonDown("Jump") && PlayerStateMachine.controller.isGrounded)
+            if (Input.GetButtonDown("Jump") && controller.isGrounded)
             {
                 //onFall.trigger
             }
