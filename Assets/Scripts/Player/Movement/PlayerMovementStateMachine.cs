@@ -7,13 +7,14 @@ public class PlayerMovementStateMachine : StateMachine
     #region public
     public CharacterController controller;
 
+    [Header("changeable")]
     public float movementSpeed;
     public float speedOnLadder;
     public float jumpheight;
     
-    public float SideWardsInput;
+    [Header("for Reference")]
     public float HeightOnLadder;
-    public float ForwardInput;
+    public float LadderVelocity;
 
     public Shelf closestShelf;
 
@@ -21,6 +22,8 @@ public class PlayerMovementStateMachine : StateMachine
 
     [HideInInspector] public List<Shelf> possibleShelfs;
     [HideInInspector] public bool OnGround;
+    [HideInInspector] public float SideWardsInput;
+    [HideInInspector] public float ForwardInput;
 
     #endregion
 
@@ -43,7 +46,8 @@ public class PlayerMovementStateMachine : StateMachine
     {
         GetInput();
         State.Movement();
-       
+
+
         if (Input.GetButtonDown("Jump")) 
         {
             State.Jump();

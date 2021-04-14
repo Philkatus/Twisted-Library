@@ -10,4 +10,8 @@ public class PlayerInTheAir : PlayerState
 
     }
 
+    public override void Jump()
+    {
+        Debug.Log("jump");
+    }
 }
