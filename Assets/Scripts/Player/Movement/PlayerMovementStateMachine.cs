@@ -22,7 +22,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     [HideInInspector] public List<Shelf> possibleShelfs;
     [HideInInspector] public bool OnGround;
-    [HideInInspector] public float SideWardsInput;
+    [HideInInspector] public float SideWaysInput;
     [HideInInspector] public float ForwardInput;
 
     #endregion
