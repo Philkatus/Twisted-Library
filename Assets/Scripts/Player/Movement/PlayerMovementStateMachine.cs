@@ -30,12 +30,18 @@ public class PlayerMovementStateMachine : StateMachine
         possibleShelfs = new List<Shelf>();
     }
 
+    private void FixedUpdate()
+    {
+        State.Movement();
+    }
+
     private void Update()
     {
+        
 
         if (Input.GetButtonDown("Jump")) 
         {
-            StartCoroutine(State.Jump());
+            State.Jump();
             Debug.Log(State.ToString() + ".jump");
         }
 
