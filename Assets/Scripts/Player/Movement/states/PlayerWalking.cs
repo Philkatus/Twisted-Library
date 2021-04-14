@@ -19,8 +19,8 @@ public class PlayerWalking : PlayerState
 
     public override void Movement()
     {
-        Vector3 direction = new Vector3(PlayerStateMachine.FowardInput, 0, PlayerStateMachine.SideWardsInput);
-        controller.Move(direction * Time.deltaTime * PlayerStateMachine.movementSpeed);
+        Vector3 direction = new Vector3(PlayerStateMachine.SideWardsInput, 0, PlayerStateMachine.FowardInput);
+        controller.Move(direction * Time.fixedDeltaTime * PlayerStateMachine.movementSpeed);
         if (direction != Vector3.zero)
         {
             controller.transform.parent.transform.forward = direction;
