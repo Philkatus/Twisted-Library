@@ -6,38 +6,43 @@ public abstract class PlayerState
 {
     protected PlayerMovementStateMachine PlayerStateMachine;
 
-    public PlayerState(PlayerMovementStateMachine playerStateMachine) 
+    public PlayerState(PlayerMovementStateMachine playerStateMachine)
     {
-        playerStateMachine = PlayerStateMachine;
+        PlayerStateMachine = playerStateMachine;
     }
 
-    public virtual IEnumerator initialize()
+    public virtual IEnumerator Initialize()
     {
         yield return null;
     }
 
-    public virtual IEnumerator Movement()
+    public virtual void Movement()
+    {
+
+    }
+
+    public virtual void Jump()
+    {
+
+    }
+
+    public virtual IEnumerator Snap()
     {
         yield return null;
     }
 
-    public virtual IEnumerator Jump()
+    public virtual IEnumerator GroundDetection()
     {
         yield return null;
     }
 
-    public virtual IEnumerator Snap() 
+    public virtual IEnumerator Finish()
     {
         yield return null;
     }
 
-    public virtual IEnumerator GroundDetection() 
+    public virtual void Gravitation()
     {
-        yield return null;
-    }
 
-    public virtual IEnumerator Finish() 
-    {
-        yield return null;
     }
 }

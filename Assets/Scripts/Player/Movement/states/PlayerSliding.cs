@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PathCreation;
 
 public class PlayerSliding : PlayerState
 {
@@ -10,30 +11,42 @@ public class PlayerSliding : PlayerState
     float SideWardsInput;
     Shelf closestShelf;
     CharacterController controller;
+    PathCreator pathCreator;
+    PlayerMovementStateMachine pSM;
+    LadderStateMachine ladder;
     #endregion
     #region PRIVATE
-    float climbingSpeed;
+  
     #endregion
 
 
     //Wie macht man parent Swap (Braucht die Leiter und die Player dings)
 
-    public override IEnumerator initialize()
+    public override IEnumerator Initialize()
     {
         // Zuweisungen
-        /*speed = PlayerStateMachine.speed;
-        FowardInput = PlayerStateMachine.FowardInput;
-        SideWardsInput = PlayerStateMachine.SideWardsInput;
-        closestShelf = PlayerStateMachine.closestShelf;
-        controller = PlayerStateMachine.controller;
+        pSM = PlayerStateMachine;
+        speed = pSM.speedOnLadder;
+        closestShelf = pSM.closestShelf;
+        controller = pSM.controller;
+        ladder = pSM.ladderScript;
+        pathCreator = closestShelf.pathCreator;
+        
 
-        climbingSpeed = 1.3f;*/
+        //Leiter auf den path setzen
+        Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
+        ladder.transform.position = startingPoint;
 
         // PC auf Leiter setzen = > WIE KOMM ICH AN DEN CHARACTER RAN?
+        ladder.transform.parent = null;
+        controller.transform.position = startingPoint + ladder.direction * ladder.length;
+        controller.transform.parent = ladder.transform;
+
+
 
         // Parent Swap () => Leiter ist Parent
 
-        yield break;
+        return null;
     }
 
     public override IEnumerator Finish()
@@ -42,17 +55,17 @@ public class PlayerSliding : PlayerState
         yield break;
     }
 
-    public override IEnumerator Jump()
+    public override void Jump()
     {
         //Ein Sprung 
         //eine speed mitgeben????
         //OnFall.trigger
         //OnLadderShrink.trigger
 
-        yield break;
+        //yield break;
     }
 
-    public override IEnumerator Movement()
+    public override void Movement()
     {
         while (true)
         {
@@ -78,10 +91,10 @@ public class PlayerSliding : PlayerState
             }
             // else ()
             // { timer = 0; }*/
-            yield return new WaitForEndOfFrame();
+            // yield return new WaitForEndOfFrame();
         }
 
-        yield break;
+        //yield break;
     }
 
     public PlayerSliding(PlayerMovementStateMachine playerStateMachine)
