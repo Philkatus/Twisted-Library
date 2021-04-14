@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class StateMachine :MonoBehaviour
+public abstract class StateMachine : MonoBehaviour
 {
     protected PlayerState State;
 
-    public void SetState(PlayerState state) 
+    public void SetState(PlayerState state)
     {
         State = state;
-        StartCoroutine(State.initialize());
+        StartCoroutine(State.Initialize());
     }
 
 

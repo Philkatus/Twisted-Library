@@ -11,7 +11,7 @@ public class PlayerWalking : PlayerState
 
     }
 
-    public override IEnumerator initialize()
+    public override IEnumerator Initialize()
     {
         controller = PlayerStateMachine.controller;
         yield return null;
