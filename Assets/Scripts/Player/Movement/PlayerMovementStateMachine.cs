@@ -13,7 +13,7 @@ public class PlayerMovementStateMachine : StateMachine
     public float FowardInput;
     public float SidewaysInput;
     public float HeightOnLadder;
-
+    public float ForwardInput;
 
     public Shelf closestShelf;
 
@@ -37,7 +37,9 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void FixedUpdate()
     {
+        GetInput();
         State.Movement();
+        velocity = controller.velocity;
     }
 
     private void Update()
@@ -54,6 +56,12 @@ public class PlayerMovementStateMachine : StateMachine
             Debug.Log(State.ToString() + ".Snap");
         }
 
+    }
+
+    public void GetInput()
+    {
+        ForwardInput = Input.GetAxis("Vertical");
+        SidewaysInput = Input.GetAxis("Horizontal");
     }
 
     ///<summary>
