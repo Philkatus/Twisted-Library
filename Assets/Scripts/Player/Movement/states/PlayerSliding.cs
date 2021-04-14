@@ -21,35 +21,31 @@ public class PlayerSliding : PlayerState
     public override IEnumerator initialize()
     {
         // Zuweisungen
-        speed = PlayerStateMachine.speed;
+        /*speed = PlayerStateMachine.speed;
         FowardInput = PlayerStateMachine.FowardInput;
         SideWardsInput = PlayerStateMachine.SideWardsInput;
         closestShelf = PlayerStateMachine.closestShelf;
         controller = PlayerStateMachine.controller;
 
-        climbingSpeed = 1.3f;
-        // PC auf Leiter setzen
+        climbingSpeed = 1.3f;*/
 
-        // Parent Swap => Leiter ist Parent
+        // PC auf Leiter setzen = > WIE KOMM ICH AN DEN CHARACTER RAN?
+
+        // Parent Swap () => Leiter ist Parent
 
         yield break;
     }
 
     public override IEnumerator Finish()
     {
-        // Parent Swap => Player ist Parent
-        yield break;
-    }
-
-    public override IEnumerator GroundDetection()
-    {
+        // Parent Swap () => Player ist Parent
         yield break;
     }
 
     public override IEnumerator Jump()
     {
-        //Ein Sprung
-        //speed = 1.3
+        //Ein Sprung 
+        //eine speed mitgeben????
         //OnFall.trigger
         //OnLadderShrink.trigger
 
@@ -58,22 +54,38 @@ public class PlayerSliding : PlayerState
 
     public override IEnumerator Movement()
     {
-        // WS - Leiter hoch/runter
-        // speed = 1
-        // Man erreicht das Ende der Leiter: kleiner Timer
+        while (true)
+        {
+            //An der Leiter Hoch und runter bewegen
+            /*controller.Move(new Vector3(0, speed * FowardInput, 0)); // muss 0 durch was anderes ersetzt werden??
 
-        // Man kommt oben an: OnLadderTop.trigger
-        //OnLadderShrink.trigger
+            //(low prio) Kopf in die Input Richtung und dann Bewegungs Richtung zeigen
+            //KopfReference
 
-        //Man kommt unten an: OnLadderBottom.trigger
-        //OnLadderShrink.trigger
+            // if( Man erreicht das Ende der Leiter )
+            {// kleiner Timer
+                if (//timer abgelaufen)
+                if (//weg nach oben)
+                {
+                        //OnLadderTop.trigger
+                        //OnLadderShrink.trigger
+                    }
+                    else (//weg nach unten)
+                {
+                    //OnLadderBottom.trigger
+                    //OnLadderShrink.trigger
+                }
+            }
+            // else ()
+            // { timer = 0; }*/
+            yield return new WaitForEndOfFrame();
+        }
 
-        //(low prio) Kopf in die Input Richtung und dann Bewegungs Richtung zeigen
         yield break;
     }
 
     public PlayerSliding(PlayerMovementStateMachine playerStateMachine)
-        : base(playerStateMachine) 
+        : base(playerStateMachine)
     {
 
     }
