@@ -8,6 +8,10 @@ public abstract class StateMachine : MonoBehaviour
 
     public void SetState(State state)
     {
+        if (State != null)
+        {
+            StartCoroutine(State.Finish());
+        }
         State = state;
         StartCoroutine(State.Initialize());
     }
