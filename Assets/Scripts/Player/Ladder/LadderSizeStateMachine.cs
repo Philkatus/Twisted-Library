@@ -23,7 +23,7 @@ public class LadderSizeStateMachine : StateMachine
     {
         if (Input.GetKeyDown(KeyCode.B))
         {
-            StartCoroutine(State.Finish());
+            StartCoroutine(State.ChangeLadderSize());
         }
     }
 
