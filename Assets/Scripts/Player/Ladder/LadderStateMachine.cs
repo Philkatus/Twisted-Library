@@ -5,7 +5,6 @@ using UnityEngine;
 public class LadderStateMachine : StateMachine
 {
     #region public
-    public float length;
     public PlayerMovementStateMachine playerStateMachine;
     [HideInInspector] public float LadderVelocity;
     public Vector3 direction

@@ -21,6 +21,7 @@ public class LadderSliding : State
         path = pSM.closestShelf.pathCreator.path;
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length-1];
         //pSM.LadderVelocity = pSM.controller.velocity.magnitude;
+        pSM.currentDistance = path.GetClosestDistanceAlongPath(pSM.transform.position);
 
         yield return null;
     }
