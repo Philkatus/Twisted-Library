@@ -33,6 +33,7 @@ public class PlayerWalking : PlayerState
 
     public override void Jump()
     {
+        /*
         while (true)
         {
             if (Input.GetButtonDown("Jump") && controller.isGrounded)
@@ -40,18 +41,15 @@ public class PlayerWalking : PlayerState
                 //onFall.trigger
             }
         }
+        */
+        
     }
 
     public override IEnumerator Snap()
     {
-        while (true)
-        {
-            if (Input.GetButtonDown("Interact"))
-            {
-
-            }
+        PlayerStateMachine.OnSnap();
             yield return null;
-        }
+        
     }
 
     public override IEnumerator Finish()

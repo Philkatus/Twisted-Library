@@ -16,13 +16,14 @@ public class PlayerMovementStateMachine : StateMachine
     public float HeightOnLadder;
     public float LadderVelocity;
 
+    public List<Shelf> possibleShelfs;
     public Shelf closestShelf;
 
     public LadderStateMachine ladderScript;
 
     public CharacterController controller;
 
-    [HideInInspector] public List<Shelf> possibleShelfs;
+    
     [HideInInspector] public bool OnGround;
     [HideInInspector] public float SideWaysInput;
     [HideInInspector] public float ForwardInput;
@@ -96,30 +97,45 @@ public class PlayerMovementStateMachine : StateMachine
             return true;
         }
     }
-
+    #region functions to change State
+    ///<summary>
+    /// gets called when the player lands on the floor
+    ///</summary>
     public void OnLand()
     {
         SetState(new PlayerWalking(this));
     }
+    ///<summary>
+    /// gets called when the player leaves the ladder on the top
+    ///</summary>
     public void OnLadderTop()
     {
         SetState(new PlayerWalking(this));
 
     }
+    ///<summary>
+    /// gets called when the player leave the ladder on the bottom
+    ///</summary>
     public void OnLadderBottom()
     {
         SetState(new PlayerWalking(this));
 
     }
+    ///<summary>
+    /// gets called when the player snappes his ladder to a shelf
+    ///</summary>
     public void OnSnap()
     {
         SetState(new PlayerSliding(this));
 
     }
+    ///<summary>
+    /// gets called when the player changes to in the air
+    ///</summary>
     public void OnFall()
     {
         SetState(new PlayerInTheAir(this));
 
     }
-
+    #endregion
 }
