@@ -28,8 +28,6 @@ public class LadderSliding : State
 
     public override void Movement()
     {
-
-
         pSM.LadderVelocity += pSM.SideWaysInput * pSM.slidingSpeed;
         if (pSM.LadderVelocity > 0)
         {
@@ -42,14 +40,12 @@ public class LadderSliding : State
         pSM.LadderVelocity = Mathf.Clamp(pSM.LadderVelocity, -pSM.maximumSpeedOnLadder, pSM.maximumSpeedOnLadder);
         pSM.currentDistance += pSM.LadderVelocity*Time.deltaTime;
         pSM.currentDistance = Mathf.Clamp(pSM.currentDistance,0, pathLength);
+        LadderStateMachine.transform.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
         if (pSM.currentDistance == 0 || pSM.currentDistance == pathLength) 
         {
-            pSM.LadderVelocity = 0;
+            pSM.OnFall();
         }
-        LadderStateMachine.transform.position = path.GetPointAtDistance(pSM.currentDistance,EndOfPathInstruction.Stop);
-
-        
-
+       
 
     }
 
