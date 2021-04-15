@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerWalking : PlayerState
+public class PlayerWalking : State
 {
     CharacterController controller;
     float coyoteTime = 0.1f;

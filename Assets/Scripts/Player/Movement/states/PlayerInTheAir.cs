@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerInTheAir : PlayerState
+public class PlayerInTheAir : State
 {
     CharacterController controller;
     private Vector3 playerVelocity;

@@ -2,14 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class PlayerState
+public abstract class State
 {
     protected PlayerMovementStateMachine PlayerStateMachine;
+    protected LadderStateMachine LadderStateMachine;
 
-    public PlayerState(PlayerMovementStateMachine playerStateMachine)
+    public State(PlayerMovementStateMachine playerStateMachine)
     {
         PlayerStateMachine = playerStateMachine;
     }
+
+    public State(LadderStateMachine ladderStateMachine)
+    {
+        LadderStateMachine = ladderStateMachine;
+    }
+
 
     public virtual IEnumerator Initialize()
     {
