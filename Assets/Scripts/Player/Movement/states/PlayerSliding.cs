@@ -41,6 +41,7 @@ public class PlayerSliding : State
         currentDistance = pathCreator.path.GetClosestDistanceAlongPath(startingPoint);
         ladder.transform.position = startingPoint;
         ladder.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
+        Debug.Log(ladder.transform.position);
 
         // PC auf Leiter setzen = > WIE KOMM ICH AN DEN CHARACTER RAN?
         ladder.transform.parent = null;

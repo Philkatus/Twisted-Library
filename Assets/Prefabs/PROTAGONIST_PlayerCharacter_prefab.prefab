@@ -24,8 +24,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 259310139372920754}
-  m_LocalRotation: {x: 0.042339917, y: 0.12582976, z: -0.0053752824, w: 0.99113333}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.04204666, y: 0.17144698, z: -0.007323989, w: 0.9842685}
+  m_LocalPosition: {x: 0, y: 0, z: -0.0000019073486}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1772237449492428598}
@@ -433,11 +433,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 12
   speedOnLadder: 1
+  ladderDragPercentage: 0
   jumpheight: 9
   gravity: 17
   playerVelocity: {x: 0, y: 0, z: 0}
   HeightOnLadder: 0
   LadderVelocity: 0
+  currentDistance: 0
   possibleShelfs: []
   closestShelf: {fileID: 0}
   ladderScript: {fileID: 2074031750}
@@ -523,6 +525,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   length: 7
+  playerStateMachine: {fileID: 1922934702}
   LadderVelocity: 0
   ladderMesh: {fileID: 2324303223038516298}
 --- !u!1 &2324303223038516297
@@ -630,8 +633,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5173761969531662439}
-  m_LocalRotation: {x: 0.060313553, y: 0.12571153, z: -0.0076571316, w: 0.9902021}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.059895806, y: 0.1712859, z: -0.010433083, w: 0.98334366}
+  m_LocalPosition: {x: 0, y: 0, z: -0.0000019073486}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8875726333051050114}
@@ -712,7 +715,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6369436234874472688}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.7437189, y: 2.512, z: -10.255671}
+  m_LocalPosition: {x: -3.7125094, y: 2.512, z: -9.957329}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8550796576673198090}
@@ -1200,8 +1203,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9177417795965320302}
-  m_LocalRotation: {x: 0.07831484, y: 0.12555146, z: -0.009942494, w: 0.98894125}
-  m_LocalPosition: {x: 0, y: 0, z: -0.0000019073486}
+  m_LocalRotation: {x: 0.07777241, y: 0.17106779, z: -0.013546962, w: 0.98209155}
+  m_LocalPosition: {x: 0, y: 0, z: -0.0000038146973}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8518504162418943963}

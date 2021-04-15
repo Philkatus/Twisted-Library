@@ -10,6 +10,9 @@ public class PlayerMovementStateMachine : StateMachine
     [Header("changeable")]
     public float movementSpeed;
     public float speedOnLadder;
+    public float slidingSpeed;
+    public float maximumSpeedOnLadder;
+    public float ladderDrag;
     public float jumpheight;
     public float gravity;
     public Vector3 playerVelocity;
@@ -17,6 +20,7 @@ public class PlayerMovementStateMachine : StateMachine
     [Header("for Reference")]
     public float HeightOnLadder;
     public float LadderVelocity;
+    public float currentDistance;
 
     public List<Shelf> possibleShelfs;
     public Shelf closestShelf;
@@ -129,7 +133,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnSnap()
     {
         SetState(new PlayerSliding(this));
-
+        ladderScript.SetState(new LadderSliding(ladderScript));
     }
     ///<summary>
     /// gets called when the player changes to in the air

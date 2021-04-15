@@ -15,6 +15,7 @@ public class PlayerWalking : State
 
     public override IEnumerator Initialize()
     {
+        
         controller = PlayerStateMachine.controller;
         yield return null;
     }
