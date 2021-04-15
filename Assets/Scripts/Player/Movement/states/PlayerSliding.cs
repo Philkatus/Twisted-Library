@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using PathCreation;
 
-public class PlayerSliding : PlayerState
+public class PlayerSliding : State
 {
     #region INHERITED
     float currentDistance;
