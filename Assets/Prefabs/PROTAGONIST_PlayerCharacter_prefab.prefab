@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 259310139372920754}
-  m_LocalRotation: {x: 0.042046662, y: 0.17144686, z: -0.0073239845, w: 0.9842685}
+  m_LocalRotation: {x: 0.042339917, y: 0.12582976, z: -0.0053752824, w: 0.99113333}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -431,14 +431,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b908167a2d2e740ab9a0e8f072d46d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 2
-  speedOnLadder: 0
+  movementSpeed: 12
+  speedOnLadder: 1
   jumpheight: 9
   gravity: 17
+  playerVelocity: {x: 0, y: 0, z: 0}
   HeightOnLadder: 0
+  LadderVelocity: 0
+  possibleShelfs: []
   closestShelf: {fileID: 0}
   ladderScript: {fileID: 2074031750}
-  possibleShelfs: []
+  controller: {fileID: 2324303222117386823}
   OnGround: 0
   SideWaysInput: 0
   ForwardInput: 0
@@ -520,7 +523,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   length: 7
-  direction: {x: 0, y: -0.5, z: -0.3}
+  LadderVelocity: 0
+  ladderMesh: {fileID: 2324303223038516298}
 --- !u!1 &2324303223038516297
 GameObject:
   m_ObjectHideFlags: 0
@@ -626,8 +630,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5173761969531662439}
-  m_LocalRotation: {x: 0.060759634, y: 0.035301235, z: -0.0021502108, w: 0.9975257}
-  m_LocalPosition: {x: 0, y: 0, z: -0.0000019073486}
+  m_LocalRotation: {x: 0.060313553, y: 0.12571153, z: -0.0076571316, w: 0.9902021}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8875726333051050114}
@@ -708,7 +712,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6369436234874472688}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.77616584, y: 2.512, z: -10.576532}
+  m_LocalPosition: {x: -2.7437189, y: 2.512, z: -10.255671}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8550796576673198090}
@@ -1196,8 +1200,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9177417795965320302}
-  m_LocalRotation: {x: 0.07889407, y: 0.035256278, z: -0.0027919658, w: 0.99625546}
-  m_LocalPosition: {x: 0, y: 0, z: -0.0000038146973}
+  m_LocalRotation: {x: 0.07831484, y: 0.12555146, z: -0.009942494, w: 0.98894125}
+  m_LocalPosition: {x: 0, y: 0, z: -0.0000019073486}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8518504162418943963}
