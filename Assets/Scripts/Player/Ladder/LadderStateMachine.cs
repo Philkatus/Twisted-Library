@@ -7,9 +7,9 @@ public class LadderStateMachine : StateMachine
     #region public
     public float length;
     [HideInInspector] public float LadderVelocity;
-    public Vector3 direction 
+    public Vector3 direction
     {
-        get 
+        get
         {
             SetState(new LadderSliding(this));
             return ladderMesh.right;
@@ -21,5 +21,4 @@ public class LadderStateMachine : StateMachine
     [SerializeField] Transform ladderMesh;
     #endregion
 
-    
 }
