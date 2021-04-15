@@ -5,7 +5,8 @@ using UnityEngine;
 public class LadderSizeStateMachine : StateMachine
 {
     #region public
-    public float length;
+    public float ladderLengthBig;
+    public float ladderLengthSmall;
     public Transform ladderParent;
 
     #endregion
