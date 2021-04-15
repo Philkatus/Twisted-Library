@@ -40,7 +40,7 @@ public class LadderSliding : State
             pSM.LadderVelocity += pSM.ladderDrag * Time.deltaTime;
         }
         pSM.LadderVelocity = Mathf.Clamp(pSM.LadderVelocity, -pSM.maximumSpeedOnLadder, pSM.maximumSpeedOnLadder);
-        pSM.currentDistance += pSM.LadderVelocity/100*Time.deltaTime;
+        pSM.currentDistance += pSM.LadderVelocity*Time.deltaTime;
         pSM.currentDistance = Mathf.Clamp(pSM.currentDistance,0, pathLength);
         if (pSM.currentDistance == 0 || pSM.currentDistance == pathLength) 
         {
