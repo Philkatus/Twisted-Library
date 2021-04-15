@@ -48,6 +48,11 @@ public abstract class State
         yield return null;
     }
 
+    public virtual IEnumerator ChangeLadderSize()
+    {
+        yield return null;
+    }
+
     public virtual IEnumerator Finish()
     {
         yield return null;
