@@ -6,6 +6,7 @@ public abstract class State
 {
     protected PlayerMovementStateMachine PlayerStateMachine;
     protected LadderStateMachine LadderStateMachine;
+    protected LadderSizeStateMachine LadderSizeStateMachine;
 
     public State(PlayerMovementStateMachine playerStateMachine)
     {
@@ -17,6 +18,10 @@ public abstract class State
         LadderStateMachine = ladderStateMachine;
     }
 
+    public State(LadderSizeStateMachine ladderSizeStateMachine)
+    {
+        LadderSizeStateMachine = ladderSizeStateMachine;
+    }
 
     public virtual IEnumerator Initialize()
     {
