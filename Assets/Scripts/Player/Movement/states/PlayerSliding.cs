@@ -11,11 +11,14 @@ public class PlayerSliding : State
     float FowardInput;
     float SideWardsInput;
     float previousClimbingDirection;
+    float ladderLength;
     Shelf closestShelf;
     CharacterController controller;
     PathCreator pathCreator;
     PlayerMovementStateMachine pSM;
     LadderStateMachine ladder;
+    LadderSizeStateMachine ladderSizeState;
+
     #endregion
     #region PRIVATE
 
@@ -28,10 +31,12 @@ public class PlayerSliding : State
     {
         // Zuweisungen
         pSM = PlayerStateMachine;
+        ladderSizeState = pSM.ladderSizeStateMachine;
+        ladderLength = ladderSizeState.ladderLengthBig;
         speed = pSM.speedOnLadder;
         closestShelf = pSM.closestShelf;
         controller = pSM.controller;
-        ladder = pSM.ladderScript;
+        ladder = pSM.ladderStateMachine;
         pathCreator = closestShelf.pathCreator;
         pSM.HeightOnLadder = -1;
 
@@ -42,14 +47,18 @@ public class PlayerSliding : State
         currentDistance = pathCreator.path.GetClosestDistanceAlongPath(startingPoint);
         ladder.transform.position = startingPoint;
         ladder.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
+        Debug.Log(ladder.transform.position);
 
         // PC auf Leiter setzen = > WIE KOMM ICH AN DEN CHARACTER RAN?
         ladder.transform.parent = null;
-        controller.transform.position = startingPoint + ladder.direction * ladder.length;
+        Vector3 targetPosition = startingPoint + ladder.direction * ladderLength;
+        targetPosition.y = Mathf.Clamp(targetPosition.y, ladder.direction.y * ladderLength, controller.transform.position.y);
+        controller.transform.position = targetPosition;
+        pSM.HeightOnLadder = -(startingPoint - targetPosition).magnitude / ladderLength;
 
         controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
         controller.transform.parent = ladder.transform;
-
+        pSM.ladderSizeStateMachine.OnGrow();
 
 
         // Parent Swap () => Leiter ist Parent
@@ -60,6 +69,14 @@ public class PlayerSliding : State
     public override IEnumerator Finish()
     {
         // Parent Swap () => Player ist Parent
+        controller.transform.parent = null;
+        ladder.transform.localPosition = new Vector3(4, 0, 0);
+        ladder.transform.parent = controller.transform;
+
+
+
+        pSM.ladderSizeStateMachine.OnShrink();
+
         yield break;
     }
 
@@ -67,6 +84,8 @@ public class PlayerSliding : State
     {
         //Ein Sprung 
         //eine speed mitgeben????
+        PlayerStateMachine.playerVelocity.y = PlayerStateMachine.jumpheight;
+        PlayerStateMachine.OnFall();
         //OnFall.trigger
         //OnLadderShrink.trigger
 
@@ -79,10 +98,10 @@ public class PlayerSliding : State
         //An der Leiter Hoch und runter bewegen
         //controller.Move(new Vector3(0, speed * FowardInput, 0)); // muss 0 durch was anderes ersetzt werden??
         var climbDirection = pSM.ForwardInput == 0 ? previousClimbingDirection : Mathf.Sign(pSM.ForwardInput);
-        pSM.HeightOnLadder += pSM.ForwardInput * speed * Time.deltaTime + climbDirection * pSM.momentum * Time.deltaTime;
+        pSM.HeightOnLadder += pSM.ForwardInput * speed * Time.deltaTime;//+ climbDirection * pSM.momentum * Time.deltaTime;
         pSM.momentum = Mathf.Max(0, pSM.momentum - 2 * Time.deltaTime);
         pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
-        pSM.transform.position = ladder.transform.position + ladder.direction * ladder.length * pSM.HeightOnLadder;
+        pSM.transform.position = ladder.transform.position + ladder.direction * ladderLength * pSM.HeightOnLadder;
 
         if (pSM.ForwardInput != 0 && Mathf.Sign(pSM.ForwardInput) != previousClimbingDirection)
         {

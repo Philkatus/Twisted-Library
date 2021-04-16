@@ -10,6 +10,9 @@ public class PlayerMovementStateMachine : StateMachine
     [Header("changeable")]
     public float movementSpeed;
     public float speedOnLadder;
+    public float slidingSpeed;
+    public float maximumSpeedOnLadder;
+    public float ladderDrag;
     public float jumpheight;
     public float gravity;
     public Vector3 playerVelocity;
@@ -18,11 +21,13 @@ public class PlayerMovementStateMachine : StateMachine
     public float HeightOnLadder;
     public float LadderVelocity;
     public float momentum;
+    public float currentDistance;
 
     public List<Shelf> possibleShelfs;
     public Shelf closestShelf;
 
-    public LadderStateMachine ladderScript;
+    public LadderStateMachine ladderStateMachine;
+    public LadderSizeStateMachine ladderSizeStateMachine;
 
     public CharacterController controller;
 
@@ -53,7 +58,7 @@ public class PlayerMovementStateMachine : StateMachine
         GetInput();
         State.Movement();
 
-        if (Input.GetButtonDown("Jump") && controller.isGrounded)
+        if (Input.GetButtonDown("Jump"))
         {
             State.Jump();
             Debug.Log(State.ToString() + ".jump");
@@ -130,7 +135,8 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnSnap()
     {
         SetState(new PlayerSliding(this));
-
+        ladderStateMachine.SetState(new LadderSliding(ladderStateMachine));
+        ladderSizeStateMachine.SetState(new LadderBig(ladderSizeStateMachine));
     }
     ///<summary>
     /// gets called when the player changes to in the air
@@ -138,7 +144,8 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnFall()
     {
         SetState(new PlayerInTheAir(this));
-
+        ladderStateMachine.SetState(new LadderWalking(ladderStateMachine));
+        ladderSizeStateMachine.SetState(new LadderSmall(ladderSizeStateMachine));
     }
     #endregion
 }

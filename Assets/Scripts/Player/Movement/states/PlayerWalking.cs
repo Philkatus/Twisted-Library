@@ -15,6 +15,7 @@ public class PlayerWalking : State
 
     public override IEnumerator Initialize()
     {
+        
         controller = PlayerStateMachine.controller;
         yield return null;
     }
@@ -59,8 +60,11 @@ public class PlayerWalking : State
 
     public override void Jump()
     {
-        PlayerStateMachine.playerVelocity.y = PlayerStateMachine.jumpheight;
-        PlayerStateMachine.OnFall();
+        if (controller.isGrounded)
+        {
+            PlayerStateMachine.playerVelocity.y = PlayerStateMachine.jumpheight;
+            PlayerStateMachine.OnFall();
+        }
     }
 
     public override IEnumerator Snap()
