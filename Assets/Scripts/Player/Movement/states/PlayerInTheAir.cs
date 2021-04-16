@@ -36,6 +36,7 @@ public class PlayerInTheAir : State
         controller.Move(pSM.playerVelocity * Time.deltaTime
             + direction * Time.deltaTime * pSM.movementSpeed / 1.4f);
 
+        pSM.momentum = controller.velocity.magnitude / 8;
         if (controller.isGrounded)
         {
             pSM.OnLand();

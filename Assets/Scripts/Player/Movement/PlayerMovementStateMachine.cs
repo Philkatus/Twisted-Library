@@ -17,6 +17,7 @@ public class PlayerMovementStateMachine : StateMachine
     [Header("for Reference")]
     public float HeightOnLadder;
     public float LadderVelocity;
+    public float momentum;
 
     public List<Shelf> possibleShelfs;
     public Shelf closestShelf;
@@ -25,7 +26,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     public CharacterController controller;
 
-    
+
     [HideInInspector] public bool OnGround;
     [HideInInspector] public float SideWaysInput;
     [HideInInspector] public float ForwardInput;

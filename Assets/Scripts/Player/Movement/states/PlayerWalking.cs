@@ -37,6 +37,7 @@ public class PlayerWalking : State
         controller.Move(pSM.playerVelocity * Time.deltaTime
             + direction * Time.deltaTime * pSM.movementSpeed);
 
+        pSM.momentum = controller.velocity.magnitude / 8;
         if (isGroundedWithCoyoteTime())
         {
             PlayerStateMachine.OnFall();
