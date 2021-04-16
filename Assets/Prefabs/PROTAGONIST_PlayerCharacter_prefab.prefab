@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 259310139372920754}
-  m_LocalRotation: {x: 0.039386716, y: 0.38482612, z: -0.016439268, w: 0.92200184}
+  m_LocalRotation: {x: 0.042295493, y: 0.13376717, z: -0.0057143588, w: 0.99009335}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -345,7 +345,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2324303222048157039}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.762, z: 0.376}
+  m_LocalPosition: {x: 0, y: 0.762, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2324303222117386822}
@@ -433,14 +433,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementSpeed: 12
   speedOnLadder: 1
+  slidingSpeed: 0.6
+  maximumSpeedOnLadder: 80
+  ladderDrag: 30
   jumpheight: 9
   gravity: 17
   playerVelocity: {x: 0, y: 0, z: 0}
   HeightOnLadder: 0
   LadderVelocity: 0
+  currentDistance: 0
   possibleShelfs: []
   closestShelf: {fileID: 0}
-  ladderScript: {fileID: 2074031750}
+  ladderStateMachine: {fileID: 2074031750}
+  ladderSizeStateMachine: {fileID: 6721105999781121023}
   controller: {fileID: 2324303222117386823}
   OnGround: 0
   SideWaysInput: 0
@@ -472,8 +477,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2324303222376295302}
-  m_LocalRotation: {x: 0.098410234, y: -0.098410234, z: -0.7002253, w: 0.7002253}
-  m_LocalPosition: {x: 4.117, y: 0, z: 0.71}
+  m_LocalRotation: {x: 0.030843573, y: -0.030843573, z: -0.7064338, w: 0.7064338}
+  m_LocalPosition: {x: 0.673, y: 0, z: -0.434}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7437084798391301879}
@@ -523,9 +528,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb6c027156da47540b1683fcefa035b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  length: 7
+  playerStateMachine: {fileID: 1922934702}
   LadderVelocity: 0
-  ladderMesh: {fileID: 0}
+  ladderMesh: {fileID: 7437084798391301879}
 --- !u!114 &6721105999781121023
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -539,7 +544,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ladderLengthBig: 15
-  ladderLengthSmall: 9
+  ladderLengthSmall: 1
   ladderParent: {fileID: 7437084798391301879}
 --- !u!1 &4129073745536437011
 GameObject:
@@ -659,7 +664,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4926346662501951200}
-  m_LocalRotation: {x: -0, y: -0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0.030843573, y: -0.030843573, z: 0.7064338, w: 0.7064338}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -691,7 +696,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5173761969531662439}
-  m_LocalRotation: {x: 0.056106683, y: 0.38446453, z: -0.023417866, w: 0.92113554}
+  m_LocalRotation: {x: 0.060250267, y: 0.13364148, z: -0.008140148, w: 0.9891631}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -773,7 +778,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6369436234874472688}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.805854, y: 2.512, z: -7.3459845}
+  m_LocalPosition: {x: -2.9137332, y: 2.512, z: -10.586338}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8550796576673198090}
@@ -1261,8 +1266,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9177417795965320302}
-  m_LocalRotation: {x: 0.07285239, y: 0.38397497, z: -0.030407205, w: 0.9199626}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.078232646, y: 0.13347127, z: -0.0105696665, w: 0.9879036}
+  m_LocalPosition: {x: 0.00000071525574, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8518504162418943963}

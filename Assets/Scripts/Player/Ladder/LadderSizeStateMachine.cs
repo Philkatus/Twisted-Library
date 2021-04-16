@@ -17,7 +17,7 @@ public class LadderSizeStateMachine : StateMachine
 
     private void Start()
     {
-        SetState(new LadderBig(this));
+        SetState(new LadderSmall(this));
     }
 
     private void Update()
