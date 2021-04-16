@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class AnimationStateController : MonoBehaviour
 {
+    public PlayerMovementStateMachine movementScript;
+    public CharacterController controller;
 
     public Animator animator;
     float velocityZ = 0f;
@@ -17,6 +19,7 @@ public class AnimationStateController : MonoBehaviour
     int VelocityZHash;
     int VelocityXHash;
 
+    public bool isAirborne = false;
 
     #region Tutorial 1 variables
     /*
@@ -38,10 +41,13 @@ public class AnimationStateController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        movementScript = GetComponent<PlayerMovementStateMachine>();
+        controller = GetComponent<CharacterController>();
 
         VelocityZHash = Animator.StringToHash("VelocityZ");
         VelocityXHash = Animator.StringToHash("VelocityX");
 
+        Cursor.lockState = CursorLockMode.Locked;
         #region Tutorial 1 Start
         /*
         isWalkingHash = Animator.StringToHash("isWalking");
@@ -85,6 +91,27 @@ public class AnimationStateController : MonoBehaviour
         {
             velocityX -= Time.deltaTime * deceleration;
         }
+    }
+
+    void Jump()
+    {
+        //Falling
+        if (controller.isGrounded)
+        {
+            animator.SetBool("isGrounded", true);
+        }
+        if (!controller.isGrounded)
+        {
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isGrounded", false);
+        }
+
+        //start Jump
+        if (controller.isGrounded && Input.GetKey(KeyCode.Space))
+        {
+            animator.SetBool("isJumping", true);
+        }
+
     }
 
     void lockOrResetVelocity(bool forwardPressed, bool leftPressed, bool rightPressed, bool runPressed, float currentMaxVelocity)
@@ -216,5 +243,7 @@ public class AnimationStateController : MonoBehaviour
         //set the parameters to our local variable values
         animator.SetFloat(VelocityZHash, velocityZ);
         animator.SetFloat(VelocityXHash, velocityX);
+
+        Jump();
     }
 }
