@@ -26,6 +26,7 @@ public class PlayerInTheAir : State
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
         Vector3 direction = directionForward * pSM.ForwardInput + directionRight * pSM.SideWaysInput; ;
+        pSM.moveDirection = direction;
 
         if (direction != Vector3.zero)
         {

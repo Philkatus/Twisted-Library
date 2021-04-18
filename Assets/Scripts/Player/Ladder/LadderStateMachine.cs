@@ -4,30 +4,30 @@ using UnityEngine;
 
 public class LadderStateMachine : StateMachine
 {
-    #region public
-    public PlayerMovementStateMachine playerStateMachine;
-    [HideInInspector] public float LadderVelocity;
-    public Vector3 direction
-    {
-        get
-        {
-            
-            return ladderMesh.right;
-        }
-    }
-    #endregion
+    // #region public
+    // public PlayerMovementStateMachine playerStateMachine;
+    // [HideInInspector] public float LadderVelocity;
+    // public Vector3 direction
+    // {
+    //     get
+    //     {
 
-    #region private
-    [SerializeField] Transform ladderMesh;
-    #endregion
-    private void Start()
-    {
-        SetState(new LadderWalking(this));
-    }
+    //         return ladderMesh.right;
+    //     }
+    // }
+    // #endregion
 
-    private void Update()
-    {
-        playerStateMachine.GetInput();
-        State.Movement();
-    }
+    // #region private
+    // [SerializeField] Transform ladderMesh;
+    // #endregion
+    // private void Start()
+    // {
+    //     SetState(new LadderWalking(this));
+    // }
+
+    // private void Update()
+    // {
+    //     playerStateMachine.GetInput();
+    //     State.Movement();
+    // }
 }
