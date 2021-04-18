@@ -15,7 +15,7 @@ public class PlayerWalking : State
 
     public override IEnumerator Initialize()
     {
-        
+
         controller = PlayerStateMachine.controller;
         yield return null;
     }
@@ -27,7 +27,7 @@ public class PlayerWalking : State
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
         Vector3 direction = directionForward * pSM.ForwardInput + directionRight * pSM.SideWaysInput;
-
+        pSM.moveDirection = direction;
         if (direction != Vector3.zero)
         {
             controller.transform.forward = direction;
@@ -38,6 +38,7 @@ public class PlayerWalking : State
         controller.Move(pSM.playerVelocity * Time.deltaTime
             + direction * Time.deltaTime * pSM.movementSpeed);
 
+        pSM.momentum = controller.velocity.magnitude / 8;
         if (isGroundedWithCoyoteTime())
         {
             PlayerStateMachine.OnFall();

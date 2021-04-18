@@ -20,17 +20,27 @@ public class PlayerMovementStateMachine : StateMachine
     [Header("for Reference")]
     public float HeightOnLadder;
     public float LadderVelocity;
+    public float momentum;
     public float currentDistance;
+    public Vector3 moveDirection;
+    public Vector3 ladderDirection
+    {
+        get
+        {
+
+            return ladderMesh.right;
+        }
+    }
 
     public List<Shelf> possibleShelfs;
     public Shelf closestShelf;
 
-    public LadderStateMachine ladderStateMachine;
+    public Transform ladder;
     public LadderSizeStateMachine ladderSizeStateMachine;
 
     public CharacterController controller;
 
-    
+
     [HideInInspector] public bool OnGround;
     [HideInInspector] public float SideWaysInput;
     [HideInInspector] public float ForwardInput;
@@ -38,7 +48,7 @@ public class PlayerMovementStateMachine : StateMachine
     #endregion
 
     #region Private
-
+    [SerializeField] Transform ladderMesh;
     #endregion
 
     private void Start()
@@ -134,7 +144,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnSnap()
     {
         SetState(new PlayerSliding(this));
-        ladderStateMachine.SetState(new LadderSliding(ladderStateMachine));
+        //ladder.SetState(new LadderSliding(ladder));
         ladderSizeStateMachine.SetState(new LadderBig(ladderSizeStateMachine));
     }
     ///<summary>
@@ -143,7 +153,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnFall()
     {
         SetState(new PlayerInTheAir(this));
-        ladderStateMachine.SetState(new LadderWalking(ladderStateMachine));
+        //ladder.SetState(new LadderWalking(ladder));
         ladderSizeStateMachine.SetState(new LadderSmall(ladderSizeStateMachine));
     }
     #endregion
