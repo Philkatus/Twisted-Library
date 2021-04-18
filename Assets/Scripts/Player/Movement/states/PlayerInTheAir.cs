@@ -34,9 +34,9 @@ public class PlayerInTheAir : State
 
         pSM.playerVelocity.y -= PlayerStateMachine.gravity * Time.deltaTime;
         controller.Move(pSM.playerVelocity * Time.deltaTime
-            + direction * Time.deltaTime * pSM.movementSpeed / 1.4f);
+            + direction * Time.deltaTime * pSM.movementSpeed / 1.4f * pSM.momentum);
+        pSM.momentum = Mathf.Max(0, pSM.momentum - 2 * Time.deltaTime);
 
-        pSM.momentum = controller.velocity.magnitude / 8;
         if (controller.isGrounded)
         {
             pSM.OnLand();
@@ -50,6 +50,7 @@ public class PlayerInTheAir : State
 
     public override IEnumerator Snap()
     {
+        PlayerStateMachine.momentum = controller.velocity.magnitude / 8;
         PlayerStateMachine.OnSnap();
 
         yield return null;

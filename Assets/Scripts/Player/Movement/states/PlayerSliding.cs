@@ -72,7 +72,7 @@ public class PlayerSliding : State
         controller.transform.parent = null;
         ladder.transform.localPosition = new Vector3(4, 0, 0);
         ladder.transform.parent = controller.transform;
-
+        pSM.momentum = pSM.LadderVelocity;
 
 
         pSM.ladderSizeStateMachine.OnShrink();
