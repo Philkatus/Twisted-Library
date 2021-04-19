@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 
 public class AnimationStateController : MonoBehaviour
 {
@@ -21,22 +22,7 @@ public class AnimationStateController : MonoBehaviour
 
     public bool isAirborne = false;
 
-    #region Tutorial 1 variables
-    /*
-    int isWalkingHash;
-    int isRunningHash;
-    */
-    #endregion
-    #region Tutorial 1.2 variables
-    /*
-    float velocity = 0f;
-    public float acceleration = 0.1f;
-    int VelocityHash;
-    public float deceleration = 0.5f;
-    */
-    #endregion
-
-
+    public RigBuilder rigBuilder;
 
     void Start()
     {
@@ -48,15 +34,75 @@ public class AnimationStateController : MonoBehaviour
         VelocityXHash = Animator.StringToHash("VelocityX");
 
         Cursor.lockState = CursorLockMode.Locked;
-        #region Tutorial 1 Start
+
+        rigBuilder = GetComponent<RigBuilder>();
+    }
+
+    void Update()
+    {
+        bool forwardPressed = Input.GetKey(KeyCode.W);
+        bool leftPressed = Input.GetKey(KeyCode.A);
+        bool rightPressed = Input.GetKey(KeyCode.D);
+        bool runPressed = Input.GetKey(KeyCode.LeftShift);
+
+        //set current maxVelocity (if runPressed:  =true             =false)
+        float currentMaxVelocity = runPressed ? maxRunVelocity : maxWalkVelocity;
+
+
+        changeVelocity(forwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
+        lockOrResetVelocity(forwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
+
+        //set the parameters to our local variable values
+        animator.SetFloat(VelocityZHash, velocityZ);
+        animator.SetFloat(VelocityXHash, velocityX);
+
+        Jump();
+        LadderAnims();
+    }
+
+    void LadderAnims()
+    {
+        if(movementScript.closestShelf != null)
+        {
+            animator.SetBool("isClimbingLadder", true);
+            rigBuilder.enabled = false;
+        } 
         /*
-        isWalkingHash = Animator.StringToHash("isWalking");
-        isRunningHash = Animator.StringToHash("isRunning");
-        #endregion
-        #region Tutorial 1.2 Start
-        VelocityHash = Animator.StringToHash("Velocity");
+        else
+        {
+            animator.SetBool("isClimbingLadder", false);
+            rigBuilder.enabled = true;
+        }
         */
-        #endregion
+        if (controller.isGrounded)
+        {
+            animator.SetBool("isClimbingLadder", false);
+            rigBuilder.enabled = true;
+        }
+        
+    }
+
+    void Jump()
+    {
+        //Falling
+        if (controller.isGrounded)
+        {
+            animator.SetBool("isGrounded", true);
+        }
+        if (!controller.isGrounded)
+        {
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isGrounded", false);
+        }
+
+        //start Jump
+        if (controller.isGrounded && Input.GetKey(KeyCode.Space))
+        {
+            animator.SetBool("isJumping", true);
+            animator.SetBool("isClimbingLadder", false);
+            rigBuilder.enabled = true;
+        }
+
     }
     //handles acceleration and deceleration
     void changeVelocity(bool forwardPressed, bool leftPressed, bool rightPressed, bool runPressed, float currentMaxVelocity)
@@ -91,27 +137,6 @@ public class AnimationStateController : MonoBehaviour
         {
             velocityX -= Time.deltaTime * deceleration;
         }
-    }
-
-    void Jump()
-    {
-        //Falling
-        if (controller.isGrounded)
-        {
-            animator.SetBool("isGrounded", true);
-        }
-        if (!controller.isGrounded)
-        {
-            animator.SetBool("isJumping", false);
-            animator.SetBool("isGrounded", false);
-        }
-
-        //start Jump
-        if (controller.isGrounded && Input.GetKey(KeyCode.Space))
-        {
-            animator.SetBool("isJumping", true);
-        }
-
     }
 
     void lockOrResetVelocity(bool forwardPressed, bool leftPressed, bool rightPressed, bool runPressed, float currentMaxVelocity)
@@ -174,76 +199,5 @@ public class AnimationStateController : MonoBehaviour
         //
 
     }
-    void Update()
-    {
-        #region Tutorial 1 Update
-        /*
-        bool isWalking = animator.GetBool(isWalkingHash);
-        bool isRunning = animator.GetBool(isRunningHash);
-        bool forwardPress = Input.GetKey(KeyCode.W);
-        bool runPressed = Input.GetKey(KeyCode.LeftShift);
 
-        if (!isWalking && forwardPress)
-        {
-            animator.SetBool(isWalkingHash, true);
-        }
-
-        if (isWalking && !forwardPress)
-        {
-            animator.SetBool(isWalkingHash, false);
-        }
-
-        if(!isRunning && (forwardPress && runPressed))
-        {
-            animator.SetBool(isRunningHash, true);
-        }
-
-        if (isRunning && (!forwardPress || !runPressed))
-        {
-            animator.SetBool(isRunningHash, false);
-        }
-        */
-        #endregion
-        #region Tutorial 1.2 Update
-        /*
-        bool forwardPress = Input.GetKey(KeyCode.W);
-        bool runPressed = Input.GetKey(KeyCode.LeftShift);
-
-        if (forwardPress && velocity < 1f)
-        {
-            velocity += Time.deltaTime * acceleration;
-        }
-
-        if (!forwardPress && velocity > 0f)
-        {
-            velocity -= Time.deltaTime * deceleration;
-        }
-
-        if (!forwardPress && velocity < 0f)
-        {
-            velocity = 0f;
-        }
-
-        animator.SetFloat(VelocityHash, velocity);
-        */
-        #endregion
-
-        bool forwardPressed = Input.GetKey(KeyCode.W);
-        bool leftPressed = Input.GetKey(KeyCode.A);
-        bool rightPressed = Input.GetKey(KeyCode.D);
-        bool runPressed = Input.GetKey(KeyCode.LeftShift);
-
-        //set current maxVelocity (if runPressed:  =true             =false)
-        float currentMaxVelocity = runPressed ? maxRunVelocity : maxWalkVelocity;
-
-
-        changeVelocity(forwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
-        lockOrResetVelocity(forwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
-
-        //set the parameters to our local variable values
-        animator.SetFloat(VelocityZHash, velocityZ);
-        animator.SetFloat(VelocityXHash, velocityX);
-
-        Jump();
-    }
 }
