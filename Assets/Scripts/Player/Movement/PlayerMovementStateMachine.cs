@@ -10,6 +10,9 @@ public class PlayerMovementStateMachine : StateMachine
     [Header("changeable")]
     public float movementSpeed;
     public float speedOnLadder;
+    public float slidingSpeed;
+    public float maximumSpeedOnLadder;
+    public float ladderDrag;
     public float jumpheight;
     public float gravity;
     public Vector3 playerVelocity;
@@ -17,15 +20,27 @@ public class PlayerMovementStateMachine : StateMachine
     [Header("for Reference")]
     public float HeightOnLadder;
     public float LadderVelocity;
+    public float momentum;
+    public float currentDistance;
+    public Vector3 moveDirection;
+    public Vector3 ladderDirection
+    {
+        get
+        {
+
+            return ladderMesh.right;
+        }
+    }
 
     public List<Shelf> possibleShelfs;
     public Shelf closestShelf;
 
-    public LadderStateMachine ladderScript;
+    public Transform ladder;
+    public LadderSizeStateMachine ladderSizeStateMachine;
 
     public CharacterController controller;
 
-    
+
     [HideInInspector] public bool OnGround;
     [HideInInspector] public float SideWaysInput;
     [HideInInspector] public float ForwardInput;
@@ -33,7 +48,7 @@ public class PlayerMovementStateMachine : StateMachine
     #endregion
 
     #region Private
-
+    [SerializeField] Transform ladderMesh;
     #endregion
 
     private void Start()
@@ -52,7 +67,7 @@ public class PlayerMovementStateMachine : StateMachine
         GetInput();
         State.Movement();
 
-        if (Input.GetButtonDown("Jump") && controller.isGrounded)
+        if (Input.GetButtonDown("Jump"))
         {
             State.Jump();
             Debug.Log(State.ToString() + ".jump");
@@ -129,7 +144,8 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnSnap()
     {
         SetState(new PlayerSliding(this));
-
+        //ladder.SetState(new LadderSliding(ladder));
+        ladderSizeStateMachine.SetState(new LadderBig(ladderSizeStateMachine));
     }
     ///<summary>
     /// gets called when the player changes to in the air
@@ -137,7 +153,8 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnFall()
     {
         SetState(new PlayerInTheAir(this));
-
+        //ladder.SetState(new LadderWalking(ladder));
+        ladderSizeStateMachine.SetState(new LadderSmall(ladderSizeStateMachine));
     }
     #endregion
 }

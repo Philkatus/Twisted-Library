@@ -5,7 +5,8 @@ using UnityEngine;
 public class LadderSizeStateMachine : StateMachine
 {
     #region public
-    public float length;
+    public float ladderLengthBig;
+    public float ladderLengthSmall;
     public Transform ladderParent;
 
     #endregion
@@ -16,7 +17,7 @@ public class LadderSizeStateMachine : StateMachine
 
     private void Start()
     {
-        SetState(new LadderBig(this));
+        SetState(new LadderSmall(this));
     }
 
     private void Update()
