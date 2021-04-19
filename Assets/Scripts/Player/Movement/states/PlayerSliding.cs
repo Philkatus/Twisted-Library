@@ -8,8 +8,6 @@ public class PlayerSliding : State
     #region INHERITED
     float currentDistance;
     float speed;
-    float FowardInput;
-    float SideWardsInput;
     float ladderLength;
     float pathLength;
     VertexPath path;
@@ -22,7 +20,7 @@ public class PlayerSliding : State
 
     #endregion
     #region PRIVATE
-
+    Vector3 pathDirection;
     #endregion
 
 
@@ -34,7 +32,7 @@ public class PlayerSliding : State
         pSM = PlayerStateMachine;
         ladderSizeState = pSM.ladderSizeStateMachine;
         ladderLength = ladderSizeState.ladderLengthBig;
-        speed = pSM.speedOnLadder;
+        speed = pSM.OnLadderAcceleration;
         closestShelf = pSM.closestShelf;
         controller = pSM.controller;
         ladder = pSM.ladder;
@@ -59,11 +57,11 @@ public class PlayerSliding : State
         ladder.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
         path = pSM.closestShelf.pathCreator.path;
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
-        //pSM.LadderVelocity = pSM.controller.velocity.magnitude;
+        
         pSM.currentDistance = path.GetClosestDistanceAlongPath(pSM.transform.position);
-        //        Debug.Log(ladder.transform.position);
+       
 
-        // PC auf Leiter setzen = > WIE KOMM ICH AN DEN CHARACTER RAN?
+        // PC auf Leiter setzen 
         ladder.transform.parent = null;
         Vector3 targetPosition = startingPoint + pSM.ladderDirection * ladderLength;
         targetPosition.y = Mathf.Clamp(targetPosition.y, pSM.ladderDirection.y * ladderLength, controller.transform.position.y);
@@ -74,8 +72,11 @@ public class PlayerSliding : State
         controller.transform.parent = ladder.transform;
         pSM.ladderSizeStateMachine.OnGrow();
 
-        pSM.LadderVelocity = AngleDirection(pSM.controller.transform.forward, pSM.moveDirection, pSM.controller.transform.up) * pSM.momentum * 10;
+        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance,EndOfPathInstruction.Stop);
+        //pSM.LadderVelocity = AngleDirection(pSM.controller.transform.forward, pSM.moveDirection, pSM.controller.transform.up) * pSM.momentum * 10;
         pSM.LadderVelocity = 0;//pSM.maximumSpeedOnLadder;
+        pSM.playerVelocity = pSM.resultingVelocity(pSM.playerVelocity,pathDirection);
+        
         // Parent Swap () => Leiter ist Parent
 
         yield return null;
@@ -87,7 +88,6 @@ public class PlayerSliding : State
         controller.transform.parent = null;
         ladder.transform.localPosition = new Vector3(4, 0, 0);
         ladder.transform.parent = controller.transform;
-        pSM.momentum = pSM.LadderVelocity;
 
 
         pSM.ladderSizeStateMachine.OnShrink();
@@ -111,8 +111,10 @@ public class PlayerSliding : State
     //returns -1 when to the left, 1 to the right, and 0 for forward/backward
     public float AngleDirection(Vector3 fwd, Vector3 targetDir, Vector3 up)
     {
+
         Vector3 perp = Vector3.Cross(fwd, targetDir);
         float dir = Vector3.Dot(perp, up);
+        
 
         if (dir > 0.0f)
         {
@@ -131,9 +133,11 @@ public class PlayerSliding : State
         }
     }
 
+
+
     public override void Movement()
     {
-
+        
         //An der Leiter Hoch und runter bewegen
         //controller.Move(new Vector3(0, speed * FowardInput, 0)); // muss 0 durch was anderes ersetzt werden??
 
@@ -142,6 +146,11 @@ public class PlayerSliding : State
         pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderLength * pSM.HeightOnLadder;
 
         //Leiter horizontale Bewegung
+        pathDirection = path.GetDirectionAtDistance(currentDistance);
+        pSM.playerVelocity += pSM.sideWaysInput * pathDirection * Time.deltaTime * pSM.slidingAcceleration;
+        pSM.currentDistance += pSM.resultingVelocity(pSM.playerVelocity, pathDirection).magnitude;
+
+        /*
         pSM.LadderVelocity += pSM.SideWaysInput * pSM.slidingSpeed;
         if (pSM.LadderVelocity > 0)
         {
@@ -153,12 +162,15 @@ public class PlayerSliding : State
         }
         pSM.LadderVelocity = Mathf.Clamp(pSM.LadderVelocity, -pSM.maximumSpeedOnLadder, pSM.maximumSpeedOnLadder);
         pSM.currentDistance += pSM.LadderVelocity * Time.deltaTime;
-        pSM.currentDistance = Mathf.Clamp(pSM.currentDistance, 0, pathLength);
+        */ 
+
         pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
-        if (pSM.currentDistance == 0 || pSM.currentDistance == pathLength)
+        if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
         {
             pSM.OnFall();
         }
+
+
         //(low prio) Kopf in die Input Richtung und dann Bewegungs Richtung zeigen
         //KopfReference
 
