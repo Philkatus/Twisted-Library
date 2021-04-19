@@ -431,17 +431,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b908167a2d2e740ab9a0e8f072d46d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 12
-  speedOnLadder: 1
-  slidingSpeed: 0.6
-  maximumSpeedOnLadder: 80
-  ladderDrag: 30
+  movementAcceleration: 50
+  maximumSpeed: 5
+  onLadderAcceleration: 0
+  maxSpeedOnLadder: 0
+  slidingAcceleration: 0
+  maxSlidingSpeed: 0
+  slidingDrag: 0
   jumpheight: 9
   gravity: 17
   playerVelocity: {x: 0, y: 0, z: 0}
   HeightOnLadder: 0
   LadderVelocity: 0
-  momentum: 0
   currentDistance: 0
   possibleShelfs: []
   closestShelf: {fileID: 0}
@@ -449,7 +450,7 @@ MonoBehaviour:
   ladderSizeStateMachine: {fileID: 6721105999781121023}
   controller: {fileID: 2324303222117386823}
   OnGround: 0
-  SideWaysInput: 0
+  sideWaysInput: 0
   ForwardInput: 0
   ladderMesh: {fileID: 5485595683521586558}
 --- !u!1 &2324303222376295302
