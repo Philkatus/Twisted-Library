@@ -61,7 +61,7 @@ public class PlayerSliding : State
         // Place the character on ladder.
         ladder.transform.parent = null;
         Vector3 targetPosition = startingPoint + pSM.ladderDirection * ladderLength;
-        targetPosition.y = Mathf.Clamp(targetPosition.y, pSM.ladderDirection.y * ladderLength, controller.transform.position.y);
+        targetPosition.y = Mathf.Clamp(targetPosition.y, targetPosition.y, controller.transform.position.y);
         controller.transform.position = targetPosition;
         pSM.HeightOnLadder = -(startingPoint - targetPosition).magnitude / ladderLength;
 
