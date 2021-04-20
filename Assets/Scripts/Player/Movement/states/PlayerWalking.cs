@@ -36,9 +36,9 @@ public class PlayerWalking : State
 
         
         pSM.playerVelocity += direction * Time.deltaTime*pSM.movementAcceleration;
-        float currenDrag = pSM.movementDrag+ pSM.playerVelocity.magnitude * .999f;
-        pSM.playerVelocity.x = pSM.playerVelocity.normalized.x * Mathf.Clamp(pSM.playerVelocity.magnitude - currenDrag*Time.deltaTime, 0, pSM.maximumSpeed);
-        pSM.playerVelocity.z = pSM.playerVelocity.normalized.z * Mathf.Clamp(pSM.playerVelocity.magnitude - currenDrag*Time.deltaTime, 0, pSM.maximumSpeed);
+        float currentDrag = pSM.movementDrag+ pSM.playerVelocity.magnitude * .999f;
+        pSM.playerVelocity.x = pSM.playerVelocity.normalized.x * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag*Time.deltaTime, 0, pSM.maximumSpeed);
+        pSM.playerVelocity.z = pSM.playerVelocity.normalized.z * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag*Time.deltaTime, 0, pSM.maximumSpeed);
         controller.Move(pSM.playerVelocity * Time.deltaTime);
         // + direction * Time.deltaTime * pSM.movementAcceleration);// Mathf.Clamp( pSM.playerVelocity.magnitude,0,pSM.maximumSpeed));
 

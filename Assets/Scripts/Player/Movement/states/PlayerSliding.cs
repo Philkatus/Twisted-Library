@@ -103,7 +103,7 @@ public class PlayerSliding : State
     {
         //Ein Sprung 
         //eine speed mitgeben????
-        PlayerStateMachine.playerVelocity.y = PlayerStateMachine.jumpheight;
+        PlayerStateMachine.playerVelocity.y += PlayerStateMachine.jumpheight;
         PlayerStateMachine.OnFall();
         //OnFall.trigger
         //OnLadderShrink.trigger
@@ -148,10 +148,19 @@ public class PlayerSliding : State
 
             //Leiter horizontale Bewegung
             pathDirection = path.GetDirectionAtDistance(currentDistance);
+            
+            //playervelocity increased with input
             pSM.playerVelocity += pSM.sideWaysInput * pathDirection * Time.deltaTime * pSM.slidingAcceleration;
-            pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, -pSM.maxSlidingSpeed, pSM.maxSlidingSpeed);
+            //drag calculation
+            
+            float resultingSpeed = pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
+            //speed Clamp
+            pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude *(100 - pSM.slidingDragPercentage)/100, -pSM.maxSlidingSpeed, pSM.maxSlidingSpeed);
+
+            //moving of the object
             pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
             pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
+            //check for end of Rail
             if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
             {
                 pSM.OnFall();

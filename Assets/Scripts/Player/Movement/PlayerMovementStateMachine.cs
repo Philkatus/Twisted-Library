@@ -19,9 +19,8 @@ public class PlayerMovementStateMachine : StateMachine
     [Space]
     public float slidingAcceleration;
     public float maxSlidingSpeed;
-    public float slidingDrag;
+    [Range(0,50f)] public float slidingDragPercentage;
 
-    public float ladderDrag;
     public float ladderDismountSpeed;
 
     [Space]
