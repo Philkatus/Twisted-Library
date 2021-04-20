@@ -149,13 +149,8 @@ public class PlayerSliding : State
             //Leiter horizontale Bewegung
             pathDirection = path.GetDirectionAtDistance(currentDistance);
             pSM.playerVelocity += pSM.sideWaysInput * pathDirection * Time.deltaTime * pSM.slidingAcceleration;
+            pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, -pSM.maxSlidingSpeed, pSM.maxSlidingSpeed);
             pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
-
-        //Leiter horizontale Bewegung
-        pathDirection = path.GetDirectionAtDistance(currentDistance);
-        pSM.playerVelocity += pSM.sideWaysInput * pathDirection * Time.deltaTime * pSM.slidingAcceleration;
-        pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, -pSM.maxSlidingSpeed, pSM.maxSlidingSpeed);
-        pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
             pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
             if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
             {
