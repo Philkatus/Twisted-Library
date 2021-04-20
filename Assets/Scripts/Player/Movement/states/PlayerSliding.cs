@@ -74,8 +74,9 @@ public class PlayerSliding : State
 
         pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance,EndOfPathInstruction.Stop);
         //pSM.LadderVelocity = AngleDirection(pSM.controller.transform.forward, pSM.moveDirection, pSM.controller.transform.up) * pSM.momentum * 10;
-        pSM.LadderVelocity = 0;//pSM.maximumSpeedOnLadder;
+        //pSM.maximumSpeedOnLadder;
         pSM.playerVelocity = pSM.resultingVelocity(pSM.playerVelocity,pathDirection);
+        pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, -pSM.maxSlidingSpeed, pSM.maxSlidingSpeed);
         
         // Parent Swap () => Leiter ist Parent
 
@@ -147,6 +148,7 @@ public class PlayerSliding : State
         //Leiter horizontale Bewegung
         pathDirection = path.GetDirectionAtDistance(currentDistance);
         pSM.playerVelocity += pSM.sideWaysInput * pathDirection * Time.deltaTime * pSM.slidingAcceleration;
+        pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, -pSM.maxSlidingSpeed, pSM.maxSlidingSpeed);
         pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
 
         

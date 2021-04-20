@@ -431,19 +431,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b908167a2d2e740ab9a0e8f072d46d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementAcceleration: 50
-  maximumSpeed: 5
-  onLadderAcceleration: 0
-  maxSpeedOnLadder: 0
-  slidingAcceleration: 0
-  maxSlidingSpeed: 0
-  slidingDrag: 0
+  movementAcceleration: 150
+  maximumSpeed: 25
+  movementDrag: 150
+  OnLadderAcceleration: 5
+  maximumSpeedOnLadder: 8
+  slidingAcceleration: 0.1
+  maxSlidingSpeed: 0.001
+  ladderDrag: 0
   jumpheight: 9
-  gravity: 17
-  playerVelocity: {x: 0, y: 0, z: 0}
+  jumpMovementFactor: 1
+  gravity: 20
   HeightOnLadder: 0
-  LadderVelocity: 0
   currentDistance: 0
+  playerVelocity: {x: 0, y: 0, z: 0}
   possibleShelfs: []
   closestShelf: {fileID: 0}
   ladder: {fileID: 2324303222376295303}

@@ -11,6 +11,7 @@ public class PlayerMovementStateMachine : StateMachine
     public float movementAcceleration;
     public float maximumSpeed;
     public float movementDrag;
+
     [Space]
     public float OnLadderAcceleration;
     public float maximumSpeedOnLadder;
@@ -18,16 +19,18 @@ public class PlayerMovementStateMachine : StateMachine
     [Space]
     public float slidingAcceleration;
     public float maxSlidingSpeed;
-    public float ladderDrag;
+    public float slidingDrag;
+
     [Space]
     public float jumpheight;
+    [Range(.1f,1)] public float jumpMovementFactor;
     public float gravity;
-    public Vector3 playerVelocity;
+   
 
     [Header("for Reference")]
     public float HeightOnLadder;
-    public float LadderVelocity;
     public float currentDistance;
+    public Vector3 playerVelocity;
     public Vector3 ladderDirection
     {
         get
