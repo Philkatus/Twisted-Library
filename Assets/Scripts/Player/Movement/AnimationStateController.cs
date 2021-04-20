@@ -167,7 +167,7 @@ public class AnimationStateController : MonoBehaviour
         }
 
         //start Jump
-        if (controller.isGrounded && Input.GetKeyDown("Jump"))
+        if (controller.isGrounded && Input.GetButtonDown("Jump"))
         {
             animator.SetBool("isJumping", true);
             animator.SetBool("isClimbingLadder", false);

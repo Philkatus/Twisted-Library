@@ -18,6 +18,7 @@ public class PlayerWalking : State
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
         controller = PlayerStateMachine.controller;
+        PlayerStateMachine.playerVelocity.y = -1;
         yield return null;
     }
 
