@@ -8,21 +8,34 @@ public class PlayerMovementStateMachine : StateMachine
 
 
     [Header("changeable")]
-    public float movementSpeed;
-    public float speedOnLadder;
-    public float slidingSpeed;
+    public float movementAcceleration;
+    public float maximumSpeed;
+    public float movementDrag;
+
+    [Space]
+    public float OnLadderAcceleration;
     public float maximumSpeedOnLadder;
+
+    [Space]
+    public float slidingAcceleration;
+    public float maxSlidingSpeed;
+    public float slidingDrag;
+
     public float ladderDrag;
+    public float ladderDismountSpeed;
+
+    [Space]
     public float jumpheight;
+    [Range(.1f,1)] public float jumpMovementFactor;
     public float gravity;
-    public Vector3 playerVelocity;
+   
 
     [Header("for Reference")]
     public float HeightOnLadder;
-    public float LadderVelocity;
-    public float momentum;
     public float currentDistance;
-    public Vector3 moveDirection;
+    public Quaternion ladderWalkingRotation;
+    public Vector3 ladderWalkingPosition;
+    public Vector3 playerVelocity;
     public Vector3 ladderDirection
     {
         get
@@ -42,7 +55,7 @@ public class PlayerMovementStateMachine : StateMachine
 
 
     [HideInInspector] public bool OnGround;
-    [HideInInspector] public float SideWaysInput;
+    [HideInInspector] public float sideWaysInput;
     [HideInInspector] public float ForwardInput;
 
     #endregion
@@ -53,6 +66,8 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Start()
     {
+        ladderWalkingPosition = ladder.localPosition;
+        ladderWalkingRotation = ladder.localRotation;
         SetState(new PlayerWalking(this));
         possibleShelfs = new List<Shelf>();
     }
@@ -80,10 +95,11 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
 
+    #region utillity
     public void GetInput()
     {
         ForwardInput = Input.GetAxis("Vertical");
-        SideWaysInput = Input.GetAxis("Horizontal");
+        sideWaysInput = Input.GetAxis("Horizontal");
     }
 
     ///<summary>
@@ -114,6 +130,32 @@ public class PlayerMovementStateMachine : StateMachine
             return true;
         }
     }
+    /// <summary>
+    /// calculates the resulting signed magnitude alongside the targetdirection after a change of direction 
+    /// </summary>
+    /// <param name="currentVelocity"> the velocity you start with before the change </param>
+    /// <param name="targetDirection">the normalized direction you want to change to</param>
+    /// <returns></returns>
+
+    public float resultingSpeed(Vector3 currentVelocity, Vector3 targetDirection)
+    {
+        float resultingSpeed = currentVelocity.x * targetDirection.x + currentVelocity.y * targetDirection.y + currentVelocity.z * targetDirection.z;
+
+        return resultingSpeed;
+    }
+    /// <summary>
+    /// calculates the resulting velocity through a change in direction
+    /// </summary>
+    /// <param name="currentVelocity"> </param>
+    /// <param name="targetDirection"> the normalized direction you want to change to</param>
+    /// <returns></returns>
+    public Vector3 resultingVelocity(Vector3 currentVelocity, Vector3 targetDirection)
+    {
+        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
+
+        return targetDirection * resultingSpeed;
+    }
+    #endregion
     #region functions to change State
     ///<summary>
     /// gets called when the player lands on the floor

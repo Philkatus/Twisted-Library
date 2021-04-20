@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 259310139372920754}
-  m_LocalRotation: {x: 0.03362484, y: 0.61531806, z: -0.026285572, w: 0.7871226}
+  m_LocalRotation: {x: 0.024562217, y: 0.81705624, z: -0.034903552, w: 0.57497615}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -431,25 +431,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b908167a2d2e740ab9a0e8f072d46d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementSpeed: 12
-  speedOnLadder: 1
-  slidingSpeed: 0.6
-  maximumSpeedOnLadder: 80
-  ladderDrag: 30
+  movementAcceleration: 150
+  maximumSpeed: 25
+  movementDrag: 150
+  OnLadderAcceleration: 1
+  maximumSpeedOnLadder: 5
+  slidingAcceleration: 0.1
+  maxSlidingSpeed: 0.01
+  slidingDrag: 0
+  ladderDrag: 0
+  ladderDismountSpeed: 0.4
   jumpheight: 9
-  gravity: 17
-  playerVelocity: {x: 0, y: 0, z: 0}
+  jumpMovementFactor: 1
+  gravity: 20
   HeightOnLadder: 0
-  LadderVelocity: 0
-  momentum: 0
   currentDistance: 0
+  ladderWalkingRotation: {x: 0, y: 0, z: 0, w: 0}
+  ladderWalkingPosition: {x: 0, y: 0, z: 0}
+  playerVelocity: {x: 0, y: 0, z: 0}
   possibleShelfs: []
   closestShelf: {fileID: 0}
   ladder: {fileID: 2324303222376295303}
   ladderSizeStateMachine: {fileID: 6721105999781121023}
   controller: {fileID: 2324303222117386823}
   OnGround: 0
-  SideWaysInput: 0
+  sideWaysInput: 0
   ForwardInput: 0
   ladderMesh: {fileID: 5485595683521586558}
 --- !u!1 &2324303222376295302
@@ -695,8 +701,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5173761969531662439}
-  m_LocalRotation: {x: 0.047898855, y: 0.61473995, z: -0.037444014, w: 0.78638315}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.034989078, y: 0.8162886, z: -0.049720395, w: 0.57443595}
+  m_LocalPosition: {x: -0.0000009536743, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8875726333051050114}
@@ -777,7 +783,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6369436234874472688}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -10.655313, y: 2.5119996, z: -2.6504126}
+  m_LocalPosition: {x: -10.335366, y: 2.5119996, z: 3.7068295}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8550796576673198090}
@@ -1265,8 +1271,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9177417795965320302}
-  m_LocalRotation: {x: 0.06219483, y: 0.6139571, z: -0.048619617, w: 0.7853818}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0.045431983, y: 0.81524915, z: -0.06456005, w: 0.5737044}
+  m_LocalPosition: {x: -0.0000009536743, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8518504162418943963}

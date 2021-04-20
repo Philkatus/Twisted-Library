@@ -15,7 +15,8 @@ public class PlayerWalking : State
 
     public override IEnumerator Initialize()
     {
-
+        PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
+        PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
         controller = PlayerStateMachine.controller;
         yield return null;
     }
@@ -26,22 +27,24 @@ public class PlayerWalking : State
         PlayerMovementStateMachine pSM = PlayerStateMachine;
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
-        Vector3 direction = directionForward * pSM.ForwardInput + directionRight * pSM.SideWaysInput;
-        pSM.moveDirection = direction;
+        Vector3 direction = directionForward * pSM.ForwardInput + directionRight * pSM.sideWaysInput;
+
         if (direction != Vector3.zero)
         {
-            controller.transform.forward = direction;
+            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, .2f);
         }
 
-        pSM.playerVelocity.y -= PlayerStateMachine.gravity * Time.deltaTime;
+        
+        pSM.playerVelocity += direction * Time.deltaTime*pSM.movementAcceleration;
+        float currenDrag = pSM.movementDrag+ pSM.playerVelocity.magnitude * .999f;
+        pSM.playerVelocity.x = pSM.playerVelocity.normalized.x * Mathf.Clamp(pSM.playerVelocity.magnitude - currenDrag*Time.deltaTime, 0, pSM.maximumSpeed);
+        pSM.playerVelocity.z = pSM.playerVelocity.normalized.z * Mathf.Clamp(pSM.playerVelocity.magnitude - currenDrag*Time.deltaTime, 0, pSM.maximumSpeed);
+        controller.Move(pSM.playerVelocity * Time.deltaTime);
+        // + direction * Time.deltaTime * pSM.movementAcceleration);// Mathf.Clamp( pSM.playerVelocity.magnitude,0,pSM.maximumSpeed));
 
-        controller.Move(pSM.playerVelocity * Time.deltaTime
-            + direction * Time.deltaTime * pSM.movementSpeed);
-
-        pSM.momentum = controller.velocity.magnitude / 8;
         if (isGroundedWithCoyoteTime())
         {
-            PlayerStateMachine.OnFall();
+            pSM.OnFall();
         }
     }
 
@@ -53,6 +56,7 @@ public class PlayerWalking : State
         }
         else
         {
+            PlayerStateMachine.playerVelocity.y -= PlayerStateMachine.gravity * Time.deltaTime;
             coyoteTime += Time.deltaTime;
         }
         return coyoteTimer < coyoteTime;
@@ -60,19 +64,14 @@ public class PlayerWalking : State
 
     public override void Jump()
     {
-        if (controller.isGrounded)
-        {
-            PlayerStateMachine.playerVelocity.y = PlayerStateMachine.jumpheight;
-            PlayerStateMachine.OnFall();
-        }
+        PlayerStateMachine.playerVelocity.y = PlayerStateMachine.jumpheight;
+        PlayerStateMachine.OnFall();
     }
 
     public override IEnumerator Snap()
     {
         PlayerStateMachine.OnSnap();
-
         yield return null;
-
     }
 
     public override IEnumerator Finish()
