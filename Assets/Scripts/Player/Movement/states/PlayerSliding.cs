@@ -139,7 +139,6 @@ public class PlayerSliding : State
     {
         
         //An der Leiter Hoch und runter bewegen
-        //controller.Move(new Vector3(0, speed * FowardInput, 0)); // muss 0 durch was anderes ersetzt werden??
 
         pSM.HeightOnLadder += pSM.ForwardInput * speed * Time.deltaTime;
         pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
@@ -148,21 +147,9 @@ public class PlayerSliding : State
         //Leiter horizontale Bewegung
         pathDirection = path.GetDirectionAtDistance(currentDistance);
         pSM.playerVelocity += pSM.sideWaysInput * pathDirection * Time.deltaTime * pSM.slidingAcceleration;
-        pSM.currentDistance += pSM.resultingVelocity(pSM.playerVelocity, pathDirection).magnitude;
+        pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
 
-        /*
-        pSM.LadderVelocity += pSM.SideWaysInput * pSM.slidingSpeed;
-        if (pSM.LadderVelocity > 0)
-        {
-            pSM.LadderVelocity -= pSM.ladderDrag * Time.deltaTime;
-        }
-        if (pSM.LadderVelocity < 0)
-        {
-            pSM.LadderVelocity += pSM.ladderDrag * Time.deltaTime;
-        }
-        pSM.LadderVelocity = Mathf.Clamp(pSM.LadderVelocity, -pSM.maximumSpeedOnLadder, pSM.maximumSpeedOnLadder);
-        pSM.currentDistance += pSM.LadderVelocity * Time.deltaTime;
-        */ 
+        
 
         pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
         if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)

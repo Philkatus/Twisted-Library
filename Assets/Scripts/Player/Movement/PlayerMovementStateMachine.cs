@@ -120,7 +120,19 @@ public class PlayerMovementStateMachine : StateMachine
             return true;
         }
     }
+    /// <summary>
+    /// calculates the resulting signed magnitude alongside the targetdirection after a change of direction 
+    /// </summary>
+    /// <param name="currentVelocity"> the velocity you start with before the change </param>
+    /// <param name="targetDirection">the normalized direction you want to change to</param>
+    /// <returns></returns>
 
+    public float resultingSpeed(Vector3 currentVelocity, Vector3 targetDirection)
+    {
+        float resultingSpeed = currentVelocity.x * targetDirection.x + currentVelocity.y * targetDirection.y + currentVelocity.z * targetDirection.z;
+
+        return resultingSpeed;
+    }
     /// <summary>
     /// calculates the resulting velocity through a change in direction
     /// </summary>
@@ -129,7 +141,7 @@ public class PlayerMovementStateMachine : StateMachine
     /// <returns></returns>
     public Vector3 resultingVelocity(Vector3 currentVelocity, Vector3 targetDirection)
     {
-        float resultingSpeed = currentVelocity.x * targetDirection.x + currentVelocity.y * targetDirection.y + currentVelocity.z * targetDirection.z;
+        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
 
         return targetDirection * resultingSpeed;
     }
