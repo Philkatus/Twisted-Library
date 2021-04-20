@@ -140,8 +140,6 @@ public class PlayerMovementStateMachine : StateMachine
             if(nextClosestShelf != null)
             { 
                 closestShelf = nextClosestShelf;
-                Debug.Log("currentClosestShelf pos: " + currentClosestShelf.transform.position);
-                Debug.Log("nextClosestShelf pos: " + nextClosestShelf.transform.position);
                 return true;
             }
             else
