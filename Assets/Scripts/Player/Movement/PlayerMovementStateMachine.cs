@@ -7,7 +7,7 @@ public class PlayerMovementStateMachine : StateMachine
     #region public
 
 
-    [Header( "changeable")]
+    [Header("changeable")]
     public float movementAcceleration;
     public float maximumSpeed;
     public float movementDrag;
@@ -15,11 +15,14 @@ public class PlayerMovementStateMachine : StateMachine
     [Space]
     public float OnLadderAcceleration;
     public float maximumSpeedOnLadder;
-    
+
     [Space]
     public float slidingAcceleration;
     public float maxSlidingSpeed;
     public float slidingDrag;
+
+    public float ladderDrag;
+    public float ladderDismountSpeed;
 
     [Space]
     public float jumpheight;
@@ -30,6 +33,8 @@ public class PlayerMovementStateMachine : StateMachine
     [Header("for Reference")]
     public float HeightOnLadder;
     public float currentDistance;
+    public Quaternion ladderWalkingRotation;
+    public Vector3 ladderWalkingPosition;
     public Vector3 playerVelocity;
     public Vector3 ladderDirection
     {
@@ -61,6 +66,8 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Start()
     {
+        ladderWalkingPosition = ladder.localPosition;
+        ladderWalkingRotation = ladder.localRotation;
         SetState(new PlayerWalking(this));
         possibleShelfs = new List<Shelf>();
     }
