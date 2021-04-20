@@ -1,21 +1,13 @@
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 public abstract class State
 {
     protected PlayerMovementStateMachine PlayerStateMachine;
-    protected LadderStateMachine LadderStateMachine;
     protected LadderSizeStateMachine LadderSizeStateMachine;
 
     public State(PlayerMovementStateMachine playerStateMachine)
     {
         PlayerStateMachine = playerStateMachine;
-    }
-
-    public State(LadderStateMachine ladderStateMachine)
-    {
-        LadderStateMachine = ladderStateMachine;
     }
 
     public State(LadderSizeStateMachine ladderSizeStateMachine)
@@ -43,11 +35,6 @@ public abstract class State
         yield return null;
     }
 
-    public virtual IEnumerator GroundDetection()
-    {
-        yield return null;
-    }
-
     public virtual IEnumerator ChangeLadderSize()
     {
         yield return null;
@@ -56,10 +43,5 @@ public abstract class State
     public virtual IEnumerator Finish()
     {
         yield return null;
-    }
-
-    public virtual void Gravitation()
-    {
-
     }
 }

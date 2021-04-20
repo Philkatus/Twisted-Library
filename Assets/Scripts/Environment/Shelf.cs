@@ -8,22 +8,24 @@ public class Shelf : MonoBehaviour
     #region Public
     public PathCreator pathCreator;
     #endregion
+
     #region Private
     PlayerMovementStateMachine playerStateMachine;
-
     #endregion
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) 
+        if (other.CompareTag("Player"))
         {
             Debug.Log("you entered my triggerzone");
             if (playerStateMachine == null)
             {
                 playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();
             }
-            playerStateMachine.possibleShelfs.Add(this);
+            playerStateMachine.possibleShelves.Add(this);
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -33,7 +35,7 @@ public class Shelf : MonoBehaviour
             {
                 playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();
             }
-            playerStateMachine.possibleShelfs.Remove(this);
+            playerStateMachine.possibleShelves.Remove(this);
         }
     }
 }
