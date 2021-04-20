@@ -14,6 +14,8 @@ public class PlayerInTheAir : State
 
     public override IEnumerator Initialize()
     {
+        PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
+        PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
         controller = PlayerStateMachine.controller;
         yield return null;
     }
@@ -52,7 +54,7 @@ public class PlayerInTheAir : State
 
     public override IEnumerator Snap()
     {
-       
+
         PlayerStateMachine.OnSnap();
 
         yield return null;

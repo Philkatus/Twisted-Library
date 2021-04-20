@@ -15,7 +15,8 @@ public class PlayerWalking : State
 
     public override IEnumerator Initialize()
     {
-
+        PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
+        PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
         controller = PlayerStateMachine.controller;
         yield return null;
     }
@@ -29,15 +30,15 @@ public class PlayerWalking : State
         Vector3 direction = directionForward * pSM.ForwardInput + directionRight * pSM.sideWaysInput;
         if (direction != Vector3.zero)
         {
-            controller.transform.forward = Vector3.Lerp(controller.transform.forward,direction,.2f);
+            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, .2f);
         }
 
-        
-        pSM.playerVelocity += direction * Time.deltaTime*pSM.movementAcceleration;
-        pSM.playerVelocity.x = pSM.playerVelocity.normalized.x * Mathf.Clamp(pSM.playerVelocity.magnitude - pSM.movementDrag*Time.deltaTime, 0, pSM.maximumSpeed);
-        pSM.playerVelocity.z = pSM.playerVelocity.normalized.z * Mathf.Clamp(pSM.playerVelocity.magnitude - pSM.movementDrag*Time.deltaTime, 0, pSM.maximumSpeed);
+
+        pSM.playerVelocity += direction * Time.deltaTime * pSM.movementAcceleration;
+        pSM.playerVelocity.x = pSM.playerVelocity.normalized.x * Mathf.Clamp(pSM.playerVelocity.magnitude - pSM.movementDrag * Time.deltaTime, 0, pSM.maximumSpeed);
+        pSM.playerVelocity.z = pSM.playerVelocity.normalized.z * Mathf.Clamp(pSM.playerVelocity.magnitude - pSM.movementDrag * Time.deltaTime, 0, pSM.maximumSpeed);
         controller.Move(pSM.playerVelocity * Time.deltaTime);
-           // + direction * Time.deltaTime * pSM.movementAcceleration);// Mathf.Clamp( pSM.playerVelocity.magnitude,0,pSM.maximumSpeed));
+        // + direction * Time.deltaTime * pSM.movementAcceleration);// Mathf.Clamp( pSM.playerVelocity.magnitude,0,pSM.maximumSpeed));
 
         if (isGroundedWithCoyoteTime())
         {
@@ -71,9 +72,7 @@ public class PlayerWalking : State
     public override IEnumerator Snap()
     {
         PlayerStateMachine.OnSnap();
-
         yield return null;
-
     }
 
     public override IEnumerator Finish()
