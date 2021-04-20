@@ -5,7 +5,7 @@ using UnityEngine.Animations.Rigging;
 
 public class AnimationStateController : MonoBehaviour
 {
-    #region public
+    #region variables
     //[Header("References")]
     [HideInInspector] public PlayerMovementStateMachine movementScript;
     [HideInInspector] public CharacterController controller;
@@ -14,12 +14,20 @@ public class AnimationStateController : MonoBehaviour
     [Header("Animator")]
     float velocityZ = 0f;
     float velocityX = 0f;
+    float velocity = 0f;
+    public float playerVelocity;
+    [Space]
+
+    #region old but still needed?
     public float acceleration, deceleration = 2f;
     public float maxWalkVelocity = 0.5f;
     public float maxRunVelocity = 2f;
     //Increase Performance by Refactoring
     int VelocityZHash;
     int VelocityXHash;
+    #endregion
+
+    int VelocityHash;
     public bool isAirborne = false;
 
     [Header("Arm Rigs")]
@@ -29,8 +37,10 @@ public class AnimationStateController : MonoBehaviour
     public Transform headAimTarget;
     [Tooltip("1 means target is right in front of PC, -1 behind. Number specifies the limit to wich point the head can turn. Suggestion about -0.65")]
     [Range(-0.5f, -0.9f)] public float headRotationValue = -0.65f;
+    [Tooltip("Use Spine to slightly turn Chest with head when looking")]
     public Transform spine;
     public Rig headRig;
+    //dotProduct used to determine where the HeadAimTarget is in relation to the players forward direction
     [HideInInspector] public float dotProduct;
     #endregion
     void Start()
@@ -39,8 +49,13 @@ public class AnimationStateController : MonoBehaviour
         movementScript = GetComponent<PlayerMovementStateMachine>();
         controller = GetComponent<CharacterController>();
 
+        #region Old but dont delete
+        
         VelocityZHash = Animator.StringToHash("VelocityZ");
         VelocityXHash = Animator.StringToHash("VelocityX");
+        
+        #endregion
+        VelocityHash = Animator.StringToHash("Velocity");
 
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -49,22 +64,33 @@ public class AnimationStateController : MonoBehaviour
 
     void Update()
     {
+        playerVelocity = movementScript.playerVelocity.magnitude;
+
+        #region old code (dont delete)
+        
+        velocity = playerVelocity;
+
         bool forwardPressed = Input.GetKey(KeyCode.W);
         bool backwardPressed = Input.GetKey(KeyCode.S);
         bool leftPressed = Input.GetKey(KeyCode.A);
         bool rightPressed = Input.GetKey(KeyCode.D);
         bool runPressed = Input.GetKey(KeyCode.LeftShift);
 
+        
         //set current maxVelocity (if runPressed:  =true             =false)
         float currentMaxVelocity = runPressed ? maxRunVelocity : maxWalkVelocity;
 
 
-        changeVelocity(forwardPressed, backwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
-        lockOrResetVelocity(forwardPressed, backwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
+       // changeVelocity(forwardPressed, backwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
+       // lockOrResetVelocity(forwardPressed, backwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
 
         //set the parameters to our local variable values
         animator.SetFloat(VelocityZHash, velocityZ);
         animator.SetFloat(VelocityXHash, velocityX);
+        
+        #endregion
+
+        animator.SetFloat(VelocityHash, velocity);
 
         Jump();
         LadderAnims();
@@ -133,6 +159,8 @@ public class AnimationStateController : MonoBehaviour
 
     }
 
+    //WASD Hardcoded BUT with strafing DONT DELETE
+    #region old
     //handles acceleration and deceleration
     void changeVelocity(bool forwardPressed, bool backwardPressed, bool leftPressed, bool rightPressed, bool runPressed, float currentMaxVelocity)
     {
@@ -185,13 +213,7 @@ public class AnimationStateController : MonoBehaviour
         {
             velocityZ = velocityX;
         }
-        //lock negative speed
-        /*
-        if (!forwardPressed && velocityZ < 0f)
-        {
-            velocityZ = 0f;
-        }
-        */
+
         //reset velocityX
         if (!leftPressed && !rightPressed && velocityX != 0f && (velocityX > -0.05f && velocityX < 0.05f))
         {
@@ -250,5 +272,5 @@ public class AnimationStateController : MonoBehaviour
         //
 
     }
-
+    #endregion
 }
