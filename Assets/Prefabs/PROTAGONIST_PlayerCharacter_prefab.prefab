@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 259310139372920754}
-  m_LocalRotation: {x: 0.016710354, y: 0.9193274, z: -0.039272446, w: 0.3911721}
+  m_LocalRotation: {x: 0.0074800733, y: 0.98362505, z: -0.042019147, w: 0.1751008}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -441,6 +441,9 @@ MonoBehaviour:
   slidingDrag: 0
   ladderDrag: 0
   ladderDismountSpeed: 0.4
+  ladderDismountTimer: 0.3
+  dataAsset: {fileID: 0}
+  actionAsset: {fileID: -944628639613478452, guid: 0af3696424c4b334e9a56e8febf1b6ce, type: 3}
   jumpheight: 9
   jumpMovementFactor: 1
   gravity: 20
@@ -687,7 +690,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5173761969531662439}
-  m_LocalRotation: {x: 0.023804037, y: 0.91846365, z: -0.055943917, w: 0.3908046}
+  m_LocalRotation: {x: 0.010655427, y: 0.9827009, z: -0.05985663, w: 0.1749363}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -754,6 +757,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8735393275430822890}
   - component: {fileID: 2106848843571276483}
+  - component: {fileID: 4905911213228543875}
   m_Layer: 0
   m_Name: CM FreeLook1
   m_TagString: Untagged
@@ -769,7 +773,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6369436234874472688}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -7.9115615, y: 2.5119996, z: 7.6136446}
+  m_LocalPosition: {x: -3.7891495, y: 2.5119996, z: 10.30547}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8550796576673198090}
@@ -822,8 +826,8 @@ MonoBehaviour:
   m_LegacyBlendHint: 0
   m_YAxis:
     Value: 0.5
-    m_SpeedMode: 0
-    m_MaxSpeed: 18
+    m_SpeedMode: 1
+    m_MaxSpeed: 0.0051
     m_AccelTime: 0.1
     m_DecelTime: 0.1
     m_InputAxisName: Mouse Y
@@ -846,8 +850,8 @@ MonoBehaviour:
     m_LegacyVelocityFilterStrength: -1
   m_XAxis:
     Value: 0
-    m_SpeedMode: 0
-    m_MaxSpeed: 800
+    m_SpeedMode: 1
+    m_MaxSpeed: 0.4
     m_AccelTime: 0.1
     m_DecelTime: 0.1
     m_InputAxisName: Mouse X
@@ -886,6 +890,21 @@ MonoBehaviour:
   - {fileID: 2962102936551077548}
   - {fileID: 1696331777260274013}
   - {fileID: 4318471224458482994}
+--- !u!114 &4905911213228543875
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6369436234874472688}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb7194dc27b9df64c8beca7482ee8e0d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerIndex: -1
+  XYAxis: {fileID: -2596461766261720868, guid: 8766294096dfa9241ae6ca6fd30e21c6, type: 3}
+  ZAxis: {fileID: 0}
 --- !u!1 &7714011207155198489
 GameObject:
   m_ObjectHideFlags: 0
@@ -1257,8 +1276,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9177417795965320302}
-  m_LocalRotation: {x: 0.030908644, y: 0.9172941, z: -0.072641075, w: 0.39030695}
-  m_LocalPosition: {x: 0.00000047683716, y: 0, z: 0.00000047683716}
+  m_LocalRotation: {x: 0.013835664, y: 0.98144954, z: -0.07772155, w: 0.17471352}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8518504162418943963}

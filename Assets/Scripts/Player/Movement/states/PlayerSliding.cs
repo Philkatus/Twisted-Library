@@ -159,7 +159,7 @@ public class PlayerSliding : State
         if (pSM.HeightOnLadder == 0 && pSM.forwardInput != 0)
         {
             dismountTimer += Time.deltaTime;
-            if (dismountTimer >= 0.3f)
+            if (dismountTimer >= pSM.ladderDismountTimer)
             {
                 dismountTimer = 0;
                 dismountStartPos = pSM.transform.position;
@@ -169,7 +169,7 @@ public class PlayerSliding : State
         else if (pSM.HeightOnLadder == -1 && pSM.forwardInput != 0)
         {
             dismountTimer += Time.deltaTime;
-            if (dismountTimer >= 0.3f)
+            if (dismountTimer >= pSM.ladderDismountTimer)
             {
                 dismountTimer = 0;
                 controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
@@ -181,6 +181,7 @@ public class PlayerSliding : State
             dismountTimer = 0;
         }
     }
+
     void Dismount()
     {
         // 1 is how much units the player needs to move up to be on top of the shelf.
