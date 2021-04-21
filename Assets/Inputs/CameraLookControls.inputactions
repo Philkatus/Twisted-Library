@@ -1,0 +1,44 @@
+{
+    "name": "CameraLookControls",
+    "maps": [
+        {
+            "name": "CameraControls",
+            "id": "b4e0785a-8cbb-43bb-8ddf-71aeef05cf9e",
+            "actions": [
+                {
+                    "name": "LookAround",
+                    "type": "PassThrough",
+                    "id": "1923b835-2ba8-4099-a580-9a7c356a56ed",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7391fb9d-fa94-4cc6-b128-37375168c10c",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LookAround",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9b7b92f0-e8df-4722-8e32-4c042009b42b",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "ScaleVector2(x=15,y=15)",
+                    "groups": "",
+                    "action": "LookAround",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

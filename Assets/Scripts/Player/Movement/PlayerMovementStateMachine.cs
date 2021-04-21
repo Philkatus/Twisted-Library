@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Interactions;
+
 
 public class PlayerMovementStateMachine : StateMachine
 {
     #region public
 
-    [Header( "changeable")]
+    [Header("changeable")]
     public float movementAcceleration;
     public float maximumSpeed;
     public float movementDrag;
@@ -21,7 +24,9 @@ public class PlayerMovementStateMachine : StateMachine
     public float slidingDrag;
     public float ladderDrag;
     public float ladderDismountSpeed;
+    public float ladderDismountTimer;
     public DataScriptableObject dataAsset;
+    public InputActionAsset actionAsset;
 
     [Space]
     public float jumpheight;
@@ -54,27 +59,39 @@ public class PlayerMovementStateMachine : StateMachine
 
     #region Private
     [SerializeField] Transform ladderMesh;
+    InputActionMap playerControlsMap;
+    InputAction jumpAction;
+    InputAction moveAction;
+    InputAction snapAction;
     #endregion
 
     private void Start()
     {
         ladderWalkingPosition = ladder.localPosition;
         ladderWalkingRotation = ladder.localRotation;
+
         SetState(new PlayerWalking(this));
         possibleShelves = new List<Shelf>();
+
+        playerControlsMap = actionAsset.FindActionMap("PlayerControls");
+        playerControlsMap.Enable();
+        jumpAction = playerControlsMap.FindAction("Jump");
+        moveAction = playerControlsMap.FindAction("Movement");
+        snapAction = playerControlsMap.FindAction("Snap");
+
+        jumpAction.performed += context => State.Jump();
+        snapAction.performed += context => TryToSnapToShelf();
     }
 
     private void Update()
     {
         GetInput();
         State.Movement();
+    }
 
-        if (Input.GetButtonDown("Jump"))
-        {
-            State.Jump();
-        }
-
-        if (Input.GetButtonDown("Interact") && CheckForShelf())
+    void TryToSnapToShelf()
+    {
+        if (CheckForShelf())
         {
             StartCoroutine(State.Snap());
         }
@@ -83,8 +100,8 @@ public class PlayerMovementStateMachine : StateMachine
     #region utility
     public void GetInput()
     {
-        forwardInput = Input.GetAxis("Vertical");
-        sideWaysInput = Input.GetAxis("Horizontal");
+        forwardInput = moveAction.ReadValue<Vector2>().y;
+        sideWaysInput = moveAction.ReadValue<Vector2>().x;
     }
 
     ///<summary>
@@ -133,13 +150,13 @@ public class PlayerMovementStateMachine : StateMachine
                     && possibleShelves[i].transform.position.y == currentClosestShelf.transform.position.y)
                 {
                     closestDistance = distance;
-                    nextClosestShelf = possibleShelves[i];   
+                    nextClosestShelf = possibleShelves[i];
                 }
             }
 
 
-            if(nextClosestShelf != null)
-            { 
+            if (nextClosestShelf != null)
+            {
                 closestShelf = nextClosestShelf;
                 return true;
             }
