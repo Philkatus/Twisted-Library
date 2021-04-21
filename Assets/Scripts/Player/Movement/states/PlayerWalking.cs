@@ -32,7 +32,7 @@ public class PlayerWalking : State
 
         if (direction != Vector3.zero)
         {
-            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, .2f);
+            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20*Time.deltaTime);
         }
 
         pSM.playerVelocity += direction * Time.deltaTime * pSM.movementAcceleration;
