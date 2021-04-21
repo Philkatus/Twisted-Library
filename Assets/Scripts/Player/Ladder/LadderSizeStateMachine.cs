@@ -22,10 +22,7 @@ public class LadderSizeStateMachine : StateMachine
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.B))
-        {
-            StartCoroutine(State.ChangeLadderSize());
-        }
+
     }
 
     #region Functions to change the State
