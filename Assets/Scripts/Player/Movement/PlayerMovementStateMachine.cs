@@ -21,11 +21,13 @@ public class PlayerMovementStateMachine : StateMachine
     public float maxSlidingSpeed;
     [Range(0,50f)] public float slidingDragPercentage;
 
+    [Space]
     public float ladderDismountSpeed;
 
     [Space]
     public float jumpheight;
     [Range(.1f, 1)] public float jumpMovementFactor;
+    public float jumpingDrag;
     public float gravity;
 
     [Header("For reference")]
@@ -48,8 +50,8 @@ public class PlayerMovementStateMachine : StateMachine
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
 
-    [HideInInspector] public float sideWaysInput;
-    [HideInInspector] public float forwardInput;
+    public float sideWaysInput;
+    public float forwardInput;
     #endregion
 
     #region Private
@@ -83,8 +85,8 @@ public class PlayerMovementStateMachine : StateMachine
     #region utility
     public void GetInput()
     {
-        forwardInput = Input.GetAxis("Vertical");
-        sideWaysInput = Input.GetAxis("Horizontal");
+        forwardInput = Input.GetAxisRaw("Vertical");
+        sideWaysInput = Input.GetAxisRaw("Horizontal");
     }
 
     ///<summary>
