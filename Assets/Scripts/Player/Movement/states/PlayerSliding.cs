@@ -109,7 +109,31 @@ public class PlayerSliding : State
 
             if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
             {
-                pSM.OnFall();
+                Vector3 endOfShelfDirection = new Vector3();
+                if (pSM.currentDistance <= 0) //arriving at start of path
+                {
+                    endOfShelfDirection = pSM.closestShelf.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0))
+                                        - pSM.closestShelf.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints)); //start - ende
+                }
+                else if (pSM.currentDistance >= pathLength) //arriving at end of path
+                {
+                    endOfShelfDirection = pSM.closestShelf.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints))
+                                        - pSM.closestShelf.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0)); //ende - start
+                }
+
+                Plane shelfPlane = new Plane(endOfShelfDirection.normalized, Vector3.zero);
+
+                if (shelfPlane.GetSide(Vector3.zero + pSM.playerVelocity)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
+                {
+                    if (pSM.CheckForNextClosestShelf(pSM.closestShelf))
+                    {
+                        pSM.OnSnap();
+                    }
+                    else
+                    {
+                        pSM.OnFall();
+                    }
+                }
             }
             CheckIfReadyToDismount();
         }

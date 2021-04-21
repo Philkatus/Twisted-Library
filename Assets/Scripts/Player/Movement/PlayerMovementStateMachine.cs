@@ -5,7 +5,8 @@ using UnityEngine;
 public class PlayerMovementStateMachine : StateMachine
 {
     #region public
-    [Header("Changeable")]
+
+    [Header( "changeable")]
     public float movementAcceleration;
     public float maximumSpeed;
     public float movementDrag;
@@ -108,6 +109,44 @@ public class PlayerMovementStateMachine : StateMachine
                 }
             }
             return true;
+        }
+    }
+
+    ///<summary>
+    /// A Function to determin the closest Shelf to the player. Return false if none are in range.
+    ///</summary>
+    public bool CheckForNextClosestShelf(Shelf currentClosestShelf)
+    {
+        if (possibleShelves.Count == 1)
+        {
+            return false;
+        }
+        else
+        {
+            float closestDistance = Mathf.Infinity;
+            Shelf nextClosestShelf = null;
+            for (int i = 0; i < possibleShelves.Count; i++)
+            {
+                float distance = Vector3.Distance(possibleShelves[i].transform.position, transform.position);
+                if (distance < closestDistance
+                    && possibleShelves[i] != currentClosestShelf
+                    && possibleShelves[i].transform.position.y == currentClosestShelf.transform.position.y)
+                {
+                    closestDistance = distance;
+                    nextClosestShelf = possibleShelves[i];   
+                }
+            }
+
+
+            if(nextClosestShelf != null)
+            { 
+                closestShelf = nextClosestShelf;
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 
