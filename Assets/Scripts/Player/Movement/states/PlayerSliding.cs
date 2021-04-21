@@ -147,6 +147,7 @@ public class PlayerSliding : State
             dismountTimer = 0;
         }
     }
+
     void Dismount()
     {
         // 1 is how much units the player needs to move up to be on top of the shelf.

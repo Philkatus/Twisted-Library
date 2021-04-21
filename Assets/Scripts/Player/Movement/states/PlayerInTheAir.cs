@@ -5,7 +5,6 @@ using UnityEngine;
 public class PlayerInTheAir : State
 {
     CharacterController controller;
-    private Vector3 playerVelocity;
 
     public PlayerInTheAir(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {

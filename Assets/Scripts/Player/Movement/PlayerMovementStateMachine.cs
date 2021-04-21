@@ -20,6 +20,7 @@ public class PlayerMovementStateMachine : StateMachine
     public float slidingDrag;
     public float ladderDrag;
     public float ladderDismountSpeed;
+    public DataScriptableObject dataAsset;
 
     [Space]
     public float jumpheight;
