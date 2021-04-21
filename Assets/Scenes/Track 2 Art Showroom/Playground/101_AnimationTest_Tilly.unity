@@ -840,7 +840,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 256051410}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -2678,7 +2678,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1197819818}
-  m_LocalRotation: {x: -0.1417849, y: 0.000000034065113, z: 0.0000000048792104, w: 0.98989755}
+  m_LocalRotation: {x: -0.1417849, y: -0.000000034065113, z: -0.0000000048792104, w: 0.98989755}
   m_LocalPosition: {x: 0, y: 0.24100006, z: -4.97}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -3232,7 +3232,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1543361100
 Transform:
   m_ObjectHideFlags: 0
@@ -4223,24 +4223,23 @@ MonoBehaviour:
   maximumSpeedOnLadder: 80
   slidingAcceleration: 0
   maxSlidingSpeed: 0
-  ladderDrag: 30
+  slidingDragPercentage: 0
   ladderDismountSpeed: 0
   jumpheight: 9
+  jumpMovementFactor: 0
   gravity: 17
-  playerVelocity: {x: 0, y: 0, z: 0}
   HeightOnLadder: 0
-  LadderVelocity: 0
   currentDistance: 0
   ladderWalkingRotation: {x: 0, y: 0, z: 0, w: 0}
   ladderWalkingPosition: {x: 0, y: 0, z: 0}
-  possibleShelfs: []
+  playerVelocity: {x: 0, y: 0, z: 0}
+  possibleShelves: []
   closestShelf: {fileID: 0}
   ladder: {fileID: 0}
   ladderSizeStateMachine: {fileID: 6721105999300074150}
   controller: {fileID: 2324303222580058910}
-  OnGround: 0
   sideWaysInput: 0
-  ForwardInput: 0
+  forwardInput: 0
   ladderMesh: {fileID: 0}
 --- !u!1001 &1867341405
 PrefabInstance:
@@ -7752,6 +7751,15 @@ MonoBehaviour:
   spine: {fileID: 8555731508801298566}
   headRig: {fileID: 8467770811594252453}
   dotProduct: 0
+  enableFeetIk: 1
+  heightFromGroundRaycast: 1.14
+  raycastDownDistance: 1.5
+  environmentLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  pelvisOffset: 0
+  pelvisUpAndDownSpeed: 0.28
+  feetToIkPositionSpeed: 0.5
 --- !u!114 &4111225831347131061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7771,24 +7779,23 @@ MonoBehaviour:
   maximumSpeedOnLadder: 50
   slidingAcceleration: 0
   maxSlidingSpeed: 0
-  ladderDrag: 30
+  slidingDragPercentage: 0
   ladderDismountSpeed: 0
   jumpheight: 9
-  gravity: 17
-  playerVelocity: {x: 0, y: 0, z: 0}
+  jumpMovementFactor: 1
+  gravity: 20
   HeightOnLadder: 0
-  LadderVelocity: 0
   currentDistance: 0
   ladderWalkingRotation: {x: 0, y: 0, z: 0, w: 0}
   ladderWalkingPosition: {x: 0, y: 0, z: 0}
-  possibleShelfs: []
+  playerVelocity: {x: 0, y: 0, z: 0}
+  possibleShelves: []
   closestShelf: {fileID: 0}
   ladder: {fileID: 1543361100}
   ladderSizeStateMachine: {fileID: 1543361101}
   controller: {fileID: 4111225831347131062}
-  OnGround: 0
   sideWaysInput: 0
-  ForwardInput: 0
+  forwardInput: 0
   ladderMesh: {fileID: 256051411}
 --- !u!143 &4111225831347131062
 CharacterController:
@@ -7972,7 +7979,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4111225831486224591}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e501d18bb52cf8c40b1853ca4904654f, type: 3}
   m_Name: 
@@ -8182,7 +8189,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4111225831905261975}
-  m_LocalRotation: {x: -0.14178489, y: 0.000000017032548, z: 0.0000000024396043, w: 0.9898975}
+  m_LocalRotation: {x: -0.14178489, y: -0.00000001703256, z: -0.0000000024396065, w: 0.9898975}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -9125,7 +9132,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4111225832725134861}
-  m_LocalRotation: {x: -0.100076765, y: 0.00000000428, z: 4.304897e-10, w: 0.99497974}
+  m_LocalRotation: {x: -0.100076765, y: -0.0000000042800004, z: -4.3048973e-10, w: 0.99497974}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:

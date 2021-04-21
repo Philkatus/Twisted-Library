@@ -61,7 +61,7 @@ public class PlayerSliding : State
         // Place the character on ladder.
         ladder.transform.parent = null;
         Vector3 targetPosition = startingPoint + pSM.ladderDirection * ladderLength;
-        targetPosition.y = Mathf.Clamp(targetPosition.y, pSM.ladderDirection.y * ladderLength, controller.transform.position.y);
+        targetPosition.y = Mathf.Clamp(targetPosition.y, targetPosition.y, controller.transform.position.y);
         controller.transform.position = targetPosition;
         pSM.HeightOnLadder = -(startingPoint - targetPosition).magnitude / ladderLength;
 
@@ -87,7 +87,9 @@ public class PlayerSliding : State
 
     public override void Jump()
     {
-        PlayerStateMachine.playerVelocity.y = PlayerStateMachine.jumpheight;
+        //Ein Sprung 
+        //eine speed mitgeben????
+        PlayerStateMachine.playerVelocity.y += PlayerStateMachine.jumpheight;
         PlayerStateMachine.OnFall();
     }
 
@@ -102,8 +104,16 @@ public class PlayerSliding : State
 
             // Move horizontally.
             pathDirection = path.GetDirectionAtDistance(currentDistance);
+            
+            //playervelocity increased with input
             pSM.playerVelocity += pSM.sideWaysInput * pathDirection * Time.deltaTime * pSM.slidingAcceleration;
-            pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, -pSM.maxSlidingSpeed, pSM.maxSlidingSpeed);
+            //drag calculation
+            
+            float resultingSpeed = pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
+            //speed Clamp
+            pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude *(100 - pSM.slidingDragPercentage)/100, -pSM.maxSlidingSpeed, pSM.maxSlidingSpeed);
+
+            //moving of the object
             pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
             pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
 

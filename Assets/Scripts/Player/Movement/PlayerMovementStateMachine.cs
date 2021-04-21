@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PathCreation;
 
 public class PlayerMovementStateMachine : StateMachine
 {
@@ -18,8 +19,8 @@ public class PlayerMovementStateMachine : StateMachine
     [Space]
     public float slidingAcceleration;
     public float maxSlidingSpeed;
-    public float slidingDrag;
-    public float ladderDrag;
+    [Range(0,50f)] public float slidingDragPercentage;
+
     public float ladderDismountSpeed;
 
     [Space]
@@ -122,17 +123,29 @@ public class PlayerMovementStateMachine : StateMachine
         }
         else
         {
+            //´finding of the direction  of the current rail
+            VertexPath currentClosestPath = currentClosestShelf.pathCreator.path;
+            Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance,EndOfPathInstruction.Stop);
+
+            
             float closestDistance = Mathf.Infinity;
             Shelf nextClosestShelf = null;
+            
             for (int i = 0; i < possibleShelves.Count; i++)
             {
                 float distance = Vector3.Distance(possibleShelves[i].transform.position, transform.position);
+                VertexPath possiblePath = possibleShelves[i].pathCreator.path;
+                Vector3 possiblePathDirection = possiblePath.GetDirectionAtDistance(possiblePath.GetClosestDistanceAlongPath(transform.position),EndOfPathInstruction.Stop);
+
                 if (distance < closestDistance
                     && possibleShelves[i] != currentClosestShelf
                     && possibleShelves[i].transform.position.y == currentClosestShelf.transform.position.y)
                 {
-                    closestDistance = distance;
-                    nextClosestShelf = possibleShelves[i];   
+                    if (currentDirection == possiblePathDirection || currentDirection == -possiblePathDirection)
+                    {
+                        closestDistance = distance;
+                        nextClosestShelf = possibleShelves[i];
+                    }
                 }
             }
 

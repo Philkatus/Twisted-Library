@@ -346,8 +346,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 1922934702, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
+      propertyPath: slidingDrag
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1922934702, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: slidingSpeed
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1922934702, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
+      propertyPath: maxSlidingSpeed
+      value: 0.02
+      objectReference: {fileID: 0}
+    - target: {fileID: 1922934702, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
+      propertyPath: slidingAcceleration
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1922934702, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
+      propertyPath: slidingDragPercentage
+      value: 1.2
       objectReference: {fileID: 0}
     - target: {fileID: 2324303221056493710, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_Name
@@ -411,7 +427,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3236883716803287838, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.0571441
+      value: 0.057144105
       objectReference: {fileID: 0}
     - target: {fileID: 3236883716803287838, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_LocalRotation.y
@@ -419,7 +435,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3236883716803287838, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.020758245
+      value: -0.020758247
       objectReference: {fileID: 0}
     - target: {fileID: 4625821938839127303, guid: 05abf53f7dc52fb41be644f887dbe79c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -739,7 +755,7 @@ PrefabInstance:
     - target: {fileID: 757817677282117400, guid: 3842aa6cf93f5d1409641449d836716b, type: 3}
       propertyPath: pathCreator
       value: 
-      objectReference: {fileID: 2034040102}
+      objectReference: {fileID: 0}
     - target: {fileID: 1726470064614471727, guid: 3842aa6cf93f5d1409641449d836716b, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -2345,8 +2361,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2034040101}
-  - component: {fileID: 2034040102}
-  - component: {fileID: 2034040104}
   m_Layer: 0
   m_Name: Pfad
   m_TagString: Untagged
@@ -2370,72 +2384,6 @@ Transform:
   m_Father: {fileID: 1041033736}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2034040102
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2034040100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8e5ac92bc18f545cc84cd886ece82b4d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  editorData:
-    _bezierPath:
-      points:
-      - {x: 6, y: 8, z: 5}
-      - {x: 6, y: 8, z: 4}
-      - {x: 6, y: 8, z: -6}
-      - {x: 6, y: 8, z: -7}
-      isClosed: 0
-      space: 0
-      controlMode: 0
-      autoControlLength: 0.3
-      boundsUpToDate: 0
-      bounds:
-        m_Center: {x: 0, y: 0, z: 0}
-        m_Extent: {x: 0, y: 0, z: 0}
-      perAnchorNormalsAngle:
-      - 0
-      - 0
-      globalNormalsAngle: 0
-      flipNormals: 0
-    vertexPathUpToDate: 1
-    vertexPathMaxAngleError: 45
-    vertexPathMinVertexSpacing: 0.01
-    showTransformTool: 1
-    showPathBounds: 0
-    showPerSegmentBounds: 0
-    displayAnchorPoints: 1
-    displayControlPoints: 1
-    bezierHandleScale: 1
-    globalDisplaySettingsFoldout: 0
-    keepConstantHandleSize: 0
-    showNormalsInVertexMode: 0
-    showBezierPathInVertexMode: 0
-    showDisplayOptions: 0
-    showPathOptions: 1
-    showVertexPathDisplayOptions: 0
-    showVertexPathOptions: 1
-    showNormals: 1
-    showNormalsHelpInfo: 0
-    tabIndex: 0
-  initialized: 1
---- !u!114 &2034040104
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2034040100}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7aa303d20836b0040a2727c88916d981, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  pathCreator: {fileID: 2034040102}
 --- !u!1001 &2035235551
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2446,7 +2394,7 @@ PrefabInstance:
     - target: {fileID: 757817677282117400, guid: 3842aa6cf93f5d1409641449d836716b, type: 3}
       propertyPath: pathCreator
       value: 
-      objectReference: {fileID: 2034040102}
+      objectReference: {fileID: 0}
     - target: {fileID: 1726470064614471727, guid: 3842aa6cf93f5d1409641449d836716b, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -2528,7 +2476,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7aa303d20836b0040a2727c88916d981, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pathCreator: {fileID: 2034040102}
+  pathCreator: {fileID: 0}
 --- !u!114 &2035235556
 MonoBehaviour:
   m_ObjectHideFlags: 0
