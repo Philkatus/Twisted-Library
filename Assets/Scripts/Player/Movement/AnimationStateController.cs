@@ -42,24 +42,8 @@ public class AnimationStateController : MonoBehaviour
     public Rig headRig;
     //dotProduct used to determine where the HeadAimTarget is in relation to the players forward direction
     [HideInInspector] public float dotProduct;
-
-
-
-    [Header("Feet Grounder")]
-
-    private Vector3 rightFootPosition, leftFootPosition, leftFootIkPosition, rightFootIkPosition;
-    private Quaternion leftFootIkRotation, rightFootIkRotation;
-    private float lastPelvisPositionY, lastRightFootPositionY, lastLeftFootPositionY;
-
-    public bool enableFeetIk = true;
-    [Range(0, 2)] [SerializeField] private float heightFromGroundRaycast = 1.14f;
-    [Range(0, 2)] [SerializeField] private float raycastDownDistance = 1.5f;
-    [SerializeField] private LayerMask environmentLayer;
-    [SerializeField] private float pelvisOffset = 0f;
-    [Range(0, 1)] [SerializeField] private float pelvisUpAndDownSpeed = 0.28f;
-    [Range(0, 1)] [SerializeField] private float feetToIkPositionSpeed = 0.5f;
-
     #endregion
+
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -167,7 +151,7 @@ public class AnimationStateController : MonoBehaviour
         }
 
         //start Jump
-        if (controller.isGrounded && Input.GetKeyDown("Jump"))
+        if (controller.isGrounded && Input.GetButtonDown("Jump"))
         {
             animator.SetBool("isJumping", true);
             animator.SetBool("isClimbingLadder", false);
@@ -290,4 +274,5 @@ public class AnimationStateController : MonoBehaviour
 
     }
     #endregion
+
 }
