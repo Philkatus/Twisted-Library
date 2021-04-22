@@ -27,7 +27,7 @@ public class PlayerSliding : State
     Vector3 pathDirection;
     #endregion
 
-    public override IEnumerator Initialize()
+    public override void Initialize()
     {
         // Assign variables.
         pSM = PlayerStateMachine;
@@ -38,6 +38,7 @@ public class PlayerSliding : State
         controller = pSM.controller;
         ladder = pSM.ladder;
         pathCreator = closestShelf.pathCreator;
+        path = pathCreator.path;
         pSM.HeightOnLadder = -1;
 
         // Place the ladder on the path.
@@ -51,17 +52,17 @@ public class PlayerSliding : State
             Debug.LogError("Shelf is null!");
         }
 
-        currentDistance = pathCreator.path.GetClosestDistanceAlongPath(startingPoint);
+        currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
         ladder.transform.position = startingPoint;
-        ladder.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
-        path = pSM.closestShelf.pathCreator.path;
+        ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
+       
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
-        pSM.currentDistance = path.GetClosestDistanceAlongPath(pSM.transform.position);
+        pSM.currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
 
         // Place the character on ladder.
         ladder.transform.parent = null;
-        Vector3 targetPosition = startingPoint + pSM.ladderDirection * ladderLength;
-        targetPosition.y = Mathf.Clamp(targetPosition.y, targetPosition.y, controller.transform.position.y);
+        Vector3 targetPosition = startingPoint - pSM.ladderDirection * ladderLength;
+        targetPosition.y = Mathf.Clamp(controller.transform.position.y, targetPosition.y,startingPoint.y );
         controller.transform.position = targetPosition;
         pSM.HeightOnLadder = -(startingPoint - targetPosition).magnitude / ladderLength;
 
@@ -73,7 +74,7 @@ public class PlayerSliding : State
         pSM.playerVelocity = pSM.resultingVelocity(pSM.playerVelocity, pathDirection);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, -pSM.maxSlidingSpeed, pSM.maxSlidingSpeed);
 
-        yield return null;
+        
     }
 
     public override IEnumerator Finish()

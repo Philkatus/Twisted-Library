@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.Animations.Rigging;
 
 public class AnimationStateController : MonoBehaviour
@@ -29,11 +30,15 @@ public class AnimationStateController : MonoBehaviour
 
     int VelocityHash;
     public bool isAirborne = false;
+    InputActionMap playerControlsMap;
+    InputAction jumpAction;
+    InputAction moveAction;
+    InputAction snapAction;
 
     [Header("Arm Rigs")]
     public RigBuilder rigBuilder;
 
-    [Header("Adjusting Head Aim Rig")] 
+    [Header("Adjusting Head Aim Rig")]
     public Transform headAimTarget;
     [Tooltip("1 means target is right in front of PC, -1 behind. Number specifies the limit to wich point the head can turn. Suggestion about -0.65")]
     [Range(-0.5f, -0.9f)] public float headRotationValue = -0.65f;
@@ -51,44 +56,55 @@ public class AnimationStateController : MonoBehaviour
         controller = GetComponent<CharacterController>();
 
         #region Old but dont delete
-        
+
         VelocityZHash = Animator.StringToHash("VelocityZ");
         VelocityXHash = Animator.StringToHash("VelocityX");
-        
+
         #endregion
         VelocityHash = Animator.StringToHash("Velocity");
 
         Cursor.lockState = CursorLockMode.Locked;
 
         rigBuilder = GetComponent<RigBuilder>();
+
+        // new Input System
+        playerControlsMap = movementScript.actionAsset.FindActionMap("PlayerControls");
+        playerControlsMap.Enable();
+        jumpAction = playerControlsMap.FindAction("Jump");
+        moveAction = playerControlsMap.FindAction("Movement");
+        snapAction = playerControlsMap.FindAction("Snap");
+
+        jumpAction.performed += context => StartJump();
+        //snapAction.performed += context => TryToSnapToShelf();
     }
 
     void Update()
     {
+
         playerVelocity = movementScript.playerVelocity.magnitude;
 
         #region old code (dont delete)
-        
+
         velocity = playerVelocity;
 
-        bool forwardPressed = Input.GetKey(KeyCode.W);
-        bool backwardPressed = Input.GetKey(KeyCode.S);
-        bool leftPressed = Input.GetKey(KeyCode.A);
-        bool rightPressed = Input.GetKey(KeyCode.D);
-        bool runPressed = Input.GetKey(KeyCode.LeftShift);
+        // bool forwardPressed = Input.GetKey(KeyCode.W);
+        // bool backwardPressed = Input.GetKey(KeyCode.S);
+        // bool leftPressed = Input.GetKey(KeyCode.A);
+        // bool rightPressed = Input.GetKey(KeyCode.D);
+        // bool runPressed = Input.GetKey(KeyCode.LeftShift);
 
-        
+
         //set current maxVelocity (if runPressed:  =true             =false)
-        float currentMaxVelocity = runPressed ? maxRunVelocity : maxWalkVelocity;
+        //float currentMaxVelocity = runPressed ? maxRunVelocity : maxWalkVelocity;
 
 
-       // changeVelocity(forwardPressed, backwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
-       // lockOrResetVelocity(forwardPressed, backwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
+        // changeVelocity(forwardPressed, backwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
+        // lockOrResetVelocity(forwardPressed, backwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
 
         //set the parameters to our local variable values
         animator.SetFloat(VelocityZHash, velocityZ);
         animator.SetFloat(VelocityXHash, velocityX);
-        
+
         #endregion
 
         animator.SetFloat(VelocityHash, velocity);
@@ -106,7 +122,7 @@ public class AnimationStateController : MonoBehaviour
         //Decreases Rigs weight on the head if look target is too far behind PC
         if (Vector3.Dot(toTarget, transform.forward) < headRotationValue && headRig.weight > 0.1f)
         {
-            headRig.weight -=Time.deltaTime * 3;  
+            headRig.weight -= Time.deltaTime * 3;
         }
         //Increases weigth again after dotproduct has crossed threshold
         else if (Vector3.Dot(toTarget, transform.forward) > headRotationValue && headRig.weight < 1f)
@@ -117,11 +133,11 @@ public class AnimationStateController : MonoBehaviour
 
     void LadderAnims()
     {
-        if(movementScript.closestShelf != null)
+        if (movementScript.closestShelf != null)
         {
             animator.SetBool("isClimbingLadder", true);
             rigBuilder.enabled = false;
-        } 
+        }
         /*
         else
         {
@@ -134,7 +150,7 @@ public class AnimationStateController : MonoBehaviour
             animator.SetBool("isClimbingLadder", false);
             rigBuilder.enabled = true;
         }
-        
+
     }
 
     void Jump()
@@ -149,15 +165,17 @@ public class AnimationStateController : MonoBehaviour
             animator.SetBool("isJumping", false);
             animator.SetBool("isGrounded", false);
         }
+    }
 
+    void StartJump()
+    {
         //start Jump
-        if (controller.isGrounded && Input.GetButtonDown("Jump"))
+        if (controller.isGrounded)
         {
             animator.SetBool("isJumping", true);
             animator.SetBool("isClimbingLadder", false);
             rigBuilder.enabled = true;
         }
-
     }
 
     //WASD Hardcoded BUT with strafing DONT DELETE
@@ -210,7 +228,7 @@ public class AnimationStateController : MonoBehaviour
     void lockOrResetVelocity(bool forwardPressed, bool backwardPressed, bool leftPressed, bool rightPressed, bool runPressed, float currentMaxVelocity)
     {
 
-        if(velocityZ == 0f && velocityX != 0f)
+        if (velocityZ == 0f && velocityX != 0f)
         {
             velocityZ = velocityX;
         }
@@ -251,16 +269,16 @@ public class AnimationStateController : MonoBehaviour
 
         //
         //locking left
-        if(leftPressed && runPressed && velocityX < -currentMaxVelocity)
+        if (leftPressed && runPressed && velocityX < -currentMaxVelocity)
         {
             velocityX = -currentMaxVelocity;
         }
         //decelerate to the maximum walk velocity
-        else if(leftPressed && velocityX < -currentMaxVelocity)
+        else if (leftPressed && velocityX < -currentMaxVelocity)
         {
             velocityX += Time.deltaTime * deceleration;
             // round to the currentMaxVelocity if within offset
-            if(velocityX < -currentMaxVelocity && velocityX > (-currentMaxVelocity - 0.05f))
+            if (velocityX < -currentMaxVelocity && velocityX > (-currentMaxVelocity - 0.05f))
             {
                 velocityX = currentMaxVelocity;
             }

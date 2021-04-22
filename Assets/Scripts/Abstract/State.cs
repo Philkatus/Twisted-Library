@@ -15,9 +15,9 @@ public abstract class State
         LadderSizeStateMachine = ladderSizeStateMachine;
     }
 
-    public virtual IEnumerator Initialize()
+    public virtual void Initialize()
     {
-        yield return null;
+
     }
 
     public virtual void Movement()
