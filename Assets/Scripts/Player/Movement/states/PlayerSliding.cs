@@ -33,7 +33,7 @@ public class PlayerSliding : State
         pSM = PlayerStateMachine;
         ladderSizeState = pSM.ladderSizeStateMachine;
         ladderLength = ladderSizeState.ladderLengthBig;
-        speed = pSM.OnLadderAcceleration;
+        speed = pSM.OnLadderSpeed;
         closestShelf = pSM.closestShelf;
         controller = pSM.controller;
         ladder = pSM.ladder;
