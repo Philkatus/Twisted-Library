@@ -11,12 +11,12 @@ public class PlayerInTheAir : State
 
     }
 
-    public override IEnumerator Initialize()
+    public override void Initialize()
     {
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
         controller = PlayerStateMachine.controller;
-        yield return null;
+        
     }
 
     public override void Movement()

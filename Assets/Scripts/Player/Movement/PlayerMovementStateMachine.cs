@@ -131,7 +131,7 @@ public class PlayerMovementStateMachine : StateMachine
     }
 
     ///<summary>
-    /// A Function to determin the closest Shelf to the player. Return false if none are in range.
+    /// A Function to determin the closest Shelf to the player that ignores the currentShelf. Return false if none are in range.
     ///</summary>
     public bool CheckForNextClosestShelf(Shelf currentClosestShelf)
     {
@@ -159,7 +159,7 @@ public class PlayerMovementStateMachine : StateMachine
                     && possibleShelves[i] != currentClosestShelf
                     && possibleShelves[i].transform.position.y == currentClosestShelf.transform.position.y)
                 {
-                    if (currentDirection == possiblePathDirection || currentDirection == -possiblePathDirection)
+                    if ( Mathf.Abs(Vector3.Dot(currentDirection,possiblePathDirection))>= .9f)
                     {
                         closestDistance = distance;
                         nextClosestShelf = possibleShelves[i];
