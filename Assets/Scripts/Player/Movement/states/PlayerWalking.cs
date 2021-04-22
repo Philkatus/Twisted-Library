@@ -13,13 +13,13 @@ public class PlayerWalking : State
 
     }
 
-    public override IEnumerator Initialize()
+    public override void Initialize()
     {
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
         controller = PlayerStateMachine.controller;
-        PlayerStateMachine.playerVelocity.y = -0.01f;
-        yield return null;
+        PlayerStateMachine.playerVelocity.y = -1f;
+
     }
 
     public override void Movement()

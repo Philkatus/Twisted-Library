@@ -11,6 +11,6 @@ public abstract class StateMachine : MonoBehaviour
             StartCoroutine(State.Finish());
         }
         State = state;
-        StartCoroutine(State.Initialize());
+        State.Initialize();
     }
 }
