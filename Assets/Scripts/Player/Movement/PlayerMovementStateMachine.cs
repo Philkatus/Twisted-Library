@@ -56,6 +56,8 @@ public class PlayerMovementStateMachine : StateMachine
 
     public float sideWaysInput;
     public float forwardInput;
+
+    [HideInInspector] Transform myParent;
     #endregion
 
     #region Private
@@ -64,10 +66,14 @@ public class PlayerMovementStateMachine : StateMachine
     InputAction jumpAction;
     InputAction moveAction;
     InputAction snapAction;
+
+
     #endregion
 
     private void Start()
     {
+        myParent = transform.parent;
+
         ladderWalkingPosition = ladder.localPosition;
         ladderWalkingRotation = ladder.localRotation;
 

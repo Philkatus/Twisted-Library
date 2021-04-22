@@ -68,7 +68,7 @@ public class PlayerWalking : State
         */
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, pSM.maximumSpeed);
         controller.Move(pSM.playerVelocity * Time.deltaTime);
-
+        PlayerStateMachine.playerVelocity.y -= PlayerStateMachine.gravity * Time.deltaTime;
         if (isGroundedWithCoyoteTime())
         {
             pSM.OnFall();
@@ -83,7 +83,7 @@ public class PlayerWalking : State
         }
         else
         {
-            PlayerStateMachine.playerVelocity.y -= PlayerStateMachine.gravity * Time.deltaTime;
+            
             coyoteTime += Time.deltaTime;
         }
         return coyoteTimer < coyoteTime;
