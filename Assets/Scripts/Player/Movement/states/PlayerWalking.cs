@@ -18,6 +18,7 @@ public class PlayerWalking : State
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
         controller = PlayerStateMachine.controller;
+        PlayerStateMachine.playerVelocity.y = -0.01f;
         yield return null;
     }
 
@@ -31,13 +32,41 @@ public class PlayerWalking : State
 
         if (direction != Vector3.zero)
         {
-            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, .2f);
+            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20*Time.deltaTime);
         }
 
         pSM.playerVelocity += direction * Time.deltaTime * pSM.movementAcceleration;
+        #region apply drag when no input is applied
+        if (pSM.forwardInput == 0) 
+        {
+            Vector3 currentDragForward = pSM.movementDrag * pSM.resultingVelocity(pSM.playerVelocity, directionForward);
+            pSM.playerVelocity -= currentDragForward*Time.deltaTime;
+            
+        }
+        if (pSM.sideWaysInput == 0)
+        {
+            Vector3 currentDragSideways = pSM.movementDrag * pSM.resultingVelocity(pSM.playerVelocity, directionRight);
+            pSM.playerVelocity -= currentDragSideways*Time.deltaTime;
+        }
+        #endregion
+
+        #region rounding the play velocity down if close to 0
+        if (pSM.playerVelocity.x >= -.1f && pSM.playerVelocity.x <= .1f) 
+        {
+            pSM.playerVelocity.x = 0;
+        }
+        if (pSM.playerVelocity.z >= -.1f && pSM.playerVelocity.z <= .1f)
+        {
+            pSM.playerVelocity.z = 0;
+        }
+
+        #endregion
+        /*
         float currentDrag = pSM.movementDrag + pSM.playerVelocity.magnitude * .999f;
         pSM.playerVelocity.x = pSM.playerVelocity.normalized.x * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
         pSM.playerVelocity.z = pSM.playerVelocity.normalized.z * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
+        */
+        pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, pSM.maximumSpeed);
         controller.Move(pSM.playerVelocity * Time.deltaTime);
 
         if (isGroundedWithCoyoteTime())
@@ -63,6 +92,8 @@ public class PlayerWalking : State
     public override void Jump()
     {
         PlayerStateMachine.playerVelocity.y = PlayerStateMachine.jumpheight;
+       
+
         PlayerStateMachine.OnFall();
     }
 

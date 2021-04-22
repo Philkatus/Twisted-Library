@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using PathCreation;
 
 public class PlayerMovementStateMachine : StateMachine
 {
     #region public
 
-    [Header( "changeable")]
+    [Header("changeable")]
     public float movementAcceleration;
     public float maximumSpeed;
     public float movementDrag;
@@ -18,13 +20,18 @@ public class PlayerMovementStateMachine : StateMachine
     [Space]
     public float slidingAcceleration;
     public float maxSlidingSpeed;
-    [Range(0,50f)] public float slidingDragPercentage;
+    [Range(0, 50f)] public float slidingDragPercentage;
 
+    [Space]
     public float ladderDismountSpeed;
+    public float ladderDismountTimer;
+    public DataScriptableObject dataAsset;
+    public InputActionAsset actionAsset;
 
     [Space]
     public float jumpheight;
     [Range(.1f, 1)] public float jumpMovementFactor;
+    public float jumpingDrag;
     public float gravity;
 
     [Header("For reference")]
@@ -47,33 +54,45 @@ public class PlayerMovementStateMachine : StateMachine
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
 
-    [HideInInspector] public float sideWaysInput;
-    [HideInInspector] public float forwardInput;
+    public float sideWaysInput;
+    public float forwardInput;
     #endregion
 
     #region Private
     [SerializeField] Transform ladderMesh;
+    InputActionMap playerControlsMap;
+    InputAction jumpAction;
+    InputAction moveAction;
+    InputAction snapAction;
     #endregion
 
     private void Start()
     {
         ladderWalkingPosition = ladder.localPosition;
         ladderWalkingRotation = ladder.localRotation;
+
         SetState(new PlayerWalking(this));
         possibleShelves = new List<Shelf>();
+
+        playerControlsMap = actionAsset.FindActionMap("PlayerControls");
+        playerControlsMap.Enable();
+        jumpAction = playerControlsMap.FindAction("Jump");
+        moveAction = playerControlsMap.FindAction("Movement");
+        snapAction = playerControlsMap.FindAction("Snap");
+
+        jumpAction.performed += context => State.Jump();
+        snapAction.performed += context => TryToSnapToShelf();
     }
 
     private void Update()
     {
         GetInput();
         State.Movement();
+    }
 
-        if (Input.GetButtonDown("Jump"))
-        {
-            State.Jump();
-        }
-
-        if (Input.GetButtonDown("Interact") && CheckForShelf())
+    void TryToSnapToShelf()
+    {
+        if (CheckForShelf())
         {
             StartCoroutine(State.Snap());
         }
@@ -82,8 +101,8 @@ public class PlayerMovementStateMachine : StateMachine
     #region utility
     public void GetInput()
     {
-        forwardInput = Input.GetAxis("Vertical");
-        sideWaysInput = Input.GetAxis("Horizontal");
+        forwardInput = moveAction.ReadValue<Vector2>().y;
+        sideWaysInput = moveAction.ReadValue<Vector2>().x;
     }
 
     ///<summary>
@@ -122,23 +141,35 @@ public class PlayerMovementStateMachine : StateMachine
         }
         else
         {
+            //�finding of the direction  of the current rail
+            VertexPath currentClosestPath = currentClosestShelf.pathCreator.path;
+            Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
+
+
             float closestDistance = Mathf.Infinity;
             Shelf nextClosestShelf = null;
+
             for (int i = 0; i < possibleShelves.Count; i++)
             {
                 float distance = Vector3.Distance(possibleShelves[i].transform.position, transform.position);
+                VertexPath possiblePath = possibleShelves[i].pathCreator.path;
+                Vector3 possiblePathDirection = possiblePath.GetDirectionAtDistance(possiblePath.GetClosestDistanceAlongPath(transform.position), EndOfPathInstruction.Stop);
+
                 if (distance < closestDistance
                     && possibleShelves[i] != currentClosestShelf
                     && possibleShelves[i].transform.position.y == currentClosestShelf.transform.position.y)
                 {
-                    closestDistance = distance;
-                    nextClosestShelf = possibleShelves[i];   
+                    if (currentDirection == possiblePathDirection || currentDirection == -possiblePathDirection)
+                    {
+                        closestDistance = distance;
+                        nextClosestShelf = possibleShelves[i];
+                    }
                 }
             }
 
 
-            if(nextClosestShelf != null)
-            { 
+            if (nextClosestShelf != null)
+            {
                 closestShelf = nextClosestShelf;
                 return true;
             }

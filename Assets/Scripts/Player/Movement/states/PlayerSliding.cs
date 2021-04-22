@@ -61,7 +61,7 @@ public class PlayerSliding : State
         // Place the character on ladder.
         ladder.transform.parent = null;
         Vector3 targetPosition = startingPoint + pSM.ladderDirection * ladderLength;
-        targetPosition.y = Mathf.Clamp(targetPosition.y, pSM.ladderDirection.y * ladderLength, controller.transform.position.y);
+        targetPosition.y = Mathf.Clamp(targetPosition.y, targetPosition.y, controller.transform.position.y);
         controller.transform.position = targetPosition;
         pSM.HeightOnLadder = -(startingPoint - targetPosition).magnitude / ladderLength;
 
@@ -159,7 +159,7 @@ public class PlayerSliding : State
         if (pSM.HeightOnLadder == 0 && pSM.forwardInput != 0)
         {
             dismountTimer += Time.deltaTime;
-            if (dismountTimer >= 0.3f)
+            if (dismountTimer >= pSM.ladderDismountTimer)
             {
                 dismountTimer = 0;
                 dismountStartPos = pSM.transform.position;
@@ -169,7 +169,7 @@ public class PlayerSliding : State
         else if (pSM.HeightOnLadder == -1 && pSM.forwardInput != 0)
         {
             dismountTimer += Time.deltaTime;
-            if (dismountTimer >= 0.3f)
+            if (dismountTimer >= pSM.ladderDismountTimer)
             {
                 dismountTimer = 0;
                 controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
@@ -181,6 +181,7 @@ public class PlayerSliding : State
             dismountTimer = 0;
         }
     }
+
     void Dismount()
     {
         // 1 is how much units the player needs to move up to be on top of the shelf.
