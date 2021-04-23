@@ -8,31 +8,10 @@ public class PlayerMovementStateMachine : StateMachine
 {
     #region public
 
-    [Header("changeable")]
-    public float movementAcceleration;
-    public float maximumSpeed;
-    public float movementDrag;
-
-    [Space]
-    public float OnLadderAcceleration;
-    public float maximumSpeedOnLadder;
-
-    [Space]
-    public float slidingAcceleration;
-    public float maxSlidingSpeed;
-    [Range(0, 50f)] public float slidingDragPercentage;
-
-    [Space]
-    public float ladderDismountSpeed;
-    public float ladderDismountTimer;
-    public DataScriptableObject dataAsset;
+    [Header("Changeable")]
+    [Tooltip("Change to use different variable value sets. Found in Assets-> Scripts-> Cheat Sheets.")]
+    public ValuesScriptableObject valuesAsset;
     public InputActionAsset actionAsset;
-
-    [Space]
-    public float jumpheight;
-    [Range(.1f, 1)] public float jumpMovementFactor;
-    public float jumpingDrag;
-    public float gravity;
 
     [Header("For reference")]
     public float HeightOnLadder;
@@ -165,7 +144,7 @@ public class PlayerMovementStateMachine : StateMachine
                     && possibleShelves[i] != currentClosestShelf
                     && possibleShelves[i].transform.position.y == currentClosestShelf.transform.position.y)
                 {
-                    if ( Mathf.Abs(Vector3.Dot(currentDirection,possiblePathDirection))>= .9f)
+                    if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .9f)
                     {
                         closestDistance = distance;
                         nextClosestShelf = possibleShelves[i];
