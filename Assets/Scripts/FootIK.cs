@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(CharacterController))]
 public class FootIK : MonoBehaviour
 {
     #region Variables
@@ -35,7 +34,7 @@ public class FootIK : MonoBehaviour
     void Start()
     {
         anim = this.GetComponent<Animator>();
-        controller = this.GetComponent<CharacterController>();
+        //controller = this.GetComponent<CharacterController>();
 
         footL = anim.GetBoneTransform(HumanBodyBones.LeftFoot);
     }

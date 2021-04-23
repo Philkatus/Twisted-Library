@@ -8,9 +8,9 @@ public class AnimationStateController : MonoBehaviour
 {
     #region variables
     //[Header("References")]
-    [HideInInspector] public PlayerMovementStateMachine movementScript;
-    [HideInInspector] public CharacterController controller;
-    [HideInInspector] public Animator animator;
+    public PlayerMovementStateMachine movementScript;
+    public CharacterController controller;
+    public Animator animator;
 
     [Header("Animator")]
     float velocityZ = 0f;
@@ -52,8 +52,8 @@ public class AnimationStateController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
-        movementScript = GetComponent<PlayerMovementStateMachine>();
-        controller = GetComponent<CharacterController>();
+        //movementScript = GetComponent<PlayerMovementStateMachine>();
+        //controller = GetComponent<CharacterController>();
 
         #region Old but dont delete
 
@@ -80,7 +80,7 @@ public class AnimationStateController : MonoBehaviour
 
     void Update()
     {
-
+         
         playerVelocity = movementScript.playerVelocity.magnitude;
 
         #region old code (dont delete)
