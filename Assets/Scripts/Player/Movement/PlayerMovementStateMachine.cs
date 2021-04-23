@@ -34,7 +34,7 @@ public class PlayerMovementStateMachine : StateMachine
     public float gravity;
 
     [Header("For reference")]
-    public float HeightOnLadder;
+    public float HeightOnLadder=-1;
     public float currentDistance;
     public Quaternion ladderWalkingRotation;
     public Vector3 ladderWalkingPosition;
@@ -56,7 +56,7 @@ public class PlayerMovementStateMachine : StateMachine
     public float sideWaysInput;
     public float forwardInput;
 
-    [HideInInspector] Transform myParent;
+    [HideInInspector] public Transform myParent;
     #endregion
 
     #region Private
@@ -219,6 +219,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLand()
     {
         SetState(new PlayerWalking(this));
+        HeightOnLadder = -1;
     }
     ///<summary>
     /// Gets called when the player leaves the ladder on the top.
@@ -226,6 +227,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLadderTop()
     {
         SetState(new PlayerWalking(this));
+        ladderSizeStateMachine.OnShrink();
     }
     ///<summary>
     /// Gets called when the player leaves the ladder on the bottom.
@@ -233,14 +235,16 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLadderBottom()
     {
         SetState(new PlayerInTheAir(this));
+        ladderSizeStateMachine.OnShrink();
     }
     ///<summary>
     /// Gets called when the player snaps his ladder to a shelf.
     ///</summary>
     public void OnSnap()
     {
+        ladderSizeStateMachine.OnGrow();
         SetState(new PlayerSliding(this));
-        ladderSizeStateMachine.SetState(new LadderBig(ladderSizeStateMachine));
+      
     }
     ///<summary>
     /// Gets called when the player changes to in the air.
@@ -248,7 +252,8 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnFall()
     {
         SetState(new PlayerInTheAir(this));
-        ladderSizeStateMachine.SetState(new LadderSmall(ladderSizeStateMachine));
+        ladderSizeStateMachine.OnShrink();
+        HeightOnLadder = -1;
     }
     #endregion
 }
