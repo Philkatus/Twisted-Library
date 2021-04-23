@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using PathCreation;
+using UnityEngine.InputSystem;
 
 public class PlayerSliding : State
 {
@@ -75,8 +76,6 @@ public class PlayerSliding : State
         pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
         pSM.playerVelocity = pSM.resultingVelocity(pSM.playerVelocity, pathDirection);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, -values.maxSlidingSpeed, values.maxSlidingSpeed);
-
-
     }
 
     public override IEnumerator Finish()
@@ -90,8 +89,6 @@ public class PlayerSliding : State
 
     public override void Jump()
     {
-        //Ein Sprung 
-        //eine speed mitgeben????
         PlayerStateMachine.playerVelocity.y += values.jumpHeight;
         PlayerStateMachine.OnFall();
     }
@@ -108,15 +105,33 @@ public class PlayerSliding : State
             // Move horizontally.
             pathDirection = path.GetDirectionAtDistance(currentDistance);
 
-            //playervelocity increased with input
-            pSM.playerVelocity += pSM.sideWaysInput * pathDirection * Time.deltaTime * values.slidingAcceleration;
-            //drag calculation
+            // Get sideways input, no input if both buttons held down.
+            float input = 0;
+            if (pSM.slideLeftAction.phase == InputActionPhase.Started && pSM.slideRightAction.phase == InputActionPhase.Started)
+            {
+                pSM.playerVelocity = Vector3.zero;
+                input = 0;
+            }
+            else
+            {
+                input = pSM.slideLeftAction.ReadValue<float>();
+                input = input * -1;
+                if (input == 0)
+                {
+                    input = pSM.slideRightAction.ReadValue<float>();
+                }
+            }
 
+            //playervelocity increased with input
+            pSM.playerVelocity += input * pathDirection * Time.deltaTime * values.slidingAcceleration;
+
+            //drag calculation
             float resultingSpeed = pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
+
             //speed Clamp
             pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude * (100 - values.slidingDragPercentage) / 100, -values.maxSlidingSpeed, values.maxSlidingSpeed);
 
-            //moving of the object
+            //moving the object
             pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
             pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
 
