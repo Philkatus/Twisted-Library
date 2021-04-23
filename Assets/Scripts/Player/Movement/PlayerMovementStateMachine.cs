@@ -8,30 +8,10 @@ public class PlayerMovementStateMachine : StateMachine
 {
     #region public
 
-    [Header("changeable")]
-    public float movementAcceleration;
-    public float maximumSpeed;
-    public float movementDrag;
-
-    [Space]
-    public float OnLadderSpeed;
-
-    [Space]
-    public float slidingAcceleration;
-    public float maxSlidingSpeed;
-    [Range(0, 50f)] public float slidingDragPercentage;
-
-    [Space]
-    public float ladderDismountSpeed;
-    public float ladderDismountTimer;
-    public DataScriptableObject dataAsset;
+    [Header("Changeable")]
+    [Tooltip("Change to use different variable value sets. Found in Assets-> Scripts-> Cheat Sheets.")]
+    public ValuesScriptableObject valuesAsset;
     public InputActionAsset actionAsset;
-
-    [Space]
-    public float jumpheight;
-    [Range(.1f, 1)] public float jumpMovementFactor;
-    public float jumpingDrag;
-    public float gravity;
 
     [Header("For reference")]
     public float HeightOnLadder=-1;
@@ -52,21 +32,22 @@ public class PlayerMovementStateMachine : StateMachine
     public Transform ladder;
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
+    [HideInInspector] public InputAction slideRightAction;
+    [HideInInspector] public InputAction slideLeftAction;
 
     public float sideWaysInput;
     public float forwardInput;
 
-    [HideInInspector] public Transform myParent;
+    [HideInInspector] Transform myParent;
     #endregion
 
     #region Private
+    [HideInInspector] Transform myParent;
     [SerializeField] Transform ladderMesh;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
     InputAction snapAction;
-
-
     #endregion
 
     private void Start()
@@ -79,14 +60,20 @@ public class PlayerMovementStateMachine : StateMachine
         SetState(new PlayerWalking(this));
         possibleShelves = new List<Shelf>();
 
+        #region controls
         playerControlsMap = actionAsset.FindActionMap("PlayerControls");
         playerControlsMap.Enable();
         jumpAction = playerControlsMap.FindAction("Jump");
         moveAction = playerControlsMap.FindAction("Movement");
         snapAction = playerControlsMap.FindAction("Snap");
+        slideRightAction = playerControlsMap.FindAction("SlideRight");
+        slideLeftAction = playerControlsMap.FindAction("SlideLeft");
 
         jumpAction.performed += context => State.Jump();
         snapAction.performed += context => TryToSnapToShelf();
+        slideRightAction.performed += context => TryToSnapToShelf();
+        slideLeftAction.performed += context => TryToSnapToShelf();
+        #endregion
     }
 
     private void Update()
@@ -164,7 +151,7 @@ public class PlayerMovementStateMachine : StateMachine
                     && possibleShelves[i] != currentClosestShelf
                     && possibleShelves[i].transform.position.y == currentClosestShelf.transform.position.y)
                 {
-                    if ( Mathf.Abs(Vector3.Dot(currentDirection,possiblePathDirection))>= .9f)
+                    if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .9f)
                     {
                         closestDistance = distance;
                         nextClosestShelf = possibleShelves[i];

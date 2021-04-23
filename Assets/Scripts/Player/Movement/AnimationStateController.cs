@@ -8,9 +8,9 @@ public class AnimationStateController : MonoBehaviour
 {
     #region variables
     //[Header("References")]
-    [HideInInspector] public PlayerMovementStateMachine movementScript;
-    [HideInInspector] public CharacterController controller;
-    [HideInInspector] public Animator animator;
+    public PlayerMovementStateMachine movementScript;
+    public CharacterController controller;
+    public Animator animator;
 
     [Header("Animator")]
     float velocityZ = 0f;
@@ -47,29 +47,13 @@ public class AnimationStateController : MonoBehaviour
     public Rig headRig;
     //dotProduct used to determine where the HeadAimTarget is in relation to the players forward direction
     [HideInInspector] public float dotProduct;
-
-
-
-    [Header("Feet Grounder")]
-
-    private Vector3 rightFootPosition, leftFootPosition, leftFootIkPosition, rightFootIkPosition;
-    private Quaternion leftFootIkRotation, rightFootIkRotation;
-    private float lastPelvisPositionY, lastRightFootPositionY, lastLeftFootPositionY;
-
-    public bool enableFeetIk = true;
-    [Range(0, 2)] [SerializeField] private float heightFromGroundRaycast = 1.14f;
-    [Range(0, 2)] [SerializeField] private float raycastDownDistance = 1.5f;
-    [SerializeField] private LayerMask environmentLayer;
-    [SerializeField] private float pelvisOffset = 0f;
-    [Range(0, 1)] [SerializeField] private float pelvisUpAndDownSpeed = 0.28f;
-    [Range(0, 1)] [SerializeField] private float feetToIkPositionSpeed = 0.5f;
-
     #endregion
+
     void Start()
     {
         animator = GetComponent<Animator>();
-        movementScript = GetComponent<PlayerMovementStateMachine>();
-        controller = GetComponent<CharacterController>();
+        //movementScript = GetComponent<PlayerMovementStateMachine>();
+        //controller = GetComponent<CharacterController>();
 
         #region Old but dont delete
 
@@ -96,7 +80,7 @@ public class AnimationStateController : MonoBehaviour
 
     void Update()
     {
-
+         
         playerVelocity = movementScript.playerVelocity.magnitude;
 
         #region old code (dont delete)
@@ -308,4 +292,5 @@ public class AnimationStateController : MonoBehaviour
 
     }
     #endregion
+
 }
