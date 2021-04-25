@@ -17,6 +17,8 @@ public class AnimationStateController : MonoBehaviour
     float velocityX = 0f;
     float velocity = 0f;
     public float playerVelocity;
+    int VelocityHash;
+    int SideInputHash;
     [Space]
 
     #region old but still needed?
@@ -28,8 +30,12 @@ public class AnimationStateController : MonoBehaviour
     int VelocityXHash;
     #endregion
 
-    int VelocityHash;
-    public bool isAirborne = false;
+    [Header("ImpactRolling")]
+    public float airTimer;
+    public float timeForRoll;
+    [Space]
+
+
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
@@ -56,16 +62,18 @@ public class AnimationStateController : MonoBehaviour
         //controller = GetComponent<CharacterController>();
 
         #region Old but dont delete
-
+        /*
         VelocityZHash = Animator.StringToHash("VelocityZ");
         VelocityXHash = Animator.StringToHash("VelocityX");
-
+        */
         #endregion
         VelocityHash = Animator.StringToHash("Velocity");
+        SideInputHash = Animator.StringToHash("SideInput");
 
         Cursor.lockState = CursorLockMode.Locked;
 
         rigBuilder = GetComponent<RigBuilder>();
+
 
         // new Input System
         playerControlsMap = movementScript.actionAsset.FindActionMap("PlayerControls");
@@ -74,18 +82,19 @@ public class AnimationStateController : MonoBehaviour
         moveAction = playerControlsMap.FindAction("Movement");
         snapAction = playerControlsMap.FindAction("Snap");
 
-        jumpAction.performed += context => StartJump();
-        //snapAction.performed += context => TryToSnapToShelf();
+        jumpAction.performed += context => LadderJump();
+        snapAction.performed += context => TryToSnapToShelf();
+        //moveAction.performed += context => Movement();
     }
 
     void Update()
     {
-         
-        playerVelocity = movementScript.playerVelocity.magnitude;
+        //ignoring the y velocity
+        velocity = new Vector2(movementScript.playerVelocity.x, movementScript.playerVelocity.z).magnitude;
+        float sideInput = movementScript.sideWaysInput;
 
         #region old code (dont delete)
 
-        velocity = playerVelocity;
 
         // bool forwardPressed = Input.GetKey(KeyCode.W);
         // bool backwardPressed = Input.GetKey(KeyCode.S);
@@ -108,10 +117,14 @@ public class AnimationStateController : MonoBehaviour
         #endregion
 
         animator.SetFloat(VelocityHash, velocity);
+        animator.SetFloat(SideInputHash, sideInput);
 
-        Jump();
-        LadderAnims();
+
+        GroundedCheck();
+        Falling();
+        //LadderAnims();
         HeadAim();
+        FallImpact();
     }
 
     void HeadAim()
@@ -153,13 +166,49 @@ public class AnimationStateController : MonoBehaviour
 
     }
 
-    void Jump()
+    void GroundedCheck()
     {
-        //Falling
+
         if (controller.isGrounded)
         {
             animator.SetBool("isGrounded", true);
+
+            if (airTimer > 0)
+            {
+                airTimer -= Time.deltaTime * 2;
+            }
         }
+        if (!controller.isGrounded)
+        {
+            animator.SetBool("isGrounded", false);
+            if (!animator.GetBool("isClimbingLadder"))
+            {
+                airTimer += Time.deltaTime;
+            }
+            else
+            {
+                airTimer = 0;
+            }
+
+        }
+    }
+
+    void FallImpact()
+    {
+
+        if (airTimer >= timeForRoll && controller.isGrounded)
+        {
+            animator.SetBool("isRolling", true);
+        }
+        else
+        {
+            animator.SetBool("isRolling", false);
+        }
+    }
+
+    void Falling()
+    {
+        //Falling
         if (!controller.isGrounded)
         {
             animator.SetBool("isJumping", false);
@@ -167,7 +216,7 @@ public class AnimationStateController : MonoBehaviour
         }
     }
 
-    void StartJump()
+    void LadderJump()
     {
         //start Jump
         if (controller.isGrounded)
@@ -176,8 +225,20 @@ public class AnimationStateController : MonoBehaviour
             animator.SetBool("isClimbingLadder", false);
             rigBuilder.enabled = true;
         }
+        if (!controller.isGrounded)
+        {
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isClimbingLadder", false);
+        }
     }
 
+    void TryToSnapToShelf()
+    {
+        animator.SetBool("isClimbingLadder", true);
+        //disables ladder holding IK
+        rigBuilder.enabled = false;
+    }
+    
     //WASD Hardcoded BUT with strafing DONT DELETE
     #region old
     //handles acceleration and deceleration
