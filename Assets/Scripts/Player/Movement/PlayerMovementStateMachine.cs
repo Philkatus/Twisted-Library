@@ -32,21 +32,20 @@ public class PlayerMovementStateMachine : StateMachine
     public Transform ladder;
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
+    [HideInInspector] public InputAction slideRightAction;
+    [HideInInspector] public InputAction slideLeftAction;
 
     public float sideWaysInput;
     public float forwardInput;
-
-    [HideInInspector] Transform myParent;
     #endregion
 
     #region Private
+    [HideInInspector] Transform myParent;
     [SerializeField] Transform ladderMesh;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
     InputAction snapAction;
-
-
     #endregion
 
     private void Start()
@@ -59,14 +58,20 @@ public class PlayerMovementStateMachine : StateMachine
         SetState(new PlayerWalking(this));
         possibleShelves = new List<Shelf>();
 
+        #region controls
         playerControlsMap = actionAsset.FindActionMap("PlayerControls");
         playerControlsMap.Enable();
         jumpAction = playerControlsMap.FindAction("Jump");
         moveAction = playerControlsMap.FindAction("Movement");
         snapAction = playerControlsMap.FindAction("Snap");
+        slideRightAction = playerControlsMap.FindAction("SlideRight");
+        slideLeftAction = playerControlsMap.FindAction("SlideLeft");
 
         jumpAction.performed += context => State.Jump();
         snapAction.performed += context => TryToSnapToShelf();
+        slideRightAction.performed += context => TryToSnapToShelf();
+        slideLeftAction.performed += context => TryToSnapToShelf();
+        #endregion
     }
 
     private void Update()
