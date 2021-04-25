@@ -7,7 +7,7 @@ using UnityEngine.Animations.Rigging;
 public class AnimationStateController : MonoBehaviour
 {
     #region variables
-    //[Header("References")]
+    [Header("References")]
     public PlayerMovementStateMachine movementScript;
     public CharacterController controller;
     public Animator animator;
@@ -19,6 +19,7 @@ public class AnimationStateController : MonoBehaviour
     public float playerVelocity;
     int VelocityHash;
     int SideInputHash;
+    int ForwardInputHash;
     [Space]
 
     #region old but still needed?
@@ -69,6 +70,7 @@ public class AnimationStateController : MonoBehaviour
         #endregion
         VelocityHash = Animator.StringToHash("Velocity");
         SideInputHash = Animator.StringToHash("SideInput");
+        ForwardInputHash = Animator.StringToHash("ForwardInput");
 
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -84,14 +86,20 @@ public class AnimationStateController : MonoBehaviour
 
         jumpAction.performed += context => LadderJump();
         snapAction.performed += context => TryToSnapToShelf();
-        //moveAction.performed += context => Movement();
+        moveAction.performed += context => Movement();
     }
 
     void Update()
     {
         //ignoring the y velocity
         velocity = new Vector2(movementScript.playerVelocity.x, movementScript.playerVelocity.z).magnitude;
+        animator.SetFloat(VelocityHash, velocity);
+
+
         float sideInput = movementScript.sideWaysInput;
+        float forwardInput = movementScript.forwardInput;
+        animator.SetFloat(SideInputHash, sideInput);
+        animator.SetFloat(ForwardInputHash, forwardInput);
 
         #region old code (dont delete)
 
@@ -116,8 +124,6 @@ public class AnimationStateController : MonoBehaviour
 
         #endregion
 
-        animator.SetFloat(VelocityHash, velocity);
-        animator.SetFloat(SideInputHash, sideInput);
 
 
         GroundedCheck();
@@ -126,7 +132,10 @@ public class AnimationStateController : MonoBehaviour
         HeadAim();
         FallImpact();
     }
+    void Movement()
+    {
 
+    }
     void HeadAim()
     {
         Vector3 toTarget = (headAimTarget.position - transform.position).normalized;
@@ -172,6 +181,7 @@ public class AnimationStateController : MonoBehaviour
         if (controller.isGrounded)
         {
             animator.SetBool("isGrounded", true);
+            animator.SetBool("isClimbingLadder", false);
 
             if (airTimer > 0)
             {
