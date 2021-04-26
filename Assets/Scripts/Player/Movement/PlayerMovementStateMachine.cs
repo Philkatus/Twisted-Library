@@ -38,11 +38,10 @@ public class PlayerMovementStateMachine : StateMachine
     public float sideWaysInput;
     public float forwardInput;
 
-    [HideInInspector] Transform myParent;
+    [HideInInspector]public Transform myParent;
     #endregion
 
     #region Private
-    [HideInInspector] Transform myParent;
     [SerializeField] Transform ladderMesh;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
