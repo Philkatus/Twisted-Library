@@ -38,7 +38,7 @@ public class PlayerSliding : State
         values = pSM.valuesAsset;
         
         ladderSizeState = pSM.ladderSizeStateMachine;
-        ladderLength = ladderSizeState.ladderLengthBig;
+        ladderLength = ladderSizeState.ladderLength;
         speed = values.climbingSpeedOnLadder;
         closestShelf = pSM.closestShelf;
         controller = pSM.controller;
@@ -105,26 +105,21 @@ public class PlayerSliding : State
             // Go up and down.
                 pSM.HeightOnLadder += pSM.forwardInput * speed * Time.deltaTime;
                 pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
-                pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderLength * pSM.HeightOnLadder;
-           
+                pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder; //pos on ladder
+
             // Move horizontally.
             pathDirection = path.GetDirectionAtDistance(currentDistance);
 
             // Get sideways input, no input if both buttons held down.
             float input = 0;
-            if (pSM.slideLeftAction.phase == InputActionPhase.Started && pSM.slideAction.phase == InputActionPhase.Started)
+            if (pSM.slideAction.phase == InputActionPhase.Performed && pSM.slideAction.ReadValue<float>()==0)
             {
                 pSM.playerVelocity = Vector3.zero;
-                input = 0;
+                
             }
             else
             {
-                input = pSM.slideLeftAction.ReadValue<float>();
-                input = input * -1;
-                if (input == 0)
-                {
-                    input = pSM.slideAction.ReadValue<float>();
-                }
+                input = pSM.slideAction.ReadValue<float>();
             }
 
             //playervelocity increased with input
@@ -176,6 +171,12 @@ public class PlayerSliding : State
         else
         {
             Dismount();
+        }
+        
+        if(pSM.isPerformedFold)
+        {
+            Debug.Log("trying to fold");
+            ladderSizeState.OnFold();
         }
     }
 

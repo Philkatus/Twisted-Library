@@ -7,6 +7,9 @@ public class LadderSizeStateMachine : StateMachine
     #region public
     public float ladderLengthBig;
     public float ladderLengthSmall;
+    public float foldSpeed;
+    public float ladderLength;
+    public PlayerMovementStateMachine playerStateMachine;
     public Transform ladderParent;
 
     #endregion
@@ -22,7 +25,7 @@ public class LadderSizeStateMachine : StateMachine
 
     private void Update()
     {
-
+        State.Fold();
     }
 
     #region Functions to change the State
@@ -48,5 +51,23 @@ public class LadderSizeStateMachine : StateMachine
             SetState(new LadderSmall(this));
         }
     }
+
+
+    ///<summary>
+    /// Is called when the ladder folds in both directions.
+    ///</summary>
+    public void OnFold()
+    {
+        if (State.GetType() != new LadderFold(this).GetType())
+        {
+            SetState(new LadderFold(this));
+        }
+        else if (State.GetType() != new LadderUnfold(this).GetType())
+        {
+            SetState(new LadderUnfold(this));
+        }
+    }
+
+ 
     #endregion
 }

@@ -29,6 +29,10 @@ public abstract class State
     {
 
     }
+    public virtual void Fold()
+    {
+
+    }
 
     public virtual void Snap()
     {
