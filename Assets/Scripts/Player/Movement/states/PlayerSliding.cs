@@ -107,10 +107,6 @@ public class PlayerSliding : State
                 pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
                 pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder; //pos on ladder
 
-            if (firstMovement)
-            {
-                Debug.Log("duringFirstMovement" + pSM.transform.position.y);
-            }
             // Move horizontally.
             pathDirection = path.GetDirectionAtDistance(currentDistance);
 
