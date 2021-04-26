@@ -34,6 +34,7 @@ public class PlayerMovementStateMachine : StateMachine
     public CharacterController controller;
     [HideInInspector] public InputAction slideRightAction;
     [HideInInspector] public InputAction slideLeftAction;
+    [HideInInspector] public InputAction SwingForwardAction;
 
     public float sideWaysInput;
     public float forwardInput;
@@ -67,6 +68,7 @@ public class PlayerMovementStateMachine : StateMachine
         snapAction = playerControlsMap.FindAction("Snap");
         slideRightAction = playerControlsMap.FindAction("SlideRight");
         slideLeftAction = playerControlsMap.FindAction("SlideLeft");
+        slideLeftAction = playerControlsMap.FindAction("SwingForward");
 
         jumpAction.performed += context => State.Jump();
         snapAction.performed += context => TryToSnapToShelf();
@@ -85,7 +87,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         if (CheckForShelf())
         {
-            StartCoroutine(State.Snap());
+           State.Snap();
         }
     }
 

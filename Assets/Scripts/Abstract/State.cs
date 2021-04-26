@@ -30,9 +30,9 @@ public abstract class State
 
     }
 
-    public virtual IEnumerator Snap()
+    public virtual void Snap()
     {
-        yield return null;
+       
     }
 
     public virtual IEnumerator ChangeLadderSize()

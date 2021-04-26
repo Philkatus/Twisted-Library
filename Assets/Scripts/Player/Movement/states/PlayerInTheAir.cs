@@ -75,9 +75,9 @@ public class PlayerInTheAir : State
         }
     }
 
-    public override IEnumerator Snap()
+    public override void Snap()
     {
         PlayerStateMachine.OnSnap();
-        yield return null;
+        
     }
 }
