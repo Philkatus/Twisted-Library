@@ -38,7 +38,7 @@ public class PlayerSliding : State
         values = pSM.valuesAsset;
         
         ladderSizeState = pSM.ladderSizeStateMachine;
-        ladderLength = ladderSizeState.ladderLengthBig;
+        ladderLength = ladderSizeState.ladderLength;
         speed = values.climbingSpeedOnLadder;
         closestShelf = pSM.closestShelf;
         controller = pSM.controller;
@@ -105,8 +105,8 @@ public class PlayerSliding : State
             // Go up and down.
                 pSM.HeightOnLadder += pSM.forwardInput * speed * Time.deltaTime;
                 pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
-                pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderLength * pSM.HeightOnLadder;
-           
+                pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder; //pos on ladder
+
             // Move horizontally.
             pathDirection = path.GetDirectionAtDistance(currentDistance);
 
@@ -171,6 +171,12 @@ public class PlayerSliding : State
         else
         {
             Dismount();
+        }
+        
+        if(pSM.isPerformedFold)
+        {
+            Debug.Log("trying to fold");
+            ladderSizeState.OnFold();
         }
     }
 

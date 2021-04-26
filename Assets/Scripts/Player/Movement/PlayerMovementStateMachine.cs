@@ -38,9 +38,9 @@ public class PlayerMovementStateMachine : StateMachine
 
     public float sideWaysInput;
     public float forwardInput;
-    
     public float swingingInput;
     public float slidingInput;
+    public bool isPerformedFold;
 
     [HideInInspector]public Transform myParent;
     #endregion
@@ -51,6 +51,7 @@ public class PlayerMovementStateMachine : StateMachine
     InputAction jumpAction;
     InputAction moveAction;
     InputAction snapAction;
+    InputAction foldAction;
     #endregion
 
     private void Start()
@@ -69,9 +70,11 @@ public class PlayerMovementStateMachine : StateMachine
         jumpAction = playerControlsMap.FindAction("Jump");
         moveAction = playerControlsMap.FindAction("Movement");
         snapAction = playerControlsMap.FindAction("Snap");
-        slideAction = playerControlsMap.FindAction("Slide");
-        
+        slideAction = playerControlsMap.FindAction("Slide");    
         swingAction = playerControlsMap.FindAction("Swing");
+        slideLeftAction = playerControlsMap.FindAction("SlideLeft");
+        foldAction = playerControlsMap.FindAction("Fold");
+
 
         jumpAction.performed += context => State.Jump();
         #endregion
@@ -98,6 +101,7 @@ public class PlayerMovementStateMachine : StateMachine
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
         slidingInput = slideAction.ReadValue<float>();
         swingingInput = swingAction.ReadValue<float>();
+        isPerformedFold = foldAction.triggered;
     }
 
     ///<summary>
