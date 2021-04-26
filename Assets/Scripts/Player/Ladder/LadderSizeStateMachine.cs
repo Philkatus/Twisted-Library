@@ -31,7 +31,11 @@ public class LadderSizeStateMachine : StateMachine
     ///</summary>
     public void OnGrow()
     {
-        SetState(new LadderBig(this));
+        if (State.GetType() != new LadderBig(this).GetType())
+        {
+            SetState(new LadderBig(this));
+
+        }
     }
 
     ///<summary>
@@ -39,7 +43,10 @@ public class LadderSizeStateMachine : StateMachine
     ///</summary>
     public void OnShrink()
     {
-        SetState(new LadderSmall(this));
+        if (State.GetType() != new LadderSmall(this).GetType())
+        {
+            SetState(new LadderSmall(this));
+        }
     }
     #endregion
 }

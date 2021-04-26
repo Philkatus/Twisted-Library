@@ -16,9 +16,12 @@ public class PlayerWalking : State
 
     public override void Initialize()
     {
+        controller = PlayerStateMachine.controller;
+        controller.transform.parent = PlayerStateMachine.myParent;
+        PlayerStateMachine.ladder.transform.parent = controller.transform;
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
-        controller = PlayerStateMachine.controller;
+        
         PlayerStateMachine.playerVelocity.y = -1f;
         values = PlayerStateMachine.valuesAsset;
     }

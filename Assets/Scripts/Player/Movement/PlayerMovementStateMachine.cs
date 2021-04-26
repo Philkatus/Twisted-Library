@@ -14,7 +14,7 @@ public class PlayerMovementStateMachine : StateMachine
     public InputActionAsset actionAsset;
 
     [Header("For reference")]
-    public float HeightOnLadder;
+    public float HeightOnLadder=-1;
     public float currentDistance;
     public Quaternion ladderWalkingRotation;
     public Vector3 ladderWalkingPosition;
@@ -37,10 +37,11 @@ public class PlayerMovementStateMachine : StateMachine
 
     public float sideWaysInput;
     public float forwardInput;
+
+    [HideInInspector]public Transform myParent;
     #endregion
 
     #region Private
-    [HideInInspector] Transform myParent;
     [SerializeField] Transform ladderMesh;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
@@ -149,7 +150,7 @@ public class PlayerMovementStateMachine : StateMachine
                     && possibleShelves[i] != currentClosestShelf
                     && possibleShelves[i].transform.position.y == currentClosestShelf.transform.position.y)
                 {
-                    if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .9f)
+                    if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .99f)
                     {
                         closestDistance = distance;
                         nextClosestShelf = possibleShelves[i];
@@ -204,6 +205,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLand()
     {
         SetState(new PlayerWalking(this));
+        HeightOnLadder = -1;
     }
     ///<summary>
     /// Gets called when the player leaves the ladder on the top.
@@ -211,6 +213,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLadderTop()
     {
         SetState(new PlayerWalking(this));
+        ladderSizeStateMachine.OnShrink();
     }
     ///<summary>
     /// Gets called when the player leaves the ladder on the bottom.
@@ -218,14 +221,16 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLadderBottom()
     {
         SetState(new PlayerInTheAir(this));
+        ladderSizeStateMachine.OnShrink();
     }
     ///<summary>
     /// Gets called when the player snaps his ladder to a shelf.
     ///</summary>
     public void OnSnap()
     {
+        ladderSizeStateMachine.OnGrow();
         SetState(new PlayerSliding(this));
-        ladderSizeStateMachine.SetState(new LadderBig(ladderSizeStateMachine));
+      
     }
     ///<summary>
     /// Gets called when the player changes to in the air.
@@ -233,7 +238,8 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnFall()
     {
         SetState(new PlayerInTheAir(this));
-        ladderSizeStateMachine.SetState(new LadderSmall(ladderSizeStateMachine));
+        ladderSizeStateMachine.OnShrink();
+        HeightOnLadder = -1;
     }
     #endregion
 }
