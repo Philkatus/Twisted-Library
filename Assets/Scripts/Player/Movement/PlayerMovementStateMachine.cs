@@ -72,7 +72,6 @@ public class PlayerMovementStateMachine : StateMachine
         snapAction = playerControlsMap.FindAction("Snap");
         slideAction = playerControlsMap.FindAction("Slide");    
         swingAction = playerControlsMap.FindAction("Swing");
-        slideLeftAction = playerControlsMap.FindAction("SlideLeft");
         foldAction = playerControlsMap.FindAction("Fold");
 
 
