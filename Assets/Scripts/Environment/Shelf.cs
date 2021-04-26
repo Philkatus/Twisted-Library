@@ -17,7 +17,7 @@ public class Shelf : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("you entered my triggerzone");
+          
             if (playerStateMachine == null)
             {
                 playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();
@@ -30,7 +30,7 @@ public class Shelf : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            Debug.Log("you left my triggerzone");
+          
             if (playerStateMachine == null)
             {
                 playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();

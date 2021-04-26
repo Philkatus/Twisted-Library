@@ -7,16 +7,19 @@ using UnityEngine.Animations.Rigging;
 public class AnimationStateController : MonoBehaviour
 {
     #region variables
-    //[Header("References")]
-    [HideInInspector] public PlayerMovementStateMachine movementScript;
-    [HideInInspector] public CharacterController controller;
-    [HideInInspector] public Animator animator;
+    [Header("References")]
+    public PlayerMovementStateMachine movementScript;
+    public CharacterController controller;
+    public Animator animator;
 
     [Header("Animator")]
     float velocityZ = 0f;
     float velocityX = 0f;
     float velocity = 0f;
     public float playerVelocity;
+    int VelocityHash;
+    int SideInputHash;
+    int ForwardInputHash;
     [Space]
 
     #region old but still needed?
@@ -28,8 +31,12 @@ public class AnimationStateController : MonoBehaviour
     int VelocityXHash;
     #endregion
 
-    int VelocityHash;
-    public bool isAirborne = false;
+    [Header("ImpactRolling")]
+    public float airTimer;
+    public float timeForRoll;
+    [Space]
+
+
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
@@ -47,41 +54,28 @@ public class AnimationStateController : MonoBehaviour
     public Rig headRig;
     //dotProduct used to determine where the HeadAimTarget is in relation to the players forward direction
     [HideInInspector] public float dotProduct;
-
-
-
-    [Header("Feet Grounder")]
-
-    private Vector3 rightFootPosition, leftFootPosition, leftFootIkPosition, rightFootIkPosition;
-    private Quaternion leftFootIkRotation, rightFootIkRotation;
-    private float lastPelvisPositionY, lastRightFootPositionY, lastLeftFootPositionY;
-
-    public bool enableFeetIk = true;
-    [Range(0, 2)] [SerializeField] private float heightFromGroundRaycast = 1.14f;
-    [Range(0, 2)] [SerializeField] private float raycastDownDistance = 1.5f;
-    [SerializeField] private LayerMask environmentLayer;
-    [SerializeField] private float pelvisOffset = 0f;
-    [Range(0, 1)] [SerializeField] private float pelvisUpAndDownSpeed = 0.28f;
-    [Range(0, 1)] [SerializeField] private float feetToIkPositionSpeed = 0.5f;
-
     #endregion
+
     void Start()
     {
         animator = GetComponent<Animator>();
-        movementScript = GetComponent<PlayerMovementStateMachine>();
-        controller = GetComponent<CharacterController>();
+        //movementScript = GetComponent<PlayerMovementStateMachine>();
+        //controller = GetComponent<CharacterController>();
 
         #region Old but dont delete
-
+        /*
         VelocityZHash = Animator.StringToHash("VelocityZ");
         VelocityXHash = Animator.StringToHash("VelocityX");
-
+        */
         #endregion
         VelocityHash = Animator.StringToHash("Velocity");
+        SideInputHash = Animator.StringToHash("SideInput");
+        ForwardInputHash = Animator.StringToHash("ForwardInput");
 
         Cursor.lockState = CursorLockMode.Locked;
 
         rigBuilder = GetComponent<RigBuilder>();
+
 
         // new Input System
         playerControlsMap = movementScript.actionAsset.FindActionMap("PlayerControls");
@@ -90,18 +84,25 @@ public class AnimationStateController : MonoBehaviour
         moveAction = playerControlsMap.FindAction("Movement");
         snapAction = playerControlsMap.FindAction("Snap");
 
-        jumpAction.performed += context => StartJump();
-        //snapAction.performed += context => TryToSnapToShelf();
+        jumpAction.performed += context => LadderJump();
+        snapAction.performed += context => TryToSnapToShelf();
+        moveAction.performed += context => Movement();
     }
 
     void Update()
     {
+        //ignoring the y velocity
+        velocity = new Vector2(movementScript.playerVelocity.x, movementScript.playerVelocity.z).magnitude;
+        animator.SetFloat(VelocityHash, velocity);
 
-        playerVelocity = movementScript.playerVelocity.magnitude;
+
+        float sideInput = movementScript.sideWaysInput;
+        float forwardInput = movementScript.forwardInput;
+        animator.SetFloat(SideInputHash, sideInput);
+        animator.SetFloat(ForwardInputHash, forwardInput);
 
         #region old code (dont delete)
 
-        velocity = playerVelocity;
 
         // bool forwardPressed = Input.GetKey(KeyCode.W);
         // bool backwardPressed = Input.GetKey(KeyCode.S);
@@ -123,13 +124,18 @@ public class AnimationStateController : MonoBehaviour
 
         #endregion
 
-        animator.SetFloat(VelocityHash, velocity);
 
-        Jump();
-        LadderAnims();
+
+        GroundedCheck();
+        Falling();
+        //LadderAnims();
         HeadAim();
+        FallImpact();
     }
+    void Movement()
+    {
 
+    }
     void HeadAim()
     {
         Vector3 toTarget = (headAimTarget.position - transform.position).normalized;
@@ -169,13 +175,50 @@ public class AnimationStateController : MonoBehaviour
 
     }
 
-    void Jump()
+    void GroundedCheck()
     {
-        //Falling
+
         if (controller.isGrounded)
         {
             animator.SetBool("isGrounded", true);
+            animator.SetBool("isClimbingLadder", false);
+
+            if (airTimer > 0)
+            {
+                airTimer -= Time.deltaTime * 2;
+            }
         }
+        if (!controller.isGrounded)
+        {
+            animator.SetBool("isGrounded", false);
+            if (!animator.GetBool("isClimbingLadder"))
+            {
+                airTimer += Time.deltaTime;
+            }
+            else
+            {
+                airTimer = 0;
+            }
+
+        }
+    }
+
+    void FallImpact()
+    {
+
+        if (airTimer >= timeForRoll && controller.isGrounded)
+        {
+            animator.SetBool("isRolling", true);
+        }
+        else
+        {
+            animator.SetBool("isRolling", false);
+        }
+    }
+
+    void Falling()
+    {
+        //Falling
         if (!controller.isGrounded)
         {
             animator.SetBool("isJumping", false);
@@ -183,7 +226,7 @@ public class AnimationStateController : MonoBehaviour
         }
     }
 
-    void StartJump()
+    void LadderJump()
     {
         //start Jump
         if (controller.isGrounded)
@@ -192,8 +235,20 @@ public class AnimationStateController : MonoBehaviour
             animator.SetBool("isClimbingLadder", false);
             rigBuilder.enabled = true;
         }
+        if (!controller.isGrounded)
+        {
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isClimbingLadder", false);
+        }
     }
 
+    void TryToSnapToShelf()
+    {
+        animator.SetBool("isClimbingLadder", true);
+        //disables ladder holding IK
+        rigBuilder.enabled = false;
+    }
+    
     //WASD Hardcoded BUT with strafing DONT DELETE
     #region old
     //handles acceleration and deceleration
@@ -308,4 +363,5 @@ public class AnimationStateController : MonoBehaviour
 
     }
     #endregion
+
 }
