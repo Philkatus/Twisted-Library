@@ -36,7 +36,7 @@ public class PlayerSliding : State
         // Assign variables.
         pSM = PlayerStateMachine;
         values = pSM.valuesAsset;
-        Debug.Log("on Start Initialize " + pSM.transform.position.y);
+        
         ladderSizeState = pSM.ladderSizeStateMachine;
         ladderLength = ladderSizeState.ladderLengthBig;
         speed = values.climbingSpeedOnLadder;
@@ -80,7 +80,7 @@ public class PlayerSliding : State
         pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
         pSM.playerVelocity = pSM.resultingVelocity(pSM.playerVelocity, pathDirection);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, -values.maxSlidingSpeed, values.maxSlidingSpeed);
-        Debug.Log("on End Initialize " + pSM.transform.position.y);
+        
     }
 
     public override IEnumerator Finish()
@@ -100,25 +100,19 @@ public class PlayerSliding : State
     {
         if (!dismounting)
         {
-            if (firstMovement) 
-            {
-                Debug.Log("beforeFirstMovement" + pSM.transform.position.y);
-            }
+           
 
             // Go up and down.
                 pSM.HeightOnLadder += pSM.forwardInput * speed * Time.deltaTime;
                 pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
                 pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderLength * pSM.HeightOnLadder;
-            if (firstMovement)
-            {
-                Debug.Log("duringFirstMovement" + pSM.transform.position.y);
-            }
+           
             // Move horizontally.
             pathDirection = path.GetDirectionAtDistance(currentDistance);
 
             // Get sideways input, no input if both buttons held down.
             float input = 0;
-            if (pSM.slideLeftAction.phase == InputActionPhase.Started && pSM.slideRightAction.phase == InputActionPhase.Started)
+            if (pSM.slideLeftAction.phase == InputActionPhase.Started && pSM.slideAction.phase == InputActionPhase.Started)
             {
                 pSM.playerVelocity = Vector3.zero;
                 input = 0;
@@ -129,7 +123,7 @@ public class PlayerSliding : State
                 input = input * -1;
                 if (input == 0)
                 {
-                    input = pSM.slideRightAction.ReadValue<float>();
+                    input = pSM.slideAction.ReadValue<float>();
                 }
             }
 
@@ -145,11 +139,7 @@ public class PlayerSliding : State
             //moving the object
             pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
             pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
-            if (firstMovement)
-            {
-                Debug.Log("afterFirstMovement" + pSM.transform.position.y);
-                
-            }
+           
 
             if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
             {

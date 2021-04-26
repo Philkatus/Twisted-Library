@@ -172,9 +172,9 @@
                     "interactions": ""
                 },
                 {
-                    "name": "SlideLeft",
+                    "name": "Slide",
                     "type": "Button",
-                    "id": "85fb1e14-3c8b-41da-9821-4ffb3ba90783",
+                    "id": "dbd8d5be-1c0d-4b70-b73c-10935d0b0113",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -317,28 +317,6 @@
                 },
                 {
                     "name": "",
-                    "id": "1ce80467-b3b3-4342-a796-fe6370633bd4",
-                    "path": "<Gamepad>/leftShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SlideLeft",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c20170b6-7eb0-4d4a-87e0-b0767a1673fa",
-                    "path": "<Keyboard>/a",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SlideLeft",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "69cf93c6-96d9-4bad-afda-d1ef8a3ba41d",
                     "path": "<Keyboard>/d",
                     "interactions": "",
@@ -411,6 +389,72 @@
                     "processors": "",
                     "groups": "",
                     "action": "SwingForward",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "GamePad Axis",
+                    "id": "9fa5f3ae-ebd8-44f2-8641-d32d35962565",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slide",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "a99a995a-44a2-416e-a74f-62bdbe980ce3",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slide",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "5737f7f6-8626-4a53-94c8-babc1658a585",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slide",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "KeyBoardAxis",
+                    "id": "fc28284a-732c-4713-9032-008bc011760e",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slide",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "504090f3-4f09-4050-a028-819fca5d132d",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slide",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "a68755ff-c0bb-4335-94c1-18f5ae4d7743",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slide",
                     "isComposite": false,
                     "isPartOfComposite": true
                 }

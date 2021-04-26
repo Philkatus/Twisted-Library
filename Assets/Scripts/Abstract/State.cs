@@ -35,6 +35,12 @@ public abstract class State
        
     }
 
+    public virtual void Swing() 
+    {
+
+    }
+
+
     public virtual IEnumerator ChangeLadderSize()
     {
         yield return null;

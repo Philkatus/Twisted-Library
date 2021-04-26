@@ -38,9 +38,9 @@ public class PlayerWalking : State
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
         Vector3 direction = directionForward * pSM.forwardInput + directionRight * pSM.sideWaysInput;
 
-        if(pSM.SwingForwardAction.phase == InputActionPhase.Started)
+        if(pSM.slidingInput!=0 || pSM.swingingInput !=0)
         {
-            Debug.Log("swingButton gets pressed");
+            pSM.TryToSnapToShelf();
         }
 
 

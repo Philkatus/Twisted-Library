@@ -3,6 +3,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/ValuesScriptableObject", order = 1)]
 public class ValuesScriptableObject : ScriptableObject
 {
+    #region movement and walking
     [Header("Movement/Walking")]
     [Tooltip("How fast the player accelerates to maximum speed while walking.")]
     public float movementAcceleration;
@@ -12,8 +13,10 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("How much drag is applied when there is no input while walking.")]
     public float movementDrag;
-
+    #endregion
     [Space]
+    #region jumping and air movement
+
     [Header("Jumping/Air Movement")]
     [Tooltip("How high the player jumps.")]
     public float jumpHeight;
@@ -24,8 +27,9 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("...is working against me.")]
     public float gravity;
-
+    #endregion
     [Space]
+    #region Sliding
     [Header("Sliding")]
     [Tooltip("How fast the player climbs the ladder up and down while sliding.")]
     public float climbingSpeedOnLadder;
@@ -43,4 +47,26 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("How long the player needs to hold the key to dismount the ladder on top or bottom while sliding.")]
     public float ladderDismountTimer;
+    #endregion
+    [Space]
+    #region swinging
+    [Header("swinging")]
+    [Tooltip("if true the charackter uses swinging instead of sliding.")]
+    public bool useSwinging;
+
+    [Tooltip("How fast the player accelrates while swinging.")]
+    public float SwingingAcceleration;
+
+    [Tooltip("How fast the player decelerate while swinging with reverse input")]
+    public float SwingingDeceleration;
+
+    [Tooltip("The maximum Speed the Player can reach while swinging.")]
+    public float maxSwingSpeed;
+
+    [Tooltip("The factor that is use to convert swinging velocity to movement conversion and back.")]
+    public float VelocityToSwingingConversion;
+
+    [Tooltip("How fast the player decelerate while swinging without giving an input")]
+    public float SwingingDrag;
+    #endregion
 }

@@ -14,6 +14,7 @@ public class PlayerMovementStateMachine : StateMachine
     public InputActionAsset actionAsset;
 
     [Header("For reference")]
+    public float swingingPosition;
     public float HeightOnLadder=-1;
     public float currentDistance;
     public Quaternion ladderWalkingRotation;
@@ -32,12 +33,15 @@ public class PlayerMovementStateMachine : StateMachine
     public Transform ladder;
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
-    [HideInInspector] public InputAction slideRightAction;
+    [HideInInspector] public InputAction slideAction;
     [HideInInspector] public InputAction slideLeftAction;
-    [HideInInspector] public InputAction SwingForwardAction;
+    [HideInInspector] public InputAction swingAction;
 
     public float sideWaysInput;
     public float forwardInput;
+    
+    public float swingingInput;
+    public float slidingInput;
 
     [HideInInspector]public Transform myParent;
     #endregion
@@ -66,14 +70,11 @@ public class PlayerMovementStateMachine : StateMachine
         jumpAction = playerControlsMap.FindAction("Jump");
         moveAction = playerControlsMap.FindAction("Movement");
         snapAction = playerControlsMap.FindAction("Snap");
-        slideRightAction = playerControlsMap.FindAction("SlideRight");
-        slideLeftAction = playerControlsMap.FindAction("SlideLeft");
-        slideLeftAction = playerControlsMap.FindAction("SwingForward");
+        slideAction = playerControlsMap.FindAction("Slide");
+        
+        swingAction = playerControlsMap.FindAction("Swing");
 
         jumpAction.performed += context => State.Jump();
-        snapAction.performed += context => TryToSnapToShelf();
-        slideRightAction.performed += context => TryToSnapToShelf();
-        slideLeftAction.performed += context => TryToSnapToShelf();
         #endregion
     }
 
@@ -83,7 +84,7 @@ public class PlayerMovementStateMachine : StateMachine
         State.Movement();
     }
 
-    void TryToSnapToShelf()
+    public void TryToSnapToShelf()
     {
         if (CheckForShelf())
         {
@@ -96,6 +97,8 @@ public class PlayerMovementStateMachine : StateMachine
     {
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
+        slidingInput = slideAction.ReadValue<float>();
+        swingingInput = swingAction.ReadValue<float>();
     }
 
     ///<summary>
@@ -231,7 +234,14 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnSnap()
     {
         ladderSizeStateMachine.OnGrow();
-        SetState(new PlayerSliding(this));
+        if (valuesAsset.useSwinging)
+        {
+            SetState(new PlayerSwinging(this));
+        }
+        else 
+        {
+            SetState(new PlayerSliding(this));
+        }
       
     }
     ///<summary>
