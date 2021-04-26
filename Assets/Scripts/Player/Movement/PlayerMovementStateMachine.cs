@@ -34,7 +34,6 @@ public class PlayerMovementStateMachine : StateMachine
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
     [HideInInspector] public InputAction slideAction;
-    [HideInInspector] public InputAction slideLeftAction;
     [HideInInspector] public InputAction swingAction;
 
     public float sideWaysInput;
