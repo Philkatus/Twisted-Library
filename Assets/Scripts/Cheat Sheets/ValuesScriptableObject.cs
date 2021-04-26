@@ -67,6 +67,6 @@ public class ValuesScriptableObject : ScriptableObject
     public float VelocityToSwingingConversion;
 
     [Tooltip("How fast the player decelerate while swinging without giving an input")]
-    public float SwingingDrag;
+    public float SwingingGravity;
     #endregion
 }

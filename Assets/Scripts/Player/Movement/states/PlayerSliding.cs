@@ -112,9 +112,9 @@ public class PlayerSliding : State
 
             // Get sideways input, no input if both buttons held down.
             float input = 0;
-            if (pSM.slideAction.phase == InputActionPhase.Performed && pSM.slideAction.ReadValue<float>()==0)
+            if (pSM.slideAction.triggered && pSM.slideAction.ReadValue<float>()==0)
             {
-                pSM.playerVelocity = Vector3.zero;
+                pSM.playerVelocity -= pSM.resultingVelocity(pSM.playerVelocity, pathDirection);
                 
             }
             else
@@ -129,7 +129,7 @@ public class PlayerSliding : State
             float resultingSpeed = pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
 
             //speed Clamp
-            pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude * (100 - values.slidingDragPercentage) / 100, -values.maxSlidingSpeed, values.maxSlidingSpeed);
+            pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * values.slidingDragPercentage / 100, -values.maxSlidingSpeed, values.maxSlidingSpeed);
 
             //moving the object
             pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
