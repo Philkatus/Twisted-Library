@@ -150,7 +150,7 @@ public class PlayerMovementStateMachine : StateMachine
                     && possibleShelves[i] != currentClosestShelf
                     && possibleShelves[i].transform.position.y == currentClosestShelf.transform.position.y)
                 {
-                    if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .9f)
+                    if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .99f)
                     {
                         closestDistance = distance;
                         nextClosestShelf = possibleShelves[i];
