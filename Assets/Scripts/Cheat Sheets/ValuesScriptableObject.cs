@@ -20,6 +20,8 @@ public class ValuesScriptableObject : ScriptableObject
     [Header("Jumping/Air Movement")]
     [Tooltip("How high the player jumps.")]
     public float jumpHeight;
+    [Tooltip("Direction of the jump when facing the wall.")]
+    public Vector3 wallJump;
 
     [Tooltip("Limits the movement speed for the air movement.")]
     [Range(.1f, 1)] public float airMovementFactor;
@@ -67,6 +69,6 @@ public class ValuesScriptableObject : ScriptableObject
     public float VelocityToSwingingConversion;
 
     [Tooltip("How fast the player decelerate while swinging without giving an input")]
-    public float SwingingDrag;
+    public float SwingingGravity;
     #endregion
 }
