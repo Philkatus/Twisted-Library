@@ -20,6 +20,11 @@ public abstract class State
 
     }
 
+    public virtual void ReInitialize()
+    {
+
+    }
+
     public virtual void Movement()
     {
 

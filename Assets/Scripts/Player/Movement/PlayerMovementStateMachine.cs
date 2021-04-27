@@ -275,6 +275,25 @@ public class PlayerMovementStateMachine : StateMachine
         }
       
     }
+
+    ///<summary>
+    /// Gets called when the player snaps to the next path.
+    ///</summary>
+    public void OnResnap()
+    {
+        if (valuesAsset.useSwinging)
+        {
+            SetState(this.State);
+            playerState = PlayerState.swinging;
+        }
+        else
+        {
+            SetState(this.State);
+            playerState = PlayerState.sliding;
+        }
+
+    }
+
     ///<summary>
     /// Gets called when the player changes to in the air.
     ///</summary>
