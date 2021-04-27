@@ -24,7 +24,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 259310139372920754}
-  m_LocalRotation: {x: -0.0098965205, y: 0.97185844, z: -0.041516524, w: -0.2316672}
+  m_LocalRotation: {x: -0.0075351507, y: 0.9833947, z: -0.042009335, w: -0.17639}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -433,18 +433,41 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   valuesAsset: {fileID: 11400000, guid: 537c97f1f07bdf84ab6790ddb7d01226, type: 2}
   actionAsset: {fileID: -944628639613478452, guid: 0af3696424c4b334e9a56e8febf1b6ce, type: 3}
+  playerState: 0
+  ladderState: 0
+  swingingPosition: 0
   HeightOnLadder: 0
   currentDistance: 0
-  ladderWalkingRotation: {x: 0, y: 0, z: 0, w: 0}
-  ladderWalkingPosition: {x: 0, y: 0, z: 0}
+  sideWaysInput: 0
+  forwardInput: 0
+  swingingInput: 0
+  slidingInput: 0
+  isPerformedFold: 0
   playerVelocity: {x: 0, y: 0, z: 0}
   possibleShelves: []
   closestShelf: {fileID: 0}
   ladder: {fileID: 2324303222376295303}
   ladderSizeStateMachine: {fileID: 6721105999781121023}
   controller: {fileID: 2324303222117386823}
-  sideWaysInput: 0
-  forwardInput: 0
+  slideAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+  swingAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+  ladderWalkingRotation: {x: 0, y: 0, z: 0, w: 0}
+  ladderWalkingPosition: {x: 0, y: 0, z: 0}
+  myParent: {fileID: 0}
   ladderMesh: {fileID: 5485595683521586558}
 --- !u!1 &2324303222376295302
 GameObject:
@@ -525,6 +548,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ladderLengthBig: 15
   ladderLengthSmall: 1
+  foldSpeed: 0
+  foldJumpMultiplier: 0
+  extraFoldJumpTimer: 0
+  ladderLength: 0
+  isFoldingUp: 0
+  startFoldingUpPos: {x: 0, y: 0, z: 0}
+  playerStateMachine: {fileID: 1922934702}
   ladderParent: {fileID: 7437084798391301879}
 --- !u!1 &4129073745536437011
 GameObject:
@@ -676,7 +706,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5173761969531662439}
-  m_LocalRotation: {x: -0.014097669, y: 0.9709453, z: -0.05914061, w: -0.23144953}
+  m_LocalRotation: {x: -0.010733882, y: 0.9824707, z: -0.05984263, w: -0.17622428}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -759,7 +789,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6369436234874472688}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.953266, y: 2.512, z: 9.799263}
+  m_LocalPosition: {x: 3.8161545, y: 2.512, z: 10.295502}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8550796576673198090}
@@ -1262,7 +1292,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9177417795965320302}
-  m_LocalRotation: {x: -0.018305289, y: 0.9697089, z: -0.07679182, w: -0.23115481}
+  m_LocalRotation: {x: -0.013937536, y: 0.98121965, z: -0.07770337, w: -0.17599988}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
