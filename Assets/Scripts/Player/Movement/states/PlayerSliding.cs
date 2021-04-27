@@ -180,13 +180,17 @@ public class PlayerSliding : State
             }
 
             //playervelocity increased with input
-            pSM.playerVelocity += input * pathDirection * Time.deltaTime * values.slidingAcceleration;
+            float slidingAcceleration = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, values.slidingAcceleration * values.slidingSpeedSizeFactor, values.slidingAcceleration);
+            pSM.playerVelocity += input * pathDirection * Time.deltaTime * slidingAcceleration;
 
             //drag calculation
             float resultingSpeed = pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
 
-            //speed Clamp
-            pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * values.slidingDragPercentage / 100, -values.maxSlidingSpeed, values.maxSlidingSpeed);
+            //speed Clamp (dependant on ladder size)
+            float maxSlidingSpeed = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, values.maxSlidingSpeed * values.slidingSpeedSizeFactor, values.maxSlidingSpeed);
+            pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * values.slidingDragPercentage / 100, -maxSlidingSpeed, maxSlidingSpeed);
+       
+
 
             //moving the object
             if (!CheckForCollision(pSM.playerVelocity))
@@ -199,6 +203,7 @@ public class PlayerSliding : State
                 pSM.playerVelocity = Vector3.zero;
             }
 
+            //End Of Path, continue sliding with ReSnap or Fall from Path
             if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
             {
 

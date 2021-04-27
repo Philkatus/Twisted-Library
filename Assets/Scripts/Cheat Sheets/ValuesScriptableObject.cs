@@ -38,7 +38,7 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("How fast the player accelerates to maximum sliding speed.")]
     public float slidingAcceleration;
-    public float maxSlidingSpeed;
+    public float maxSlidingSpeed, slidingSpeedSizeFactor;
 
     [Tooltip("How fast the player comes to a halt while sliding. 50% is almost instantly.")]
     [Range(0, 50f)] public float slidingDragPercentage;
