@@ -7,11 +7,13 @@ public class PlayerSwinging : PlayerSliding
 {
     PlayerMovementStateMachine pSM;
     ValuesScriptableObject stats;
+
+    float SwingingDistance;
     public override void Initialize()
     {
         pSM = PlayerStateMachine;
         stats = pSM.valuesAsset;
-        pSM.swingingPosition = -.1f;
+        pSM.swingingPosition = 0;
         base.Initialize();
 
     }
@@ -36,16 +38,19 @@ public class PlayerSwinging : PlayerSliding
             //pSM.playerVelocity -= SwingingDirection * stats.SwingingAcceleration * pSM.swingingInput * Time.deltaTime * Time.deltaTime*10 ;
         
 
-        pSM.playerVelocity -=  SwingingDirection* stats.SwingingGravity*pSM.swingingPosition * Time.deltaTime;
+        pSM.playerVelocity +=  -SwingingDirection* stats.SwingingGravity*Mathf.Sin(SwingingDistance) * Time.deltaTime;
+
+
 
         float swingingVelocity = pSM.resultingSpeed(pSM.playerVelocity, SwingingDirection);
+        pSM.swingingPosition -= swingingVelocity;
         swingingVelocity = Mathf.Clamp(swingingVelocity , -stats.maxSwingSpeed, stats.maxSwingSpeed);
         Quaternion targetRotation = Quaternion.AngleAxis(-swingingVelocity, pSM.ladder.right);
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
 
         
-        pSM.swingingPosition = Mathf.Sin(Vector3.Dot(pSM.ladder.up,path.GetNormalAtDistance(pSM.currentDistance)));
-
+        pSM.swingingPosition = Mathf.Clamp(pSM.swingingPosition,0,360);
+        SwingingDistance = Mathf.Rad2Deg*Mathf.Tan(pSM.swingingPosition) ;
 
 
     }
