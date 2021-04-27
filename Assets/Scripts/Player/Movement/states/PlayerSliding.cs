@@ -32,7 +32,7 @@ public class PlayerSliding : State
 
     public override void Initialize()
     {
-       
+
         // Assign variables.
         pSM = PlayerStateMachine;
         values = pSM.valuesAsset;
@@ -100,15 +100,18 @@ public class PlayerSliding : State
     {
         if (!dismounting)
         {
-            if (firstMovement) 
+            if (firstMovement)
             {
                 Debug.Log("beforeFirstMovement" + pSM.transform.position.y);
             }
 
             // Go up and down.
+            if (!CheckForCollision(pSM.forwardInput * pSM.ladderDirection))
+            {
                 pSM.HeightOnLadder += pSM.forwardInput * speed * Time.deltaTime;
                 pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
                 pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderLength * pSM.HeightOnLadder;
+            }
             if (firstMovement)
             {
                 Debug.Log("duringFirstMovement" + pSM.transform.position.y);
@@ -143,17 +146,25 @@ public class PlayerSliding : State
             pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude * (100 - values.slidingDragPercentage) / 100, -values.maxSlidingSpeed, values.maxSlidingSpeed);
 
             //moving the object
-            pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
-            pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
+            if (!CheckForCollision(pSM.playerVelocity))
+            {
+                pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
+                pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
+            }
+            else
+            {
+                pSM.playerVelocity = Vector3.zero;
+            }
+
             if (firstMovement)
             {
                 Debug.Log("afterFirstMovement" + pSM.transform.position.y);
-                
+
             }
 
             if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
             {
-                
+
                 Vector3 endOfShelfDirection = new Vector3();
                 if (pSM.currentDistance <= 0) //arriving at start of path
                 {
@@ -172,7 +183,7 @@ public class PlayerSliding : State
                 {
                     if (pSM.CheckForNextClosestShelf(pSM.closestShelf))
                     {
-                       
+
                         pSM.OnSnap();
                     }
                     else
@@ -187,6 +198,19 @@ public class PlayerSliding : State
         {
             Dismount();
         }
+    }
+
+    bool CheckForCollision(Vector3 moveDirection)
+    {
+        RaycastHit hit;
+        Vector3 p1 = pSM.transform.position + controller.center + Vector3.up * -controller.height / 1.5f;
+        Vector3 p2 = p1 + Vector3.up * controller.height;
+
+        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection, out hit, 0.1f, LayerMask.GetMask("SlidingObstacle")))
+        {
+            return true;
+        }
+        return false;
     }
 
     void CheckIfReadyToDismount()
