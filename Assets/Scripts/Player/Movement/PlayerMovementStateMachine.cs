@@ -25,6 +25,8 @@ public class PlayerMovementStateMachine : StateMachine
     public float swingingInput;
     public float slidingInput;
     public bool isPerformedFold;
+    public bool SwinginForwards;
+
 
     public Vector3 playerVelocity;
     
@@ -32,6 +34,7 @@ public class PlayerMovementStateMachine : StateMachine
     public List<Shelf> possibleShelves;
     public Shelf closestShelf;
     public Transform ladder;
+    public Transform ladderMesh;
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
     [HideInInspector] public InputAction slideAction;
@@ -49,7 +52,7 @@ public class PlayerMovementStateMachine : StateMachine
     #endregion
 
     #region Private
-    [SerializeField] Transform ladderMesh;
+    
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
@@ -86,6 +89,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         GetInput();
         State.Movement();
+       Debug.DrawRay(transform.position, playerVelocity, Color.blue);
     }
 
     public void TryToSnapToShelf()
