@@ -89,7 +89,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         GetInput();
         State.Movement();
-       Debug.DrawRay(transform.position, playerVelocity, Color.blue);
+       
     }
 
     public void TryToSnapToShelf()
