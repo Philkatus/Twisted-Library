@@ -44,6 +44,8 @@ public class AnimationStateController : MonoBehaviour
     [HideInInspector] public float dotProduct;
     #endregion
 
+    float fallTimer = 0;
+
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -146,10 +148,22 @@ public class AnimationStateController : MonoBehaviour
     void Falling()
     {
         //Falling
-        if (!controller.isGrounded)
+        if (!controller.isGrounded && animator.GetBool("isClimbingLadder") == false)
         {
             animator.SetBool("isJumping", false);
             animator.SetBool("isGrounded", false);
+
+            //Added Falltimer to prevent Falling before climbing
+            fallTimer += Time.deltaTime;
+            if(fallTimer >= 0.2f)
+            {
+                animator.SetBool("FallDelay", true);
+            }
+        }
+        else if(controller.isGrounded)
+        {
+            animator.SetBool("FallDelay", false);
+            fallTimer = 0;
         }
     }
 

@@ -27,6 +27,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool isPerformedFold;
 
     public Vector3 playerVelocity;
+    public bool isWallJumping;
     
 
     public List<Shelf> possibleShelves;
@@ -79,6 +80,7 @@ public class PlayerMovementStateMachine : StateMachine
 
 
         jumpAction.performed += context => State.Jump();
+        snapAction.performed += context => TryToSnapToShelf();
         #endregion
     }
 
