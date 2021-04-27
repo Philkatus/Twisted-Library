@@ -13,23 +13,11 @@ public class AnimationStateController : MonoBehaviour
     public Animator animator;
 
     [Header("Animator")]
-    float velocityZ = 0f;
-    float velocityX = 0f;
     float velocity = 0f;
-    public float playerVelocity;
     int VelocityHash;
     int SideInputHash;
     int ForwardInputHash;
     [Space]
-
-    #region old but still needed?
-    public float acceleration, deceleration = 2f;
-    public float maxWalkVelocity = 0.5f;
-    public float maxRunVelocity = 2f;
-    //Increase Performance by Refactoring
-    int VelocityZHash;
-    int VelocityXHash;
-    #endregion
 
     [Header("ImpactRolling")]
     public float airTimer;
@@ -40,7 +28,7 @@ public class AnimationStateController : MonoBehaviour
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
-    InputAction snapAction;
+    //InputAction snapAction;
 
     [Header("Arm Rigs")]
     public RigBuilder rigBuilder;
@@ -62,12 +50,6 @@ public class AnimationStateController : MonoBehaviour
         //movementScript = GetComponent<PlayerMovementStateMachine>();
         //controller = GetComponent<CharacterController>();
 
-        #region Old but dont delete
-        /*
-        VelocityZHash = Animator.StringToHash("VelocityZ");
-        VelocityXHash = Animator.StringToHash("VelocityX");
-        */
-        #endregion
         VelocityHash = Animator.StringToHash("Velocity");
         SideInputHash = Animator.StringToHash("SideInput");
         ForwardInputHash = Animator.StringToHash("ForwardInput");
@@ -77,16 +59,13 @@ public class AnimationStateController : MonoBehaviour
         rigBuilder = GetComponent<RigBuilder>();
 
 
+
         // new Input System
         playerControlsMap = movementScript.actionAsset.FindActionMap("PlayerControls");
         playerControlsMap.Enable();
         jumpAction = playerControlsMap.FindAction("Jump");
-        moveAction = playerControlsMap.FindAction("Movement");
-        snapAction = playerControlsMap.FindAction("Snap");
 
         jumpAction.performed += context => LadderJump();
-        snapAction.performed += context => TryToSnapToShelf();
-        moveAction.performed += context => Movement();
     }
 
     void Update()
@@ -101,41 +80,13 @@ public class AnimationStateController : MonoBehaviour
         animator.SetFloat(SideInputHash, sideInput);
         animator.SetFloat(ForwardInputHash, forwardInput);
 
-        #region old code (dont delete)
-
-
-        // bool forwardPressed = Input.GetKey(KeyCode.W);
-        // bool backwardPressed = Input.GetKey(KeyCode.S);
-        // bool leftPressed = Input.GetKey(KeyCode.A);
-        // bool rightPressed = Input.GetKey(KeyCode.D);
-        // bool runPressed = Input.GetKey(KeyCode.LeftShift);
-
-
-        //set current maxVelocity (if runPressed:  =true             =false)
-        //float currentMaxVelocity = runPressed ? maxRunVelocity : maxWalkVelocity;
-
-
-        // changeVelocity(forwardPressed, backwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
-        // lockOrResetVelocity(forwardPressed, backwardPressed, leftPressed, rightPressed, runPressed, currentMaxVelocity);
-
-        //set the parameters to our local variable values
-        animator.SetFloat(VelocityZHash, velocityZ);
-        animator.SetFloat(VelocityXHash, velocityX);
-
-        #endregion
-
-
-
+        Sliding();
         GroundedCheck();
         Falling();
-        //LadderAnims();
         HeadAim();
-        FallImpact();
+        FallImpact();       
     }
-    void Movement()
-    {
-
-    }
+   
     void HeadAim()
     {
         Vector3 toTarget = (headAimTarget.position - transform.position).normalized;
@@ -153,31 +104,8 @@ public class AnimationStateController : MonoBehaviour
         }
     }
 
-    void LadderAnims()
-    {
-        if (movementScript.closestShelf != null)
-        {
-            animator.SetBool("isClimbingLadder", true);
-            rigBuilder.enabled = false;
-        }
-        /*
-        else
-        {
-            animator.SetBool("isClimbingLadder", false);
-            rigBuilder.enabled = true;
-        }
-        */
-        if (controller.isGrounded)
-        {
-            animator.SetBool("isClimbingLadder", false);
-            rigBuilder.enabled = true;
-        }
-
-    }
-
     void GroundedCheck()
     {
-
         if (controller.isGrounded)
         {
             animator.SetBool("isGrounded", true);
@@ -188,6 +116,7 @@ public class AnimationStateController : MonoBehaviour
                 airTimer -= Time.deltaTime * 2;
             }
         }
+
         if (!controller.isGrounded)
         {
             animator.SetBool("isGrounded", false);
@@ -199,13 +128,11 @@ public class AnimationStateController : MonoBehaviour
             {
                 airTimer = 0;
             }
-
         }
     }
 
     void FallImpact()
     {
-
         if (airTimer >= timeForRoll && controller.isGrounded)
         {
             animator.SetBool("isRolling", true);
@@ -235,133 +162,20 @@ public class AnimationStateController : MonoBehaviour
             animator.SetBool("isClimbingLadder", false);
             rigBuilder.enabled = true;
         }
-        if (!controller.isGrounded)
+    }
+
+    void Sliding()
+    {
+        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding)
         {
-            animator.SetBool("isJumping", false);
+            animator.SetBool("isClimbingLadder", true);
+            //disables ladder holding IK
+            rigBuilder.enabled = false;
+        }
+        else
+        {
             animator.SetBool("isClimbingLadder", false);
+            rigBuilder.enabled = false;
         }
-    }
-
-    void TryToSnapToShelf()
-    {
-        animator.SetBool("isClimbingLadder", true);
-        //disables ladder holding IK
-        rigBuilder.enabled = false;
-    }
-    
-    //WASD Hardcoded BUT with strafing DONT DELETE
-    #region old
-    //handles acceleration and deceleration
-    void changeVelocity(bool forwardPressed, bool backwardPressed, bool leftPressed, bool rightPressed, bool runPressed, float currentMaxVelocity)
-    {
-        //Accelerate forward
-        if (forwardPressed && velocityZ < currentMaxVelocity)
-        {
-            velocityZ += Time.deltaTime * acceleration;
-        }
-        //Accelerate "backwards"
-        if (backwardPressed && velocityZ > -currentMaxVelocity)
-        {
-            velocityZ -= Time.deltaTime * acceleration;
-        }
-        //Accelerate left
-        if (leftPressed && velocityX > -currentMaxVelocity)
-        {
-            velocityX -= Time.deltaTime * acceleration;
-        }
-        //Accelerate right
-        if (rightPressed && velocityX < currentMaxVelocity)
-        {
-            velocityX += Time.deltaTime * acceleration;
-        }
-        //Decelerate Z forward to standstill
-        if (!forwardPressed && velocityZ > 0f)
-        {
-            velocityZ -= Time.deltaTime * deceleration;
-        }
-        //"Decelerate" Z backward to standstill
-        if (!backwardPressed && velocityZ < 0f)
-        {
-            velocityZ += Time.deltaTime * deceleration;
-        }
-        //Decelerate left
-        if (!leftPressed && velocityX < 0f)
-        {
-            velocityX += Time.deltaTime * deceleration;
-        }
-        //Decelerate right
-        if (!rightPressed && velocityX > 0f)
-        {
-            velocityX -= Time.deltaTime * deceleration;
-        }
-    }
-
-    void lockOrResetVelocity(bool forwardPressed, bool backwardPressed, bool leftPressed, bool rightPressed, bool runPressed, float currentMaxVelocity)
-    {
-
-        if (velocityZ == 0f && velocityX != 0f)
-        {
-            velocityZ = velocityX;
-        }
-
-        //reset velocityX
-        if (!leftPressed && !rightPressed && velocityX != 0f && (velocityX > -0.05f && velocityX < 0.05f))
-        {
-            velocityX = 0f;
-        }
-
-        //Max forward speed
-        if (forwardPressed && runPressed && velocityZ > currentMaxVelocity)
-        {
-            velocityZ = currentMaxVelocity;
-        }
-
-        //Max backward speed
-        if (backwardPressed && runPressed && velocityZ < -currentMaxVelocity)
-        {
-            velocityZ = -currentMaxVelocity;
-        }
-
-        //decelerate to max walking speed after letting go of sprint
-        else if (forwardPressed && velocityZ > currentMaxVelocity)
-        {
-            velocityZ -= Time.deltaTime * deceleration;
-            //round to the currentMaxVelocity if within offset
-            if (velocityZ > currentMaxVelocity && velocityZ < (currentMaxVelocity + 0.05))
-            {
-                velocityZ = currentMaxVelocity;
-            }
-        }
-        //round to the currentMaxVelocity if within offset
-        else if (forwardPressed && velocityZ < currentMaxVelocity && velocityZ > (currentMaxVelocity - 0.05f))
-        {
-            velocityZ = currentMaxVelocity;
-        }
-
-        //
-        //locking left
-        if (leftPressed && runPressed && velocityX < -currentMaxVelocity)
-        {
-            velocityX = -currentMaxVelocity;
-        }
-        //decelerate to the maximum walk velocity
-        else if (leftPressed && velocityX < -currentMaxVelocity)
-        {
-            velocityX += Time.deltaTime * deceleration;
-            // round to the currentMaxVelocity if within offset
-            if (velocityX < -currentMaxVelocity && velocityX > (-currentMaxVelocity - 0.05f))
-            {
-                velocityX = currentMaxVelocity;
-            }
-        }
-        // round to the currentMaxVelocity if within offset
-        else if (rightPressed && velocityX < currentMaxVelocity && velocityX > (currentMaxVelocity - 0.05f))
-        {
-            velocityX = currentMaxVelocity;
-        }
-        //
-
-    }
-    #endregion
-
+    }   
 }
