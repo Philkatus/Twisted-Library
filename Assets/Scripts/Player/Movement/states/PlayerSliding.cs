@@ -218,7 +218,7 @@ public class PlayerSliding : State
     void CheckIfReadyToDismount()
     {
         // Dismounting the ladder on top and bottom 
-        if (pSM.HeightOnLadder == 0 && pSM.forwardInput < 0)
+        if (pSM.HeightOnLadder == 0 && pSM.forwardInput > 0)
         {
             dismountTimer += Time.deltaTime;
             if (dismountTimer >= values.ladderDismountTimer)
@@ -228,7 +228,7 @@ public class PlayerSliding : State
                 dismounting = true;
             }
         }
-        else if (pSM.HeightOnLadder == -1 && pSM.forwardInput > 0)
+        else if (pSM.HeightOnLadder == -1 && pSM.forwardInput < 0)
         {
             dismountTimer += Time.deltaTime;
             if (dismountTimer >= values.ladderDismountTimer)
