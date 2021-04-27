@@ -180,9 +180,9 @@
                     "interactions": ""
                 },
                 {
-                    "name": "SlideRight",
+                    "name": "Swing",
                     "type": "Button",
-                    "id": "b3659abc-37b0-4659-89ac-ed66fbeb7dc0",
+                    "id": "0e520daa-1dda-4dda-b33f-699fb0c4c941",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -196,17 +196,17 @@
                     "interactions": ""
                 },
                 {
-                    "name": "Swing",
+                    "name": "Fold",
                     "type": "Button",
-                    "id": "0e520daa-1dda-4dda-b33f-699fb0c4c941",
+                    "id": "6770775b-5836-47a5-b413-210f665d6a46",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
                 },
                 {
-                    "name": "Fold",
+                    "name": "StopSliding",
                     "type": "Button",
-                    "id": "6770775b-5836-47a5-b413-210f665d6a46",
+                    "id": "5fc042a8-d002-401e-a347-d2d0c9d594ce",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -325,17 +325,6 @@
                 },
                 {
                     "name": "",
-                    "id": "69cf93c6-96d9-4bad-afda-d1ef8a3ba41d",
-                    "path": "<Keyboard>/d",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SlideRight",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "8350c1af-2b50-4616-8d0f-08632a03f54c",
                     "path": "<Gamepad>/start",
                     "interactions": "",
@@ -355,50 +344,6 @@
                     "action": "Restart",
                     "isComposite": false,
                     "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "40f6879a-e98e-4ebd-bd13-e0d4cf1e2668",
-                    "path": "<Keyboard>/w",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Swing",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "Button With One Modifier",
-                    "id": "656a80ea-dbdb-450f-99eb-2602a534e883",
-                    "path": "ButtonWithOneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Swing",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "Modifier",
-                    "id": "b20a6a8c-c144-4ec1-b184-c54ce2cd9623",
-                    "path": "<Gamepad>/rightTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Swing",
-                    "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "Button",
-                    "id": "6381792f-d1fa-4808-8672-b83c352032dd",
-                    "path": "<Gamepad>/leftTrigger",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Swing",
-                    "isComposite": false,
-                    "isPartOfComposite": true
                 },
                 {
                     "name": "GamePad Axis",
@@ -487,6 +432,83 @@
                     "action": "Fold",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "40f6879a-e98e-4ebd-bd13-e0d4cf1e2668",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Swing",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Button With One Modifier",
+                    "id": "656a80ea-dbdb-450f-99eb-2602a534e883",
+                    "path": "ButtonWithOneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Swing",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Modifier",
+                    "id": "b20a6a8c-c144-4ec1-b184-c54ce2cd9623",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Swing",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Button",
+                    "id": "6381792f-d1fa-4808-8672-b83c352032dd",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Swing",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Button With One Modifier",
+                    "id": "ea7edd00-01f2-4b86-9d95-ae37e996b890",
+                    "path": "ButtonWithOneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StopSliding",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "f3ccfd2d-5c69-4645-a074-900ef4b1852a",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StopSliding",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "button",
+                    "id": "83042497-4d9f-4836-a55b-aad3a7acb2e8",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StopSliding",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         }
