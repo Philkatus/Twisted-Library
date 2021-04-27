@@ -32,7 +32,6 @@ public class PlayerSliding : State
 
     public override void Initialize()
     {
-
         // Assign variables.
         pSM = PlayerStateMachine;
         values = pSM.valuesAsset;
@@ -80,6 +79,41 @@ public class PlayerSliding : State
         pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
         pSM.playerVelocity = pSM.resultingVelocity(pSM.playerVelocity, pathDirection);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, -values.maxSlidingSpeed, values.maxSlidingSpeed);
+
+    }
+
+    public override void ReInitialize()
+    {
+        // Assign variables.
+        pSM = PlayerStateMachine;
+        values = pSM.valuesAsset;
+
+        ladderSizeState = pSM.ladderSizeStateMachine;
+        ladderLength = ladderSizeState.ladderLength;
+        speed = values.climbingSpeedOnLadder;
+        closestShelf = pSM.closestShelf;
+        controller = pSM.controller;
+        ladder = pSM.ladder;
+        pathCreator = closestShelf.pathCreator;
+        path = pathCreator.path;
+
+        // Place the ladder on the path.
+        Vector3 startingPoint = Vector3.zero;
+        if (closestShelf != null)
+        {
+            startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
+        }
+        else
+        {
+            Debug.LogError("Shelf is null!");
+        }
+
+        currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
+        ladder.transform.position = startingPoint;
+        ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
+
+        pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
+        pSM.currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
 
     }
 
@@ -180,7 +214,7 @@ public class PlayerSliding : State
                     if (pSM.CheckForNextClosestShelf(pSM.closestShelf))
                     {
 
-                        pSM.OnSnap();
+                        pSM.OnResnap();
                     }
                     else
                     {
