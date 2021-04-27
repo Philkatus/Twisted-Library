@@ -45,6 +45,7 @@ public class AnimationStateController : MonoBehaviour
     #endregion
 
     float fallTimer = 0;
+    public bool canRoll;
 
     void Start()
     {
@@ -115,13 +116,14 @@ public class AnimationStateController : MonoBehaviour
 
             if (airTimer > 0)
             {
-                airTimer -= Time.deltaTime * 2;
+                airTimer = 0;
             }
         }
 
         if (!controller.isGrounded)
         {
             animator.SetBool("isGrounded", false);
+            //If PC is not on a ladder, increases airTimer
             if (!animator.GetBool("isClimbingLadder"))
             {
                 airTimer += Time.deltaTime;
@@ -135,9 +137,14 @@ public class AnimationStateController : MonoBehaviour
 
     void FallImpact()
     {
-        if (airTimer >= timeForRoll && controller.isGrounded)
+        if (airTimer >= timeForRoll)
+        {
+            canRoll = true;
+        }
+        if (canRoll && controller.isGrounded)
         {
             animator.SetBool("isRolling", true);
+            canRoll = false;
         }
         else
         {
