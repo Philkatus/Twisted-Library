@@ -18,30 +18,41 @@ public class LadderFold : State
 
     public override void Initialize()
     {
-        pSM = PlayerStateMachine;
+        pSM = LadderSizeStateMachine.playerStateMachine;
         time = 0;
         isLerpGoing = true;
+        LadderSizeStateMachine.isFoldingUp = true;
+        LadderSizeStateMachine.startFoldingUpPos = pSM.transform.position;
     }
 
     public override void Fold()
     {
-       // if(pSM.isPerformedFold && isLerpGoing == false)
-       // {
-        ////    isLerpGoing = true;
-        //    time = 0;
-       // }
+        time += Time.deltaTime;
 
         if(isLerpGoing)
         {
-            time += Time.deltaTime;
             LadderSizeStateMachine.ladderLength = Mathf.Lerp(LadderSizeStateMachine.ladderLengthBig, LadderSizeStateMachine.ladderLengthSmall, time / LadderSizeStateMachine.foldSpeed);
             LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
 
             if (time >= LadderSizeStateMachine.foldSpeed)
             {
-                isLerpGoing = false;
+                isLerpGoing = false; 
             }
         }
+
+        if(time >= LadderSizeStateMachine.foldSpeed + LadderSizeStateMachine.extraFoldJumpTimer)
+        {
+            LadderSizeStateMachine.isFoldingUp = false;
+        }
     }
+
+    public override IEnumerator Finish()
+    {
+        //also set false when changing state because that happens before the timer above is over
+        LadderSizeStateMachine.isFoldingUp = false;
+
+        yield break;
+    }
+
 
 }

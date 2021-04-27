@@ -5,10 +5,17 @@ using UnityEngine;
 public class LadderSizeStateMachine : StateMachine
 {
     #region public
+    [Header("Changeable")]
     public float ladderLengthBig;
     public float ladderLengthSmall;
     public float foldSpeed;
+    public float foldJumpMultiplier;
+    public float extraFoldJumpTimer;
+
+    [Header("For reference")]
     public float ladderLength;
+    public bool isFoldingUp;
+    public Vector3 startFoldingUpPos;
     public PlayerMovementStateMachine playerStateMachine;
     public Transform ladderParent;
 

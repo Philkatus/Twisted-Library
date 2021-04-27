@@ -92,8 +92,23 @@ public class PlayerSliding : State
 
     public override void Jump()
     {
-        PlayerStateMachine.playerVelocity.y += values.jumpHeight;
-        PlayerStateMachine.OnFall();
+        if (ladderSizeState.isFoldingUp)
+        {
+            PlayerStateMachine.playerVelocity.y += (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier;
+            Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier);
+            PlayerStateMachine.OnFall();
+        }
+        else
+        {
+            PlayerStateMachine.playerVelocity.y += values.jumpHeight;
+            //Vector3 fromWallVector = (Quaternion.AngleAxis(-90, Vector3.up) * pathDirection).normalized;
+            //fromWallVector = fromWallVector * values.wallJump.z;
+            //Vector3 fromWallValued = new Vector3(fromWallVector.x, values.wallJump.y, fromWallVector.z);
+            //PlayerStateMachine.playerVelocity += fromWallValued;
+            //Debug.Log(fromWallValued);
+            Debug.Log("Normal slide jump");
+            PlayerStateMachine.OnFall();
+        }
     }
 
     public override void Movement()
