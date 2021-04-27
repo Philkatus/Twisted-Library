@@ -308,6 +308,7 @@ public class PlayerSliding : State
         }
         else if (dismountedHalfways)
         {
+            pSM.dismounting = false;
             pSM.OnLadderTop();
         }
     }
