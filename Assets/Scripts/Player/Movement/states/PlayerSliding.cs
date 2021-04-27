@@ -24,10 +24,10 @@ public class PlayerSliding : State
     float dismountTimer;
     bool dismounting;
     bool dismountedHalfways;
+    bool colliding;
     Vector3 dismountStartPos;
     Vector3 pathDirection;
     ValuesScriptableObject values;
-    bool firstMovement = true;
     #endregion
 
     public override void Initialize()
@@ -36,9 +36,9 @@ public class PlayerSliding : State
         // Assign variables.
         pSM = PlayerStateMachine;
         values = pSM.valuesAsset;
-        Debug.Log("on Start Initialize " + pSM.transform.position.y);
+
         ladderSizeState = pSM.ladderSizeStateMachine;
-        ladderLength = ladderSizeState.ladderLengthBig;
+        ladderLength = ladderSizeState.ladderLength;
         speed = values.climbingSpeedOnLadder;
         closestShelf = pSM.closestShelf;
         controller = pSM.controller;
@@ -80,7 +80,7 @@ public class PlayerSliding : State
         pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
         pSM.playerVelocity = pSM.resultingVelocity(pSM.playerVelocity, pathDirection);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, -values.maxSlidingSpeed, values.maxSlidingSpeed);
-        Debug.Log("on End Initialize " + pSM.transform.position.y);
+
     }
 
     public override IEnumerator Finish()
@@ -92,48 +92,50 @@ public class PlayerSliding : State
 
     public override void Jump()
     {
-        PlayerStateMachine.playerVelocity.y += values.jumpHeight;
-        PlayerStateMachine.OnFall();
+        if (ladderSizeState.isFoldingUp)
+        {
+            PlayerStateMachine.playerVelocity.y += (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier;
+            Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier);
+            PlayerStateMachine.OnFall();
+        }
+        else
+        {
+            PlayerStateMachine.playerVelocity.y += values.jumpHeight;
+            //Vector3 fromWallVector = (Quaternion.AngleAxis(-90, Vector3.up) * pathDirection).normalized;
+            //fromWallVector = fromWallVector * values.wallJump.z;
+            //Vector3 fromWallValued = new Vector3(fromWallVector.x, values.wallJump.y, fromWallVector.z);
+            //PlayerStateMachine.playerVelocity += fromWallValued;
+            //Debug.Log(fromWallValued);
+            Debug.Log("Normal slide jump");
+            PlayerStateMachine.OnFall();
+        }
     }
 
     public override void Movement()
     {
         if (!dismounting)
         {
-            if (firstMovement)
-            {
-                Debug.Log("beforeFirstMovement" + pSM.transform.position.y);
-            }
-
             // Go up and down.
             if (!CheckForCollision(pSM.forwardInput * pSM.ladderDirection))
             {
                 pSM.HeightOnLadder += pSM.forwardInput * speed * Time.deltaTime;
                 pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
-                pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderLength * pSM.HeightOnLadder;
+                pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder; //pos on ladder
             }
-            if (firstMovement)
-            {
-                Debug.Log("duringFirstMovement" + pSM.transform.position.y);
-            }
+
             // Move horizontally.
             pathDirection = path.GetDirectionAtDistance(currentDistance);
 
             // Get sideways input, no input if both buttons held down.
             float input = 0;
-            if (pSM.slideLeftAction.phase == InputActionPhase.Started && pSM.slideRightAction.phase == InputActionPhase.Started)
+            if (pSM.slideAction.triggered && pSM.slideAction.ReadValue<float>() == 0)
             {
-                pSM.playerVelocity = Vector3.zero;
-                input = 0;
+                pSM.playerVelocity -= pSM.resultingVelocity(pSM.playerVelocity, pathDirection);
+
             }
             else
             {
-                input = pSM.slideLeftAction.ReadValue<float>();
-                input = input * -1;
-                if (input == 0)
-                {
-                    input = pSM.slideRightAction.ReadValue<float>();
-                }
+                input = pSM.slideAction.ReadValue<float>();
             }
 
             //playervelocity increased with input
@@ -143,7 +145,7 @@ public class PlayerSliding : State
             float resultingSpeed = pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
 
             //speed Clamp
-            pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude * (100 - values.slidingDragPercentage) / 100, -values.maxSlidingSpeed, values.maxSlidingSpeed);
+            pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * values.slidingDragPercentage / 100, -values.maxSlidingSpeed, values.maxSlidingSpeed);
 
             //moving the object
             if (!CheckForCollision(pSM.playerVelocity))
@@ -154,12 +156,6 @@ public class PlayerSliding : State
             else
             {
                 pSM.playerVelocity = Vector3.zero;
-            }
-
-            if (firstMovement)
-            {
-                Debug.Log("afterFirstMovement" + pSM.transform.position.y);
-
             }
 
             if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
@@ -198,6 +194,12 @@ public class PlayerSliding : State
         {
             Dismount();
         }
+
+        if (pSM.isPerformedFold)
+        {
+            Debug.Log("trying to fold");
+            ladderSizeState.OnFold();
+        }
     }
 
     bool CheckForCollision(Vector3 moveDirection)
@@ -206,7 +208,7 @@ public class PlayerSliding : State
         Vector3 p1 = pSM.transform.position + controller.center + Vector3.up * -controller.height / 1.5f;
         Vector3 p2 = p1 + Vector3.up * controller.height;
 
-        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection, out hit, 0.1f, LayerMask.GetMask("SlidingObstacle")))
+        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection, out hit, 0.2f, LayerMask.GetMask("SlidingObstacle")))
         {
             return true;
         }

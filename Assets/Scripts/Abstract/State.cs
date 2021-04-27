@@ -29,11 +29,21 @@ public abstract class State
     {
 
     }
-
-    public virtual IEnumerator Snap()
+    public virtual void Fold()
     {
-        yield return null;
+
     }
+
+    public virtual void Snap()
+    {
+       
+    }
+
+    public virtual void Swing() 
+    {
+
+    }
+
 
     public virtual IEnumerator ChangeLadderSize()
     {

@@ -172,9 +172,9 @@
                     "interactions": ""
                 },
                 {
-                    "name": "SlideLeft",
+                    "name": "Slide",
                     "type": "Button",
-                    "id": "85fb1e14-3c8b-41da-9821-4ffb3ba90783",
+                    "id": "dbd8d5be-1c0d-4b70-b73c-10935d0b0113",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -183,6 +183,30 @@
                     "name": "SlideRight",
                     "type": "Button",
                     "id": "b3659abc-37b0-4659-89ac-ed66fbeb7dc0",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Restart",
+                    "type": "Button",
+                    "id": "bf2a30d0-a707-4326-b76a-92067d0697f8",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Swing",
+                    "type": "Button",
+                    "id": "0e520daa-1dda-4dda-b33f-699fb0c4c941",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Fold",
+                    "type": "Button",
+                    "id": "6770775b-5836-47a5-b413-210f665d6a46",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
@@ -301,23 +325,166 @@
                 },
                 {
                     "name": "",
-                    "id": "1ce80467-b3b3-4342-a796-fe6370633bd4",
-                    "path": "<Gamepad>/leftShoulder",
+                    "id": "69cf93c6-96d9-4bad-afda-d1ef8a3ba41d",
+                    "path": "<Keyboard>/d",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SlideLeft",
+                    "action": "SlideRight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "69cf93c6-96d9-4bad-afda-d1ef8a3ba41d",
+                    "id": "8350c1af-2b50-4616-8d0f-08632a03f54c",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Restart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b58913a1-c7ac-4c85-9c88-a197f43a7a7c",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Restart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "40f6879a-e98e-4ebd-bd13-e0d4cf1e2668",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Swing",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Button With One Modifier",
+                    "id": "656a80ea-dbdb-450f-99eb-2602a534e883",
+                    "path": "ButtonWithOneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Swing",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Modifier",
+                    "id": "b20a6a8c-c144-4ec1-b184-c54ce2cd9623",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Swing",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "Button",
+                    "id": "6381792f-d1fa-4808-8672-b83c352032dd",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Swing",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "GamePad Axis",
+                    "id": "9fa5f3ae-ebd8-44f2-8641-d32d35962565",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slide",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "a99a995a-44a2-416e-a74f-62bdbe980ce3",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slide",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "5737f7f6-8626-4a53-94c8-babc1658a585",
                     "path": "<Gamepad>/rightShoulder",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SlideRight",
+                    "action": "Slide",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "KeyBoardAxis",
+                    "id": "fc28284a-732c-4713-9032-008bc011760e",
+                    "path": "1DAxis",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slide",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "negative",
+                    "id": "504090f3-4f09-4050-a028-819fca5d132d",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slide",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "positive",
+                    "id": "a68755ff-c0bb-4335-94c1-18f5ae4d7743",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Slide",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "191dc289-b66f-4c68-9d99-2b00fb2ed60c",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6342a9e8-ba72-4cf1-85cf-ecab6be6f3b3",
+                    "path": "<Keyboard>/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fold",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

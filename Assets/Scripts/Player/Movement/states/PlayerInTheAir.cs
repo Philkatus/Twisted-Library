@@ -31,7 +31,12 @@ public class PlayerInTheAir : State
         PlayerMovementStateMachine pSM = PlayerStateMachine;
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
-        Vector3 direction = directionForward * pSM.forwardInput + directionRight * pSM.sideWaysInput; ;
+        Vector3 direction = directionForward * pSM.forwardInput + directionRight * pSM.sideWaysInput; 
+
+        if (pSM.slidingInput != 0 || pSM.swingingInput != 0)
+        {
+            pSM.TryToSnapToShelf();
+        }
 
         if (direction != Vector3.zero)
         {
@@ -75,9 +80,9 @@ public class PlayerInTheAir : State
         }
     }
 
-    public override IEnumerator Snap()
+    public override void Snap()
     {
         PlayerStateMachine.OnSnap();
-        yield return null;
+        
     }
 }
