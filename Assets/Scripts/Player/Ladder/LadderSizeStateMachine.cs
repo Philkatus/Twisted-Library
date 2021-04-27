@@ -44,6 +44,7 @@ public class LadderSizeStateMachine : StateMachine
         if (State.GetType() != new LadderBig(this).GetType())
         {
             SetState(new LadderBig(this));
+            playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderBig;
 
         }
     }
@@ -56,6 +57,7 @@ public class LadderSizeStateMachine : StateMachine
         if (State.GetType() != new LadderSmall(this).GetType())
         {
             SetState(new LadderSmall(this));
+            playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderSmall;
         }
     }
 
@@ -68,10 +70,12 @@ public class LadderSizeStateMachine : StateMachine
         if (State.GetType() != new LadderFold(this).GetType())
         {
             SetState(new LadderFold(this));
+            playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderFold;
         }
         else if (State.GetType() != new LadderUnfold(this).GetType())
         {
             SetState(new LadderUnfold(this));
+            playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderUnfold;
         }
     }
 
