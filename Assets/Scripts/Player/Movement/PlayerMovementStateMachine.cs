@@ -27,6 +27,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool isPerformedFold;
 
     public Vector3 playerVelocity;
+    public bool isWallJumping;
     
 
     public List<Shelf> possibleShelves;

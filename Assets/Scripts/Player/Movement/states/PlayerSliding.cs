@@ -134,12 +134,19 @@ public class PlayerSliding : State
         }
         else
         {
-            PlayerStateMachine.playerVelocity.y += values.jumpHeight;
-            //Vector3 fromWallVector = (Quaternion.AngleAxis(-90, Vector3.up) * pathDirection).normalized;
-            //fromWallVector = fromWallVector * values.wallJump.z;
-            //Vector3 fromWallValued = new Vector3(fromWallVector.x, values.wallJump.y, fromWallVector.z);
-            //PlayerStateMachine.playerVelocity += fromWallValued;
-            //Debug.Log(fromWallValued);
+            if(values.wallJump != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
+            {
+                Vector3 fromWallVector = (Quaternion.AngleAxis(90, Vector3.up) * pathDirection).normalized;
+                fromWallVector = fromWallVector * values.wallJump.z;
+                Vector3 fromWallValued = new Vector3(fromWallVector.x, values.wallJump.y, fromWallVector.z);
+                PlayerStateMachine.playerVelocity += fromWallValued;
+                PlayerStateMachine.isWallJumping = true;
+            }
+            else
+            {
+                PlayerStateMachine.playerVelocity.y += values.jumpHeight;
+            }
+
             Debug.Log("Normal slide jump");
             PlayerStateMachine.OnFall();
         }
