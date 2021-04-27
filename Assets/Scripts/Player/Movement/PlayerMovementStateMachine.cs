@@ -80,6 +80,7 @@ public class PlayerMovementStateMachine : StateMachine
 
 
         jumpAction.performed += context => State.Jump();
+        snapAction.performed += context => TryToSnapToShelf();
         #endregion
     }
 

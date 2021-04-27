@@ -38,10 +38,12 @@ public class PlayerWalking : State
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
         Vector3 direction = directionForward * pSM.forwardInput + directionRight * pSM.sideWaysInput;
 
+        /* Philips snapping
         if(pSM.slidingInput!=0 || pSM.swingingInput !=0)
         {
             pSM.TryToSnapToShelf();
         }
+        */
 
 
         if (direction != Vector3.zero)
