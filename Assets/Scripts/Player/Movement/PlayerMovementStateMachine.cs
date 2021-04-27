@@ -18,7 +18,7 @@ public class PlayerMovementStateMachine : StateMachine
     public LadderState ladderState;
     [Space]
     public float swingingPosition;
-    public float HeightOnLadder=-1;
+    public float HeightOnLadder = -1;
     public float currentDistance;
     public float sideWaysInput;
     public float forwardInput;
@@ -27,7 +27,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool isPerformedFold;
 
     public Vector3 playerVelocity;
-    
+
 
     public List<Shelf> possibleShelves;
     public Shelf closestShelf;
@@ -36,16 +36,18 @@ public class PlayerMovementStateMachine : StateMachine
     public CharacterController controller;
     [HideInInspector] public InputAction slideAction;
     [HideInInspector] public InputAction swingAction;
+    [HideInInspector] public InputAction stopSlidingAction;
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
-    [HideInInspector] public Vector3 ladderDirection
+    [HideInInspector]
+    public Vector3 ladderDirection
     {
         get
         {
             return ladderMesh.right;
         }
     }
-    [HideInInspector]public Transform myParent;
+    [HideInInspector] public Transform myParent;
     #endregion
 
     #region Private
@@ -73,10 +75,10 @@ public class PlayerMovementStateMachine : StateMachine
         jumpAction = playerControlsMap.FindAction("Jump");
         moveAction = playerControlsMap.FindAction("Movement");
         snapAction = playerControlsMap.FindAction("Snap");
-        slideAction = playerControlsMap.FindAction("Slide");    
+        slideAction = playerControlsMap.FindAction("Slide");
         swingAction = playerControlsMap.FindAction("Swing");
         foldAction = playerControlsMap.FindAction("Fold");
-
+        stopSlidingAction = playerControlsMap.FindAction("StopSliding");
 
         jumpAction.performed += context => State.Jump();
         #endregion
@@ -92,7 +94,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         if (CheckForShelf())
         {
-           State.Snap();
+            State.Snap();
         }
     }
 
@@ -219,10 +221,10 @@ public class PlayerMovementStateMachine : StateMachine
 
     public enum LadderState
     {
-       LadderBig,
-       LadderSmall,
-       LadderFold,
-       LadderUnfold
+        LadderBig,
+        LadderSmall,
+        LadderFold,
+        LadderUnfold
 
     };
 
@@ -244,7 +246,7 @@ public class PlayerMovementStateMachine : StateMachine
         SetState(new PlayerWalking(this));
         playerState = PlayerState.walking;
         ladderSizeStateMachine.OnShrink();
-        
+
     }
     ///<summary>
     /// Gets called when the player leaves the ladder on the bottom.
@@ -254,7 +256,7 @@ public class PlayerMovementStateMachine : StateMachine
         SetState(new PlayerInTheAir(this));
         playerState = PlayerState.inTheAir;
         ladderSizeStateMachine.OnShrink();
-        
+
     }
     ///<summary>
     /// Gets called when the player snaps his ladder to a shelf.
@@ -268,12 +270,12 @@ public class PlayerMovementStateMachine : StateMachine
             SetState(new PlayerSwinging(this));
             playerState = PlayerState.swinging;
         }
-        else 
+        else
         {
             SetState(new PlayerSliding(this));
             playerState = PlayerState.sliding;
         }
-      
+
     }
     ///<summary>
     /// Gets called when the player changes to in the air.

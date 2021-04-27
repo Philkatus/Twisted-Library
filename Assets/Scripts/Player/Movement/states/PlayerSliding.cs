@@ -24,7 +24,7 @@ public class PlayerSliding : State
     float dismountTimer;
     bool dismounting;
     bool dismountedHalfways;
-    bool colliding;
+    bool stopping;
     Vector3 dismountStartPos;
     Vector3 pathDirection;
     ValuesScriptableObject values;
@@ -81,6 +81,8 @@ public class PlayerSliding : State
         pSM.playerVelocity = pSM.resultingVelocity(pSM.playerVelocity, pathDirection);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, -values.maxSlidingSpeed, values.maxSlidingSpeed);
 
+        pSM.stopSlidingAction.started += context => stopping = true;
+        pSM.stopSlidingAction.canceled += context => stopping = false;
     }
 
     public override IEnumerator Finish()
@@ -148,7 +150,7 @@ public class PlayerSliding : State
             pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * values.slidingDragPercentage / 100, -values.maxSlidingSpeed, values.maxSlidingSpeed);
 
             //moving the object
-            if (!CheckForCollision(pSM.playerVelocity))
+            if (!CheckForCollision(pSM.playerVelocity) && !stopping)
             {
                 pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
                 pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
