@@ -101,6 +101,11 @@ public class PlayerSliding : State
         else
         {
             PlayerStateMachine.playerVelocity.y += values.jumpHeight;
+            //Vector3 fromWallVector = (Quaternion.AngleAxis(-90, Vector3.up) * pathDirection).normalized;
+            //fromWallVector = fromWallVector * values.wallJump.z;
+            //Vector3 fromWallValued = new Vector3(fromWallVector.x, values.wallJump.y, fromWallVector.z);
+            //PlayerStateMachine.playerVelocity += fromWallValued;
+            //Debug.Log(fromWallValued);
             Debug.Log("Normal slide jump");
             PlayerStateMachine.OnFall();
         }
