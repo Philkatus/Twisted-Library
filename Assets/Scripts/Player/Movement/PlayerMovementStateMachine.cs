@@ -12,21 +12,22 @@ public class PlayerMovementStateMachine : StateMachine
     [Tooltip("Change to use different variable value sets. Found in Assets-> Scripts-> Cheat Sheets.")]
     public ValuesScriptableObject valuesAsset;
     public InputActionAsset actionAsset;
-
+    [Space]
     [Header("For reference")]
+    public PlayerState playerState;
+    public LadderState ladderState;
+    [Space]
     public float swingingPosition;
     public float HeightOnLadder=-1;
     public float currentDistance;
-    public Quaternion ladderWalkingRotation;
-    public Vector3 ladderWalkingPosition;
+    public float sideWaysInput;
+    public float forwardInput;
+    public float swingingInput;
+    public float slidingInput;
+    public bool isPerformedFold;
+
     public Vector3 playerVelocity;
-    public Vector3 ladderDirection
-    {
-        get
-        {
-            return ladderMesh.right;
-        }
-    }
+    
 
     public List<Shelf> possibleShelves;
     public Shelf closestShelf;
@@ -35,13 +36,15 @@ public class PlayerMovementStateMachine : StateMachine
     public CharacterController controller;
     [HideInInspector] public InputAction slideAction;
     [HideInInspector] public InputAction swingAction;
-
-    public float sideWaysInput;
-    public float forwardInput;
-    public float swingingInput;
-    public float slidingInput;
-    public bool isPerformedFold;
-
+    [HideInInspector] public Quaternion ladderWalkingRotation;
+    [HideInInspector] public Vector3 ladderWalkingPosition;
+    [HideInInspector] public Vector3 ladderDirection
+    {
+        get
+        {
+            return ladderMesh.right;
+        }
+    }
     [HideInInspector]public Transform myParent;
     #endregion
 
@@ -205,6 +208,24 @@ public class PlayerMovementStateMachine : StateMachine
     }
     #endregion
 
+    public enum PlayerState
+    {
+        walking,
+        inTheAir,
+        sliding,
+        swinging
+
+    };
+
+    public enum LadderState
+    {
+       LadderBig,
+       LadderSmall,
+       LadderFold,
+       LadderUnfold
+
+    };
+
     #region functions to change states
     ///<summary>
     /// Gets called when the player lands on the floor.
@@ -212,6 +233,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLand()
     {
         SetState(new PlayerWalking(this));
+        playerState = PlayerState.walking;
         HeightOnLadder = -1;
     }
     ///<summary>
@@ -220,7 +242,9 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLadderTop()
     {
         SetState(new PlayerWalking(this));
+        playerState = PlayerState.walking;
         ladderSizeStateMachine.OnShrink();
+        
     }
     ///<summary>
     /// Gets called when the player leaves the ladder on the bottom.
@@ -228,7 +252,9 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLadderBottom()
     {
         SetState(new PlayerInTheAir(this));
+        playerState = PlayerState.inTheAir;
         ladderSizeStateMachine.OnShrink();
+        
     }
     ///<summary>
     /// Gets called when the player snaps his ladder to a shelf.
@@ -236,13 +262,16 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnSnap()
     {
         ladderSizeStateMachine.OnGrow();
+
         if (valuesAsset.useSwinging)
         {
             SetState(new PlayerSwinging(this));
+            playerState = PlayerState.swinging;
         }
         else 
         {
             SetState(new PlayerSliding(this));
+            playerState = PlayerState.sliding;
         }
       
     }
@@ -252,6 +281,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnFall()
     {
         SetState(new PlayerInTheAir(this));
+        playerState = PlayerState.inTheAir;
         ladderSizeStateMachine.OnShrink();
         HeightOnLadder = -1;
     }
