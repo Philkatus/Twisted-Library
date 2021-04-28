@@ -46,6 +46,7 @@ public class AnimationStateController : MonoBehaviour
 
     float fallTimer = 0;
     public bool canRoll;
+    float jumpingTimer = 0;
 
     void Start()
     {
@@ -83,8 +84,20 @@ public class AnimationStateController : MonoBehaviour
         animator.SetFloat(SideInputHash, sideInput);
         animator.SetFloat(ForwardInputHash, forwardInput);
 
-        Sliding();
+
+
+        if(animator.GetBool("isJumping") == true)
+        {
+            jumpingTimer += Time.deltaTime;
+            if (jumpingTimer > 0.1f)
+            {
+                animator.SetBool("isJumping", false);
+                jumpingTimer = 0;
+            }
+        }
+
         GroundedCheck();
+        Sliding();
         Falling();
         HeadAim();
         FallImpact();       
@@ -157,8 +170,8 @@ public class AnimationStateController : MonoBehaviour
         //Falling
         if (!controller.isGrounded && animator.GetBool("isClimbingLadder") == false)
         {
-            animator.SetBool("isJumping", false);
-            animator.SetBool("isGrounded", false);
+            //animator.SetBool("isJumping", false);
+            //animator.SetBool("isGrounded", false);
 
             //Added Falltimer to prevent Falling before climbing
             fallTimer += Time.deltaTime;
@@ -176,13 +189,10 @@ public class AnimationStateController : MonoBehaviour
 
     void LadderJump()
     {
-        //start Jump
-        if (controller.isGrounded)
-        {
-            animator.SetBool("isJumping", true);
-            animator.SetBool("isClimbingLadder", false);
-            rigBuilder.enabled = true;
-        }
+        Debug.Log("AHHHHHHHH");
+        animator.SetBool("isJumping", true);
+        animator.SetBool("isClimbingLadder", false);
+        rigBuilder.enabled = true;        
     }
 
     void Sliding()
@@ -196,7 +206,7 @@ public class AnimationStateController : MonoBehaviour
         else
         {
             animator.SetBool("isClimbingLadder", false);
-            rigBuilder.enabled = false;
+            rigBuilder.enabled = true;
         }
     }   
 }
