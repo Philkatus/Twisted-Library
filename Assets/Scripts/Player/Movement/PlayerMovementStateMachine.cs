@@ -29,6 +29,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     public Vector3 playerVelocity;
     public bool isWallJumping;
+    public bool animationControllerisFoldingJumped;
 
     public List<Shelf> possibleShelves;
     public Shelf closestShelf;
