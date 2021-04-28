@@ -9,6 +9,8 @@ public class PlayerSwinging : PlayerSliding
     ValuesScriptableObject stats;
     Shelf closestShelf;
 
+    Vector3 swingingVelocity;
+
     float SwingingDistance;
     float currentMovementForce;
     int currentMovementDirection; // 1 or -1
@@ -38,13 +40,14 @@ public class PlayerSwinging : PlayerSliding
 
         VertexPath path = pSM.closestShelf.pathCreator.path;
         Vector3 SwingingDirection = pSM.ladderMesh.forward;
+        Vector3 swingingAxis = pSM.ladder.right;
         #region first try
-        /*
+        
         pSM.playerVelocity -= SwingingDirection * stats.SwingingGravity * Mathf.Sin(SwingingDistance) * Time.deltaTime;
             
 
 
-        //pSM.playerVelocity -= SwingingDirection * stats.SwingingAcceleration * pSM.swingingInput * Time.deltaTime * Time.deltaTime*10 ;
+        pSM.playerVelocity -= SwingingDirection * stats.SwingingAcceleration * pSM.swingingInput * Time.deltaTime * Time.deltaTime*10 ;
         Debug.Log(SwingingDirection + " "+pSM.playerVelocity.normalized +" "+ pSM.resultingSpeed(pSM.playerVelocity.normalized, SwingingDirection));
         if (pSM.resultingSpeed(pSM.playerVelocity.normalized, SwingingDirection) <= 0)
         {
@@ -66,71 +69,13 @@ public class PlayerSwinging : PlayerSliding
         
         pSM.swingingPosition = Mathf.Repeat(pSM.swingingPosition,360);
         SwingingDistance = Vector3.Distance(pSM.ladder.transform.position+ pSM.ladderDirection, pSM.ladder.transform.position+ Vector3.up) ;
-
-        */
+        
+        
         #endregion
 
-        #region second try
-        /*
-        float PotentialEnergy=0;
-        float KinetikEnergy = 0;
-        float TotalEnergy = 0;
-        float maximumSwingEnergy=20;
-        TotalEnergy += pSM.swingingInput * stats.SwingingAcceleration * Time.deltaTime;
-        TotalEnergy = Mathf.Clamp(TotalEnergy, 0, maximumSwingEnergy);
-        KinetikEnergy = TotalEnergy - PotentialEnergy;
-
-        if (pSM.SwinginForwards) 
-        {
-            pSM.playerVelocity -= SwingingDirection *stats.SwingingAcceleration  * Time.deltaTime;
-
-            if (pSM.resultingSpeed(SwingingDirection, Vector3.down) >= 0)
-            {
-                KinetikEnergy += stats.SwingingAcceleration * Time.deltaTime;
-                PotentialEnergy = TotalEnergy - KinetikEnergy;
-            }
-            else if (pSM.resultingSpeed(SwingingDirection, Vector3.down) < 0)
-            {
-                PotentialEnergy += stats.SwingingAcceleration * Time.deltaTime;
-                KinetikEnergy = TotalEnergy - PotentialEnergy;
-            }
-
-        }
-        else  
-        {
-            pSM.playerVelocity += SwingingDirection *stats.SwingingAcceleration  * Time.deltaTime;
-
-            if (pSM.resultingSpeed(SwingingDirection, Vector3.down) < 0)
-            {
-                KinetikEnergy += stats.SwingingAcceleration * Time.deltaTime;
-                PotentialEnergy = TotalEnergy - KinetikEnergy;
-            }
-            else if (pSM.resultingSpeed(SwingingDirection, Vector3.down) >= 0)
-            {
-                PotentialEnergy += stats.SwingingAcceleration * Time.deltaTime;
-                KinetikEnergy = TotalEnergy - PotentialEnergy;
-            }
-        }
-        
-
-        if (KinetikEnergy <= 0) 
-        {
-            pSM.SwinginForwards = !pSM.SwinginForwards;
-        }
-
-        float swingingVelocity = pSM.resultingSpeed(pSM.playerVelocity, SwingingDirection);
-        pSM.swingingPosition -= swingingVelocity;
-        swingingVelocity = Mathf.Clamp(swingingVelocity, -stats.maxSwingSpeed, stats.maxSwingSpeed);
-        Quaternion targetRotation = Quaternion.AngleAxis(-swingingVelocity, pSM.ladder.right);
-        pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
-
-        pSM.swingingPosition = Mathf.Repeat(pSM.swingingPosition, 360);
-        
-
-        */
-        #endregion
         #region MariaTry 
 
+        /*
         //nimmt den y Wert der Leiter im Einheitskreis (wert liegt zwischen -1 & 1)
         float relativeHeight = -pSM.ladderDirection.normalized.y;
 
@@ -141,7 +86,7 @@ public class PlayerSwinging : PlayerSliding
         float gravityMultiplier = relativeHeight * stats.SwingingGravity;
 
         //nimmt aus der Geradigen Bewegung einen float force: wie viel Kraft hat die Bewegung gerade?
-        currentMovementForce = pSM.playerVelocity.magnitude / (SwingingDirection.magnitude*Time.deltaTime);
+        currentMovementForce = pSM.playerVelocity.magnitude / (SwingingDirection.magnitude * Time.deltaTime);
         Debug.Log(pSM.playerVelocity.magnitude + " / " + SwingingDirection.magnitude + " = " + currentMovementForce);
         //currentMovementForce = Mathf.Clamp(currentMovementForce, 0, stats.maxSwingSpeed);
 
@@ -165,14 +110,14 @@ public class PlayerSwinging : PlayerSliding
             Debug.DrawRay(pSM.transform.position, toRestingPoint * stats.SwingingDeceleration, Color.red); //Deceleration Force
         }
         //Gravity 
-        pSM.playerVelocity +=  toRestingPoint * gravityMultiplier;
+        pSM.playerVelocity += toRestingPoint * gravityMultiplier;
 
         // PlayerForce & Bewegung in die Richtige Richtung
-        pSM.playerVelocity += currentMovementDirection*-10 * SwingingDirection; // * currentMovementForce;
+        pSM.playerVelocity += currentMovementDirection * -10 * SwingingDirection; // * currentMovementForce;
 
         //Debugs
         Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.blue); //playerVelocity
-        Debug.DrawRay(pSM.transform.position, (currentMovementDirection*-10) * SwingingDirection , Color.green); //Constant Movement* currentMovementForce
+        Debug.DrawRay(pSM.transform.position, (currentMovementDirection * -10) * SwingingDirection, Color.green); //Constant Movement* currentMovementForce
         Debug.DrawRay(pSM.transform.position, SwingingDirection * pSM.swingingInput * stats.SwingingAcceleration, Color.black); //Input Movement
         Debug.DrawRay(pSM.transform.position, toRestingPoint * gravityMultiplier, Color.yellow); //Gravity Movement
 
@@ -191,8 +136,39 @@ public class PlayerSwinging : PlayerSliding
 
         //
         previousInput = thisInput;
+        */
+        #endregion
+
+        #region final try
+        /*
+        //acceleration durch input
+        swingingVelocity += SwingingDirection *pSM.swingingInput * stats.SwingingAcceleration * Time.deltaTime;
+        Debug.DrawRay(pSM.transform.position, swingingVelocity, Color.red);
+        //Decceleration ohne input
+
+        //gravity
+        SwingingDistance = Vector3.Distance(pSM.ladder.transform.position + pSM.ladderDirection, pSM.ladder.transform.position + Vector3.up);
+        //swingingVelocity -= SwingingDirection * stats.SwingingGravity *Time.deltaTime * Mathf.Sin(SwingingDistance);
+        Debug.DrawRay(pSM.transform.position, pSM.resultingVelocity(Vector3.down * stats.SwingingGravity * Time.deltaTime, SwingingDirection), Color.blue);
+        //clamp
+        //swingingVelocity = swingingVelocity.normalized * Mathf.Clamp(swingingVelocity.magnitude, 0, stats.maxSwingSpeed);
+        //apply Player Velocity
+        Debug.DrawRay(pSM.transform.position, swingingVelocity, Color.green);
+        //rotate the ladder 
+
+
+        float targetAngle = Vector3.SignedAngle(pSM.ladderDirection, pSM.ladderDirection + swingingVelocity, swingingAxis);
+        Quaternion targetRotation = Quaternion.AngleAxis(targetAngle, pSM.ladder.right);
+        pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
+        */
+        //DebugRays
+      
+
+
 
         #endregion
+
+
     }
 
 
