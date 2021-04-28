@@ -132,6 +132,7 @@ public class PlayerSliding : State
             PlayerStateMachine.playerVelocity.y += (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier;
             Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier);
             PlayerStateMachine.OnFall();
+            pSM.animationControllerisFoldingJumped = true;
         }
         else
         {
@@ -150,6 +151,7 @@ public class PlayerSliding : State
 
             Debug.Log("Normal slide jump");
             PlayerStateMachine.OnFall();
+            pSM.animationControllerisFoldingJumped = false;
         }
     }
 
