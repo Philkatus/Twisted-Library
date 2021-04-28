@@ -87,6 +87,11 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Update()
     {
+
+    }
+
+    private void FixedUpdate()
+    {
         GetInput();
         State.Movement();
     }
