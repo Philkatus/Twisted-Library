@@ -13,6 +13,37 @@ public class PlayerSwinging : PlayerSliding
     float currentMovementForce;
     int currentMovementDirection; // 1 or -1
     float previousInput;
+
+    GameObject Pivot;
+    GameObject Bob;
+
+    float mass = 1f;
+    float ropeLength = 2f;
+
+    Vector3 bobStartingPosition;
+    bool bobStartingPositionSet = false;
+
+    // You could define these in the `PendulumUpdate()` loop 
+    // But we want them in the class scope so we can draw gizmos `OnDrawGizmos()`
+    private Vector3 gravityDirection;
+    private Vector3 tensionDirection;
+
+    private Vector3 tangentDirection;
+    private Vector3 pendulumSideDirection;
+
+    private float tensionForce = 0f;
+    private float gravityForce = 0f;
+
+
+    // Keep track of the current velocity
+    Vector3 currentVelocity = new Vector3();
+
+    // We use these to smooth between values in certain framerate situations in the `Update()` loop
+    Vector3 currentStatePosition;
+    Vector3 previousStatePosition;
+
+    float ladderLength; 
+
     public override void Initialize()
     {
         pSM = PlayerStateMachine;
@@ -20,15 +51,26 @@ public class PlayerSwinging : PlayerSliding
         pSM.swingingPosition = 0;
         base.Initialize();
         closestShelf = pSM.closestShelf;
-        currentMovementForce = 1;
-        currentMovementDirection = 1;
-        float previousInput = 1;
+
+        //new try
+        ladderLength = pSM.ladder.GetComponent<LadderSizeStateMachine>().ladderLength;
+        Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
+        
+        Bob = Pivot.transform.GetChild(1).gameObject;
+        Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderLength;
+
+        bobStartingPosition = Bob.transform.position;
+        bobStartingPositionSet = true;
+        PendulumInit();
     }
+
+    float t = 0f;
+    float dt = 0.01f;
+    float currentTime = 0f;
+    float accumulator = 0f;
 
     public override void Movement()
     {
-
-
         //base.Movement();
         Swing();
     }
@@ -130,7 +172,7 @@ public class PlayerSwinging : PlayerSliding
         */
         #endregion
         #region MariaTry 
-
+        /*
         //nimmt den y Wert der Leiter im Einheitskreis (wert liegt zwischen -1 & 1)
         float relativeHeight = -pSM.ladderDirection.normalized.y;
 
@@ -191,10 +233,117 @@ public class PlayerSwinging : PlayerSliding
 
         //
         previousInput = thisInput;
+        */
+        #endregion
+        #region PendulumTry
+
+        //Wie viel Zeit vergeht zwischen 2 Frames? Warum nicht time.deltatime??
+        float frameTime = Time.time - currentTime;
+        currentTime = Time.time;
+
+        accumulator += frameTime;
+
+        //immer wenn accumulator 0.01f ist, startet er eine while schleife, die die neue current Position berechnet. Das macht er (dt/accumulator)-Mal
+        while (accumulator >= dt)
+        {
+            previousStatePosition = currentStatePosition;
+            currentStatePosition = PendulumUpdate(currentStatePosition, dt);
+            //integrate(state, this.t, this.dt);
+            accumulator -= this.dt;
+            this.t += this.dt;
+        }
+
+        float alpha = this.accumulator / this.dt;
+
+        Vector3 newPosition = this.currentStatePosition * alpha + this.previousStatePosition * (1f - alpha);
+
+        this.Bob.transform.position = newPosition;
 
         #endregion
     }
+    void PendulumInit()
+    {
+        // Get the initial rope length from how far away the bob is now
+        this.ropeLength = Vector3.Distance(Pivot.transform.position, Bob.transform.position);
+        this.ResetPendulumForces();
+    }
 
+    void MoveBob(Vector3 resetBobPosition)
+    {
+        // Put the bob back in the place we first saw it at in `Start()`
+        this.Bob.transform.position = resetBobPosition;
+
+        // Set the transition state
+        this.currentStatePosition = resetBobPosition;
+    }
+
+
+    Vector3 PendulumUpdate(Vector3 currentStatePosition, float deltaTime)
+    {
+        // Erstellt eine Gravity und addiert sie auf die currentVelocity
+        gravityForce = mass * stats.SwingingGravity;
+        gravityDirection = Physics.gravity.normalized;
+        currentVelocity += gravityDirection * gravityForce * deltaTime;
+
+        Vector3 pivot_p = Pivot.transform.position;
+        Vector3 bob_p = this.currentStatePosition;
+
+        //berechnet, wie weit Pivot & bob voneinander entfernt wären, wenn die Gravity straight auf den Bob addiert wird
+        Vector3 auxiliaryMovementDelta = currentVelocity * deltaTime;
+        float distanceAfterGravity = Vector3.Distance(pivot_p, bob_p + auxiliaryMovementDelta);
+
+        // If at the end of the rope: Technisch wollen wir sowas nicht, weil der Punkt immer am Ende des Seils ist/sein sollen ? müssen wir iwie ändern 
+        if (distanceAfterGravity > this.ropeLength || Mathf.Approximately(distanceAfterGravity, this.ropeLength))
+        {
+
+            this.tensionDirection = (pivot_p - bob_p).normalized;
+
+            this.pendulumSideDirection = (Quaternion.Euler(0f, 90f, 0f) * this.tensionDirection);
+            this.pendulumSideDirection.Scale(new Vector3(1f, 0f, 1f));
+            this.pendulumSideDirection.Normalize();
+
+            this.tangentDirection = (-1f * Vector3.Cross(this.tensionDirection, this.pendulumSideDirection)).normalized;
+
+
+            float inclinationAngle = Vector3.Angle(bob_p - pivot_p, this.gravityDirection);
+
+            this.tensionForce = this.mass * Physics.gravity.magnitude * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
+            float centripetalForce = ((this.mass * Mathf.Pow(this.currentVelocity.magnitude, 2)) / this.ropeLength);
+            this.tensionForce += centripetalForce;
+
+            this.currentVelocity += this.tensionDirection * this.tensionForce * deltaTime;
+        }
+
+        // Get the movement delta
+        Vector3 movementDelta = Vector3.zero;
+        movementDelta += this.currentVelocity * deltaTime;
+
+
+        //return currentStatePosition + movementDelta;
+
+        float distance = Vector3.Distance(pivot_p, currentStatePosition + movementDelta);
+        return this.GetPointOnLine(pivot_p, currentStatePosition + movementDelta, distance <= this.ropeLength ? distance : this.ropeLength);
+    }
+
+    Vector3 GetPointOnLine(Vector3 start, Vector3 end, float distanceFromStart)
+    {
+        return start + (distanceFromStart * Vector3.Normalize(end - start));
+    }
+    void ResetPendulumForces()
+    {
+        currentVelocity = Vector3.zero;
+
+        // Set the transition state
+        currentStatePosition = Bob.transform.position;
+    }
+
+    void ResetPendulumPosition()
+    {
+        if (this.bobStartingPositionSet)
+            this.MoveBob(this.bobStartingPosition);
+        else
+            this.PendulumInit();
+    }
 
 
     public PlayerSwinging(PlayerMovementStateMachine playerStateMachine)
