@@ -47,6 +47,8 @@ public class AnimationStateController : MonoBehaviour
     float fallTimer = 0;
     public bool canRoll;
     float jumpingTimer = 0;
+    bool foldJump;
+    bool wallJump;
 
     void Start()
     {
@@ -77,7 +79,15 @@ public class AnimationStateController : MonoBehaviour
         //ignoring the y velocity
         velocity = new Vector2(movementScript.playerVelocity.x, movementScript.playerVelocity.z).magnitude;
         animator.SetFloat(VelocityHash, velocity);
-
+       
+        foldJump = movementScript.animationControllerisFoldingJumped;
+        wallJump = movementScript.isWallJumping;
+        animator.SetBool("isFoldjumping", foldJump);
+        animator.SetBool("isWalljumping", wallJump);
+        if(animator.GetBool("isFoldjumping") == true)
+        {
+            movementScript.animationControllerisFoldingJumped = false;
+        }
 
         float sideInput = movementScript.sideWaysInput;
         float forwardInput = movementScript.forwardInput;
