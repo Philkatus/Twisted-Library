@@ -100,7 +100,8 @@ public class AnimationStateController : MonoBehaviour
         Sliding();
         Falling();
         HeadAim();
-        FallImpact();       
+        FallImpact();
+        DismountingTop();
     }
    
     void HeadAim()
@@ -189,7 +190,6 @@ public class AnimationStateController : MonoBehaviour
 
     void LadderJump()
     {
-        Debug.Log("AHHHHHHHH");
         animator.SetBool("isJumping", true);
         animator.SetBool("isClimbingLadder", false);
         rigBuilder.enabled = true;        
@@ -208,5 +208,17 @@ public class AnimationStateController : MonoBehaviour
             animator.SetBool("isClimbingLadder", false);
             rigBuilder.enabled = true;
         }
-    }   
+    }
+
+    void DismountingTop()
+    {
+        if (movementScript.dismounting == true)
+        {
+            animator.SetBool("isDismounting", true);
+        }
+        else
+        {
+            animator.SetBool("isDismounting", false);
+        }
+    }
 }
