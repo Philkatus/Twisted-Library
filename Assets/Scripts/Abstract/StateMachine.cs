@@ -10,7 +10,16 @@ public abstract class StateMachine : MonoBehaviour
         {
             StartCoroutine(State.Finish());
         }
-        State = state;
-        State.Initialize();
+
+        if(State == state)
+        {
+            State.ReInitialize();
+        }
+        else
+        {
+            State = state;
+            State.Initialize();
+        }
+        
     }
 }
