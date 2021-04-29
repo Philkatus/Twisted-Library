@@ -54,7 +54,7 @@ public class PlayerSwinging : PlayerSliding
         base.Initialize();
         closestShelf = pSM.closestShelf;
 
-        //new try
+        /*//new try
         ladderLength = pSM.ladder.GetComponent<LadderSizeStateMachine>().ladderLength;
         Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
         
@@ -63,7 +63,7 @@ public class PlayerSwinging : PlayerSliding
 
         bobStartingPosition = Bob.transform.position;
         bobStartingPositionSet = true;
-        PendulumInit();
+        PendulumInit();*/
     }
 
     float t = 0f;
@@ -111,6 +111,50 @@ public class PlayerSwinging : PlayerSliding
         
         pSM.swingingPosition = Mathf.Repeat(pSM.swingingPosition,360);
         SwingingDistance = Vector3.Distance(pSM.ladder.transform.position+ pSM.ladderDirection, pSM.ladder.transform.position+ Vector3.up) ;
+
+        */
+        #endregion
+        #region second try
+        /*
+        float PotentialEnergy=0;
+        float KinetikEnergy = 0;
+        float TotalEnergy = 0;
+        float maximumSwingEnergy=20;
+        TotalEnergy += pSM.swingingInput * stats.SwingingAcceleration * Time.deltaTime;
+        TotalEnergy = Mathf.Clamp(TotalEnergy, 0, maximumSwingEnergy);
+        KinetikEnergy = TotalEnergy - PotentialEnergy;
+
+        if (pSM.SwinginForwards) 
+        {
+            pSM.playerVelocity -= SwingingDirection *stats.SwingingAcceleration  * Time.deltaTime;
+
+            if (pSM.resultingSpeed(SwingingDirection, Vector3.down) >= 0)
+            {
+                KinetikEnergy += stats.SwingingAcceleration * Time.deltaTime;
+                PotentialEnergy = TotalEnergy - KinetikEnergy;
+            }
+            else if (pSM.resultingSpeed(SwingingDirection, Vector3.down) < 0)
+            {
+                PotentialEnergy += stats.SwingingAcceleration * Time.deltaTime;
+                KinetikEnergy = TotalEnergy - PotentialEnergy;
+            }
+
+        }
+        else  
+        {
+            pSM.playerVelocity += SwingingDirection *stats.SwingingAcceleration  * Time.deltaTime;
+
+            if (pSM.resultingSpeed(SwingingDirection, Vector3.down) < 0)
+            {
+                KinetikEnergy += stats.SwingingAcceleration * Time.deltaTime;
+                PotentialEnergy = TotalEnergy - KinetikEnergy;
+            }
+            else if (pSM.resultingSpeed(SwingingDirection, Vector3.down) >= 0)
+            {
+                PotentialEnergy += stats.SwingingAcceleration * Time.deltaTime;
+                KinetikEnergy = TotalEnergy - PotentialEnergy;
+            }
+        }
         
         
         #endregion
@@ -179,7 +223,7 @@ public class PlayerSwinging : PlayerSliding
         previousInput = thisInput;
         */
         #endregion
-        #region PendulumTry
+       /* #region PendulumTry
 
         //Wie viel Zeit vergeht zwischen 2 Frames? Warum nicht time.deltatime??
         float frameTime = Time.time - currentTime;
@@ -193,19 +237,20 @@ public class PlayerSwinging : PlayerSliding
             previousStatePosition = currentStatePosition;
             currentStatePosition = PendulumUpdate(currentStatePosition, dt);
             //integrate(state, this.t, this.dt);
-            accumulator -= this.dt;
-            this.t += this.dt;
+            accumulator -= dt;
+            t += dt;
         }
 
-        float alpha = this.accumulator / this.dt;
+        float alpha = accumulator / dt;
 
-        Vector3 newPosition = this.currentStatePosition * alpha + this.previousStatePosition * (1f - alpha);
-
-        this.Bob.transform.position = newPosition;
-
-        #endregion
-
-
+        Vector3 newPosition = currentStatePosition * alpha + previousStatePosition * (1f - alpha);
+        //Nicht Bob.transform.position sondern die Leiter nach da rotieren
+        //this.Bob.transform.position = newPosition;
+        Vector3 axis = pSM.ladder.right;
+        float rotateByAngle = Vector3.SignedAngle(previousStatePosition, newPosition + pSM.playerVelocity, axis);
+        Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, -pSM.ladder.right);
+        pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
+        #endregion */
     }
     void PendulumInit()
     {
@@ -239,35 +284,34 @@ public class PlayerSwinging : PlayerSliding
         float distanceAfterGravity = Vector3.Distance(pivot_p, bob_p + auxiliaryMovementDelta);
 
         // If at the end of the rope: Technisch wollen wir sowas nicht, weil der Punkt immer am Ende des Seils ist/sein sollen ? m�ssen wir iwie �ndern 
-        if (distanceAfterGravity > this.ropeLength || Mathf.Approximately(distanceAfterGravity, this.ropeLength))
+        if (distanceAfterGravity > this.ropeLength || Mathf.Approximately(distanceAfterGravity, ropeLength))
         {
+            //Vector richtung pivot;
+            tensionDirection = (pivot_p - bob_p).normalized;
+            //dreht tension direction um 90 Grad auf der x-achse, setzt y auf null & normalized sie
+            pendulumSideDirection = (Quaternion.Euler(0f, 90f, 0f) * tensionDirection);
+            pendulumSideDirection.Scale(new Vector3(1f, 0f, 1f));
+            pendulumSideDirection.Normalize();
+            //nimmt das negative Kreuzprodukt
+            tangentDirection = (-1f * Vector3.Cross(tensionDirection, pendulumSideDirection)).normalized;
+            // Winkel zwischen Gravity Direction & Vektor -> Bob
+            float inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
+            //Gravityst�rke * Cos(inclinationAngle)
+            tensionForce = mass * stats.SwingingGravity * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
+            float centripetalForce = ((mass * Mathf.Pow(currentVelocity.magnitude, 2)) / ropeLength);
+            tensionForce += centripetalForce;
 
-            this.tensionDirection = (pivot_p - bob_p).normalized;
-
-            this.pendulumSideDirection = (Quaternion.Euler(0f, 90f, 0f) * this.tensionDirection);
-            this.pendulumSideDirection.Scale(new Vector3(1f, 0f, 1f));
-            this.pendulumSideDirection.Normalize();
-
-            this.tangentDirection = (-1f * Vector3.Cross(this.tensionDirection, this.pendulumSideDirection)).normalized;
-
-
-            float inclinationAngle = Vector3.Angle(bob_p - pivot_p, this.gravityDirection);
-
-            this.tensionForce = this.mass * Physics.gravity.magnitude * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
-            float centripetalForce = ((this.mass * Mathf.Pow(this.currentVelocity.magnitude, 2)) / this.ropeLength);
-            this.tensionForce += centripetalForce;
-
-            this.currentVelocity += this.tensionDirection * this.tensionForce * deltaTime;
+            currentVelocity += tensionDirection * tensionForce * deltaTime;
         }
 
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
-        movementDelta += this.currentVelocity * deltaTime;
+        movementDelta += currentVelocity * deltaTime;
 
 
-        //return currentStatePosition + movementDelta;
-
+        //Ist das Seil zu lang? return currentStatePosition + movementDelta
         float distance = Vector3.Distance(pivot_p, currentStatePosition + movementDelta);
+        //bekomm den punkt ropelength oder distance in movementrichtung
         return this.GetPointOnLine(pivot_p, currentStatePosition + movementDelta, distance <= this.ropeLength ? distance : this.ropeLength);
     }
 
