@@ -84,7 +84,7 @@ public class PlayerSwinging : PlayerSliding
         Vector3 SwingingDirection = pSM.ladderMesh.forward;
         Vector3 swingingAxis = pSM.ladder.right;
         #region first try
-        
+        /*
         pSM.playerVelocity -= SwingingDirection * stats.SwingingGravity * Mathf.Sin(SwingingDistance) * Time.deltaTime;
             
 
