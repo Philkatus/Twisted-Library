@@ -264,11 +264,19 @@ public class PlayerSliding : State
         if (pSM.HeightOnLadder == 0 && pSM.forwardInput > 0)
         {
             dismountTimer += Time.fixedDeltaTime;
-            if (dismountTimer >= values.ladderDismountTimer)
+            RaycastHit hit;
+            Vector3 boxExtents = new Vector3(1.540491f * 0.5f, 0.4483852f * 0.5f, 1.37359f * 0.5f);
+
+            if (dismountTimer >= values.ladderDismountTimer
+            && !Physics.BoxCast(controller.transform.position + Vector3.up * 2.5f, boxExtents,
+            controller.transform.forward, out hit, controller.transform.rotation, 2f, LayerMask.GetMask("SlidingObstacle", "Environment")))
             {
-                dismountTimer = 0;
-                dismountStartPos = pSM.transform.position;
-                pSM.dismounting = true;
+                if (hit.collider != controller.gameObject)
+                {
+                    dismountTimer = 0;
+                    dismountStartPos = pSM.transform.position;
+                    pSM.dismounting = true;
+                }
             }
         }
         else if (pSM.HeightOnLadder == -1 && pSM.forwardInput < 0)
