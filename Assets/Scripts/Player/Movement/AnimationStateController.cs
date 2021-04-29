@@ -17,21 +17,35 @@ public class AnimationStateController : MonoBehaviour
     int VelocityHash;
     int SideInputHash;
     int ForwardInputHash;
+    float slideInput;
+    int SlideInputHash;
     [Space]
 
     [Header("ImpactRolling")]
     public float airTimer;
     public float timeForRoll;
+    public bool canRoll;
     [Space]
 
+    [Header("Jumping")]
+    float fallTimer = 0;
+    float jumpingTimer = 0;
+    bool foldJump;
+    bool wallJump;
 
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
     //InputAction snapAction;
 
-    [Header("Arm Rigs")]
+    [Header("Rigs")]
     public RigBuilder rigBuilder;
+    public Rig headRig;
+    public Rig armRig;
+
+    [Header("Ladder")]
+    public GameObject ladderVisual;
+    public GameObject ladderForCode;
 
     [Header("Adjusting Head Aim Rig")]
     public Transform headAimTarget;
@@ -39,26 +53,24 @@ public class AnimationStateController : MonoBehaviour
     [Range(-0.5f, -0.9f)] public float headRotationValue = -0.65f;
     [Tooltip("Use Spine to slightly turn Chest with head when looking")]
     public Transform spine;
-    public Rig headRig;
+
     //dotProduct used to determine where the HeadAimTarget is in relation to the players forward direction
     [HideInInspector] public float dotProduct;
     #endregion
 
-    float fallTimer = 0;
-    public bool canRoll;
-    float jumpingTimer = 0;
-    bool foldJump;
-    bool wallJump;
 
     void Start()
     {
         animator = GetComponent<Animator>();
         //movementScript = GetComponent<PlayerMovementStateMachine>();
         //controller = GetComponent<CharacterController>();
+        ladderForCode.SetActive(false);
+        ladderVisual.SetActive(true);
 
         VelocityHash = Animator.StringToHash("Velocity");
         SideInputHash = Animator.StringToHash("SideInput");
         ForwardInputHash = Animator.StringToHash("ForwardInput");
+        SlideInputHash = Animator.StringToHash("SlideInput");
 
         Cursor.lockState = CursorLockMode.Locked;
 
@@ -211,13 +223,25 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isClimbingLadder", true);
             //disables ladder holding IK
-            rigBuilder.enabled = false;
+            //rigBuilder.enabled = false;
+            armRig.weight = 0;
+
+            ladderForCode.SetActive(true);
+            ladderVisual.SetActive(false);
+
         }
         else
         {
             animator.SetBool("isClimbingLadder", false);
-            rigBuilder.enabled = true;
+            //rigBuilder.enabled = true;
+            armRig.weight = 1;
+
+            ladderForCode.SetActive(false);
+            ladderVisual.SetActive(true);
         }
+
+
+        //Look Direction
     }
 
     void DismountingTop()
