@@ -45,7 +45,7 @@ public class AnimationStateController : MonoBehaviour
 
     [Header("Ladder")]
     public GameObject ladderVisual;
-    public GameObject ladderForCode;
+    public GameObject ladderVisualForCode;
 
     [Header("Adjusting Head Aim Rig")]
     public Transform headAimTarget;
@@ -64,9 +64,11 @@ public class AnimationStateController : MonoBehaviour
         animator = GetComponent<Animator>();
         //movementScript = GetComponent<PlayerMovementStateMachine>();
         //controller = GetComponent<CharacterController>();
-        ladderForCode.SetActive(false);
-        ladderVisual.SetActive(true);
-
+        if(ladderVisual != null && ladderVisualForCode != null)
+        {
+            ladderVisualForCode.SetActive(false);
+            ladderVisual.SetActive(true);
+        }
         VelocityHash = Animator.StringToHash("Velocity");
         SideInputHash = Animator.StringToHash("SideInput");
         ForwardInputHash = Animator.StringToHash("ForwardInput");
@@ -226,9 +228,12 @@ public class AnimationStateController : MonoBehaviour
             //rigBuilder.enabled = false;
             armRig.weight = 0;
 
-            ladderForCode.SetActive(true);
-            ladderVisual.SetActive(false);
 
+            if (ladderVisual != null && ladderVisualForCode != null)
+            {
+                ladderVisualForCode.SetActive(true);
+                ladderVisual.SetActive(false);
+            }
         }
         else
         {
@@ -236,8 +241,11 @@ public class AnimationStateController : MonoBehaviour
             //rigBuilder.enabled = true;
             armRig.weight = 1;
 
-            ladderForCode.SetActive(false);
-            ladderVisual.SetActive(true);
+            if (ladderVisual != null && ladderVisualForCode != null)
+            {
+                ladderVisualForCode.SetActive(false);
+                ladderVisual.SetActive(true);
+            }
         }
 
 
