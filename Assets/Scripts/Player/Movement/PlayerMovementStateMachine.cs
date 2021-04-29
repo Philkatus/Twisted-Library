@@ -159,7 +159,9 @@ public class PlayerMovementStateMachine : StateMachine
             {
                 float distance = Vector3.Distance(possibleShelves[i].transform.position, transform.position);
                 VertexPath possiblePath = possibleShelves[i].pathCreator.path;
-                Vector3 possiblePathDirection = possiblePath.GetDirectionAtDistance(possiblePath.GetClosestDistanceAlongPath(transform.position), EndOfPathInstruction.Stop);
+                Vector3 possiblePathDirection = possiblePath.GetDirectionAtDistance(
+                possiblePath.GetClosestDistanceAlongPath(currentClosestPath.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop)), EndOfPathInstruction.Stop);
+
 
                 if (distance < closestDistance
                     && possibleShelves[i] != currentClosestShelf
@@ -189,7 +191,7 @@ public class PlayerMovementStateMachine : StateMachine
     /// <summary>
     /// Calculates the resulting signed magnitude alongside the targetdirection after a change of direction.
     /// </summary>
-    /// <param name="currentVelocity">The velocity you start with before the change </param>
+    /// <param name="currentVelocity">the Velocity to change </param>
     /// <param name="targetDirection">The normalized direction you want to change to</param>
     /// <returns></returns>
     public float resultingSpeed(Vector3 currentVelocity, Vector3 targetDirection)
@@ -202,7 +204,7 @@ public class PlayerMovementStateMachine : StateMachine
     /// <summary>
     /// calculates the resulting velocity through a change in direction
     /// </summary>
-    /// <param name="currentVelocity"> </param>
+    /// <param name="currentVelocity"> the Velocity to change </param>
     /// <param name="targetDirection"> the normalized direction you want to change to</param>
     /// <returns></returns>
     public Vector3 resultingVelocity(Vector3 currentVelocity, Vector3 targetDirection)
@@ -212,6 +214,40 @@ public class PlayerMovementStateMachine : StateMachine
         return targetDirection * resultingSpeed;
     }
     #endregion
+
+    /// <summary>
+    /// calculates the resulting clamped velocity through a change in direction
+    /// </summary>
+    /// <param name="currentVelocity"> the Velocity to change </param>
+    /// <param name="targetDirection"> the normalized direction you want to change to</param>
+    /// <param name="maximumSpeed"> the maximum speed the return value gets clamped to</param>
+    /// <returns></returns>
+    public Vector3 resultingClampedVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed) 
+    {
+        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
+        resultingSpeed = Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
+
+        return targetDirection * resultingSpeed;
+    }
+
+    /// <summary>
+    /// takes the Player Velocity and puts a clamp on one direction of it
+    /// </summary>
+    /// <param name="currentVelocity"> the Velocity to change </param>
+    /// <param name="targetDirection"> The direction to clamp </param>
+    /// <param name="maximumSpeed"> the maximumspeed that the return Vector should have in the target direction </param>
+    /// <returns></returns>
+    public Vector3 ClampPlayerVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed) 
+    {
+        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
+        Vector3 clampedVelocity = targetDirection * Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
+        currentVelocity -= this.resultingVelocity(currentVelocity,targetDirection);
+        currentVelocity += clampedVelocity;
+        
+
+        return currentVelocity;
+    }
+
 
     public enum PlayerState
     {

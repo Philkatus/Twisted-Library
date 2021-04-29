@@ -15,20 +15,25 @@ MonoBehaviour:
   movementAcceleration: 150
   maximumMovementSpeed: 25
   movementDrag: 130
+  movementVelocityFactor: 1
   jumpHeight: 9
   wallJump: {x: 0, y: 0, z: 0}
   airMovementFactor: 0.8
   jumpingDrag: 0.49
   gravity: 20
+  jumpVelocityFactor: 1
   climbingSpeedOnLadder: 1
-  slidingAcceleration: 1
+  slidingAcceleration: 100
   maxSlidingSpeed: 0.01
+  slidingSpeedSizeFactor: 1
   slidingDragPercentage: 0.1
   ladderDismountSpeed: 1.58
   ladderDismountTimer: 0.5
+  slidingVelocityFactor: 1
+  preservesVelocityOnSnap: 1
   useSwinging: 1
-  SwingingAcceleration: 360
-  SwingingDeceleration: 1
+  swingingAcceleration: 0
+  swingingDeceleration: 0
   maxSwingSpeed: 2
-  VelocityToSwingingConversion: 1
-  SwingingGravity: 5
+  swingingGravity: 0
+  swingingVelocityFactor: 0

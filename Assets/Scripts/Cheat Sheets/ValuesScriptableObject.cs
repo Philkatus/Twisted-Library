@@ -13,10 +13,13 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("How much drag is applied when there is no input while walking.")]
     public float movementDrag;
+
+    [Tooltip("The factor to convert Velocity into Movementspeed")]
+    public float movementVelocityFactor;
+
     #endregion
     [Space]
     #region jumping and air movement
-
     [Header("Jumping/Air Movement")]
     [Tooltip("How high the player jumps.")]
     public float jumpHeight;
@@ -29,6 +32,9 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("...is working against me.")]
     public float gravity;
+
+    [Tooltip("The factor to convert Velocity into air-Movementspeed")]
+    public float jumpVelocityFactor;
     #endregion
     [Space]
     #region Sliding
@@ -49,6 +55,12 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("How long the player needs to hold the key to dismount the ladder on top or bottom while sliding.")]
     public float ladderDismountTimer;
+
+    [Tooltip("The factor to convert Velocity into Sliding Speed")]
+    public float slidingVelocityFactor;
+
+    [Tooltip("If true the player preserves their velocity on Snap")]
+    public bool preservesVelocityOnSnap;
     #endregion
     [Space]
     #region swinging
@@ -57,18 +69,18 @@ public class ValuesScriptableObject : ScriptableObject
     public bool useSwinging;
 
     [Tooltip("How fast the player accelrates while swinging.")]
-    public float SwingingAcceleration;
+    public float swingingAcceleration;
 
     [Tooltip("How fast the player decelerate while swinging with reverse input")]
-    public float SwingingDeceleration;
+    public float swingingDeceleration;
 
     [Tooltip("The maximum Speed the Player can reach while swinging.")]
     public float maxSwingSpeed;
 
-    [Tooltip("The factor that is use to convert swinging velocity to movement conversion and back.")]
-    public float VelocityToSwingingConversion;
-
     [Tooltip("How fast the player decelerate while swinging without giving an input")]
-    public float SwingingGravity;
+    public float swingingGravity;
+
+    [Tooltip("The factor to convert Velocity into Swinging Speed")]
+    public float swingingVelocityFactor;
     #endregion
 }
