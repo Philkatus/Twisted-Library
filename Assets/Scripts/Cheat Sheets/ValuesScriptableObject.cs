@@ -15,7 +15,7 @@ public class ValuesScriptableObject : ScriptableObject
     public float movementDrag;
 
     [Tooltip("The factor to convert Velocity into Movementspeed")]
-    public float movementVelocityFactor;
+    public float movementVelocityFactor=1;
 
     #endregion
     [Space]
@@ -33,8 +33,11 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("...is working against me.")]
     public float gravity;
 
+    [Tooltip("even gravity has its limits.")]
+    public float maxFallingSpeed = 5;
+
     [Tooltip("The factor to convert Velocity into air-Movementspeed")]
-    public float jumpVelocityFactor;
+    public float jumpVelocityFactor=1;
     #endregion
     [Space]
     #region Sliding
@@ -57,10 +60,10 @@ public class ValuesScriptableObject : ScriptableObject
     public float ladderDismountTimer;
 
     [Tooltip("The factor to convert Velocity into Sliding Speed")]
-    public float slidingVelocityFactor;
+    public float slidingVelocityFactor=1;
 
     [Tooltip("If true the player preserves their velocity on Snap")]
-    public bool preservesVelocityOnSnap;
+    public bool preservesVelocityOnSnap=false;
     #endregion
     [Space]
     #region swinging
@@ -81,6 +84,6 @@ public class ValuesScriptableObject : ScriptableObject
     public float swingingGravity;
 
     [Tooltip("The factor to convert Velocity into Swinging Speed")]
-    public float swingingVelocityFactor;
+    public float swingingVelocityFactor=1;
     #endregion
 }
