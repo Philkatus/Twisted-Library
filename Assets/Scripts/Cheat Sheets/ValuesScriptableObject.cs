@@ -34,7 +34,7 @@ public class ValuesScriptableObject : ScriptableObject
     public float gravity;
 
     [Tooltip("even gravity has its limits.")]
-    public float maxFallingSpeed = 5;
+    public float maxFallingSpeed = 40;
 
     [Tooltip("The factor to convert Velocity into air-Movementspeed")]
     public float jumpVelocityFactor=1;

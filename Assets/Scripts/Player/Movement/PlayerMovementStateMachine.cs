@@ -248,7 +248,6 @@ public class PlayerMovementStateMachine : StateMachine
         return currentVelocity;
     }
 
-
     public enum PlayerState
     {
         walking,

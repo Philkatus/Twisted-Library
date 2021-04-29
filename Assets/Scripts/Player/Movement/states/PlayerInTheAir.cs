@@ -69,10 +69,10 @@ public class PlayerInTheAir : State
         }
         pSM.playerVelocity.y -= values.gravity * Time.deltaTime;
         
-        float unClampedVelocityY = pSM.playerVelocity.y;
+        float ClampedVelocityY = Mathf.Clamp( pSM.playerVelocity.y,-values.maxFallingSpeed,Mathf.Infinity);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
-        pSM.playerVelocity.y = unClampedVelocityY;
-        pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, Vector3.down, values.maxFallingSpeed);
+        pSM.playerVelocity.y = ClampedVelocityY;
+       
 
         controller.Move(pSM.playerVelocity * Time.deltaTime * values.jumpVelocityFactor);
         // Gravity and falling
