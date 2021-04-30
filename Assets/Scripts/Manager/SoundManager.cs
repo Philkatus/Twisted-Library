@@ -24,7 +24,8 @@ public class SoundManager : MonoBehaviour
         if (animationEvent.animatorClipInfo.weight > 0.5)
         {
             audioSource.PlayOneShot((AudioClip)clips[0], audioVolume);
-            footstepLFX.Play();
+            if(footstepLFX != null)
+                footstepLFX.Play();
         }
     }
 
@@ -33,7 +34,8 @@ public class SoundManager : MonoBehaviour
         if (animationEvent.animatorClipInfo.weight > 0.5)
         {
             audioSource.PlayOneShot((AudioClip)clips[1], audioVolume);
-            footstepRFX.Play();
+            if (footstepRFX != null)
+                footstepRFX.Play();
         }
     }
 
