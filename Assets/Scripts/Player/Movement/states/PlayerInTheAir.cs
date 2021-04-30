@@ -68,16 +68,13 @@ public class PlayerInTheAir : State
             pSM.playerVelocity -= currentDragSideways * Time.deltaTime;
         }
         pSM.playerVelocity.y -= values.gravity * Time.deltaTime;
-        /*
-        float currentDrag = pSM.movementDrag + pSM.playerVelocity.magnitude * .999f;
-        pSM.playerVelocity.x = pSM.playerVelocity.normalized.x * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
-        pSM.playerVelocity.z = pSM.playerVelocity.normalized.z * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
-        */
-        float unClampedVelocityY = pSM.playerVelocity.y;
+        
+        float ClampedVelocityY = Mathf.Clamp( pSM.playerVelocity.y,-values.maxFallingSpeed,Mathf.Infinity);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
-        pSM.playerVelocity.y = unClampedVelocityY;
+        pSM.playerVelocity.y = ClampedVelocityY;
+       
 
-        controller.Move(pSM.playerVelocity * Time.deltaTime);
+        controller.Move(pSM.playerVelocity * Time.deltaTime * values.jumpVelocityFactor);
         // Gravity and falling
 
         //pSM.playerVelocity += direction * Time.deltaTime * pSM.movementAcceleration * pSM.jumpMovementFactor;
