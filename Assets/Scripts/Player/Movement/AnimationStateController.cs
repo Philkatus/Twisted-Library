@@ -225,29 +225,29 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isClimbingLadder", true);
             //disables ladder holding IK
-            rigBuilder.enabled = false;
-           // armRig.weight = 0;
+            //rigBuilder.enabled = false;
+            armRig.weight = 0;
 
-            /*
+            
             if (ladderVisual != null && ladderVisualForCode != null)
             {
                 ladderVisualForCode.SetActive(true);
                 ladderVisual.SetActive(false);
             }
-            */
+            
         }
         else
         {
             animator.SetBool("isClimbingLadder", false);
-            rigBuilder.enabled = true;
-            //armRig.weight = 1;
-            /*
+            //rigBuilder.enabled = true;
+            armRig.weight = 1;
+            
             if (ladderVisual != null && ladderVisualForCode != null)
             {
                 ladderVisualForCode.SetActive(false);
                 ladderVisual.SetActive(true);
             }
-            */
+            
         }
 
 
