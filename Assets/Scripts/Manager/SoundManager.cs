@@ -11,6 +11,9 @@ public class SoundManager : MonoBehaviour
 
     public AudioSource audioSource;
     public float audioVolume = 0.1f;
+
+    public ParticleSystem footstepLFX;
+    public ParticleSystem footstepRFX;
     void Start()
     {
         audioSource = this.GetComponent<AudioSource>();
@@ -21,6 +24,7 @@ public class SoundManager : MonoBehaviour
         if (animationEvent.animatorClipInfo.weight > 0.5)
         {
             audioSource.PlayOneShot((AudioClip)clips[0], audioVolume);
+            footstepLFX.Play();
         }
     }
 
@@ -29,6 +33,7 @@ public class SoundManager : MonoBehaviour
         if (animationEvent.animatorClipInfo.weight > 0.5)
         {
             audioSource.PlayOneShot((AudioClip)clips[1], audioVolume);
+            footstepRFX.Play();
         }
     }
 
