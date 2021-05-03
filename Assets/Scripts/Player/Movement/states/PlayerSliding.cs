@@ -76,8 +76,16 @@ public class PlayerSliding : State
         pSM.ladderSizeStateMachine.OnGrow();
 
         pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
-        pSM.playerVelocity = pSM.resultingVelocity(pSM.playerVelocity, pathDirection);
-        pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, -values.maxSlidingSpeed, values.maxSlidingSpeed);
+        if (values.preservesVelocityOnSnap)
+        {
+            pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity,pathDirection,values.maxSlidingSpeed);
+           
+        }
+        else 
+        {
+            pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, pathDirection,0);
+        }
+        
 
         pSM.stopSlidingAction.started += context => stopping = true;
         pSM.stopSlidingAction.canceled += context => stopping = false;
@@ -193,12 +201,14 @@ public class PlayerSliding : State
             //moving the object
             if (!CheckForCollisionCharacter(pSM.playerVelocity) && !stopping && !CheckForCollisionLadder(pSM.playerVelocity))
             {
-                pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
+                pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection)*values.slidingVelocityFactor;
                 pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
+                Debug.Log(pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * values.slidingVelocityFactor + " " + values.slidingVelocityFactor);
+
             }
             else
             {
-                pSM.playerVelocity = Vector3.zero;
+                pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity,pathDirection,0);
             }
 
             //End Of Path, continue sliding with ReSnap or Fall from Path
