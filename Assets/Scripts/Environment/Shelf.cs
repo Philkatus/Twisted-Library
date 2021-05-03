@@ -7,17 +7,19 @@ public class Shelf : MonoBehaviour
 {
     #region Public
     public PathCreator pathCreator;
+    [Tooltip("can swing to both sides or just to one")]
+    public bool twoSided;
     #endregion
 
     #region Private
     PlayerMovementStateMachine playerStateMachine;
     #endregion
 
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-          
             if (playerStateMachine == null)
             {
                 playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();
@@ -30,7 +32,7 @@ public class Shelf : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-          
+
             if (playerStateMachine == null)
             {
                 playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();
