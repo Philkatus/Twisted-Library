@@ -78,6 +78,8 @@ public class AnimationStateController : MonoBehaviour
 
         rigBuilder = GetComponent<RigBuilder>();
 
+        //animator.SetLayerWeight(2, 0);
+
 
 
         // new Input System
@@ -191,6 +193,10 @@ public class AnimationStateController : MonoBehaviour
             animator.SetBool("isLanding", true);
             canLand = false;
         }
+        else
+        {
+            animator.SetBool("isLanding", false);
+        }
         if (canRoll && controller.isGrounded)
         {
             animator.SetBool("isRolling", true);
@@ -199,7 +205,6 @@ public class AnimationStateController : MonoBehaviour
         else
         {
             animator.SetBool("isRolling", false);
-            animator.SetBool("isLanding", false);
         }
     }
 
