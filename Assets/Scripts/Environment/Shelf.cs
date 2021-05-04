@@ -22,7 +22,7 @@ public class Shelf : MonoBehaviour
             {
                 playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();
             }
-            // playerStateMachine.possibleShelves.Add(this);
+            playerStateMachine.possibleRails.Add(this);
         }
     }
 
@@ -35,7 +35,7 @@ public class Shelf : MonoBehaviour
             {
                 playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();
             }
-            //playerStateMachine.possibleShelves.Remove(this);
+            playerStateMachine.possibleRails.Remove(this);
         }
     }
 }
