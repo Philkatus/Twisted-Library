@@ -229,7 +229,7 @@ public class PlayerSliding : State
 
                 Plane shelfPlane = new Plane(endOfShelfDirection.normalized, Vector3.zero);
 
-                if (shelfPlane.GetSide(Vector3.zero + pSM.playerVelocity)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
+                if (/* pSM.resultingSpeed( pSM.playerVelocity, pathDirection) >0   )*/shelfPlane.GetSide(Vector3.zero + pSM.playerVelocity)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
                 {
                     if (pSM.CheckForNextClosestShelf(pSM.closestShelf))
                     {
@@ -240,7 +240,7 @@ public class PlayerSliding : State
                     {
                         pSM.OnFall();
                     }
-                }
+              }
             }
             CheckIfReadyToDismount();
         }
