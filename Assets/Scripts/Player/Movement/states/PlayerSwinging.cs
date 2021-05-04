@@ -15,15 +15,8 @@ public class PlayerSwinging : PlayerSliding
     float mass = 1f;
     float ropeLength = 2f;
 
-    Vector3 bobStartingPosition;
-    bool bobStartingPositionSet = false;
-
-    // You could define these in the `PendulumUpdate()` loop 
-    // But we want them in the class scope so we can draw gizmos `OnDrawGizmos()`
     private Vector3 gravityDirection;
     private Vector3 tensionDirection;
-
-    private Vector3 tangentDirection;
     private Vector3 pendulumSideDirection;
 
     private float tensionForce = 0f;
@@ -37,7 +30,14 @@ public class PlayerSwinging : PlayerSliding
     Shelf.ShelfType shelfType;
 
     bool onWall;
-    float maxSwingingAngle;
+    // these will be replaced by the cheat sheet
+    float minHangingDeceleration = 0.002f;
+    float maxHangingDeceleration = 0.07f;
+    float maxSwingingDeceleration = 0.03f;
+    float accelerationFactor = 0.7f;
+
+    float minDecelerationFactor;
+    float maxDecelerationFactor;
 
     Vector3 repelDirection;
 
@@ -67,11 +67,7 @@ public class PlayerSwinging : PlayerSliding
         Bob = Pivot.transform.GetChild(1).gameObject;
         Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderLength;
 
-        bobStartingPosition = Bob.transform.position;
-        bobStartingPositionSet = true;
-
         shelfType = closestShelf.shelfType;
-        maxSwingingAngle = closestShelf.maxSwingingAngle;
         onWall = true;
         inputGiven = false;
         // Get the initial rope length from how far away the bob is now
@@ -81,6 +77,22 @@ public class PlayerSwinging : PlayerSliding
         currentVelocity = Vector3.zero;
         // Set the transition state
         currentStatePosition = Bob.transform.position;
+
+        //Set the Deceleration Factors
+        
+        
+        switch (shelfType)
+        {
+            case Shelf.ShelfType.TwoSided:
+                minDecelerationFactor = stats.SwingingDeceleration;
+                maxDecelerationFactor = maxSwingingDeceleration;
+                accelerationFactor = 1;
+                break;
+            case Shelf.ShelfType.FreeHanging:
+                minDecelerationFactor = minHangingDeceleration;
+                maxDecelerationFactor = maxHangingDeceleration;
+                break;
+        }
 
         currentVelocity += pSM.playerVelocity;
     }
@@ -113,7 +125,7 @@ public class PlayerSwinging : PlayerSliding
                     currentStatePosition = RepelUpdate(currentStatePosition);
                     break;
                 case Shelf.ShelfType.FreeHanging:
-                    currentStatePosition = HangingUpdate(currentStatePosition);
+                    currentStatePosition = PendulumUpdate(currentStatePosition);
                     break;
             }
             accumulator -= dt;
@@ -146,8 +158,6 @@ public class PlayerSwinging : PlayerSliding
         pendulumSideDirection.Scale(new Vector3(1f, 0f, 1f));
         pendulumSideDirection.Normalize();
 
-        //nimmt das negative Kreuzprodukt => Tangente
-        tangentDirection = (-1f * Vector3.Cross(tensionDirection, pendulumSideDirection)).normalized;
 
         // Winkel zwischen Gravity Direction & Vektor -> Bob
         float inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
@@ -173,10 +183,9 @@ public class PlayerSwinging : PlayerSliding
         currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
 
         //Deceleration 
-        float decelerationFactor = stats.SwingingDeceleration;
         // the higher the velocity, the higher the deceleration Factor
-        decelerationFactor = (currentVelocity.magnitude) / (stats.maxSwingSpeed) * (0.03f - decelerationFactor) + decelerationFactor;
-        currentVelocity = currentVelocity.normalized * (currentVelocity.magnitude * (1 - decelerationFactor));
+        float DecelerationFactor = (currentVelocity.magnitude) / (stats.maxSwingSpeed) * (maxDecelerationFactor - minDecelerationFactor) + minDecelerationFactor;
+        currentVelocity = currentVelocity.normalized * (currentVelocity.magnitude * (1 - DecelerationFactor));
 
         // Get only the forward/backward force
         playerVelocity = Bob.transform.forward * pSM.resultingSpeed(Bob.transform.forward, currentVelocity);
@@ -213,88 +222,6 @@ public class PlayerSwinging : PlayerSliding
             Debug.Log(angle);
             if (angle >= -0.01f)
             {
-                
-                onWall = true;
-            }
-        }
-
-        if (onWall)
-        {
-            currentVelocity = Vector3.zero;
-            currentStatePosition = pivot_p + Vector3.down * ropeLength;
-        }
-        else
-        {
-            // Erstellt eine Gravity und addiert sie auf die currentVelocity
-            gravityForce = mass * stats.SwingingGravity;
-            gravityDirection = Physics.gravity.normalized;
-            currentVelocity += gravityDirection * gravityForce * dt;
-
-
-            tensionDirection = (pivot_p - bob_p).normalized;
-
-
-            //dreht tension direction um 90 Grad auf der x-achse, setzt y auf null & normalized sie
-            pendulumSideDirection = (Quaternion.Euler(0f, 90f, 0f) * tensionDirection);
-            pendulumSideDirection.Scale(new Vector3(1f, 0f, 1f));
-            pendulumSideDirection.Normalize();
-
-            //nimmt das negative Kreuzprodukt => Tangente
-            tangentDirection = (-1f * Vector3.Cross(tensionDirection, pendulumSideDirection)).normalized;
-
-            // Winkel zwischen Gravity Direction & Vektor -> Bob
-            float inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
-
-            //Gravitystaerke * Cos(inclinationAngle)
-            tensionForce = mass * stats.SwingingGravity * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
-            float centripetalForce = ((mass * Mathf.Pow(currentVelocity.magnitude, 2)) / ropeLength);
-
-            tensionForce += centripetalForce;
-            currentVelocity += tensionDirection * tensionForce * dt;
-        }
-
-        //Acceleration
-        inputForce = Vector3.zero;
-        pSM.snapAction.started += context => RepellingForce();
-
-        // set max speed
-        currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
-
-        // Get only the forward/backward force
-        playerVelocity = Bob.transform.forward * pSM.resultingSpeed(Bob.transform.forward, currentVelocity);
-
-        // pSM.playerVelocity for the Jump
-        SetCurrentPlayerVelocity(pivot_p);
-
-        //Debug.DrawRays
-        Debug.DrawRay(Bob.transform.position + pSM.transform.up * 0.1f, currentVelocity, Color.cyan, dt);
-        Debug.DrawRay(Bob.transform.position, playerVelocity, Color.white, dt);
-        Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
-        Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
-        Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);
-
-        // Get the movement delta
-        Vector3 movementDelta = Vector3.zero;
-        movementDelta += playerVelocity * dt;
-        return GetPointOnLine(pivot_p, currentStatePosition + movementDelta, ropeLength);
-    }
-
-    Vector3 HangingUpdate(Vector3 currentStatePosition)
-    {
-        // Get normal at current position
-        repelDirection = -Bob.transform.forward;
-        Vector3 pivot_p = Pivot.transform.position;
-        Vector3 bob_p = this.currentStatePosition;
-        bool movingForward = Vector3.Dot(currentMovement.normalized, Bob.transform.forward) >= .93f;
-
-        //Check if OnWall
-        if (movingForward && !onWall)
-        {
-            Vector3 axis = pSM.ladder.right;
-            float angle = Vector3.SignedAngle(pivot_p + Vector3.down, pivot_p - pSM.ladderDirection, axis);
-            Debug.Log(angle);
-            if (angle >= -0.01f)
-            {
 
                 onWall = true;
             }
@@ -320,9 +247,6 @@ public class PlayerSwinging : PlayerSliding
             pendulumSideDirection = (Quaternion.Euler(0f, 90f, 0f) * tensionDirection);
             pendulumSideDirection.Scale(new Vector3(1f, 0f, 1f));
             pendulumSideDirection.Normalize();
-
-            //nimmt das negative Kreuzprodukt => Tangente
-            tangentDirection = (-1f * Vector3.Cross(tensionDirection, pendulumSideDirection)).normalized;
 
             // Winkel zwischen Gravity Direction & Vektor -> Bob
             float inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
@@ -372,7 +296,7 @@ public class PlayerSwinging : PlayerSliding
             && currentVelocity.magnitude < stats.maxSwingSpeed
             && !inputGiven)
         {
-            inputForce = Bob.transform.forward * stats.SwingingAcceleration * dt;
+            inputForce = Bob.transform.forward * stats.SwingingAcceleration * dt * accelerationFactor;
             currentVelocity += inputForce;
             inputGiven = true;
         }
@@ -383,7 +307,6 @@ public class PlayerSwinging : PlayerSliding
         if (onWall)
         {
             inputForce = repelDirection * stats.SwingingAcceleration * dt;
-            Debug.Log(repelDirection + " * " + stats.SwingingAcceleration + " * " + dt + " = " + inputForce);
             currentVelocity += inputForce;
             onWall = false;
         }
