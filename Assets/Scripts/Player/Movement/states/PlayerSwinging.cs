@@ -32,13 +32,13 @@ public class PlayerSwinging : PlayerSliding
         Vector3 SwingingDirection = pSM.ladder.forward;
 
 
-        pSM.playerVelocity += SwingingDirection * stats.SwingingAcceleration * pSM.swingingInput * Time.fixedDeltaTime * Time.fixedDeltaTime * 10;
+        pSM.playerVelocity += SwingingDirection * stats.swingingAcceleration * pSM.swingingInput * Time.fixedDeltaTime * Time.fixedDeltaTime * 10;
 
 
         //pSM.playerVelocity -= SwingingDirection * stats.SwingingAcceleration * pSM.swingingInput * Time.deltaTime * Time.deltaTime*10 ;
 
 
-        pSM.playerVelocity += -SwingingDirection * stats.SwingingGravity * Mathf.Sin(SwingingDistance) * Time.fixedDeltaTime;
+        pSM.playerVelocity += -SwingingDirection * stats.swingingGravity * Mathf.Sin(SwingingDistance) * Time.fixedDeltaTime;
 
 
 
