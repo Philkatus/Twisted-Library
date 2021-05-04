@@ -41,6 +41,7 @@ public class PlayerMovementStateMachine : StateMachine
     public CharacterController controller;
     [HideInInspector] public InputAction slideAction;
     [HideInInspector] public InputAction swingAction;
+    [HideInInspector] public InputAction snapAction;
     [HideInInspector] public InputAction stopSlidingAction;
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
@@ -59,7 +60,7 @@ public class PlayerMovementStateMachine : StateMachine
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
-    InputAction snapAction;
+    
     InputAction foldAction;
     #endregion
 
