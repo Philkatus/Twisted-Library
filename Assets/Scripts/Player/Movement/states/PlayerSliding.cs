@@ -251,11 +251,7 @@ public class PlayerSliding : State
             Dismount();
         }
 
-        if (pSM.isPerformedFold)
-        {
-            Debug.Log("trying to fold");
-            ladderSizeState.OnFold();
-        }
+       
     }
 
     bool CheckForCollisionCharacter(Vector3 moveDirection)
