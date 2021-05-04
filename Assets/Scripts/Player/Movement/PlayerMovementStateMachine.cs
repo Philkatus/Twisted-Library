@@ -18,38 +18,42 @@ public class PlayerMovementStateMachine : StateMachine
     public LadderState ladderState;
     [Space]
     public float swingingPosition;
-    public float HeightOnLadder=-1;
+    public float HeightOnLadder = -1;
     public float currentDistance;
     public float sideWaysInput;
     public float forwardInput;
     public float swingingInput;
     public float slidingInput;
     public bool isPerformedFold;
+    public bool dismounting;
 
     public Vector3 playerVelocity;
-    
+    public bool isWallJumping;
+    public bool animationControllerisFoldingJumped;
 
     public List<Shelf> possibleShelves;
     public Shelf closestShelf;
     public Transform ladder;
+    public Transform ladderMesh;
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
     [HideInInspector] public InputAction slideAction;
     [HideInInspector] public InputAction swingAction;
+    [HideInInspector] public InputAction stopSlidingAction;
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
-    [HideInInspector] public Vector3 ladderDirection
+    [HideInInspector]
+    public Vector3 ladderDirection
     {
         get
         {
             return ladderMesh.right;
         }
     }
-    [HideInInspector]public Transform myParent;
+    [HideInInspector] public Transform myParent;
     #endregion
 
     #region Private
-    [SerializeField] Transform ladderMesh;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
@@ -73,12 +77,13 @@ public class PlayerMovementStateMachine : StateMachine
         jumpAction = playerControlsMap.FindAction("Jump");
         moveAction = playerControlsMap.FindAction("Movement");
         snapAction = playerControlsMap.FindAction("Snap");
-        slideAction = playerControlsMap.FindAction("Slide");    
+        slideAction = playerControlsMap.FindAction("Slide");
         swingAction = playerControlsMap.FindAction("Swing");
         foldAction = playerControlsMap.FindAction("Fold");
-
+        stopSlidingAction = playerControlsMap.FindAction("StopSliding");
 
         jumpAction.performed += context => State.Jump();
+        snapAction.performed += context => TryToSnapToShelf();
         #endregion
     }
 
@@ -92,7 +97,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         if (CheckForShelf())
         {
-           State.Snap();
+            State.Snap();
         }
     }
 
@@ -154,7 +159,9 @@ public class PlayerMovementStateMachine : StateMachine
             {
                 float distance = Vector3.Distance(possibleShelves[i].transform.position, transform.position);
                 VertexPath possiblePath = possibleShelves[i].pathCreator.path;
-                Vector3 possiblePathDirection = possiblePath.GetDirectionAtDistance(possiblePath.GetClosestDistanceAlongPath(transform.position), EndOfPathInstruction.Stop);
+                Vector3 possiblePathDirection = possiblePath.GetDirectionAtDistance(
+                possiblePath.GetClosestDistanceAlongPath(currentClosestPath.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop)), EndOfPathInstruction.Stop);
+
 
                 if (distance < closestDistance
                     && possibleShelves[i] != currentClosestShelf
@@ -184,7 +191,7 @@ public class PlayerMovementStateMachine : StateMachine
     /// <summary>
     /// Calculates the resulting signed magnitude alongside the targetdirection after a change of direction.
     /// </summary>
-    /// <param name="currentVelocity">The velocity you start with before the change </param>
+    /// <param name="currentVelocity">the Velocity to change </param>
     /// <param name="targetDirection">The normalized direction you want to change to</param>
     /// <returns></returns>
     public float resultingSpeed(Vector3 currentVelocity, Vector3 targetDirection)
@@ -197,7 +204,7 @@ public class PlayerMovementStateMachine : StateMachine
     /// <summary>
     /// calculates the resulting velocity through a change in direction
     /// </summary>
-    /// <param name="currentVelocity"> </param>
+    /// <param name="currentVelocity"> the Velocity to change </param>
     /// <param name="targetDirection"> the normalized direction you want to change to</param>
     /// <returns></returns>
     public Vector3 resultingVelocity(Vector3 currentVelocity, Vector3 targetDirection)
@@ -207,6 +214,39 @@ public class PlayerMovementStateMachine : StateMachine
         return targetDirection * resultingSpeed;
     }
     #endregion
+
+    /// <summary>
+    /// calculates the resulting clamped velocity through a change in direction
+    /// </summary>
+    /// <param name="currentVelocity"> the Velocity to change </param>
+    /// <param name="targetDirection"> the normalized direction you want to change to</param>
+    /// <param name="maximumSpeed"> the maximum speed the return value gets clamped to</param>
+    /// <returns></returns>
+    public Vector3 resultingClampedVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed) 
+    {
+        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
+        resultingSpeed = Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
+
+        return targetDirection * resultingSpeed;
+    }
+
+    /// <summary>
+    /// takes the Player Velocity and puts a clamp on one direction of it
+    /// </summary>
+    /// <param name="currentVelocity"> the Velocity to change </param>
+    /// <param name="targetDirection"> The direction to clamp </param>
+    /// <param name="maximumSpeed"> the maximumspeed that the return Vector should have in the target direction </param>
+    /// <returns></returns>
+    public Vector3 ClampPlayerVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed) 
+    {
+        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
+        Vector3 clampedVelocity = targetDirection * Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
+        currentVelocity -= this.resultingVelocity(currentVelocity,targetDirection);
+        currentVelocity += clampedVelocity;
+        
+
+        return currentVelocity;
+    }
 
     public enum PlayerState
     {
@@ -219,10 +259,10 @@ public class PlayerMovementStateMachine : StateMachine
 
     public enum LadderState
     {
-       LadderBig,
-       LadderSmall,
-       LadderFold,
-       LadderUnfold
+        LadderBig,
+        LadderSmall,
+        LadderFold,
+        LadderUnfold
 
     };
 
@@ -244,7 +284,7 @@ public class PlayerMovementStateMachine : StateMachine
         SetState(new PlayerWalking(this));
         playerState = PlayerState.walking;
         ladderSizeStateMachine.OnShrink();
-        
+
     }
     ///<summary>
     /// Gets called when the player leaves the ladder on the bottom.
@@ -254,7 +294,7 @@ public class PlayerMovementStateMachine : StateMachine
         SetState(new PlayerInTheAir(this));
         playerState = PlayerState.inTheAir;
         ladderSizeStateMachine.OnShrink();
-        
+
     }
     ///<summary>
     /// Gets called when the player snaps his ladder to a shelf.
@@ -268,13 +308,32 @@ public class PlayerMovementStateMachine : StateMachine
             SetState(new PlayerSwinging(this));
             playerState = PlayerState.swinging;
         }
-        else 
+        else
         {
             SetState(new PlayerSliding(this));
             playerState = PlayerState.sliding;
         }
-      
+
     }
+
+    ///<summary>
+    /// Gets called when the player snaps to the next path.
+    ///</summary>
+    public void OnResnap()
+    {
+        if (valuesAsset.useSwinging)
+        {
+            SetState(this.State);
+            playerState = PlayerState.swinging;
+        }
+        else
+        {
+            SetState(this.State);
+            playerState = PlayerState.sliding;
+        }
+
+    }
+
     ///<summary>
     /// Gets called when the player changes to in the air.
     ///</summary>
