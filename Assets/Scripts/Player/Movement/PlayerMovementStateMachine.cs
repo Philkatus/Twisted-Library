@@ -84,6 +84,7 @@ public class PlayerMovementStateMachine : StateMachine
 
         jumpAction.performed += context => State.Jump();
         snapAction.performed += context => TryToSnapToShelf();
+        foldAction.performed += context => ladderSizeStateMachine.OnFold();
         #endregion
     }
 
@@ -113,7 +114,7 @@ public class PlayerMovementStateMachine : StateMachine
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
         slidingInput = slideAction.ReadValue<float>();
         swingingInput = swingAction.ReadValue<float>();
-        isPerformedFold = foldAction.triggered;
+        
     }
 
     ///<summary>
