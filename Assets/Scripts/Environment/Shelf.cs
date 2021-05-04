@@ -7,8 +7,17 @@ public class Shelf : MonoBehaviour
 {
     #region Public
     public PathCreator pathCreator;
-    [Tooltip("can swing to both sides or just to one")]
-    public bool twoSided;
+    public enum ShelfType
+    {
+        TwoSided, OnWall, FreeHanging
+    }
+    [Tooltip("the type of shelf (for swinging): " +
+        " Two Sided - Can Swing in loop with no limitations; " +
+        " OnWall - has a Wall to push off from; " +
+        " FreeHanging - Can Swing back and forth, but not necessarily up ")]
+    public ShelfType shelfType; 
+    [Tooltip("how high can free Hanging rails swing (max angle)")]
+    public float maxSwingingAngle;
     #endregion
 
     #region Private
