@@ -25,6 +25,7 @@ public class PlayerWalking : State
         PlayerStateMachine.ladder.transform.parent = controller.transform;
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
+        PlayerStateMachine.railCheckLadderPosition = controller.transform.position;
 
         PlayerStateMachine.playerVelocity.y = -1f;
         values = PlayerStateMachine.valuesAsset;

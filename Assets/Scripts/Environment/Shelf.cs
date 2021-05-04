@@ -17,12 +17,12 @@ public class Shelf : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-          
+
             if (playerStateMachine == null)
             {
                 playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();
             }
-            playerStateMachine.possibleShelves.Add(this);
+            // playerStateMachine.possibleShelves.Add(this);
         }
     }
 
@@ -30,12 +30,12 @@ public class Shelf : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-          
+
             if (playerStateMachine == null)
             {
                 playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();
             }
-            playerStateMachine.possibleShelves.Remove(this);
+            //playerStateMachine.possibleShelves.Remove(this);
         }
     }
 }

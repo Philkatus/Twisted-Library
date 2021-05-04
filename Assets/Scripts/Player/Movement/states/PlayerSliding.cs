@@ -70,6 +70,7 @@ public class PlayerSliding : State
         pSM.HeightOnLadder = -(startingPoint - targetPosition).magnitude / ladderLength;
         pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
         pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderLength * pSM.HeightOnLadder;
+        pSM.railCheckLadderPosition = ladder.transform.position;
 
         controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
         controller.transform.parent = ladder.transform;
@@ -208,7 +209,7 @@ public class PlayerSliding : State
 
                 if (shelfPlane.GetSide(Vector3.zero + pSM.playerVelocity)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
                 {
-                    if (pSM.CheckForNextClosestShelf(pSM.closestShelf))
+                    if (pSM.CheckForNextClosestRail(pSM.closestShelf))
                     {
 
                         pSM.OnResnap();

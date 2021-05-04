@@ -28,9 +28,10 @@ public class PlayerMovementStateMachine : StateMachine
     public bool dismounting;
 
     public Vector3 playerVelocity;
+    public Vector3 railCheckLadderPosition;
 
 
-    public List<Shelf> possibleShelves;
+    public List<Shelf> possibleRails;
     public Shelf closestShelf;
     public Transform ladder;
     public Transform ladderMesh;
@@ -68,7 +69,12 @@ public class PlayerMovementStateMachine : StateMachine
         ladderWalkingRotation = ladder.localRotation;
 
         SetState(new PlayerWalking(this));
-        possibleShelves = new List<Shelf>();
+        possibleRails = new List<Shelf>();
+        Shelf[] allRails = GameObject.FindObjectsOfType<Shelf>();
+        foreach (Shelf rail in allRails)
+        {
+            possibleRails.Add(rail);
+        }
 
         #region controls
         playerControlsMap = actionAsset.FindActionMap("PlayerControls");
@@ -98,7 +104,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     public void TryToSnapToShelf()
     {
-        if (CheckForShelf())
+        if (CheckForRail())
         {
             State.Snap();
         }
@@ -115,23 +121,23 @@ public class PlayerMovementStateMachine : StateMachine
     }
 
     ///<summary>
-    /// A function to determine the closest shelf to the player. Returns false if none are in range.
+    /// A function to determine the closest rail to the player. Returns false if none are in range.
     ///</summary>
-    public bool CheckForShelf()
+    public bool CheckForRail()
     {
-        if (possibleShelves.Count == 0)
+        if (possibleRails.Count == 0)
         {
             return false;
         }
         else
         {
             float closestDistance = Mathf.Infinity;
-            for (int i = 0; i < possibleShelves.Count; i++)
+            for (int i = 0; i < possibleRails.Count; i++)
             {
-                float distance = Vector3.Distance(possibleShelves[i].transform.position, transform.position);
+                float distance = Vector3.Distance(possibleRails[i].transform.position, railCheckLadderPosition);
                 if (distance < closestDistance)
                 {
-                    closestShelf = possibleShelves[i];
+                    closestShelf = possibleRails[i];
                     closestDistance = distance;
                 }
             }
@@ -140,11 +146,11 @@ public class PlayerMovementStateMachine : StateMachine
     }
 
     ///<summary>
-    /// A Function to determin the closest Shelf to the player that ignores the currentShelf. Return false if none are in range.
+    /// A function to determine the closest rail to the player that ignores the current rail. Return false if none are in range.
     ///</summary>
-    public bool CheckForNextClosestShelf(Shelf currentClosestShelf)
+    public bool CheckForNextClosestRail(Shelf currentClosestShelf)
     {
-        if (possibleShelves.Count == 1)
+        if (possibleRails.Count == 1)
         {
             return false;
         }
@@ -158,20 +164,20 @@ public class PlayerMovementStateMachine : StateMachine
             float closestDistance = Mathf.Infinity;
             Shelf nextClosestShelf = null;
 
-            for (int i = 0; i < possibleShelves.Count; i++)
+            for (int i = 0; i < possibleRails.Count; i++)
             {
-                float distance = Vector3.Distance(possibleShelves[i].transform.position, transform.position);
-                VertexPath possiblePath = possibleShelves[i].pathCreator.path;
+                float distance = Vector3.Distance(possibleRails[i].transform.position, transform.position);
+                VertexPath possiblePath = possibleRails[i].pathCreator.path;
                 Vector3 possiblePathDirection = possiblePath.GetDirectionAtDistance(possiblePath.GetClosestDistanceAlongPath(transform.position), EndOfPathInstruction.Stop);
 
                 if (distance < closestDistance
-                    && possibleShelves[i] != currentClosestShelf
-                    && possibleShelves[i].transform.position.y == currentClosestShelf.transform.position.y)
+                    && possibleRails[i] != currentClosestShelf
+                    && possibleRails[i].transform.position.y == currentClosestShelf.transform.position.y)
                 {
                     if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .99f)
                     {
                         closestDistance = distance;
-                        nextClosestShelf = possibleShelves[i];
+                        nextClosestShelf = possibleRails[i];
                     }
                 }
             }
