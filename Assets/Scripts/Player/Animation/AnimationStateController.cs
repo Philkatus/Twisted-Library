@@ -17,14 +17,15 @@ public class AnimationStateController : MonoBehaviour
     int VelocityHash;
     int SideInputHash;
     int ForwardInputHash;
-    float slideInput;
     int SlideInputHash;
     [Space]
 
-    [Header("ImpactRolling")]
+    [Header("Impact")]
     public float airTimer;
     public float timeForRoll;
     public bool canRoll;
+    public float timeForLanding;
+    public bool canLand;
     [Space]
 
     [Header("Jumping")]
@@ -53,7 +54,6 @@ public class AnimationStateController : MonoBehaviour
     [Range(-0.5f, -0.9f)] public float headRotationValue = -0.65f;
     [Tooltip("Use Spine to slightly turn Chest with head when looking")]
     public Transform spine;
-
     //dotProduct used to determine where the HeadAimTarget is in relation to the players forward direction
     [HideInInspector] public float dotProduct;
     #endregion
@@ -107,6 +107,8 @@ public class AnimationStateController : MonoBehaviour
         float forwardInput = movementScript.forwardInput;
         animator.SetFloat(SideInputHash, sideInput);
         animator.SetFloat(ForwardInputHash, forwardInput);
+        float slideInput = movementScript.slidingInput;
+        animator.SetFloat(SlideInputHash, slideInput);
 
 
 
@@ -175,9 +177,19 @@ public class AnimationStateController : MonoBehaviour
 
     void FallImpact()
     {
+        if(airTimer >= timeForLanding)
+        {
+            canLand = true;
+        }
         if (airTimer >= timeForRoll)
         {
             canRoll = true;
+            canLand = false;
+        }
+        if(canLand && controller.isGrounded)
+        {
+            animator.SetBool("isLanding", true);
+            canLand = false;
         }
         if (canRoll && controller.isGrounded)
         {
@@ -187,6 +199,7 @@ public class AnimationStateController : MonoBehaviour
         else
         {
             animator.SetBool("isRolling", false);
+            animator.SetBool("isLanding", false);
         }
     }
 
