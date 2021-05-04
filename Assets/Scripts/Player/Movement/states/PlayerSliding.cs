@@ -188,7 +188,7 @@ public class PlayerSliding : State
 
             //playervelocity increased with input
             float slidingAcceleration = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, values.slidingAcceleration * values.slidingSpeedSizeFactor, values.slidingAcceleration);
-            pSM.playerVelocity += pSM.slidingInput * pathDirection * Time.fixedDeltaTime * values.slidingAcceleration;
+            pSM.playerVelocity += pSM.slidingInput * pathDirection * Time.fixedDeltaTime * slidingAcceleration;
 
             //drag calculation
             float resultingSpeed = pSM.resultingSpeed(pSM.playerVelocity, pathDirection);

@@ -84,10 +84,10 @@ public class PlayerWalking : State
         */
        
         
-        PlayerStateMachine.playerVelocity.y -= values.gravity * Time.deltaTime;
+        PlayerStateMachine.playerVelocity.y -= values.gravity * Time.fixedDeltaTime;
         pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, Vector3.down, values.maxFallingSpeed);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
-        controller.Move(pSM.playerVelocity * Time.deltaTime*values.movementVelocityFactor);
+        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime*values.movementVelocityFactor);
 
         if (isGroundedWithCoyoteTime())
         {

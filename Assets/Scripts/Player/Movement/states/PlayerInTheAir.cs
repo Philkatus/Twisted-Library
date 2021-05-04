@@ -73,7 +73,7 @@ public class PlayerInTheAir : State
         pSM.playerVelocity.y = ClampedVelocityY;
        
 
-        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime);
+        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime*values.jumpVelocityFactor);
         // Gravity and falling
 
         //pSM.playerVelocity += direction * Time.deltaTime * pSM.movementAcceleration * pSM.jumpMovementFactor;
