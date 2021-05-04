@@ -10,12 +10,14 @@ public class Prototype_Respawn_script : MonoBehaviour
     public InputActionAsset actionAsset;
     InputActionMap playerControlsMap;
     InputAction restartButton;
+    InputAction quitButton;
 
     private void Start()
     {
         playerControlsMap = actionAsset.FindActionMap("PlayerControls");
         playerControlsMap.Enable();
         restartButton = playerControlsMap.FindAction("Restart");
+        quitButton = playerControlsMap.FindAction("Quit");
 
         //restartButton.performed += context => RespawnPlayer();
     }
@@ -29,6 +31,11 @@ public class Prototype_Respawn_script : MonoBehaviour
         if(restartButton.triggered && isRestartWithKey)
         {
             RespawnPlayer();
+        }
+
+        if(quitButton.triggered)
+        {
+            Application.Quit();
         }
     }
 
