@@ -18,14 +18,14 @@ public class PlayerWalking : State
     public override void Initialize()
     {
 
-        
+
 
         controller = PlayerStateMachine.controller;
         controller.transform.parent = PlayerStateMachine.myParent;
         PlayerStateMachine.ladder.transform.parent = controller.transform;
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
-        
+
         PlayerStateMachine.playerVelocity.y = -1f;
         values = PlayerStateMachine.valuesAsset;
     }
@@ -48,21 +48,21 @@ public class PlayerWalking : State
 
         if (direction != Vector3.zero)
         {
-            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.deltaTime);
+            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
         }
 
-        pSM.playerVelocity += direction * Time.deltaTime * values.movementAcceleration;
+        pSM.playerVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration;
         #region apply drag when no input is applied
         if (pSM.forwardInput == 0)
         {
             Vector3 currentDragForward = values.movementDrag * pSM.resultingVelocity(pSM.playerVelocity, directionForward);
-            pSM.playerVelocity -= currentDragForward * Time.deltaTime;
+            pSM.playerVelocity -= currentDragForward * Time.fixedDeltaTime;
 
         }
         if (pSM.sideWaysInput == 0)
         {
             Vector3 currentDragSideways = values.movementDrag * pSM.resultingVelocity(pSM.playerVelocity, directionRight);
-            pSM.playerVelocity -= currentDragSideways * Time.deltaTime;
+            pSM.playerVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
         #endregion
 
@@ -104,7 +104,7 @@ public class PlayerWalking : State
         else
         {
 
-            coyoteTime += Time.deltaTime;
+            coyoteTime += Time.fixedDeltaTime;
         }
         return coyoteTimer < coyoteTime;
     }
@@ -120,6 +120,6 @@ public class PlayerWalking : State
     public override void Snap()
     {
         PlayerStateMachine.OnSnap();
-        
+
     }
 }

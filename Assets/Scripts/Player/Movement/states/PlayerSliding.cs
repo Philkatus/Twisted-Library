@@ -89,6 +89,7 @@ public class PlayerSliding : State
 
         pSM.stopSlidingAction.started += context => stopping = true;
         pSM.stopSlidingAction.canceled += context => stopping = false;
+        Time.fixedDeltaTime = 0.002f;
     }
 
     public override void ReInitialize()
@@ -129,7 +130,7 @@ public class PlayerSliding : State
     public override IEnumerator Finish()
     {
         Debug.Log("on Finish " + pSM.transform.position.y);
-
+        Time.fixedDeltaTime = 0.02f;
         yield break;
     }
 
@@ -170,7 +171,7 @@ public class PlayerSliding : State
             // Go up and down.
             if (!CheckForCollisionCharacter(pSM.forwardInput * pSM.ladderDirection))
             {
-                pSM.HeightOnLadder += pSM.forwardInput * speed * Time.deltaTime;
+                pSM.HeightOnLadder += pSM.forwardInput * speed * Time.fixedDeltaTime;
                 pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
                 pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder; //pos on ladder
             }
@@ -187,7 +188,7 @@ public class PlayerSliding : State
 
             //playervelocity increased with input
             float slidingAcceleration = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, values.slidingAcceleration * values.slidingSpeedSizeFactor, values.slidingAcceleration);
-            pSM.playerVelocity += pSM.slidingInput * pathDirection * Time.deltaTime * slidingAcceleration;
+            pSM.playerVelocity += pSM.slidingInput * pathDirection * Time.fixedDeltaTime * values.slidingAcceleration;
 
             //drag calculation
             float resultingSpeed = pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
@@ -286,17 +287,25 @@ public class PlayerSliding : State
         // Dismounting the ladder on top and bottom 
         if (pSM.HeightOnLadder == 0 && pSM.forwardInput > 0)
         {
-            dismountTimer += Time.deltaTime;
-            if (dismountTimer >= values.ladderDismountTimer)
+            dismountTimer += Time.fixedDeltaTime;
+            RaycastHit hit;
+            Vector3 boxExtents = new Vector3(1.540491f * 0.5f, 0.4483852f * 0.5f, 1.37359f * 0.5f);
+
+            if (dismountTimer >= values.ladderDismountTimer
+            && !Physics.BoxCast(controller.transform.position + Vector3.up * 2.5f, boxExtents,
+            controller.transform.forward, out hit, controller.transform.rotation, 2f, LayerMask.GetMask("SlidingObstacle", "Environment")))
             {
-                dismountTimer = 0;
-                dismountStartPos = pSM.transform.position;
-                pSM.dismounting = true;
+                if (hit.collider != controller.gameObject)
+                {
+                    dismountTimer = 0;
+                    dismountStartPos = pSM.transform.position;
+                    pSM.dismounting = true;
+                }
             }
         }
         else if (pSM.HeightOnLadder == -1 && pSM.forwardInput < 0)
         {
-            dismountTimer += Time.deltaTime;
+            dismountTimer += Time.fixedDeltaTime;
             if (dismountTimer >= values.ladderDismountTimer)
             {
                 dismountTimer = 0;
@@ -315,7 +324,7 @@ public class PlayerSliding : State
         // 1 is how much units the player needs to move up to be on top of the shelf.
         if ((pSM.transform.position - dismountStartPos).magnitude <= 1 && !dismountedHalfways)
         {
-            pSM.HeightOnLadder += values.ladderDismountSpeed * Time.deltaTime;
+            pSM.HeightOnLadder += values.ladderDismountSpeed * Time.fixedDeltaTime;
             pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderLength * pSM.HeightOnLadder;
         }
         else if (!dismountedHalfways)
@@ -327,7 +336,7 @@ public class PlayerSliding : State
         // Make one step forward on the shelf before changing to walking state.
         if ((pSM.transform.position - dismountStartPos).magnitude <= 0.1f && dismountedHalfways)
         {
-            pSM.HeightOnLadder += values.ladderDismountSpeed * Time.deltaTime;
+            pSM.HeightOnLadder += values.ladderDismountSpeed * Time.fixedDeltaTime;
             pSM.transform.position = ladder.transform.position + pSM.controller.transform.forward * ladderLength * pSM.HeightOnLadder;
         }
         else if (dismountedHalfways)

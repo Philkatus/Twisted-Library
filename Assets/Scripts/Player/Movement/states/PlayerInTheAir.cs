@@ -35,7 +35,7 @@ public class PlayerInTheAir : State
         PlayerMovementStateMachine pSM = PlayerStateMachine;
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
-        Vector3 direction = directionForward * pSM.forwardInput + directionRight * pSM.sideWaysInput; 
+        Vector3 direction = directionForward * pSM.forwardInput + directionRight * pSM.sideWaysInput;
 
         /* Philips snapping
         if (pSM.slidingInput != 0 || pSM.swingingInput != 0)
@@ -48,7 +48,7 @@ public class PlayerInTheAir : State
         {
             controller.transform.forward = direction;
         }
-        pSM.playerVelocity += direction * Time.deltaTime * values.movementAcceleration * values.airMovementFactor;
+        pSM.playerVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration * values.airMovementFactor;
 
         //when wall jump occured, set the isWallJumping to false after 1 sec
         wallJumpingTime += Time.deltaTime;
@@ -60,21 +60,20 @@ public class PlayerInTheAir : State
         if (pSM.forwardInput <= 0.3f && pSM.forwardInput >= -.3f && !pSM.isWallJumping)
         {
             Vector3 currentDragForward = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionForward) / values.airMovementFactor;
-            pSM.playerVelocity -= currentDragForward * Time.deltaTime;
+            pSM.playerVelocity -= currentDragForward * Time.fixedDeltaTime;
         }
         if (pSM.sideWaysInput <= 0.3f && pSM.sideWaysInput >= -.3f && !pSM.isWallJumping)
         {
             Vector3 currentDragSideways = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionRight) / values.airMovementFactor;
-            pSM.playerVelocity -= currentDragSideways * Time.deltaTime;
+            pSM.playerVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
-        pSM.playerVelocity.y -= values.gravity * Time.deltaTime;
-        
+        pSM.playerVelocity.y -= values.gravity * Time.fixedDeltaTime;
         float ClampedVelocityY = Mathf.Clamp( pSM.playerVelocity.y,-values.maxFallingSpeed,Mathf.Infinity);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
         pSM.playerVelocity.y = ClampedVelocityY;
        
 
-        controller.Move(pSM.playerVelocity * Time.deltaTime * values.jumpVelocityFactor);
+        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime);
         // Gravity and falling
 
         //pSM.playerVelocity += direction * Time.deltaTime * pSM.movementAcceleration * pSM.jumpMovementFactor;
@@ -94,6 +93,6 @@ public class PlayerInTheAir : State
     public override void Snap()
     {
         PlayerStateMachine.OnSnap();
-        
+
     }
 }

@@ -41,10 +41,10 @@ public abstract class State
 
     public virtual void Snap()
     {
-       
+
     }
 
-    public virtual void Swing() 
+    public virtual void Swing()
     {
 
     }
