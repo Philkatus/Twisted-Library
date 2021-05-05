@@ -21,6 +21,7 @@ public class PlayerInTheAir : State
         PlayerStateMachine.ladder.transform.parent = controller.transform;
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
+
         values = PlayerStateMachine.valuesAsset;
         controller = PlayerStateMachine.controller;
         PlayerStateMachine.playerVelocity.y = Mathf.Clamp(PlayerStateMachine.playerVelocity.y, 0, Mathf.Infinity);
@@ -52,7 +53,7 @@ public class PlayerInTheAir : State
 
         //when wall jump occured, set the isWallJumping to false after 1 sec
         wallJumpingTime += Time.deltaTime;
-        if(wallJumpingTime >= 1)
+        if (wallJumpingTime >= 1)
         {
             pSM.isWallJumping = false;
         }
@@ -68,12 +69,12 @@ public class PlayerInTheAir : State
             pSM.playerVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
         pSM.playerVelocity.y -= values.gravity * Time.fixedDeltaTime;
-        float ClampedVelocityY = Mathf.Clamp( pSM.playerVelocity.y,-values.maxFallingSpeed,Mathf.Infinity);
+        float ClampedVelocityY = Mathf.Clamp(pSM.playerVelocity.y, -values.maxFallingSpeed, Mathf.Infinity);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
         pSM.playerVelocity.y = ClampedVelocityY;
-       
 
-        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime*values.jumpVelocityFactor);
+
+        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * values.jumpVelocityFactor);
         // Gravity and falling
 
         //pSM.playerVelocity += direction * Time.deltaTime * pSM.movementAcceleration * pSM.jumpMovementFactor;
