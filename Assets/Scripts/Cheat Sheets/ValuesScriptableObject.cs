@@ -43,7 +43,9 @@ public class ValuesScriptableObject : ScriptableObject
     #region Sliding
     [Header("Sliding")]
     [Tooltip("The maximum distance between ladder and rail to snap to the rails.")]
-    public float snappingDistance;
+    public float snappingDistance = 10;
+    [Tooltip("The maximum distance between ladder and rail to snap to the next rail while sliding.")]
+    public float slidingSnappingDistance = 2;
 
     [Tooltip("How fast the player climbs the ladder up and down while sliding.")]
     public float climbingSpeedOnLadder;

@@ -17,15 +17,11 @@ public class PlayerWalking : State
 
     public override void Initialize()
     {
-
-
-
         controller = PlayerStateMachine.controller;
         controller.transform.parent = PlayerStateMachine.myParent;
         PlayerStateMachine.ladder.transform.parent = controller.transform;
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
-        PlayerStateMachine.railCheckLadderPosition = controller.transform.position;
 
         PlayerStateMachine.playerVelocity.y = -1f;
         values = PlayerStateMachine.valuesAsset;
@@ -83,12 +79,12 @@ public class PlayerWalking : State
         pSM.playerVelocity.x = pSM.playerVelocity.normalized.x * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
         pSM.playerVelocity.z = pSM.playerVelocity.normalized.z * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
         */
-       
-        
+
+
         PlayerStateMachine.playerVelocity.y -= values.gravity * Time.fixedDeltaTime;
         pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, Vector3.down, values.maxFallingSpeed);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
-        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime*values.movementVelocityFactor);
+        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * values.movementVelocityFactor);
 
         if (isGroundedWithCoyoteTime())
         {

@@ -121,7 +121,7 @@ public class PlayerMovementStateMachine : StateMachine
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
         slidingInput = slideAction.ReadValue<float>();
         swingingInput = swingAction.ReadValue<float>();
-        
+
     }
 
     ///<summary>
@@ -129,55 +129,76 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public bool CheckForRail()
     {
+        if (playerState == PlayerState.walking)
+        {
+            railCheckLadderPosition = controller.transform.position;
+        }
+        else if (playerState == PlayerState.sliding)
+        {
+            railCheckLadderPosition = ladder.transform.position;
+        }
+        else if (playerState == PlayerState.inTheAir)
+        {
+            railCheckLadderPosition = controller.transform.position;
+        }
+
         if (possibleRails.Count == 0)
         {
             return false;
         }
         else
         {
-            float closestDistance = Mathf.Infinity;
+            float closestDistance = valuesAsset.snappingDistance;
             for (int i = 0; i < possibleRails.Count; i++)
             {
-                float distance = Vector3.Distance(possibleRails[i].transform.position, railCheckLadderPosition);
+                float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
                 if (distance < closestDistance)
                 {
                     closestShelf = possibleRails[i];
                     closestDistance = distance;
                 }
             }
-            return true;
+            if (closestShelf)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 
     ///<summary>
     /// A function to determine the closest rail to the player that ignores the current rail. Return false if none are in range.
     ///</summary>
-    public bool CheckForNextClosestRail(Shelf currentClosestShelf)
+    public bool CheckForNextClosestRail(Shelf currentClosestRail)
     {
+        railCheckLadderPosition = ladder.transform.position;
+
         if (possibleRails.Count == 1)
         {
             return false;
         }
         else
         {
-            //�finding of the direction  of the current rail
-            VertexPath currentClosestPath = currentClosestShelf.pathCreator.path;
+            //finding of the direction  of the current rail
+            VertexPath currentClosestPath = currentClosestRail.pathCreator.path;
             Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
 
-
-            float closestDistance = Mathf.Infinity;
+            float closestDistance = valuesAsset.slidingSnappingDistance;
             Shelf nextClosestShelf = null;
 
             for (int i = 0; i < possibleRails.Count; i++)
             {
-                float distance = Vector3.Distance(possibleRails[i].transform.position, transform.position);
+                float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
                 VertexPath possiblePath = possibleRails[i].pathCreator.path;
                 Vector3 possiblePathDirection = possiblePath.GetDirectionAtDistance(
                 possiblePath.GetClosestDistanceAlongPath(currentClosestPath.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop)), EndOfPathInstruction.Stop);
 
                 if (distance < closestDistance
-                    && possibleRails[i] != currentClosestShelf
-                    && possibleRails[i].transform.position.y == currentClosestShelf.transform.position.y)
+                    && possibleRails[i] != currentClosestRail
+                    && possibleRails[i].transform.position.y == currentClosestRail.transform.position.y)
                 {
                     if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .99f)
                     {
@@ -186,7 +207,6 @@ public class PlayerMovementStateMachine : StateMachine
                     }
                 }
             }
-
 
             if (nextClosestShelf != null)
             {
