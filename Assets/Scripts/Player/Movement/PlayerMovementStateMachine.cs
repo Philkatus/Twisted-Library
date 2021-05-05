@@ -99,13 +99,14 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Update()
     {
-
+       
     }
 
     private void FixedUpdate()
     {
         GetInput();
         State.Movement();
+        Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
     }
 
     public void TryToSnapToShelf()
