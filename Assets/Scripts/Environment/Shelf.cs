@@ -25,29 +25,4 @@ public class Shelf : MonoBehaviour
     #endregion
 
     
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            if (playerStateMachine == null)
-            {
-                playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();
-            }
-            //playerStateMachine.possibleRails.Add(this);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-
-            if (playerStateMachine == null)
-            {
-                playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();
-            }
-            //playerStateMachine.possibleRails.Remove(this);
-        }
-    }
-    
 }

@@ -34,7 +34,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool animationControllerisFoldingJumped;
 
     public List<Shelf> possibleRails;
-    public Shelf closestShelf;
+    public Shelf closestRail;
     public Transform ladder;
     public Transform ladderMesh;
     public LadderSizeStateMachine ladderSizeStateMachine;
@@ -73,13 +73,13 @@ public class PlayerMovementStateMachine : StateMachine
 
         SetState(new PlayerWalking(this));
         possibleRails = new List<Shelf>();
-        /*
+        
         Shelf[] allRails = GameObject.FindObjectsOfType<Shelf>();
         foreach (Shelf rail in allRails)
         {
             possibleRails.Add(rail);
         }
-        */
+        
         #region controls
         playerControlsMap = actionAsset.FindActionMap("PlayerControls");
         playerControlsMap.Enable();
@@ -144,7 +144,7 @@ public class PlayerMovementStateMachine : StateMachine
         {
             railCheckLadderPosition = controller.transform.position;
         }
-
+       
         if (possibleRails.Count == 0)
         {
             return false;
@@ -154,14 +154,17 @@ public class PlayerMovementStateMachine : StateMachine
             float closestDistance = valuesAsset.snappingDistance;
             for (int i = 0; i < possibleRails.Count; i++)
             {
+                
                 float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
+                
                 if (distance < closestDistance)
                 {
-                    closestShelf = possibleRails[i];
+                    
+                    closestRail = possibleRails[i];
                     closestDistance = distance;
                 }
             }
-            if (closestShelf)
+            if (closestRail!=null)
             {
                 return true;
             }
@@ -213,7 +216,7 @@ public class PlayerMovementStateMachine : StateMachine
 
             if (nextClosestShelf != null)
             {
-                closestShelf = nextClosestShelf;
+                closestRail = nextClosestShelf;
                 return true;
             }
             else
@@ -321,6 +324,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnSnap()
     {
         ladderSizeStateMachine.OnGrow();
+        Debug.Log("OnSnap");
 
         if (valuesAsset.useSwinging)
         {

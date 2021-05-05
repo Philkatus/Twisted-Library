@@ -58,7 +58,7 @@ public class PlayerSwinging : PlayerSliding
         stats = pSM.valuesAsset;
         pSM.swingingPosition = 0;
         base.Initialize();
-        closestShelf = pSM.closestShelf;
+        closestShelf = pSM.closestRail;
         playerVelocity = Vector3.zero;
 
         ladderLength = pSM.ladder.GetComponent<LadderSizeStateMachine>().ladderLength;
@@ -106,7 +106,7 @@ public class PlayerSwinging : PlayerSliding
     public override void Swing()
     {
 
-        VertexPath path = pSM.closestShelf.pathCreator.path;
+        VertexPath path = pSM.closestRail.pathCreator.path;
         Vector3 SwingingDirection = pSM.ladderMesh.forward;
         Vector3 swingingAxis = pSM.ladder.right;
 

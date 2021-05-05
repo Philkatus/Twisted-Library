@@ -38,7 +38,7 @@ public class PlayerSliding : State
         ladderSizeState = pSM.ladderSizeStateMachine;
         ladderLength = ladderSizeState.ladderLength;
         speed = values.climbingSpeedOnLadder;
-        closestShelf = pSM.closestShelf;
+        closestShelf = pSM.closestRail;
         controller = pSM.controller;
         ladder = pSM.ladder;
         pathCreator = closestShelf.pathCreator;
@@ -101,7 +101,7 @@ public class PlayerSliding : State
         ladderSizeState = pSM.ladderSizeStateMachine;
         ladderLength = ladderSizeState.ladderLength;
         speed = values.climbingSpeedOnLadder;
-        closestShelf = pSM.closestShelf;
+        closestShelf = pSM.closestRail;
         controller = pSM.controller;
         ladder = pSM.ladder;
         pathCreator = closestShelf.pathCreator;
@@ -224,20 +224,20 @@ public class PlayerSliding : State
                 Vector3 endOfShelfDirection = new Vector3();
                 if (pSM.currentDistance <= 0) //arriving at start of path
                 {
-                    endOfShelfDirection = pSM.closestShelf.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0))
-                                        - pSM.closestShelf.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints)); //start - ende
+                    endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0))
+                                        - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints)); //start - ende
                 }
                 else if (pSM.currentDistance >= pathLength) //arriving at end of path
                 {
-                    endOfShelfDirection = pSM.closestShelf.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints))
-                                        - pSM.closestShelf.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0)); //ende - start
+                    endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints))
+                                        - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0)); //ende - start
                 }
 
                 Plane shelfPlane = new Plane(endOfShelfDirection.normalized, Vector3.zero);
 
                 if (/* pSM.resultingSpeed( pSM.playerVelocity, pathDirection) >0   )*/shelfPlane.GetSide(Vector3.zero + pSM.playerVelocity)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
                 {
-                    if (pSM.CheckForNextClosestRail(pSM.closestShelf))
+                    if (pSM.CheckForNextClosestRail(pSM.closestRail))
                     {
                         pSM.OnResnap();
                     }
