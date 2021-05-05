@@ -130,7 +130,7 @@ public class PlayerSliding : State
 
     public override IEnumerator Finish()
     {
-        Debug.Log("on Finish " + pSM.transform.position.y);
+        
         Time.fixedDeltaTime = 0.02f;
         yield break;
     }
@@ -205,7 +205,14 @@ public class PlayerSliding : State
             {
                 pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection)*values.slidingVelocityFactor;
                 pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
-                Debug.Log(pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * values.slidingVelocityFactor + " " + values.slidingVelocityFactor);
+                //pSM.ladder.forward  = -path.GetNormalAtDistance(pSM.currentDistance);
+                if(pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * values.slidingVelocityFactor != 0)
+                {
+                    Quaternion targetRotation = Quaternion.LookRotation(-path.GetNormalAtDistance(pSM.currentDistance), pSM.ladder.up);
+                    pSM.ladder.rotation = targetRotation;
+                }
+                
+                // Debug.Log(pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * values.slidingVelocityFactor + " " + values.slidingVelocityFactor);
 
             }
             else

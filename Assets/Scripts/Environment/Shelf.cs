@@ -24,7 +24,7 @@ public class Shelf : MonoBehaviour
     PlayerMovementStateMachine playerStateMachine;
     #endregion
 
-
+    
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -49,4 +49,5 @@ public class Shelf : MonoBehaviour
             playerStateMachine.possibleRails.Remove(this);
         }
     }
+    
 }

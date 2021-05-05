@@ -84,17 +84,17 @@ public class PlayerSwinging : PlayerSliding
         switch (shelfType)
         {
             case Shelf.ShelfType.TwoSided:
-                minDecelerationFactor = stats.SwingingDeceleration;
-                maxDecelerationFactor = maxSwingingDeceleration;
+                minDecelerationFactor = stats.minSwingingDeceleration;
+                maxDecelerationFactor = stats.maxSwingingDeceleration;
                 accelerationFactor = 1;
                 break;
             case Shelf.ShelfType.FreeHanging:
-                minDecelerationFactor = minHangingDeceleration;
-                maxDecelerationFactor = maxHangingDeceleration;
+                minDecelerationFactor = stats.minHangingDeceleration;
+                maxDecelerationFactor = stats.maxHangingDeceleration;
                 break;
         }
 
-        currentVelocity += pSM.playerVelocity;
+        currentVelocity += pSM.resultingVelocity( pSM.playerVelocity,Bob.transform.forward);
     }
 
     public override void Movement()
@@ -110,7 +110,7 @@ public class PlayerSwinging : PlayerSliding
         Vector3 SwingingDirection = pSM.ladderMesh.forward;
         Vector3 swingingAxis = pSM.ladder.right;
 
-        float frameTime = Time.deltaTime;
+        float frameTime = Time.fixedDeltaTime;
         accumulator += frameTime;
         // immer wenn accumulator 0.01f ist, startet er eine while schleife, die die neue current Position berechnet. Das macht er (accumulator/dt)-Mal
         while (accumulator >= dt)
@@ -143,7 +143,7 @@ public class PlayerSwinging : PlayerSliding
     Vector3 PendulumUpdate(Vector3 currentStatePosition)
     {
         // Erstellt eine Gravity und addiert sie auf die currentVelocity
-        gravityForce = mass * stats.SwingingGravity;
+        gravityForce = mass * stats.swingingGravity;
         gravityDirection = Physics.gravity.normalized;
         currentVelocity += gravityDirection * gravityForce * dt;
 
@@ -163,7 +163,7 @@ public class PlayerSwinging : PlayerSliding
         float inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
 
         //Gravitystaerke * Cos(inclinationAngle)
-        tensionForce = mass * stats.SwingingGravity * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
+        tensionForce = mass * stats.swingingGravity * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
         float centripetalForce = ((mass * Mathf.Pow(currentVelocity.magnitude, 2)) / ropeLength);
 
         tensionForce += centripetalForce;
@@ -188,7 +188,7 @@ public class PlayerSwinging : PlayerSliding
         currentVelocity = currentVelocity.normalized * (currentVelocity.magnitude * (1 - DecelerationFactor));
 
         // Get only the forward/backward force
-        playerVelocity = Bob.transform.forward * pSM.resultingSpeed(Bob.transform.forward, currentVelocity);
+        playerVelocity =   Bob.transform.forward * pSM.resultingSpeed(Bob.transform.forward, currentVelocity);
 
         // pSM.playerVelocity for the Jump
         SetCurrentPlayerVelocity(pivot_p);
@@ -235,7 +235,7 @@ public class PlayerSwinging : PlayerSliding
         else
         {
             // Erstellt eine Gravity und addiert sie auf die currentVelocity
-            gravityForce = mass * stats.SwingingGravity;
+            gravityForce = mass * stats.swingingGravity;
             gravityDirection = Physics.gravity.normalized;
             currentVelocity += gravityDirection * gravityForce * dt;
 
@@ -252,7 +252,7 @@ public class PlayerSwinging : PlayerSliding
             float inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
 
             //Gravitystaerke * Cos(inclinationAngle)
-            tensionForce = mass * stats.SwingingGravity * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
+            tensionForce = mass * stats.swingingGravity * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
             float centripetalForce = ((mass * Mathf.Pow(currentVelocity.magnitude, 2)) / ropeLength);
 
             tensionForce += centripetalForce;
@@ -296,7 +296,7 @@ public class PlayerSwinging : PlayerSliding
             && currentVelocity.magnitude < stats.maxSwingSpeed
             && !inputGiven)
         {
-            inputForce = Bob.transform.forward * stats.SwingingAcceleration * dt * accelerationFactor;
+            inputForce = Bob.transform.forward * stats.swingingAcceleration * dt * accelerationFactor;
             currentVelocity += inputForce;
             inputGiven = true;
         }
@@ -306,7 +306,7 @@ public class PlayerSwinging : PlayerSliding
     {
         if (onWall)
         {
-            inputForce = repelDirection * stats.SwingingAcceleration * dt;
+            inputForce = repelDirection * stats.swingingAcceleration * dt;
             currentVelocity += inputForce;
             onWall = false;
         }
@@ -321,7 +321,7 @@ public class PlayerSwinging : PlayerSliding
         playerHeightOnLadder = (playerHeightOnLadder) / (ropeLength) * (1 - 0.1f) + 0.1f;
         maxJumpSpeed = maxJumpSpeed * playerHeightOnLadder;
         currentMovement = playerVelocity.normalized * Mathf.Clamp(playerVelocity.magnitude, 0, maxJumpSpeed);
-        pSM.playerVelocity = currentMovement;
+        pSM.playerVelocity = (pSM.resultingVelocity(pSM.playerVelocity,pSM.ladder.right) + currentMovement) /stats.swingingVelocityFactor;
     }
 
     public PlayerSwinging(PlayerMovementStateMachine playerStateMachine)

@@ -14,21 +14,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   movementAcceleration: 500
   maximumMovementSpeed: 10
-  movementDrag: 130
+  movementDrag: 10
+  movementVelocityFactor: 1
   jumpHeight: 12
   wallJump: {x: 0, y: 0, z: 0}
   airMovementFactor: 0.8
-  jumpingDrag: 0.4
+  jumpingDrag: 0.2
   gravity: 20
+  maxFallingSpeed: 40
+  jumpVelocityFactor: 1
+  snappingDistance: 0
   climbingSpeedOnLadder: 0.3
   slidingAcceleration: 0.07
   maxSlidingSpeed: 0.025
+  slidingSpeedSizeFactor: 0
   slidingDragPercentage: 0.1
   ladderDismountSpeed: 4
   ladderDismountTimer: 0.5
+  slidingVelocityFactor: 1
+  preservesVelocityOnSnap: 0
   useSwinging: 1
-  SwingingAcceleration: 3100
-  SwingingDeceleration: 0.009
+  swingingAcceleration: 10
+  minSwingingDeceleration: 0.009
+  maxSwingingDeceleration: 0.03
+  minHangingDeceleration: 0.002
+  maxHangingDeceleration: 0.07
+  hangingAccelerationFactor: 0.7
+  maxPushAngle: -0.01
   maxSwingSpeed: 45
-  VelocityToSwingingConversion: 0
-  SwingingGravity: 70
+  swingingGravity: 70
+  swingingVelocityFactor: 1

@@ -73,12 +73,13 @@ public class PlayerMovementStateMachine : StateMachine
 
         SetState(new PlayerWalking(this));
         possibleRails = new List<Shelf>();
+        /*
         Shelf[] allRails = GameObject.FindObjectsOfType<Shelf>();
         foreach (Shelf rail in allRails)
         {
             possibleRails.Add(rail);
         }
-
+        */
         #region controls
         playerControlsMap = actionAsset.FindActionMap("PlayerControls");
         playerControlsMap.Enable();
@@ -226,8 +227,6 @@ public class PlayerMovementStateMachine : StateMachine
 
         return targetDirection * resultingSpeed;
     }
-    #endregion
-
     /// <summary>
     /// calculates the resulting clamped velocity through a change in direction
     /// </summary>
@@ -260,24 +259,10 @@ public class PlayerMovementStateMachine : StateMachine
 
         return currentVelocity;
     }
+    #endregion
 
-    public enum PlayerState
-    {
-        walking,
-        inTheAir,
-        sliding,
-        swinging
 
-    };
 
-    public enum LadderState
-    {
-        LadderBig,
-        LadderSmall,
-        LadderFold,
-        LadderUnfold
-
-    };
 
     #region functions to change states
     ///<summary>
@@ -358,4 +343,22 @@ public class PlayerMovementStateMachine : StateMachine
         HeightOnLadder = -1;
     }
     #endregion
+
+    public enum PlayerState
+    {
+        walking,
+        inTheAir,
+        sliding,
+        swinging
+
+    };
+
+    public enum LadderState
+    {
+        LadderBig,
+        LadderSmall,
+        LadderFold,
+        LadderUnfold
+
+    };
 }
