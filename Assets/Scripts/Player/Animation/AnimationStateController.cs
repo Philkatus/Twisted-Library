@@ -11,6 +11,10 @@ public class AnimationStateController : MonoBehaviour
     public PlayerMovementStateMachine movementScript;
     public CharacterController controller;
     public Animator animator;
+    public FootIK footIKScript;
+
+    [Header("Use IK")]
+    public bool useFeetIK = false;
 
     [Header("Animator")]
     float velocity = 0f;
@@ -21,12 +25,11 @@ public class AnimationStateController : MonoBehaviour
     [Space]
 
     [Header("Impact")]
-    public float airTimer;
     public float timeForRoll;
-    public bool canRoll;
+    bool canRoll;
     public float timeForLanding;
-    public bool canLand;
-    [Space]
+    bool canLand;
+    float airTimer;
 
     [Header("Jumping")]
     float fallTimer = 0;
@@ -40,9 +43,9 @@ public class AnimationStateController : MonoBehaviour
     //InputAction snapAction;
 
     [Header("Rigs")]
-    public RigBuilder rigBuilder;
     public Rig headRig;
     public Rig armRig;
+    RigBuilder rigBuilder;
 
     [Header("Ladder")]
     public GameObject ladderVisual;
@@ -50,7 +53,7 @@ public class AnimationStateController : MonoBehaviour
 
     [Header("Adjusting Head Aim Rig")]
     public Transform headAimTarget;
-    [Tooltip("1 means target is right in front of PC, -1 behind. Number specifies the limit to wich point the head can turn. Suggestion about -0.65")]
+    [Tooltip("1 means target is right in front of PC, -1 behind. Number specifies the limit to wich the head can turn. Suggestion about -0.65")]
     [Range(-0.5f, -0.9f)] public float headRotationValue = -0.65f;
     [Tooltip("Use Spine to slightly turn Chest with head when looking")]
     public Transform spine;
@@ -62,6 +65,8 @@ public class AnimationStateController : MonoBehaviour
     void Start()
     {
         animator = GetComponent<Animator>();
+        footIKScript = GetComponent<FootIK>();
+        footIKScript.enabled = false;
         //movementScript = GetComponent<PlayerMovementStateMachine>();
         //controller = GetComponent<CharacterController>();
         if(ladderVisual != null && ladderVisualForCode != null)
@@ -130,8 +135,22 @@ public class AnimationStateController : MonoBehaviour
         HeadAim();
         FallImpact();
         DismountingTop();
+        if(useFeetIK && footIKScript != null)
+        {
+            CheckIK();
+        }
     }
-   
+    void CheckIK()
+    {
+        if(movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding || movementScript.playerState == PlayerMovementStateMachine.PlayerState.inTheAir)
+        {
+            footIKScript.enabled = false;
+        }
+        else
+        {
+            footIKScript.enabled = true;
+        }
+    }
     void HeadAim()
     {
         Vector3 toTarget = (headAimTarget.position - transform.position).normalized;
