@@ -19,7 +19,7 @@ public class FootIK : MonoBehaviour
     [Range(0, 2)] [SerializeField] private float raycastDownDistance = 1.5f;
     [SerializeField] private LayerMask environmentLayer;
     [SerializeField] private float pelvisOffset = 0f;
-    [Range(0, 3)] [SerializeField] private float pelvisUpAndDownSpeed = 0.28f;
+    [Range(0, 1)] [SerializeField] private float pelvisUpAndDownSpeed = 0.28f;
     [Range(0, 1)] [SerializeField] private float feetToIkPositionSpeed = 0.5f;
 
     public string leftFootAnimVariableName = "LeftFootCurve";
