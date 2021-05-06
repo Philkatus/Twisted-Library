@@ -89,10 +89,6 @@ public class AnimationStateController : MonoBehaviour
 
         rigBuilder = GetComponent<RigBuilder>();
 
-        //animator.SetLayerWeight(2, 0);
-
-
-
         // new Input System
         playerControlsMap = movementScript.actionAsset.FindActionMap("PlayerControls");
         playerControlsMap.Enable();
