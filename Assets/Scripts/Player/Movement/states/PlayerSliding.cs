@@ -15,7 +15,7 @@ public class PlayerSliding : State
     Shelf closestShelf;
     CharacterController controller;
     PathCreator pathCreator;
-    PlayerMovementStateMachine pSM;
+    protected PlayerMovementStateMachine pSM;
     Transform ladder;
     LadderSizeStateMachine ladderSizeState;
     #endregion
@@ -26,18 +26,18 @@ public class PlayerSliding : State
     bool stopping;
     Vector3 dismountStartPos;
     Vector3 pathDirection;
-    ValuesScriptableObject values;
+    protected ValuesScriptableObject stats;
     #endregion
 
     public override void Initialize()
     {
         // Assign variables.
         pSM = PlayerStateMachine;
-        values = pSM.valuesAsset;
+        stats = pSM.valuesAsset;
 
         ladderSizeState = pSM.ladderSizeStateMachine;
         ladderLength = ladderSizeState.ladderLength;
-        speed = values.climbingSpeedOnLadder;
+        speed = stats.climbingSpeedOnLadder;
         closestShelf = pSM.closestRail;
         controller = pSM.controller;
         ladder = pSM.ladder;
@@ -76,9 +76,9 @@ public class PlayerSliding : State
         pSM.ladderSizeStateMachine.OnGrow();
 
         pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
-        if (values.preservesVelocityOnSnap)
+        if (stats.preservesVelocityOnSnap)
         {
-            pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, values.maxSlidingSpeed);
+            pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, stats.maxSlidingSpeed);
 
         }
         else
@@ -96,11 +96,11 @@ public class PlayerSliding : State
     {
         // Assign variables.
         pSM = PlayerStateMachine;
-        values = pSM.valuesAsset;
+        stats = pSM.valuesAsset;
 
         ladderSizeState = pSM.ladderSizeStateMachine;
         ladderLength = ladderSizeState.ladderLength;
-        speed = values.climbingSpeedOnLadder;
+        speed = stats.climbingSpeedOnLadder;
         closestShelf = pSM.closestRail;
         controller = pSM.controller;
         ladder = pSM.ladder;
@@ -145,17 +145,17 @@ public class PlayerSliding : State
         }
         else
         {
-            if (values.wallJump != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
+            if (stats.wallJump != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
             {
                 Vector3 fromWallVector = (Quaternion.AngleAxis(90, Vector3.up) * pathDirection).normalized;
-                fromWallVector = fromWallVector * values.wallJump.z;
-                Vector3 fromWallValued = new Vector3(fromWallVector.x, values.wallJump.y, fromWallVector.z);
+                fromWallVector = fromWallVector * stats.wallJump.z;
+                Vector3 fromWallValued = new Vector3(fromWallVector.x, stats.wallJump.y, fromWallVector.z);
                 PlayerStateMachine.playerVelocity += fromWallValued;
                 PlayerStateMachine.isWallJumping = true;
             }
             else
             {
-                PlayerStateMachine.playerVelocity.y += values.jumpHeight;
+                PlayerStateMachine.playerVelocity.y += stats.jumpHeight;
             }
 
             Debug.Log("Normal slide jump");
@@ -187,27 +187,26 @@ public class PlayerSliding : State
             }
 
             //playervelocity increased with input
-            float slidingAcceleration = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, values.slidingAcceleration * values.slidingSpeedSizeFactor, values.slidingAcceleration);
+            float slidingAcceleration = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, stats.slidingAcceleration * stats.slidingSpeedSizeFactor, stats.slidingAcceleration);
             pSM.playerVelocity += pSM.slidingInput * pathDirection * Time.fixedDeltaTime * slidingAcceleration;
 
             //drag calculation
             float resultingSpeed = pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
 
             //speed Clamp (dependant on ladder size)
-            float maxSlidingSpeed = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, values.maxSlidingSpeed * values.slidingSpeedSizeFactor, values.maxSlidingSpeed);
-            pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * values.slidingDragPercentage / 100, -maxSlidingSpeed, maxSlidingSpeed);
+            float maxSlidingSpeed = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, stats.maxSlidingSpeed * stats.slidingSpeedSizeFactor, stats.maxSlidingSpeed);
+            pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * stats.slidingDragPercentage / 100, -maxSlidingSpeed, maxSlidingSpeed);
 
             //moving the object
             if (!CheckForCollisionCharacter(pSM.playerVelocity) && !stopping && !CheckForCollisionLadder(pSM.playerVelocity))
             {
-                pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * values.slidingVelocityFactor;
+                pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * stats.slidingVelocityFactor;
                 pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
                 //pSM.ladder.forward  = -path.GetNormalAtDistance(pSM.currentDistance);
-                if(pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * values.slidingVelocityFactor != 0)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(-path.GetNormalAtDistance(pSM.currentDistance), pSM.ladder.up);
+               
+                    Quaternion targetRotation = Quaternion.LookRotation(-path.GetNormalAtDistance(pSM.currentDistance), pSM.ladderDirection);
                     pSM.ladder.rotation = targetRotation;
-                }
+                
                 
                 // Debug.Log(pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * values.slidingVelocityFactor + " " + values.slidingVelocityFactor);
 
@@ -291,7 +290,7 @@ public class PlayerSliding : State
             RaycastHit hit;
             Vector3 boxExtents = new Vector3(1.540491f * 0.5f, 0.4483852f * 0.5f, 1.37359f * 0.5f);
 
-            if (dismountTimer >= values.ladderDismountTimer
+            if (dismountTimer >= stats.ladderDismountTimer
             && !Physics.BoxCast(controller.transform.position + Vector3.up * 1.5f + controller.transform.forward * -1, boxExtents,
             controller.transform.forward, out hit, controller.transform.rotation, 4f, LayerMask.GetMask("SlidingObstacle", "Environment")))
             {
@@ -306,7 +305,7 @@ public class PlayerSliding : State
         else if (pSM.HeightOnLadder == -1 && pSM.forwardInput < 0)
         {
             dismountTimer += Time.fixedDeltaTime;
-            if (dismountTimer >= values.ladderDismountTimer)
+            if (dismountTimer >= stats.ladderDismountTimer)
             {
                 dismountTimer = 0;
                 controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
@@ -324,7 +323,7 @@ public class PlayerSliding : State
         // 1 is how much units the player needs to move up to be on top of the shelf.
         if ((pSM.transform.position - dismountStartPos).magnitude <= 1 && !dismountedHalfways)
         {
-            pSM.HeightOnLadder += values.ladderDismountSpeed * Time.fixedDeltaTime;
+            pSM.HeightOnLadder += stats.ladderDismountSpeed * Time.fixedDeltaTime;
             pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderLength * pSM.HeightOnLadder;
         }
         else if (!dismountedHalfways)
@@ -336,7 +335,7 @@ public class PlayerSliding : State
         // Make one step forward on the shelf before changing to walking state.
         if ((pSM.transform.position - dismountStartPos).magnitude <= 0.1f && dismountedHalfways)
         {
-            pSM.HeightOnLadder += values.ladderDismountSpeed * Time.fixedDeltaTime;
+            pSM.HeightOnLadder += stats.ladderDismountSpeed * Time.fixedDeltaTime;
             pSM.transform.position = ladder.transform.position + pSM.controller.transform.forward * ladderLength * pSM.HeightOnLadder;
         }
         else if (dismountedHalfways)

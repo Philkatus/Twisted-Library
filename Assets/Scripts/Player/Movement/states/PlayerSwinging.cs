@@ -6,7 +6,6 @@ using PathCreation;
 public class PlayerSwinging : PlayerSliding
 {
     PlayerMovementStateMachine pSM;
-    ValuesScriptableObject stats;
     Shelf closestShelf;
 
     GameObject Pivot;
@@ -54,12 +53,11 @@ public class PlayerSwinging : PlayerSliding
     float ladderLength;
     public override void Initialize()
     {
-        pSM = PlayerStateMachine;
-        stats = pSM.valuesAsset;
+        
         pSM.swingingPosition = 0;
         base.Initialize();
         closestShelf = pSM.closestRail;
-        playerVelocity = Vector3.zero;
+        //playerVelocity = Vector3.zero;
 
         ladderLength = pSM.ladder.GetComponent<LadderSizeStateMachine>().ladderLength;
         Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet

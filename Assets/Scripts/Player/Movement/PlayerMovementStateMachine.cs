@@ -324,7 +324,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnSnap()
     {
         ladderSizeStateMachine.OnGrow();
-        Debug.Log("OnSnap");
+
 
         if (valuesAsset.useSwinging)
         {
