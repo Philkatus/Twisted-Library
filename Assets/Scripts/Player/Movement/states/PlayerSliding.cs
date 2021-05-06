@@ -292,8 +292,8 @@ public class PlayerSliding : State
             Vector3 boxExtents = new Vector3(1.540491f * 0.5f, 0.4483852f * 0.5f, 1.37359f * 0.5f);
 
             if (dismountTimer >= values.ladderDismountTimer
-            && !Physics.BoxCast(controller.transform.position + Vector3.up * 2.5f, boxExtents,
-            controller.transform.forward, out hit, controller.transform.rotation, 2f, LayerMask.GetMask("SlidingObstacle", "Environment")))
+            && !Physics.BoxCast(controller.transform.position + Vector3.up * 1.5f + controller.transform.forward * -1, boxExtents,
+            controller.transform.forward, out hit, controller.transform.rotation, 4f, LayerMask.GetMask("SlidingObstacle", "Environment")))
             {
                 if (hit.collider != controller.gameObject)
                 {
