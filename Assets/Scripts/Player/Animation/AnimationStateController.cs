@@ -9,9 +9,15 @@ public class AnimationStateController : MonoBehaviour
     #region variables
     [Header("References")]
     public PlayerMovementStateMachine movementScript;
+    public LadderSizeStateMachine ladderScript;
     public CharacterController controller;
     public Animator animator;
     public FootIK footIKScript;
+
+    [Header("Test")]
+    public float turnAmount;
+    public float forwardAmount;
+    public Vector3 move;
 
     [Header("Use IK")]
     public bool useFeetIK = false;
@@ -83,10 +89,6 @@ public class AnimationStateController : MonoBehaviour
 
         rigBuilder = GetComponent<RigBuilder>();
 
-        //animator.SetLayerWeight(2, 0);
-
-
-
         // new Input System
         playerControlsMap = movementScript.actionAsset.FindActionMap("PlayerControls");
         playerControlsMap.Enable();
@@ -109,6 +111,8 @@ public class AnimationStateController : MonoBehaviour
         {
             movementScript.animationControllerisFoldingJumped = false;
         }
+
+
 
         float sideInput = movementScript.sideWaysInput;
         float forwardInput = movementScript.forwardInput;
@@ -135,10 +139,24 @@ public class AnimationStateController : MonoBehaviour
         HeadAim();
         FallImpact();
         DismountingTop();
+        ladderStateChange();
+        MovementParameters();
+
         if(useFeetIK && footIKScript != null)
         {
             CheckIK();
         }
+    }
+    void MovementParameters()
+    {
+        move = movementScript.playerVelocity;
+        if (move.magnitude > 1f) move.Normalize();
+        move = transform.InverseTransformDirection(move);
+        forwardAmount = move.z;
+        turnAmount = Mathf.Atan2(move.x, move.z);
+
+        animator.SetFloat("Forward", forwardAmount, 0.1f, Time.deltaTime);
+        animator.SetFloat("Turn", turnAmount, 0.1f, Time.deltaTime);
     }
     void CheckIK()
     {
@@ -193,6 +211,19 @@ public class AnimationStateController : MonoBehaviour
             {
                 airTimer = 0;
             }
+        }
+    }
+
+    void ladderStateChange()
+    {
+        //animations for retracting and extending ladder
+        if (ladderScript.isFoldingUp)
+        {
+            animator.SetBool("isFoldingUp", true);
+        }
+        else
+        {
+            animator.SetBool("isFoldingUp", false);
         }
     }
 
