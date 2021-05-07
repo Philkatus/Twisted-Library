@@ -24,29 +24,5 @@ public class Shelf : MonoBehaviour
     PlayerMovementStateMachine playerStateMachine;
     #endregion
 
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            if (playerStateMachine == null)
-            {
-                playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();
-            }
-            playerStateMachine.possibleShelves.Add(this);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-
-            if (playerStateMachine == null)
-            {
-                playerStateMachine = other.GetComponent<PlayerMovementStateMachine>();
-            }
-            playerStateMachine.possibleShelves.Remove(this);
-        }
-    }
+    
 }

@@ -28,10 +28,13 @@ public class PlayerMovementStateMachine : StateMachine
     public bool dismounting;
 
     public Vector3 playerVelocity;
+    public Vector3 railCheckLadderPosition;
 
+    public bool isWallJumping;
+    public bool animationControllerisFoldingJumped;
 
-    public List<Shelf> possibleShelves;
-    public Shelf closestShelf;
+    public List<Shelf> possibleRails;
+    public Shelf closestRail;
     public Transform ladder;
     public Transform ladderMesh;
     public LadderSizeStateMachine ladderSizeStateMachine;
@@ -69,8 +72,14 @@ public class PlayerMovementStateMachine : StateMachine
         ladderWalkingRotation = ladder.localRotation;
 
         SetState(new PlayerWalking(this));
-        possibleShelves = new List<Shelf>();
-
+        possibleRails = new List<Shelf>();
+        
+        Shelf[] allRails = GameObject.FindObjectsOfType<Shelf>();
+        foreach (Shelf rail in allRails)
+        {
+            possibleRails.Add(rail);
+        }
+        
         #region controls
         playerControlsMap = actionAsset.FindActionMap("PlayerControls");
         playerControlsMap.Enable();
@@ -83,21 +92,31 @@ public class PlayerMovementStateMachine : StateMachine
         stopSlidingAction = playerControlsMap.FindAction("StopSliding");
 
         jumpAction.performed += context => State.Jump();
+        snapAction.performed += context => TryToSnapToShelf();
+        foldAction.performed += context => ladderSizeStateMachine.OnFold();
         #endregion
     }
 
     private void Update()
     {
+       
+    }
+
+    private void FixedUpdate()
+    {
         GetInput();
         State.Movement();
+        Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
     }
 
     public void TryToSnapToShelf()
     {
-        if (CheckForShelf())
+        
+        if (CheckForRail())
         {
             State.Snap();
         }
+        
     }
 
     #region utility
@@ -107,75 +126,99 @@ public class PlayerMovementStateMachine : StateMachine
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
         slidingInput = slideAction.ReadValue<float>();
         swingingInput = swingAction.ReadValue<float>();
-        isPerformedFold = foldAction.triggered;
+
     }
 
     ///<summary>
-    /// A function to determine the closest shelf to the player. Returns false if none are in range.
+    /// A function to determine the closest rail to the player. Returns false if none are in range.
     ///</summary>
-    public bool CheckForShelf()
+    public bool CheckForRail()
     {
-        if (possibleShelves.Count == 0)
+        if (playerState == PlayerState.walking)
+        {
+            railCheckLadderPosition = controller.transform.position;
+        }
+        else if (playerState == PlayerState.sliding)
+        {
+            railCheckLadderPosition = ladder.transform.position;
+        }
+        else if (playerState == PlayerState.inTheAir)
+        {
+            railCheckLadderPosition = controller.transform.position;
+        }
+       
+        if (possibleRails.Count == 0)
         {
             return false;
         }
         else
         {
-            float closestDistance = Mathf.Infinity;
-            for (int i = 0; i < possibleShelves.Count; i++)
+            float closestDistance = valuesAsset.snappingDistance;
+            for (int i = 0; i < possibleRails.Count; i++)
             {
-                float distance = Vector3.Distance(possibleShelves[i].transform.position, transform.position);
+                
+                float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
+                
                 if (distance < closestDistance)
                 {
-                    closestShelf = possibleShelves[i];
+                    
+                    closestRail = possibleRails[i];
                     closestDistance = distance;
                 }
             }
-            return true;
+            if (closestRail!=null)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 
     ///<summary>
-    /// A Function to determin the closest Shelf to the player that ignores the currentShelf. Return false if none are in range.
+    /// A function to determine the closest rail to the player that ignores the current rail. Return false if none are in range.
     ///</summary>
-    public bool CheckForNextClosestShelf(Shelf currentClosestShelf)
+    public bool CheckForNextClosestRail(Shelf currentClosestRail)
     {
-        if (possibleShelves.Count == 1)
+        railCheckLadderPosition = ladder.transform.position;
+
+        if (possibleRails.Count == 1)
         {
             return false;
         }
         else
         {
-            //�finding of the direction  of the current rail
-            VertexPath currentClosestPath = currentClosestShelf.pathCreator.path;
+            //finding of the direction  of the current rail
+            VertexPath currentClosestPath = currentClosestRail.pathCreator.path;
             Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
 
-
-            float closestDistance = Mathf.Infinity;
+            float closestDistance = valuesAsset.slidingSnappingDistance;
             Shelf nextClosestShelf = null;
 
-            for (int i = 0; i < possibleShelves.Count; i++)
+            for (int i = 0; i < possibleRails.Count; i++)
             {
-                float distance = Vector3.Distance(possibleShelves[i].transform.position, transform.position);
-                VertexPath possiblePath = possibleShelves[i].pathCreator.path;
-                Vector3 possiblePathDirection = possiblePath.GetDirectionAtDistance(possiblePath.GetClosestDistanceAlongPath(transform.position), EndOfPathInstruction.Stop);
+                float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
+                VertexPath possiblePath = possibleRails[i].pathCreator.path;
+                Vector3 possiblePathDirection = possiblePath.GetDirectionAtDistance(
+                possiblePath.GetClosestDistanceAlongPath(currentClosestPath.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop)), EndOfPathInstruction.Stop);
 
                 if (distance < closestDistance
-                    && possibleShelves[i] != currentClosestShelf
-                    && possibleShelves[i].transform.position.y == currentClosestShelf.transform.position.y)
+                    && possibleRails[i] != currentClosestRail
+                    && possibleRails[i].transform.position.y == currentClosestRail.transform.position.y)
                 {
                     if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .99f)
                     {
                         closestDistance = distance;
-                        nextClosestShelf = possibleShelves[i];
+                        nextClosestShelf = possibleRails[i];
                     }
                 }
             }
 
-
             if (nextClosestShelf != null)
             {
-                closestShelf = nextClosestShelf;
+                closestRail = nextClosestShelf;
                 return true;
             }
             else
@@ -188,7 +231,7 @@ public class PlayerMovementStateMachine : StateMachine
     /// <summary>
     /// Calculates the resulting signed magnitude alongside the targetdirection after a change of direction.
     /// </summary>
-    /// <param name="currentVelocity">The velocity you start with before the change </param>
+    /// <param name="currentVelocity">the Velocity to change </param>
     /// <param name="targetDirection">The normalized direction you want to change to</param>
     /// <returns></returns>
     public float resultingSpeed(Vector3 currentVelocity, Vector3 targetDirection)
@@ -201,7 +244,7 @@ public class PlayerMovementStateMachine : StateMachine
     /// <summary>
     /// calculates the resulting velocity through a change in direction
     /// </summary>
-    /// <param name="currentVelocity"> </param>
+    /// <param name="currentVelocity"> the Velocity to change </param>
     /// <param name="targetDirection"> the normalized direction you want to change to</param>
     /// <returns></returns>
     public Vector3 resultingVelocity(Vector3 currentVelocity, Vector3 targetDirection)
@@ -210,25 +253,42 @@ public class PlayerMovementStateMachine : StateMachine
 
         return targetDirection * resultingSpeed;
     }
+    /// <summary>
+    /// calculates the resulting clamped velocity through a change in direction
+    /// </summary>
+    /// <param name="currentVelocity"> the Velocity to change </param>
+    /// <param name="targetDirection"> the normalized direction you want to change to</param>
+    /// <param name="maximumSpeed"> the maximum speed the return value gets clamped to</param>
+    /// <returns></returns>
+    public Vector3 resultingClampedVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed)
+    {
+        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
+        resultingSpeed = Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
+
+        return targetDirection * resultingSpeed;
+    }
+
+    /// <summary>
+    /// takes the Player Velocity and puts a clamp on one direction of it
+    /// </summary>
+    /// <param name="currentVelocity"> the Velocity to change </param>
+    /// <param name="targetDirection"> The direction to clamp </param>
+    /// <param name="maximumSpeed"> the maximumspeed that the return Vector should have in the target direction </param>
+    /// <returns></returns>
+    public Vector3 ClampPlayerVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed)
+    {
+        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
+        Vector3 clampedVelocity = targetDirection * Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
+        currentVelocity -= this.resultingVelocity(currentVelocity, targetDirection);
+        currentVelocity += clampedVelocity;
+
+
+        return currentVelocity;
+    }
     #endregion
 
-    public enum PlayerState
-    {
-        walking,
-        inTheAir,
-        sliding,
-        swinging
 
-    };
 
-    public enum LadderState
-    {
-        LadderBig,
-        LadderSmall,
-        LadderFold,
-        LadderUnfold
-
-    };
 
     #region functions to change states
     ///<summary>
@@ -266,6 +326,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnSnap()
     {
         ladderSizeStateMachine.OnGrow();
+
 
         if (valuesAsset.useSwinging)
         {
@@ -309,4 +370,22 @@ public class PlayerMovementStateMachine : StateMachine
         HeightOnLadder = -1;
     }
     #endregion
+
+    public enum PlayerState
+    {
+        walking,
+        inTheAir,
+        sliding,
+        swinging
+
+    };
+
+    public enum LadderState
+    {
+        LadderBig,
+        LadderSmall,
+        LadderFold,
+        LadderUnfold
+
+    };
 }

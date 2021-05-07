@@ -15,20 +15,33 @@ MonoBehaviour:
   movementAcceleration: 50
   maximumMovementSpeed: 10
   movementDrag: 50
+  movementVelocityFactor: 1
   jumpHeight: 9
-  wallJump: {x: 0, y: 10, z: 10}
+  wallJump: {x: 0, y: 9, z: 3}
   airMovementFactor: 0.53
   jumpingDrag: 4
   gravity: 20
+  maxFallingSpeed: 40
+  jumpVelocityFactor: 1
+  snappingDistance: 10
+  slidingSnappingDistance: 2
   climbingSpeedOnLadder: 1
-  slidingAcceleration: 0.1
+  slidingAcceleration: 0.25
   maxSlidingSpeed: 0.1
-  slidingDragPercentage: 2
-  ladderDismountSpeed: 4
+  slidingSpeedSizeFactor: 1.5
+  slidingDragPercentage: 3
+  ladderDismountSpeed: 0.3
   ladderDismountTimer: 0.3
+  slidingVelocityFactor: 1
+  preservesVelocityOnSnap: 0
   useSwinging: 0
-  SwingingAcceleration: 0
-  SwingingDeceleration: 0
+  swingingAcceleration: 0
+  minSwingingDeceleration: 0
+  maxSwingingDeceleration: 0
+  minHangingDeceleration: 0
+  maxHangingDeceleration: 0
+  hangingAccelerationFactor: 0
+  maxPushAngle: 0
   maxSwingSpeed: 0
-  VelocityToSwingingConversion: 0
-  SwingingGravity: 0
+  swingingGravity: 0
+  swingingVelocityFactor: 1
