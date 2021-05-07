@@ -9,10 +9,7 @@ public class PlayerSliding : State
     #region INHERITED
     float currentDistance;
     float speed;
-    float ladderLength;
     float pathLength;
-    VertexPath path;
-    Shelf closestShelf;
     CharacterController controller;
     PathCreator pathCreator;
     protected PlayerMovementStateMachine pSM;
@@ -26,9 +23,17 @@ public class PlayerSliding : State
     bool stopping;
     Vector3 dismountStartPos;
     Vector3 pathDirection;
-    protected ValuesScriptableObject stats;
+
     #endregion
 
+
+    #region PROTECTED
+    protected float ladderLength;
+
+    protected VertexPath path;
+    protected Shelf closestRail;
+    protected ValuesScriptableObject stats;
+    #endregion
     public override void Initialize()
     {
         // Assign variables.
@@ -38,16 +43,16 @@ public class PlayerSliding : State
         ladderSizeState = pSM.ladderSizeStateMachine;
         ladderLength = ladderSizeState.ladderLength;
         speed = stats.climbingSpeedOnLadder;
-        closestShelf = pSM.closestRail;
+        closestRail = pSM.closestRail;
         controller = pSM.controller;
         ladder = pSM.ladder;
-        pathCreator = closestShelf.pathCreator;
+        pathCreator = closestRail.pathCreator;
         path = pathCreator.path;
         //pSM.HeightOnLadder = -1;
 
         // Place the ladder on the path.
         Vector3 startingPoint = Vector3.zero;
-        if (closestShelf != null)
+        if (closestRail != null)
         {
             startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
         }
@@ -101,15 +106,15 @@ public class PlayerSliding : State
         ladderSizeState = pSM.ladderSizeStateMachine;
         ladderLength = ladderSizeState.ladderLength;
         speed = stats.climbingSpeedOnLadder;
-        closestShelf = pSM.closestRail;
+        closestRail = pSM.closestRail;
         controller = pSM.controller;
         ladder = pSM.ladder;
-        pathCreator = closestShelf.pathCreator;
+        pathCreator = closestRail.pathCreator;
         path = pathCreator.path;
 
         // Place the ladder on the path.
         Vector3 startingPoint = Vector3.zero;
-        if (closestShelf != null)
+        if (closestRail != null)
         {
             startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
         }
@@ -176,7 +181,7 @@ public class PlayerSliding : State
                 pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder; //pos on ladder
             }
 
-            // Move horizontally.
+            #region Move horizontally.
             pathDirection = path.GetDirectionAtDistance(currentDistance);
 
             // Get sideways input, no input if both buttons held down.
@@ -201,13 +206,15 @@ public class PlayerSliding : State
             if (!CheckForCollisionCharacter(pSM.playerVelocity) && !stopping && !CheckForCollisionLadder(pSM.playerVelocity))
             {
                 pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * stats.slidingVelocityFactor;
+
                 pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
-                //pSM.ladder.forward  = -path.GetNormalAtDistance(pSM.currentDistance);
-               
-                    Quaternion targetRotation = Quaternion.LookRotation(-path.GetNormalAtDistance(pSM.currentDistance), pSM.ladderDirection);
-                    pSM.ladder.rotation = targetRotation;
-                
-                
+
+
+                float rotateByAngle2 = Vector3.SignedAngle(pSM.ladder.forward, -path.GetNormalAtDistance(pSM.currentDistance), pSM.ladder.up);
+                Debug.Log(rotateByAngle2);
+
+                Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle2, pSM.ladder.up);
+                pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
                 // Debug.Log(pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * values.slidingVelocityFactor + " " + values.slidingVelocityFactor);
 
             }
@@ -215,7 +222,9 @@ public class PlayerSliding : State
             {
                 pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, 0);
             }
+            #endregion
 
+            #region end of Path
             //End Of Path, continue sliding with ReSnap or Fall from Path
             if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
             {
@@ -246,6 +255,7 @@ public class PlayerSliding : State
                     }
                 }
             }
+            #endregion
             CheckIfReadyToDismount();
         }
         else

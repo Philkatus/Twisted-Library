@@ -111,10 +111,12 @@ public class PlayerMovementStateMachine : StateMachine
 
     public void TryToSnapToShelf()
     {
+        
         if (CheckForRail())
         {
             State.Snap();
         }
+        
     }
 
     #region utility

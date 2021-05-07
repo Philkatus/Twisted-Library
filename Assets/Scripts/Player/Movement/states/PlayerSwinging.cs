@@ -5,9 +5,7 @@ using PathCreation;
 
 public class PlayerSwinging : PlayerSliding
 {
-    PlayerMovementStateMachine pSM;
-    Shelf closestShelf;
-
+   
     GameObject Pivot;
     GameObject Bob;
 
@@ -50,22 +48,33 @@ public class PlayerSwinging : PlayerSliding
     // makes sure, we can only give input once per direction
     bool inputGiven;
 
-    float ladderLength;
+    public override void ReInitialize()
+    {
+        base.ReInitialize();
+        Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderLength;
+        shelfType = closestRail.shelfType;
+        onWall = true;
+        inputGiven = false;
+        ropeLength = Vector3.Distance(Pivot.transform.position, Bob.transform.position);
+    }
+
+
     public override void Initialize()
     {
         
-        pSM.swingingPosition = 0;
+       
         base.Initialize();
-        closestShelf = pSM.closestRail;
+        pSM.swingingPosition = 0;
         //playerVelocity = Vector3.zero;
 
-        ladderLength = pSM.ladder.GetComponent<LadderSizeStateMachine>().ladderLength;
         Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
 
         Bob = Pivot.transform.GetChild(1).gameObject;
         Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderLength;
+        Debug.Log(Bob.name);
 
-        shelfType = closestShelf.shelfType;
+
+        shelfType = closestRail.shelfType;
         onWall = true;
         inputGiven = false;
         // Get the initial rope length from how far away the bob is now
@@ -97,16 +106,13 @@ public class PlayerSwinging : PlayerSliding
 
     public override void Movement()
     {
+       
         base.Movement();
         Swing();
     }
 
     public override void Swing()
     {
-
-        VertexPath path = pSM.closestRail.pathCreator.path;
-        Vector3 SwingingDirection = pSM.ladderMesh.forward;
-        Vector3 swingingAxis = pSM.ladder.right;
 
         float frameTime = Time.fixedDeltaTime;
         accumulator += frameTime;
@@ -117,13 +123,13 @@ public class PlayerSwinging : PlayerSliding
             switch (shelfType)
             {
                 case Shelf.ShelfType.TwoSided:
-                    currentStatePosition = PendulumUpdate(currentStatePosition);
+                    currentStatePosition = PendulumUpdate(previousStatePosition);
                     break;
                 case Shelf.ShelfType.OnWall:
-                    currentStatePosition = RepelUpdate(currentStatePosition);
+                    currentStatePosition = RepelUpdate(previousStatePosition);
                     break;
                 case Shelf.ShelfType.FreeHanging:
-                    currentStatePosition = PendulumUpdate(currentStatePosition);
+                    currentStatePosition = PendulumUpdate(previousStatePosition);
                     break;
             }
             accumulator -= dt;
@@ -134,11 +140,18 @@ public class PlayerSwinging : PlayerSliding
         //die Leiter korrekt rotieren
         Vector3 axis = pSM.ladder.right;
         float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition - pSM.ladder.transform.position, axis));
-        Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
+       
+       
+
+        Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis) ;
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
+
+       
+
+
     }
 
-    Vector3 PendulumUpdate(Vector3 currentStatePosition)
+    Vector3 PendulumUpdate(Vector3 previousStatePosition)
     {
         // Erstellt eine Gravity und addiert sie auf die currentVelocity
         gravityForce = mass * stats.swingingGravity;
@@ -186,7 +199,7 @@ public class PlayerSwinging : PlayerSliding
         currentVelocity = currentVelocity.normalized * (currentVelocity.magnitude * (1 - DecelerationFactor));
 
         // Get only the forward/backward force
-        playerVelocity =   Bob.transform.forward * pSM.resultingSpeed(Bob.transform.forward, currentVelocity);
+        playerVelocity =   Bob.transform.forward * pSM.resultingSpeed( currentVelocity, Bob.transform.forward);
 
         // pSM.playerVelocity for the Jump
         SetCurrentPlayerVelocity(pivot_p);
@@ -201,10 +214,10 @@ public class PlayerSwinging : PlayerSliding
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
         movementDelta += playerVelocity * dt;
-        return GetPointOnLine(pivot_p, currentStatePosition + movementDelta, ropeLength);
+        return GetPointOnLine(pivot_p, Bob.transform.position + movementDelta, ropeLength);
     }
 
-    Vector3 RepelUpdate(Vector3 currentStatePosition)
+    Vector3 RepelUpdate(Vector3 previousStatePosition)
     {
         // Get normal at current position
         repelDirection = -Bob.transform.forward;
@@ -217,7 +230,7 @@ public class PlayerSwinging : PlayerSliding
         {
             Vector3 axis = pSM.ladder.right;
             float angle = Vector3.SignedAngle(pivot_p + Vector3.down, pivot_p - pSM.ladderDirection, axis);
-            Debug.Log(angle);
+            //Debug.Log(angle);
             if (angle >= -0.01f)
             {
 
@@ -228,7 +241,7 @@ public class PlayerSwinging : PlayerSliding
         if (onWall)
         {
             currentVelocity = Vector3.zero;
-            currentStatePosition = pivot_p + Vector3.down * ropeLength;
+            previousStatePosition = pivot_p + Vector3.down * ropeLength;
         }
         else
         {
@@ -280,7 +293,7 @@ public class PlayerSwinging : PlayerSliding
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
         movementDelta += playerVelocity * dt;
-        return GetPointOnLine(pivot_p, currentStatePosition + movementDelta, ropeLength);
+        return GetPointOnLine(pivot_p, Bob.transform.position + movementDelta, ropeLength);
     }
 
     Vector3 GetPointOnLine(Vector3 start, Vector3 end, float distanceFromStart)
