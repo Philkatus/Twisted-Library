@@ -106,9 +106,9 @@ public class PlayerSwinging : PlayerSliding
 
     public override void Movement()
     {
-       
-        base.Movement();
         Swing();
+        base.Movement();
+       
     }
 
     public override void Swing()
