@@ -7,7 +7,8 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour
 {
     [SerializeField]
-    private AudioClip[] clips;
+    private AudioClip[] footsteps;
+    public AudioClip[] landingSounds;
 
     public AudioSource audioSource;
     public float audioVolume = 0.1f;
@@ -18,16 +19,22 @@ public class SoundManager : MonoBehaviour
     {
         audioSource = this.GetComponent<AudioSource>();
     }
-
+    public void Landing(int index)
+    {
+        audioSource.PlayOneShot((AudioClip)landingSounds[index], audioVolume);
+    }
     public void HardImpact(AnimationEvent animationEvent)
     {
-
+        if (animationEvent.animatorClipInfo.weight > 0.5)
+        {
+            audioSource.PlayOneShot((AudioClip)landingSounds[0], audioVolume);
+        }
     }
     public void FootstepL(AnimationEvent animationEvent)
     {
         if (animationEvent.animatorClipInfo.weight > 0.5)
         {
-            audioSource.PlayOneShot((AudioClip)clips[Random.Range (0, 4)], audioVolume);
+            audioSource.PlayOneShot((AudioClip)footsteps[Random.Range (0, 4)], audioVolume);
             if(footstepLFX != null)
                 footstepLFX.Play();
         }
@@ -37,7 +44,7 @@ public class SoundManager : MonoBehaviour
     {
         if (animationEvent.animatorClipInfo.weight > 0.5)
         {
-            audioSource.PlayOneShot((AudioClip)clips[Random.Range(5, 9)], audioVolume);
+            audioSource.PlayOneShot((AudioClip)footsteps[Random.Range(5, 9)], audioVolume);
             if (footstepRFX != null)
                 footstepRFX.Play();
         }
@@ -47,7 +54,7 @@ public class SoundManager : MonoBehaviour
     {
         if (animationEvent.animatorClipInfo.weight > 0.5)
         {
-            audioSource.PlayOneShot((AudioClip)clips[2], audioVolume);
+            audioSource.PlayOneShot((AudioClip)footsteps[2], audioVolume);
         }
     }
 
@@ -55,7 +62,7 @@ public class SoundManager : MonoBehaviour
     {
         if (animationEvent.animatorClipInfo.weight > 0.5)
         {
-            audioSource.PlayOneShot((AudioClip)clips[3], audioVolume);
+            audioSource.PlayOneShot((AudioClip)footsteps[3], audioVolume);
         }
     }
 }

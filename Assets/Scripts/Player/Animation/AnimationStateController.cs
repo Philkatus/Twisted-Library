@@ -11,6 +11,7 @@ public class AnimationStateController : MonoBehaviour
     public PlayerMovementStateMachine movementScript;
     public LadderSizeStateMachine ladderScript;
     public CharacterController controller;
+    public SoundManager soundManager;
     public Animator animator;
     public FootIK footIKScript;
 
@@ -71,6 +72,7 @@ public class AnimationStateController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         footIKScript = GetComponent<FootIK>();
+        soundManager = GetComponent<SoundManager>();
         footIKScript.enabled = false;
         //movementScript = GetComponent<PlayerMovementStateMachine>();
         //controller = GetComponent<CharacterController>();
@@ -247,6 +249,7 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isLanding", true);
             canLand = false;
+            soundManager.Landing(0);
         }
         else
         {
@@ -256,6 +259,7 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isRolling", true);
             canRoll = false;
+            soundManager.Landing(1);
         }
         else
         {
@@ -265,6 +269,7 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isHardLanding", true);
             canHardLand = false;
+            soundManager.Landing(2);
         }
         else
         {
