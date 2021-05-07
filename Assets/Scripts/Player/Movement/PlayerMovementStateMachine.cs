@@ -93,7 +93,9 @@ public class PlayerMovementStateMachine : StateMachine
 
         jumpAction.performed += context => State.Jump();
         snapAction.performed += context => TryToSnapToShelf();
+        foldAction.performed += context => State.RocketJump();
         foldAction.performed += context => ladderSizeStateMachine.OnFold();
+        
         #endregion
     }
 
@@ -154,6 +156,7 @@ public class PlayerMovementStateMachine : StateMachine
         else
         {
             float closestDistance = valuesAsset.snappingDistance;
+            closestRail = null;
             for (int i = 0; i < possibleRails.Count; i++)
             {
                 
@@ -291,6 +294,8 @@ public class PlayerMovementStateMachine : StateMachine
 
 
     #region functions to change states
+    
+
     ///<summary>
     /// Gets called when the player lands on the floor.
     ///</summary>

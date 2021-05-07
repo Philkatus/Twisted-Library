@@ -303,7 +303,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1131367242779359759}
-  m_LocalRotation: {x: 0.012577906, y: 0.98694426, z: -0.12793937, w: 0.09702792}
+  m_LocalRotation: {x: -0.008899859, y: 0.9893229, z: -0.12824771, w: -0.06865491}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -387,7 +387,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1160592902008439448}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.1421475, y: 3.6420002, z: 10.789402}
+  m_LocalPosition: {x: 1.519392, y: 3.6420002, z: 10.894562}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4527526875429812834}
@@ -1609,7 +1609,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3973077873750717958}
-  m_LocalRotation: {x: 0.01628189, y: 0.98249626, z: -0.15357965, w: 0.10416026}
+  m_LocalRotation: {x: -0.011534178, y: 0.985229, z: -0.15412512, w: -0.07373106}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -2016,11 +2016,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9c0edb2dc675124d889b59d81b3f036, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  clips:
-  - {fileID: 8300000, guid: 42e65e088b3f4374e851b8dbd38f3df9, type: 3}
-  - {fileID: 8300000, guid: 8bc94ec6ed537e743b481638bdcd503d, type: 3}
-  - {fileID: 8300000, guid: 5897aeed9b676024fbb8c694b421a861, type: 3}
+  footsteps:
+  - {fileID: 8300000, guid: 61c966488b611934ea3a9b3b6435ed07, type: 3}
+  - {fileID: 8300000, guid: d39f21e71cfed2044bd1a509a49474a8, type: 3}
+  - {fileID: 8300000, guid: 3f41ec6ab90687f419ed9eebe2da065f, type: 3}
+  - {fileID: 8300000, guid: 98920857a2c38ca41a2de906f1b6cf53, type: 3}
+  - {fileID: 8300000, guid: 4d1da07c1b522304c806869a99b8f0e0, type: 3}
+  - {fileID: 8300000, guid: 3c7258485d1f72e4f8fdb48c4a1140df, type: 3}
+  - {fileID: 8300000, guid: 2d86700afaeef8745bb1e8298c31d4e5, type: 3}
+  - {fileID: 8300000, guid: 92f09c7ac509d1143bbb1e3f5452c257, type: 3}
+  - {fileID: 8300000, guid: 43c8aafcc9c45cc41a6f82d148da8f46, type: 3}
+  - {fileID: 8300000, guid: 4ce545021b6ba6846a4f8191aff72ee1, type: 3}
+  landingSounds:
   - {fileID: 8300000, guid: 3b09d59f4499d45428baa7a21e954296, type: 3}
+  - {fileID: 8300000, guid: 9b3b94ef0830f0d4e881bccf136d9b39, type: 3}
+  - {fileID: 8300000, guid: cfefa2e79a115b54cab22409ff62080e, type: 3}
   audioSource: {fileID: 5224045387318095671}
   audioVolume: 0.01
   footstepLFX: {fileID: 0}
@@ -2040,14 +2050,13 @@ MonoBehaviour:
   movementScript: {fileID: 5224045388643823046}
   ladderScript: {fileID: 1529433670212845975}
   controller: {fileID: 7511473034388439087}
+  soundManager: {fileID: 0}
   animator: {fileID: 5224045387318095670}
   footIKScript: {fileID: 0}
-  turnAmount: 0
-  forwardAmount: 0
-  move: {x: 0, y: 0, z: 0}
   useFeetIK: 0
-  timeForRoll: 1.5
   timeForLanding: 1
+  timeForRoll: 1.5
+  timeForHardLanding: 0
   headRig: {fileID: 5224045387643815620}
   armRig: {fileID: 5224045388768667450}
   ladderVisual: {fileID: 5224045388537476055}
@@ -2055,7 +2064,6 @@ MonoBehaviour:
   headAimTarget: {fileID: 6164259229316237293}
   headRotationValue: -0.65
   spine: {fileID: 562277038417729361}
-  dotProduct: 0
 --- !u!114 &6164259229910852116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4421,7 +4429,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5469279423612491226}
-  m_LocalRotation: {x: 0.0080639385, y: 0.9918162, z: -0.082024425, w: 0.09750687}
+  m_LocalRotation: {x: -0.005705875, y: 0.99420667, z: -0.0822221, w: -0.06899385}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -4975,8 +4983,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6164259229706539056}
-  m_LocalRotation: {x: 0.012577906, y: 0.9869442, z: -0.1279394, w: 0.097027905}
-  m_LocalPosition: {x: -2.1421475, y: 3.6420002, z: 10.789402}
+  m_LocalRotation: {x: -0.018904008, y: 0.9809217, z: -0.12715864, w: -0.14582849}
+  m_LocalPosition: {x: 3.199903, y: 3.6420002, z: 10.524288}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6164259229316237293}

@@ -7,6 +7,8 @@ public class PlayerInTheAir : State
     CharacterController controller;
     ValuesScriptableObject values;
 
+
+    bool didRocketJump;
     float wallJumpingTime;
 
     public PlayerInTheAir(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
@@ -96,4 +98,79 @@ public class PlayerInTheAir : State
         PlayerStateMachine.OnSnap();
 
     }
+
+    public override void RocketJump()
+    {
+        if (!didRocketJump)
+        {
+            Debug.Log("Rocket");
+            float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig;
+            float jumpheight = values.jumpHeight * 1.5f;
+            Vector3 origin = PlayerStateMachine.transform.position;
+            float sphereRadius = .2f;
+
+
+            LayerMask mask = LayerMask.GetMask("Environment");
+
+            List<RaycastHit> hits = new List<RaycastHit>();
+            Ray ray = new Ray(origin, Vector3.down);
+            //hits.AddRange( Physics.SphereCastAll(ray, MaxHeight, 1, mask));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.forward,MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.back, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.right, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.left, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+
+
+
+
+            /*
+            Debug.DrawRay(origin, Vector3.down * MaxHeight, Color.red, 1);
+            Debug.DrawRay(origin, Vector3.right * MaxHeight, Color.red, 1);
+            Debug.DrawRay(origin, Vector3.left * MaxHeight, Color.red, 1);
+            Debug.DrawRay(origin, Vector3.up * MaxHeight, Color.red, 1);
+            Debug.DrawRay(origin, Vector3.forward * MaxHeight, Color.red, 1);
+            Debug.DrawRay(origin, Vector3.back * MaxHeight, Color.red, 1);
+            
+            Debug.DrawRay(origin, (Vector3.down + Vector3.left) * MaxHeight, Color.red, 1);
+            Debug.DrawRay(origin, (Vector3.down + Vector3.right) * MaxHeight, Color.red, 1);
+            Debug.DrawRay(origin, (Vector3.down + Vector3.forward) * MaxHeight, Color.red, 1);
+            Debug.DrawRay(origin, (Vector3.down + Vector3.back) * MaxHeight, Color.red, 1);
+            */
+            float closestDistance = Mathf.Infinity;
+            RaycastHit closestHit;
+            Vector3 target = Vector3.zero;
+
+            for (int i = 0; i < hits.Count; i++)
+            {
+
+                float distance = hits[i].distance;
+                if (distance < closestDistance)
+                {
+
+                    closestHit = hits[i];
+                    closestDistance = distance;
+                    target = closestHit.point;
+                    
+                }
+
+            }
+
+            if (target != Vector3.zero)
+            {
+                Debug.Log(target);
+                Debug.Log("jump");
+                PlayerStateMachine.playerVelocity = (PlayerStateMachine.transform.position - target).normalized * jumpheight;
+                Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
+                didRocketJump = true;
+            }
+
+
+        }
+
+
+    }
+
+
+
 }
