@@ -19,6 +19,10 @@ public class SoundManager : MonoBehaviour
         audioSource = this.GetComponent<AudioSource>();
     }
 
+    public void HardImpact(AnimationEvent animationEvent)
+    {
+
+    }
     public void FootstepL(AnimationEvent animationEvent)
     {
         if (animationEvent.animatorClipInfo.weight > 0.5)
