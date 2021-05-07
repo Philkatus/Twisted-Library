@@ -308,7 +308,7 @@ public class AnimationStateController : MonoBehaviour
 
     void Sliding()
     {
-        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding)
+        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding || movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging )
         {
             animator.SetBool("isClimbingLadder", true);
             //disables ladder holding IK

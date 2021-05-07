@@ -34,13 +34,14 @@ public class PlayerMovementStateMachine : StateMachine
     public bool animationControllerisFoldingJumped;
 
     public List<Shelf> possibleRails;
-    public Shelf closestShelf;
+    public Shelf closestRail;
     public Transform ladder;
     public Transform ladderMesh;
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
     [HideInInspector] public InputAction slideAction;
     [HideInInspector] public InputAction swingAction;
+    [HideInInspector] public InputAction snapAction;
     [HideInInspector] public InputAction stopSlidingAction;
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
@@ -59,7 +60,7 @@ public class PlayerMovementStateMachine : StateMachine
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
-    InputAction snapAction;
+    
     InputAction foldAction;
     #endregion
 
@@ -72,12 +73,13 @@ public class PlayerMovementStateMachine : StateMachine
 
         SetState(new PlayerWalking(this));
         possibleRails = new List<Shelf>();
+        
         Shelf[] allRails = GameObject.FindObjectsOfType<Shelf>();
         foreach (Shelf rail in allRails)
         {
             possibleRails.Add(rail);
         }
-
+        
         #region controls
         playerControlsMap = actionAsset.FindActionMap("PlayerControls");
         playerControlsMap.Enable();
@@ -97,21 +99,24 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Update()
     {
-
+       
     }
 
     private void FixedUpdate()
     {
         GetInput();
         State.Movement();
+        Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
     }
 
     public void TryToSnapToShelf()
     {
+        
         if (CheckForRail())
         {
             State.Snap();
         }
+        
     }
 
     #region utility
@@ -141,7 +146,7 @@ public class PlayerMovementStateMachine : StateMachine
         {
             railCheckLadderPosition = controller.transform.position;
         }
-
+       
         if (possibleRails.Count == 0)
         {
             return false;
@@ -151,14 +156,17 @@ public class PlayerMovementStateMachine : StateMachine
             float closestDistance = valuesAsset.snappingDistance;
             for (int i = 0; i < possibleRails.Count; i++)
             {
+                
                 float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
+                
                 if (distance < closestDistance)
                 {
-                    closestShelf = possibleRails[i];
+                    
+                    closestRail = possibleRails[i];
                     closestDistance = distance;
                 }
             }
-            if (closestShelf)
+            if (closestRail!=null)
             {
                 return true;
             }
@@ -210,7 +218,7 @@ public class PlayerMovementStateMachine : StateMachine
 
             if (nextClosestShelf != null)
             {
-                closestShelf = nextClosestShelf;
+                closestRail = nextClosestShelf;
                 return true;
             }
             else
@@ -245,8 +253,6 @@ public class PlayerMovementStateMachine : StateMachine
 
         return targetDirection * resultingSpeed;
     }
-    #endregion
-
     /// <summary>
     /// calculates the resulting clamped velocity through a change in direction
     /// </summary>
@@ -279,24 +285,10 @@ public class PlayerMovementStateMachine : StateMachine
 
         return currentVelocity;
     }
+    #endregion
 
-    public enum PlayerState
-    {
-        walking,
-        inTheAir,
-        sliding,
-        swinging
 
-    };
 
-    public enum LadderState
-    {
-        LadderBig,
-        LadderSmall,
-        LadderFold,
-        LadderUnfold
-
-    };
 
     #region functions to change states
     ///<summary>
@@ -334,6 +326,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnSnap()
     {
         ladderSizeStateMachine.OnGrow();
+
 
         if (valuesAsset.useSwinging)
         {
@@ -377,4 +370,22 @@ public class PlayerMovementStateMachine : StateMachine
         HeightOnLadder = -1;
     }
     #endregion
+
+    public enum PlayerState
+    {
+        walking,
+        inTheAir,
+        sliding,
+        swinging
+
+    };
+
+    public enum LadderState
+    {
+        LadderBig,
+        LadderSmall,
+        LadderFold,
+        LadderUnfold
+
+    };
 }
