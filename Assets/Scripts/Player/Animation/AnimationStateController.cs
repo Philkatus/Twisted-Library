@@ -11,13 +11,14 @@ public class AnimationStateController : MonoBehaviour
     public PlayerMovementStateMachine movementScript;
     public LadderSizeStateMachine ladderScript;
     public CharacterController controller;
+    public SoundManager soundManager;
     public Animator animator;
     public FootIK footIKScript;
 
-    [Header("Test")]
-    public float turnAmount;
-    public float forwardAmount;
-    public Vector3 move;
+    [Header("Movement Input")]
+    float turnAmount;
+    float forwardAmount;
+    Vector3 move;
 
     [Header("Use IK")]
     public bool useFeetIK = false;
@@ -28,13 +29,14 @@ public class AnimationStateController : MonoBehaviour
     int SideInputHash;
     int ForwardInputHash;
     int SlideInputHash;
-    [Space]
 
     [Header("Impact")]
-    public float timeForRoll;
-    bool canRoll;
     public float timeForLanding;
+    public float timeForRoll;
+    public float timeForHardLanding;
     bool canLand;
+    bool canRoll;
+    bool canHardLand;
     float airTimer;
 
     [Header("Jumping")]
@@ -45,8 +47,6 @@ public class AnimationStateController : MonoBehaviour
 
     InputActionMap playerControlsMap;
     InputAction jumpAction;
-    InputAction moveAction;
-    //InputAction snapAction;
 
     [Header("Rigs")]
     public Rig headRig;
@@ -64,7 +64,7 @@ public class AnimationStateController : MonoBehaviour
     [Tooltip("Use Spine to slightly turn Chest with head when looking")]
     public Transform spine;
     //dotProduct used to determine where the HeadAimTarget is in relation to the players forward direction
-    [HideInInspector] public float dotProduct;
+    float dotProduct;
     #endregion
 
 
@@ -72,6 +72,7 @@ public class AnimationStateController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         footIKScript = GetComponent<FootIK>();
+        soundManager = GetComponent<SoundManager>();
         footIKScript.enabled = false;
         //movementScript = GetComponent<PlayerMovementStateMachine>();
         //controller = GetComponent<CharacterController>();
@@ -238,10 +239,17 @@ public class AnimationStateController : MonoBehaviour
             canRoll = true;
             canLand = false;
         }
+        if(airTimer >= timeForHardLanding)
+        {
+            canHardLand = true;
+            canLand = false;
+            canRoll = false;
+        }
         if(canLand && controller.isGrounded)
         {
             animator.SetBool("isLanding", true);
             canLand = false;
+            soundManager.Landing(0);
         }
         else
         {
@@ -251,10 +259,21 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isRolling", true);
             canRoll = false;
+            soundManager.Landing(1);
         }
         else
         {
             animator.SetBool("isRolling", false);
+        }
+        if(canHardLand && controller.isGrounded)
+        {
+            animator.SetBool("isHardLanding", true);
+            canHardLand = false;
+            soundManager.Landing(2);
+        }
+        else
+        {
+            animator.SetBool("isHardLanding", false);
         }
     }
 
