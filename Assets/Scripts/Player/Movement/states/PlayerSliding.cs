@@ -75,7 +75,6 @@ public class PlayerSliding : State
         pSM.HeightOnLadder = -(startingPoint - targetPosition).magnitude / ladderLength;
         pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
         pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderLength * pSM.HeightOnLadder;
-
         controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
         controller.transform.parent = ladder.transform;
         pSM.ladderSizeStateMachine.OnGrow();
@@ -125,7 +124,8 @@ public class PlayerSliding : State
 
         currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
         ladder.transform.position = startingPoint;
-        ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
+        //Debug.Log("B");
+        //ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
 
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
         pSM.currentDistance = path.GetClosestDistanceAlongPath(startingPoint);

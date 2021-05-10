@@ -5,7 +5,10 @@ using PathCreation;
 
 public class PlayerSwinging : PlayerSliding
 {
-   
+    #region INHERITED
+    float currentDistance;
+    #endregion
+
     GameObject Pivot;
     GameObject Bob;
 
@@ -14,7 +17,6 @@ public class PlayerSwinging : PlayerSliding
 
     private Vector3 gravityDirection;
     private Vector3 tensionDirection;
-    private Vector3 pendulumSideDirection;
 
     private float tensionForce = 0f;
     private float gravityForce = 0f;
@@ -27,11 +29,7 @@ public class PlayerSwinging : PlayerSliding
     Shelf.ShelfType shelfType;
 
     bool onWall;
-    // these will be replaced by the cheat sheet
-    float minHangingDeceleration = 0.002f;
-    float maxHangingDeceleration = 0.07f;
-    float maxSwingingDeceleration = 0.03f;
-    float accelerationFactor = 0.7f;
+    float accelerationFactor;
 
     float minDecelerationFactor;
     float maxDecelerationFactor;
@@ -61,21 +59,17 @@ public class PlayerSwinging : PlayerSliding
 
     public override void Initialize()
     {
-        
-       
         base.Initialize();
         pSM.swingingPosition = 0;
-        //playerVelocity = Vector3.zero;
+        
 
         Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
 
         Bob = Pivot.transform.GetChild(1).gameObject;
         Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderLength;
-        Debug.Log(Bob.name);
-
 
         shelfType = closestRail.shelfType;
-        onWall = true;
+        onWall = false;
         inputGiven = false;
         // Get the initial rope length from how far away the bob is now
         ropeLength = Vector3.Distance(Pivot.transform.position, Bob.transform.position);
@@ -84,8 +78,6 @@ public class PlayerSwinging : PlayerSliding
         currentVelocity = Vector3.zero;
         // Set the transition state
         currentStatePosition = Bob.transform.position;
-
-        //Set the Deceleration Factors
         
         
         switch (shelfType)
@@ -98,6 +90,7 @@ public class PlayerSwinging : PlayerSliding
             case Shelf.ShelfType.FreeHanging:
                 minDecelerationFactor = stats.minHangingDeceleration;
                 maxDecelerationFactor = stats.maxHangingDeceleration;
+                accelerationFactor = stats.hangingAccelerationFactor;
                 break;
         }
 
@@ -116,6 +109,8 @@ public class PlayerSwinging : PlayerSliding
 
         float frameTime = Time.fixedDeltaTime;
         accumulator += frameTime;
+        
+
         // immer wenn accumulator 0.01f ist, startet er eine while schleife, die die neue current Position berechnet. Das macht er (accumulator/dt)-Mal
         while (accumulator >= dt)
         {
@@ -136,19 +131,17 @@ public class PlayerSwinging : PlayerSliding
         }
         float alpha = accumulator / dt;
         Vector3 newPosition = currentStatePosition * alpha + previousStatePosition * (1f - alpha);
-
+        
         //die Leiter korrekt rotieren
+        currentDistance = pSM.currentDistance;
+        Vector3 railDirection = closestRail.pathCreator.path.GetDirectionAtDistance(currentDistance);
+        pSM.ladder.transform.right = railDirection;
         Vector3 axis = pSM.ladder.right;
         float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition - pSM.ladder.transform.position, axis));
        
-       
-
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis) ;
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
-
-       
-
-
+        
     }
 
     Vector3 PendulumUpdate(Vector3 previousStatePosition)
@@ -157,31 +150,24 @@ public class PlayerSwinging : PlayerSliding
         gravityForce = mass * stats.swingingGravity;
         gravityDirection = Physics.gravity.normalized;
         currentVelocity += gravityDirection * gravityForce * dt;
+        Debug.DrawRay(Bob.transform.position, gravityDirection * gravityForce * dt, Color.red, dt);
 
         Vector3 pivot_p = Pivot.transform.position;
-        Vector3 bob_p = this.currentStatePosition;
+        Vector3 bob_p = Bob.transform.position;
 
-        //Vector richtung pivot;
+        //The tension force
         tensionDirection = (pivot_p - bob_p).normalized;
-
-        //dreht tension direction um 90 Grad auf der x-achse, setzt y auf null & normalized sie
-        pendulumSideDirection = (Quaternion.Euler(0f, 90f, 0f) * tensionDirection);
-        pendulumSideDirection.Scale(new Vector3(1f, 0f, 1f));
-        pendulumSideDirection.Normalize();
-
-
-        // Winkel zwischen Gravity Direction & Vektor -> Bob
         float inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
 
-        //Gravitystaerke * Cos(inclinationAngle)
-        tensionForce = mass * stats.swingingGravity * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
-        float centripetalForce = ((mass * Mathf.Pow(currentVelocity.magnitude, 2)) / ropeLength);
-
+        tensionForce = gravityForce * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
+        float centripetalForce = ((mass * Mathf.Pow(playerVelocity.magnitude, 2)) / ropeLength);
         tensionForce += centripetalForce;
         currentVelocity += tensionDirection * tensionForce * dt;
+        Debug.DrawRay(Bob.transform.position, tensionDirection * tensionForce * dt, Color.green, dt);
 
         // Check for Direction Change
-        if (Vector3.Dot(currentMovement, pSM.transform.forward) <= .97f)
+        Vector3 currentNormal = -path.GetNormalAtDistance(currentDistance);
+        if (inputGiven && !new Plane(currentNormal, pivot_p).GetSide(Bob.transform.position)) //Vector3.Dot(currentMovement, pSM.transform.forward) <= .97f)
         {
             inputGiven = false;
         }
@@ -207,8 +193,8 @@ public class PlayerSwinging : PlayerSliding
         //Debug.DrawRays
         Debug.DrawRay(Bob.transform.position + pSM.transform.up * 0.1f, currentVelocity, Color.cyan, dt);
         Debug.DrawRay(Bob.transform.position, playerVelocity, Color.white, dt);
-        Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
-        Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
+        //Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
+        //Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
         Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);
 
         // Get the movement delta
@@ -230,10 +216,8 @@ public class PlayerSwinging : PlayerSliding
         {
             Vector3 axis = pSM.ladder.right;
             float angle = Vector3.SignedAngle(pivot_p + Vector3.down, pivot_p - pSM.ladderDirection, axis);
-            //Debug.Log(angle);
-            if (angle >= -0.01f)
+            if (angle >= -0.001f)
             {
-
                 onWall = true;
             }
         }
@@ -250,14 +234,7 @@ public class PlayerSwinging : PlayerSliding
             gravityDirection = Physics.gravity.normalized;
             currentVelocity += gravityDirection * gravityForce * dt;
 
-
             tensionDirection = (pivot_p - bob_p).normalized;
-
-
-            //dreht tension direction um 90 Grad auf der x-achse, setzt y auf null & normalized sie
-            pendulumSideDirection = (Quaternion.Euler(0f, 90f, 0f) * tensionDirection);
-            pendulumSideDirection.Scale(new Vector3(1f, 0f, 1f));
-            pendulumSideDirection.Normalize();
 
             // Winkel zwischen Gravity Direction & Vektor -> Bob
             float inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
@@ -283,12 +260,14 @@ public class PlayerSwinging : PlayerSliding
         // pSM.playerVelocity for the Jump
         SetCurrentPlayerVelocity(pivot_p);
 
+        /*
         //Debug.DrawRays
         Debug.DrawRay(Bob.transform.position + pSM.transform.up * 0.1f, currentVelocity, Color.cyan, dt);
         Debug.DrawRay(Bob.transform.position, playerVelocity, Color.white, dt);
         Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
         Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
         Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);
+        */
 
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
