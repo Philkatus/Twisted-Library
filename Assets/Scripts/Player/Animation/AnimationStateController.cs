@@ -12,6 +12,7 @@ public class AnimationStateController : MonoBehaviour
     public LadderSizeStateMachine ladderScript;
     public CharacterController controller;
     public SoundManager soundManager;
+    public AudioManager audioManager;
     public Animator animator;
     public FootIK footIKScript;
 
@@ -39,6 +40,7 @@ public class AnimationStateController : MonoBehaviour
     bool canHardLand;
     [HideInInspector]
     public float airTimer;
+    float lastAirTime;
 
     [Header("Jumping")]
     float fallTimer = 0;
@@ -75,6 +77,7 @@ public class AnimationStateController : MonoBehaviour
         footIKScript = GetComponent<FootIK>();
         soundManager = GetComponent<SoundManager>();
         footIKScript.enabled = false;
+        audioManager = FindObjectOfType<AudioManager>();
         //movementScript = GetComponent<PlayerMovementStateMachine>();
         //controller = GetComponent<CharacterController>();
         if(ladderVisual != null && ladderVisualForCode != null)
@@ -197,6 +200,7 @@ public class AnimationStateController : MonoBehaviour
 
             if (airTimer > 0)
             {
+                lastAirTime = airTimer;
                 airTimer = 0;
             }
         }
@@ -231,9 +235,10 @@ public class AnimationStateController : MonoBehaviour
 
     void FallImpact()
     {
-        if(airTimer >= timeForLanding)
+        if(airTimer >= 0.1f)
         {
             canLand = true;
+             
         }
         if (airTimer >= timeForRoll)
         {
@@ -248,9 +253,13 @@ public class AnimationStateController : MonoBehaviour
         }
         if(canLand && controller.isGrounded)
         {
-            animator.SetBool("isLanding", true);
             canLand = false;
-            soundManager.Landing(0);
+            //soundManager.Landing(0);
+            audioManager.Play("LandingAfterJump");
+            if(lastAirTime >= timeForLanding)
+            {
+                animator.SetBool("isLanding", true);
+            }
         }
         else
         {
@@ -301,6 +310,7 @@ public class AnimationStateController : MonoBehaviour
     {
         animator.SetBool("isJumping", true);
         animator.SetBool("isClimbingLadder", false);
+        audioManager.Play("JumpStart");
         rigBuilder.enabled = true;        
     }
 
@@ -319,7 +329,13 @@ public class AnimationStateController : MonoBehaviour
                 ladderVisualForCode.SetActive(true);
                 ladderVisual.SetActive(false);
             }
-            
+
+            /*
+            if (movementScript.slidingInput != 0)
+            {
+                audioManager.Play("Sliding");
+            }
+            */
         }
         else
         {

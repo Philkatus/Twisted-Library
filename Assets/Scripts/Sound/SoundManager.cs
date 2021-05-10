@@ -8,6 +8,13 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour
 {
     #region Variables
+
+    [Header("References")]
+    public AudioSource audioSource;
+    public PlayerMovementStateMachine movementScript;
+    public AnimationStateController animScript;
+    public Animator animator;
+
     [Header("Sound Lists")]
     [SerializeField]
     private AudioClip[] footsteps;
@@ -18,11 +25,6 @@ public class SoundManager : MonoBehaviour
     [SerializeField]
     private AudioClip wooshSound;
 
-    [Header("References")]
-    public AudioSource audioSource;
-    public PlayerMovementStateMachine movementScript;
-    public AnimationStateController animScript;
-    public Animator animator;
 
     [Header("Volume")]
     [Range(0.1f, 10f)]  public float audioVolume = 0.1f;
@@ -49,7 +51,6 @@ public class SoundManager : MonoBehaviour
     void Update()
     {
         Footsteps();
-        SlidingSound();
         FallingSound();
     }
     public void Landing(int index)
@@ -57,23 +58,6 @@ public class SoundManager : MonoBehaviour
         audioSource.PlayOneShot((AudioClip)landingSounds[index], audioVolume);
     }
 
-    public void SlidingSound()
-    {
-        /*
-        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding)
-        {
-            if(movementScript.slidingInput != 0)
-            {
-                
-                audioSource.loop = true;
-                audioSource.clip = slidingSounds[0];
-                audioSource.Play();
-                
-                audioSource.PlayOneShot((AudioClip)slidingSounds[0], audioVolume);
-            }
-        }
-        */
-    }
 
     public void FallingSound()
     {
