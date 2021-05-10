@@ -37,7 +37,8 @@ public class AnimationStateController : MonoBehaviour
     bool canLand;
     bool canRoll;
     bool canHardLand;
-    float airTimer;
+    [HideInInspector]
+    public float airTimer;
 
     [Header("Jumping")]
     float fallTimer = 0;
