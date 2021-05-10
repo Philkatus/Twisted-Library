@@ -37,7 +37,8 @@ public class AnimationStateController : MonoBehaviour
     bool canLand;
     bool canRoll;
     bool canHardLand;
-    float airTimer;
+    [HideInInspector]
+    public float airTimer;
 
     [Header("Jumping")]
     float fallTimer = 0;
@@ -282,9 +283,6 @@ public class AnimationStateController : MonoBehaviour
         //Falling
         if (!controller.isGrounded && animator.GetBool("isClimbingLadder") == false)
         {
-            //animator.SetBool("isJumping", false);
-            //animator.SetBool("isGrounded", false);
-
             //Added Falltimer to prevent Falling before climbing
             fallTimer += Time.deltaTime;
             if(fallTimer >= 0.2f)
