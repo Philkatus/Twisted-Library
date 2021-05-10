@@ -282,9 +282,6 @@ public class AnimationStateController : MonoBehaviour
         //Falling
         if (!controller.isGrounded && animator.GetBool("isClimbingLadder") == false)
         {
-            //animator.SetBool("isJumping", false);
-            //animator.SetBool("isGrounded", false);
-
             //Added Falltimer to prevent Falling before climbing
             fallTimer += Time.deltaTime;
             if(fallTimer >= 0.2f)

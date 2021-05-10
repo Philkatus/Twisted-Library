@@ -757,7 +757,7 @@ BlendTree:
     m_DirectBlendParameter: Velocity
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 07d30165dbd5fce4998c62b3a44d91ff, type: 2}
+    m_Motion: {fileID: -203655887218126122, guid: e277238744c412440995fba40ddb9c56, type: 3}
     m_Threshold: 0.034013614
     m_Position: {x: 0, y: 0.5}
     m_TimeScale: 1
@@ -821,7 +821,7 @@ BlendTree:
     m_DirectBlendParameter: Velocity
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: c8788cf08a3af0342a5d4b5e01e2a1c7, type: 2}
+    m_Motion: {fileID: -203655887218126122, guid: 5b380488c8a71834a8052be6242a920b, type: 3}
     m_Threshold: 0.08843539
     m_Position: {x: 0.5, y: 1}
     m_TimeScale: 1
@@ -829,7 +829,7 @@ BlendTree:
     m_DirectBlendParameter: Velocity
     m_Mirror: 0
   - serializedVersion: 2
-    m_Motion: {fileID: 7400000, guid: 4e63408ca363b13488fae4ca03e11425, type: 2}
+    m_Motion: {fileID: -203655887218126122, guid: 84368f29a001c994aaad219a4bd2d182, type: 3}
     m_Threshold: 0.09523811
     m_Position: {x: -0.5, y: 1}
     m_TimeScale: 1
@@ -1409,6 +1409,18 @@ AnimatorController:
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
   - m_Name: Turn
+    m_Type: 1
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
+  - m_Name: FootstepL
+    m_Type: 1
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
+  - m_Name: FootstepR
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -2684,7 +2696,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 4091409997071829822}
-    m_Position: {x: 410, y: 240, z: 0}
+    m_Position: {x: 410, y: 280, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6137715690914559499}
     m_Position: {x: 50, y: 540, z: 0}
@@ -2700,16 +2712,16 @@ AnimatorStateMachine:
     m_Position: {x: 30, y: 20, z: 0}
   - serializedVersion: 1
     m_StateMachine: {fileID: 862968962828090091}
-    m_Position: {x: -350, y: 240, z: 0}
+    m_Position: {x: -350, y: 280, z: 0}
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: 862968962828090091}
-    second: []
   - first: {fileID: -8147662092109791000}
     second:
     - {fileID: 2919485055674482323}
     - {fileID: 3403332900968012651}
+  - first: {fileID: 862968962828090091}
+    second: []
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 430, y: 70, z: 0}
   m_EntryPosition: {x: 430, y: 120, z: 0}
