@@ -18,13 +18,6 @@ public class SoundManager : MonoBehaviour
     [Header("Sound Lists")]
     [SerializeField]
     private AudioClip[] footsteps;
-    [SerializeField]
-    private AudioClip[] landingSounds;
-    [SerializeField]
-    private AudioClip[] slidingSounds;
-    [SerializeField]
-    private AudioClip wooshSound;
-
 
     [Header("Volume")]
     [Range(0.1f, 10f)]  public float audioVolume = 0.1f;
@@ -53,11 +46,6 @@ public class SoundManager : MonoBehaviour
         Footsteps();
         FallingSound();
     }
-    public void Landing(int index)
-    {
-        audioSource.PlayOneShot((AudioClip)landingSounds[index], audioVolume);
-    }
-
 
     public void FallingSound()
     {

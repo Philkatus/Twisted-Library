@@ -9,6 +9,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager instance;
     void Awake()
     {
+        /*
         if (instance == null)
         {
             instance = this;
@@ -19,6 +20,8 @@ public class AudioManager : MonoBehaviour
             return;
         }
         DontDestroyOnLoad(gameObject);
+        */
+
 
         foreach (Sound s in sounds)
         {
@@ -39,5 +42,16 @@ public class AudioManager : MonoBehaviour
             return;
         }
         s.source.Play();
+    }
+
+    public void StopSound(string name)
+    {
+        Sound s = Array.Find(sounds, item => item.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        s.source.Stop();
     }
 }
