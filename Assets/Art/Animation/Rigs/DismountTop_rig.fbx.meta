@@ -1,14 +1,14 @@
 fileFormatVersion: 2
-guid: bc1b4e66adbcbe546a92370e06b1305e
+guid: 02df68915b6c3cb40a7766d270426a07
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable:
   - first:
       74: -203655887218126122
-    second: ClimbLadder_anim
+    second: DismountTop_anim
   - first:
       74: -203655887218126122
-    second: ClimbLadder_anim
+    second: DismountTop_anim
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -38,21 +38,21 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: ClimbLadder_anim
+      name: DismountTop_anim
       takeName: mixamo.com
       internalID: 0
       firstFrame: 0
-      lastFrame: 23
+      lastFrame: 34
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 1
+      loopTime: 0
       loopBlend: 0
-      loopBlendOrientation: 1
-      loopBlendPositionY: 1
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
       loopBlendPositionXZ: 0
       keepOriginalOrientation: 0
       keepOriginalPositionY: 1
@@ -75,13 +75,13 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.96999997
+            time: 0.47015473
             value: 1
-            inSlope: 5.173833
-            outSlope: 5.173833
+            inSlope: 0
+            outSlope: 0
             tangentMode: 0
             weightedMode: 0
-            inWeight: 0.05169431
+            inWeight: 0
             outWeight: 0
           - serializedVersion: 3
             time: 1
@@ -109,14 +109,48 @@ ModelImporter:
             inWeight: 0
             outWeight: 0
           - serializedVersion: 3
-            time: 0.068939924
-            value: 0.99056625
-            inSlope: -6.58512
-            outSlope: -6.58512
+            time: 0.82
+            value: 1
+            inSlope: 0
+            outSlope: 0
             tangentMode: 0
             weightedMode: 0
             inWeight: 0
-            outWeight: 0.022311121
+            outWeight: 0
+          - serializedVersion: 3
+            time: 1
+            value: -1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          preInfinity: 3
+          postInfinity: 3
+          rotationOrder: 4
+      - name: Exhale
+        curve:
+          serializedVersion: 2
+          curve:
+          - serializedVersion: 3
+            time: 0
+            value: -1
+            inSlope: 0
+            outSlope: 0
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0
+            outWeight: 0
+          - serializedVersion: 3
+            time: 0.88
+            value: 0.95000076
+            inSlope: 3.167989
+            outSlope: 3.167989
+            tangentMode: 0
+            weightedMode: 0
+            inWeight: 0.022672929
+            outWeight: 0
           - serializedVersion: 3
             time: 1
             value: -1

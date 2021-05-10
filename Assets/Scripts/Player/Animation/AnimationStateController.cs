@@ -74,6 +74,7 @@ public class AnimationStateController : MonoBehaviour
     bool fallAudioPlaying;
     bool attachAudioPlaying;
     bool foldAudioPlaying;
+    bool slideAudioPlaying;
     #endregion
 
 
@@ -231,7 +232,7 @@ public class AnimationStateController : MonoBehaviour
     void ladderStateChange()
     {
         //animations for retracting and extending ladder
-        if (ladderScript.isFoldingUp)
+        if (ladderScript.isFoldingUp && movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding)
         {
             animator.SetBool("isFoldingUp", true);
             //Audio
@@ -356,21 +357,35 @@ public class AnimationStateController : MonoBehaviour
             animator.SetBool("isClimbingLadder", true);
             armRig.weight = 0;
 
-            
+
+
             if (ladderVisual != null && ladderVisualForCode != null)
             {
                 ladderVisualForCode.SetActive(true);
                 ladderVisual.SetActive(false);
             }
 
-            /*
-            if (movementScript.slidingInput != 0)
+            //Slide Audio
+            if (movementScript.slidingInput != 0 && !slideAudioPlaying)
             {
                 audioManager.Play("Sliding");
+                slideAudioPlaying = true;
             }
-            */
+            if(movementScript.slidingInput == 0 && slideAudioPlaying)
+            {
+                audioManager.StopSound("Sliding");
+                slideAudioPlaying = false;
+            }
 
-            //Audio
+            //Fall Audio
+            if (fallAudioPlaying)
+            {
+                audioManager.StopSound("Falling");
+                fallAudioPlaying = false;
+            }
+
+
+            //Attach Audio
             if (!attachAudioPlaying)
             {
                 audioManager.Play("AttachLadder");
@@ -396,10 +411,9 @@ public class AnimationStateController : MonoBehaviour
                 attachAudioPlaying = false;
             }
 
+            audioManager.StopSound("Sliding");
+            slideAudioPlaying = false;
         }
-
-
-        //Look Direction
     }
 
     void DismountingTop()

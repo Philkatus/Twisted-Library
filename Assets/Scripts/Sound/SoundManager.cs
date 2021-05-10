@@ -18,6 +18,8 @@ public class SoundManager : MonoBehaviour
     [Header("Sound Lists")]
     [SerializeField]
     private AudioClip[] footsteps;
+    [SerializeField]
+    private AudioClip exhale;
 
     [Header("Volume")]
     [Range(0.1f, 10f)]  public float audioVolume = 0.1f;
@@ -31,6 +33,8 @@ public class SoundManager : MonoBehaviour
     private float currentFrameFootstepRight;
     private float lastFrameFootstepLeft;
     private float lastFrameFootstepRight;
+    private float currentFrameExhale;
+    private float lastFrameExhale;
     #endregion
 
     void Start()
@@ -44,7 +48,7 @@ public class SoundManager : MonoBehaviour
     void Update()
     {
         Footsteps();
-        FallingSound();
+        Dismount();
     }
 
     public void FallingSound()
@@ -111,5 +115,15 @@ public class SoundManager : MonoBehaviour
             audioSource.PlayOneShot((AudioClip)footsteps[Random.Range(5, 9)], audioVolume);
         }
         lastFrameFootstepRight = animator.GetFloat("FootstepR");
+    }
+
+    public void Dismount()
+    {
+        currentFrameExhale = animator.GetFloat("Exhale");
+        if (currentFrameExhale > 0 && lastFrameExhale < 0)
+        {
+            audioSource.PlayOneShot(exhale, audioVolume);
+        }
+        lastFrameExhale = animator.GetFloat("Exhale");
     }
 }
