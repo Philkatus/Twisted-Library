@@ -126,6 +126,7 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public bool CheckForRail()
     {
+        closestRail = null;
         if (playerState == PlayerState.walking)
         {
             railCheckLadderPosition = controller.transform.position;

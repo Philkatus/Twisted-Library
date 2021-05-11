@@ -132,10 +132,7 @@ public class PlayerSliding : State
 
     public override IEnumerator Finish()
     {
-
         Time.fixedDeltaTime = 0.02f;
-        pSM.closestRail = null;
-
         yield break;
     }
 
