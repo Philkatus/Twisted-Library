@@ -33,7 +33,6 @@ public class PlayerMovementStateMachine : StateMachine
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
 
-    public List<Shelf> possibleRails;
     public Shelf closestShelf;
     public Transform ladder;
     public Transform ladderMesh;
@@ -56,6 +55,7 @@ public class PlayerMovementStateMachine : StateMachine
     #endregion
 
     #region Private
+    RailSearchManager railAllocator;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
@@ -66,17 +66,11 @@ public class PlayerMovementStateMachine : StateMachine
     private void Start()
     {
         myParent = transform.parent;
-
+        railAllocator = RailSearchManager.instance;
         ladderWalkingPosition = ladder.localPosition;
         ladderWalkingRotation = ladder.localRotation;
 
         SetState(new PlayerWalking(this));
-        possibleRails = new List<Shelf>();
-        Shelf[] allRails = GameObject.FindObjectsOfType<Shelf>();
-        foreach (Shelf rail in allRails)
-        {
-            possibleRails.Add(rail);
-        }
 
         #region controls
         playerControlsMap = actionAsset.FindActionMap("PlayerControls");
@@ -142,6 +136,9 @@ public class PlayerMovementStateMachine : StateMachine
             railCheckLadderPosition = controller.transform.position;
         }
 
+        railAllocator.CheackForRailsInRange(controller.transform);
+        var possibleRails = railAllocator.railsInRange;
+
         if (possibleRails.Count == 0)
         {
             return false;
@@ -175,6 +172,8 @@ public class PlayerMovementStateMachine : StateMachine
     public bool CheckForNextClosestRail(Shelf currentClosestRail)
     {
         railCheckLadderPosition = ladder.transform.position;
+        railAllocator.CheackForRailsInRange(controller.transform);
+        var possibleRails = railAllocator.railsInRange;
 
         if (possibleRails.Count == 1)
         {

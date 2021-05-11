@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using PathCreation;
-using UnityEngine.InputSystem;
 
 public class PlayerSliding : State
 {
