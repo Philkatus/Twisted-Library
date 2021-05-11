@@ -124,7 +124,7 @@ public class PlayerSliding : State
 
         currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
         ladder.transform.position = startingPoint;
-        //Debug.Log("B");
+
         //ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
 
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
@@ -171,6 +171,7 @@ public class PlayerSliding : State
 
     public override void Movement()
     {
+        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
         if (!pSM.dismounting)
         {
             // Go up and down.
