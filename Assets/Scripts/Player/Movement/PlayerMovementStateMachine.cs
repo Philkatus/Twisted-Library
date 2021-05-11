@@ -53,6 +53,7 @@ public class PlayerMovementStateMachine : StateMachine
     public Transform ladderMesh;
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
+    public AnimationStateController animController;
     [HideInInspector] public InputAction slideAction;
     [HideInInspector] public InputAction swingAction;
     [HideInInspector] public InputAction snapAction;

@@ -20,7 +20,7 @@ public class PlayerInTheAir : State
     {
         controller = PlayerStateMachine.controller;
         controller.transform.parent = PlayerStateMachine.myParent;
-        PlayerStateMachine.ladder.transform.parent = controller.transform;
+        PlayerStateMachine.ladder.transform.parent = PlayerStateMachine.animController.spine;
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
         
