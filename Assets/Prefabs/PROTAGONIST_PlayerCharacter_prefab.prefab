@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &389237003
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 389237004}
+  m_Layer: 0
+  m_Name: Bob
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &389237004
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389237003}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 2324303222376295303}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &259310139372920754
 GameObject:
   m_ObjectHideFlags: 0
@@ -24,7 +54,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 259310139372920754}
-  m_LocalRotation: {x: -0.0075351507, y: 0.9833947, z: -0.042009335, w: -0.17639}
+  m_LocalRotation: {x: 0.008287135, y: 0.98007405, z: -0.04186748, w: 0.19399315}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -299,7 +329,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c852af001dae0064e9acaa832f1dadb7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -431,8 +461,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b908167a2d2e740ab9a0e8f072d46d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  valuesAsset: {fileID: 11400000, guid: 537c97f1f07bdf84ab6790ddb7d01226, type: 2}
-  actionAsset: {fileID: -944628639613478452, guid: 0af3696424c4b334e9a56e8febf1b6ce, type: 3}
+  valuesAsset: {fileID: 11400000, guid: 4bb2985168496824e878e17814fbddc5, type: 2}
+  actionAsset: {fileID: -944628639613478452, guid: a85d48f6f70d5c14290a563cf2478205, type: 3}
   playerState: 0
   ladderState: 0
   swingingPosition: 0
@@ -443,10 +473,15 @@ MonoBehaviour:
   swingingInput: 0
   slidingInput: 0
   isPerformedFold: 0
+  dismounting: 0
   playerVelocity: {x: 0, y: 0, z: 0}
-  possibleShelves: []
+  railCheckLadderPosition: {x: 0, y: 0, z: 0}
+  isWallJumping: 0
+  animationControllerisFoldingJumped: 0
+  possibleRails: []
   closestShelf: {fileID: 0}
   ladder: {fileID: 2324303222376295303}
+  ladderMesh: {fileID: 5485595683521586558}
   ladderSizeStateMachine: {fileID: 6721105999781121023}
   controller: {fileID: 2324303222117386823}
   slideAction:
@@ -465,10 +500,25 @@ MonoBehaviour:
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
+  snapAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
+  stopSlidingAction:
+    m_Name: 
+    m_Type: 0
+    m_ExpectedControlType: 
+    m_Id: 
+    m_Processors: 
+    m_Interactions: 
+    m_SingletonActionBindings: []
   ladderWalkingRotation: {x: 0, y: 0, z: 0, w: 0}
   ladderWalkingPosition: {x: 0, y: 0, z: 0}
   myParent: {fileID: 0}
-  ladderMesh: {fileID: 5485595683521586558}
 --- !u!1 &2324303222376295302
 GameObject:
   m_ObjectHideFlags: 0
@@ -500,6 +550,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7437084798391301879}
+  - {fileID: 389237004}
   m_Father: {fileID: 2324303222117386822}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: -16, z: -90}
@@ -616,7 +667,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c852af001dae0064e9acaa832f1dadb7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -706,7 +757,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5173761969531662439}
-  m_LocalRotation: {x: -0.010733882, y: 0.9824707, z: -0.05984263, w: -0.17622428}
+  m_LocalRotation: {x: 0.011805086, y: 0.9791532, z: -0.05964056, w: 0.19381088}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -789,7 +840,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6369436234874472688}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 3.8161545, y: 2.512, z: 10.295502}
+  m_LocalPosition: {x: -4.182822, y: 2.512, z: 10.152063}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8550796576673198090}
@@ -843,7 +894,7 @@ MonoBehaviour:
   m_YAxis:
     Value: 0.5
     m_SpeedMode: 1
-    m_MaxSpeed: 0.0051
+    m_MaxSpeed: 0.001
     m_AccelTime: 0.1
     m_DecelTime: 0.1
     m_InputAxisName: Mouse Y
@@ -867,7 +918,7 @@ MonoBehaviour:
   m_XAxis:
     Value: 0
     m_SpeedMode: 1
-    m_MaxSpeed: 0.4
+    m_MaxSpeed: 0.05
     m_AccelTime: 0.1
     m_DecelTime: 0.1
     m_InputAxisName: Mouse X
@@ -1107,7 +1158,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: c852af001dae0064e9acaa832f1dadb7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1292,7 +1343,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9177417795965320302}
-  m_LocalRotation: {x: -0.013937536, y: 0.98121965, z: -0.07770337, w: -0.17599988}
+  m_LocalRotation: {x: 0.015328455, y: 0.9779064, z: -0.07744099, w: 0.1935641}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
