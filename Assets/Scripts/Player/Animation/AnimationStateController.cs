@@ -12,6 +12,7 @@ public class AnimationStateController : MonoBehaviour
     public LadderSizeStateMachine ladderScript;
     public CharacterController controller;
     public SoundManager soundManager;
+    public AudioManager audioManager;
     public Animator animator;
     public FootIK footIKScript;
 
@@ -39,6 +40,7 @@ public class AnimationStateController : MonoBehaviour
     bool canHardLand;
     [HideInInspector]
     public float airTimer;
+    float lastAirTime;
 
     [Header("Jumping")]
     float fallTimer = 0;
@@ -66,6 +68,13 @@ public class AnimationStateController : MonoBehaviour
     public Transform spine;
     //dotProduct used to determine where the HeadAimTarget is in relation to the players forward direction
     float dotProduct;
+
+
+    [Header("Audio Uses")]
+    bool fallAudioPlaying;
+    bool attachAudioPlaying;
+    bool foldAudioPlaying;
+    bool slideAudioPlaying;
     #endregion
 
 
@@ -75,6 +84,7 @@ public class AnimationStateController : MonoBehaviour
         footIKScript = GetComponent<FootIK>();
         soundManager = GetComponent<SoundManager>();
         footIKScript.enabled = false;
+        audioManager = FindObjectOfType<AudioManager>();
         //movementScript = GetComponent<PlayerMovementStateMachine>();
         //controller = GetComponent<CharacterController>();
         if(ladderVisual != null && ladderVisualForCode != null)
@@ -160,6 +170,7 @@ public class AnimationStateController : MonoBehaviour
         animator.SetFloat("Forward", forwardAmount, 0.1f, Time.deltaTime);
         animator.SetFloat("Turn", turnAmount, 0.1f, Time.deltaTime);
     }
+
     void CheckIK()
     {
         if(movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding || movementScript.playerState == PlayerMovementStateMachine.PlayerState.inTheAir)
@@ -171,6 +182,7 @@ public class AnimationStateController : MonoBehaviour
             footIKScript.enabled = true;
         }
     }
+
     void HeadAim()
     {
         Vector3 toTarget = (headAimTarget.position - transform.position).normalized;
@@ -197,6 +209,7 @@ public class AnimationStateController : MonoBehaviour
 
             if (airTimer > 0)
             {
+                lastAirTime = airTimer;
                 airTimer = 0;
             }
         }
@@ -219,21 +232,29 @@ public class AnimationStateController : MonoBehaviour
     void ladderStateChange()
     {
         //animations for retracting and extending ladder
-        if (ladderScript.isFoldingUp)
+        if (ladderScript.isFoldingUp && movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding)
         {
             animator.SetBool("isFoldingUp", true);
+            //Audio
+            if (!foldAudioPlaying)
+            {
+                audioManager.Play("FoldLadder");
+                foldAudioPlaying = true;
+            }  
         }
         else
         {
             animator.SetBool("isFoldingUp", false);
+            foldAudioPlaying = false;
         }
     }
 
     void FallImpact()
     {
-        if(airTimer >= timeForLanding)
+        if(airTimer >= 0.1f)
         {
             canLand = true;
+             
         }
         if (airTimer >= timeForRoll)
         {
@@ -248,9 +269,12 @@ public class AnimationStateController : MonoBehaviour
         }
         if(canLand && controller.isGrounded)
         {
-            animator.SetBool("isLanding", true);
             canLand = false;
-            soundManager.Landing(0);
+            audioManager.Play("LandingAfterJump");
+            if(lastAirTime >= timeForLanding)
+            {
+                animator.SetBool("isLanding", true);
+            }
         }
         else
         {
@@ -260,7 +284,7 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isRolling", true);
             canRoll = false;
-            soundManager.Landing(1);
+            audioManager.Play("LandingAfterJump");
         }
         else
         {
@@ -270,7 +294,7 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isHardLanding", true);
             canHardLand = false;
-            soundManager.Landing(2);
+            audioManager.Play("LandingAfterFall");
         }
         else
         {
@@ -285,7 +309,17 @@ public class AnimationStateController : MonoBehaviour
         {
             //Added Falltimer to prevent Falling before climbing
             fallTimer += Time.deltaTime;
-            if(fallTimer >= 0.2f)
+
+
+            //Audio
+            if (!fallAudioPlaying)
+            {
+                audioManager.Play("Falling");
+                fallAudioPlaying = true;
+            }
+
+
+            if (fallTimer >= 0.2f)
             {
                 animator.SetBool("FallDelay", true);
             }
@@ -294,6 +328,14 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("FallDelay", false);
             fallTimer = 0;
+
+
+            //Audio
+            if (fallAudioPlaying)
+            {
+                audioManager.StopSound("Falling");
+                fallAudioPlaying = false;
+            }
         }
     }
 
@@ -302,6 +344,10 @@ public class AnimationStateController : MonoBehaviour
         animator.SetBool("isJumping", true);
         animator.SetBool("isClimbingLadder", false);
         rigBuilder.enabled = true;        
+
+
+        //Audio
+        audioManager.Play("JumpStart");
     }
 
     void Sliding()
@@ -309,17 +355,42 @@ public class AnimationStateController : MonoBehaviour
         if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding || movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging )
         {
             animator.SetBool("isClimbingLadder", true);
-            //disables ladder holding IK
-            //rigBuilder.enabled = false;
             armRig.weight = 0;
 
-            
+
+
             if (ladderVisual != null && ladderVisualForCode != null)
             {
                 ladderVisualForCode.SetActive(true);
                 ladderVisual.SetActive(false);
             }
-            
+
+            //Slide Audio
+            if (movementScript.slidingInput != 0 && !slideAudioPlaying)
+            {
+                audioManager.Play("Sliding");
+                slideAudioPlaying = true;
+            }
+            if(movementScript.slidingInput == 0 && slideAudioPlaying)
+            {
+                audioManager.StopSound("Sliding");
+                slideAudioPlaying = false;
+            }
+
+            //Fall Audio
+            if (fallAudioPlaying)
+            {
+                audioManager.StopSound("Falling");
+                fallAudioPlaying = false;
+            }
+
+
+            //Attach Audio
+            if (!attachAudioPlaying)
+            {
+                audioManager.Play("AttachLadder");
+                attachAudioPlaying = true;
+            }
         }
         else
         {
@@ -332,11 +403,17 @@ public class AnimationStateController : MonoBehaviour
                 ladderVisualForCode.SetActive(false);
                 ladderVisual.SetActive(true);
             }
-            
+
+            //Audio
+            if (attachAudioPlaying)
+            {
+                audioManager.StopSound("AttachLadder");
+                attachAudioPlaying = false;
+            }
+
+            audioManager.StopSound("Sliding");
+            slideAudioPlaying = false;
         }
-
-
-        //Look Direction
     }
 
     void DismountingTop()

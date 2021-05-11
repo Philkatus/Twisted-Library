@@ -8,21 +8,18 @@ using UnityEngine;
 public class SoundManager : MonoBehaviour
 {
     #region Variables
-    [Header("Sound Lists")]
-    [SerializeField]
-    private AudioClip[] footsteps;
-    [SerializeField]
-    private AudioClip[] landingSounds;
-    [SerializeField]
-    private AudioClip[] slidingSounds;
-    [SerializeField]
-    private AudioClip wooshSound;
 
     [Header("References")]
     public AudioSource audioSource;
     public PlayerMovementStateMachine movementScript;
     public AnimationStateController animScript;
     public Animator animator;
+
+    [Header("Sound Lists")]
+    [SerializeField]
+    private AudioClip[] footsteps;
+    [SerializeField]
+    private AudioClip exhale;
 
     [Header("Volume")]
     [Range(0.1f, 10f)]  public float audioVolume = 0.1f;
@@ -36,6 +33,8 @@ public class SoundManager : MonoBehaviour
     private float currentFrameFootstepRight;
     private float lastFrameFootstepLeft;
     private float lastFrameFootstepRight;
+    private float currentFrameExhale;
+    private float lastFrameExhale;
     #endregion
 
     void Start()
@@ -49,30 +48,7 @@ public class SoundManager : MonoBehaviour
     void Update()
     {
         Footsteps();
-        SlidingSound();
-        FallingSound();
-    }
-    public void Landing(int index)
-    {
-        audioSource.PlayOneShot((AudioClip)landingSounds[index], audioVolume);
-    }
-
-    public void SlidingSound()
-    {
-        /*
-        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding)
-        {
-            if(movementScript.slidingInput != 0)
-            {
-                
-                audioSource.loop = true;
-                audioSource.clip = slidingSounds[0];
-                audioSource.Play();
-                
-                audioSource.PlayOneShot((AudioClip)slidingSounds[0], audioVolume);
-            }
-        }
-        */
+        Dismount();
     }
 
     public void FallingSound()
@@ -139,5 +115,15 @@ public class SoundManager : MonoBehaviour
             audioSource.PlayOneShot((AudioClip)footsteps[Random.Range(5, 9)], audioVolume);
         }
         lastFrameFootstepRight = animator.GetFloat("FootstepR");
+    }
+
+    public void Dismount()
+    {
+        currentFrameExhale = animator.GetFloat("Exhale");
+        if (currentFrameExhale > 0 && lastFrameExhale < 0)
+        {
+            audioSource.PlayOneShot(exhale, audioVolume);
+        }
+        lastFrameExhale = animator.GetFloat("Exhale");
     }
 }

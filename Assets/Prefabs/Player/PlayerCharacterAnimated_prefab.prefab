@@ -1609,7 +1609,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3973077873750717958}
-  m_LocalRotation: {x: 0.016281882, y: 0.98249626, z: -0.15357962, w: 0.10416023}
+  m_LocalRotation: {x: 0.01628189, y: 0.98249626, z: -0.15357964, w: 0.104160264}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1713,6 +1713,7 @@ GameObject:
   - component: {fileID: 5224045387318095664}
   - component: {fileID: 5224045387318095665}
   - component: {fileID: 6164259229910852116}
+  - component: {fileID: 748540005}
   m_Layer: 0
   m_Name: YBot-TPose
   m_TagString: Untagged
@@ -1796,7 +1797,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -2016,6 +2017,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9c0edb2dc675124d889b59d81b3f036, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSource: {fileID: 5224045387318095671}
+  movementScript: {fileID: 5224045388643823046}
+  animScript: {fileID: 0}
+  animator: {fileID: 0}
   footsteps:
   - {fileID: 8300000, guid: 61c966488b611934ea3a9b3b6435ed07, type: 3}
   - {fileID: 8300000, guid: 3f41ec6ab90687f419ed9eebe2da065f, type: 3}
@@ -2027,16 +2032,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 3c7258485d1f72e4f8fdb48c4a1140df, type: 3}
   - {fileID: 8300000, guid: 92f09c7ac509d1143bbb1e3f5452c257, type: 3}
   - {fileID: 8300000, guid: 4ce545021b6ba6846a4f8191aff72ee1, type: 3}
-  landingSounds:
-  - {fileID: 8300000, guid: 18270415c32bd9245a1538cf5a31ed79, type: 3}
-  - {fileID: 8300000, guid: 18270415c32bd9245a1538cf5a31ed79, type: 3}
-  - {fileID: 8300000, guid: 99b8a2b4a64f00648a2ad7a2b61a6142, type: 3}
-  slidingSounds:
-  - {fileID: 8300000, guid: 3bf6c301744e1f84c99cfa862cc6cd10, type: 3}
-  audioSource: {fileID: 5224045387318095671}
-  movementScript: {fileID: 5224045388643823046}
-  animator: {fileID: 0}
-  audioVolume: 0.4
+  exhale: {fileID: 0}
+  audioVolume: 1.5
   footstepLFX: {fileID: 0}
   footstepRFX: {fileID: 0}
 --- !u!114 &5224045387318095665
@@ -2055,12 +2052,14 @@ MonoBehaviour:
   ladderScript: {fileID: 1529433670212845975}
   controller: {fileID: 7511473034388439087}
   soundManager: {fileID: 0}
+  audioManager: {fileID: 0}
   animator: {fileID: 5224045387318095670}
   footIKScript: {fileID: 0}
   useFeetIK: 0
   timeForLanding: 1
   timeForRoll: 3
   timeForHardLanding: 1.5
+  airTimer: 0
   headRig: {fileID: 5224045387643815620}
   armRig: {fileID: 5224045388768667450}
   ladderVisual: {fileID: 5224045388537476055}
@@ -2096,6 +2095,61 @@ MonoBehaviour:
   rightFootAnimVariableName: RightFootCurve
   useProIkFeature: 0
   showSolverDebug: 1
+--- !u!114 &748540005
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4953643257122463468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ca9aa3a106903e44a01b8b613777fcf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds:
+  - name: JumpStart
+    clip: {fileID: 8300000, guid: 9483260dfb48566448f11f347783e890, type: 3}
+    volume: 1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Falling
+    clip: {fileID: 8300000, guid: 46300e4df286c1d449aea9a26cc30594, type: 3}
+    volume: 0.1
+    pitch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: LandingAfterJump
+    clip: {fileID: 8300000, guid: 3b09d59f4499d45428baa7a21e954296, type: 3}
+    volume: 0.01
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: LandingAfterFall
+    clip: {fileID: 8300000, guid: 99b8a2b4a64f00648a2ad7a2b61a6142, type: 3}
+    volume: 0.1
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: AttachLadder
+    clip: {fileID: 8300000, guid: 99d27deaf40da014380a084c02b3ea3d, type: 3}
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
+  - name: Sliding
+    clip: {fileID: 8300000, guid: 3bf6c301744e1f84c99cfa862cc6cd10, type: 3}
+    volume: 0.5
+    pitch: 1
+    loop: 1
+    source: {fileID: 0}
+  - name: FoldLadder
+    clip: {fileID: 8300000, guid: 61fdda4497286ee4a91d5b8251b003fa, type: 3}
+    volume: 0.5
+    pitch: 1
+    loop: 0
+    source: {fileID: 0}
 --- !u!1 &5049071072645614280
 GameObject:
   m_ObjectHideFlags: 0
@@ -4433,7 +4487,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5469279423612491226}
-  m_LocalRotation: {x: 0.008063938, y: 0.9918162, z: -0.08202441, w: 0.09750687}
+  m_LocalRotation: {x: 0.008063942, y: 0.9918162, z: -0.08202441, w: 0.09750692}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
