@@ -5,8 +5,8 @@ using UnityEditor;
 public class RailSearchManager : MonoBehaviour
 {
     public static RailSearchManager instance;
-    public Shelf[] allRails;
-    public List<Shelf> railsInRange;
+    public Rail[] allRails;
+    public List<Rail> railsInRange;
     public List<ZRowList> railList = new List<ZRowList>();
     public float areaSize = 20;
 
@@ -37,7 +37,7 @@ public class RailSearchManager : MonoBehaviour
     {
         numberOfXRows = (int)Mathf.Ceil(levelDimensions.localScale.x / areaSize);
         numberOfZRows = (int)Mathf.Ceil(levelDimensions.localScale.z / areaSize);
-        allRails = GameObject.FindObjectsOfType<Shelf>();
+        allRails = GameObject.FindObjectsOfType<Rail>();
         Vector2 startPos = levelDimensions.position;
         railList.Clear();
 
@@ -51,7 +51,7 @@ public class RailSearchManager : MonoBehaviour
             }
         }
 
-        foreach (Shelf rail in allRails)
+        foreach (Rail rail in allRails)
         {
             int distanceZ = (int)Mathf.Ceil((levelDimensions.position.z - rail.transform.position.z) / areaSize);
             int rowIndexZ = (numberOfZRows / 2) + distanceZ;
@@ -71,7 +71,7 @@ public class RailSearchManager : MonoBehaviour
         int rowIndexXplayer = numberOfXRows / 2 + distanceXplayer;
 
         railsInRange.Clear();
-        foreach (Shelf rail in railList[rowIndexZplayer].xRows[rowIndexXplayer].rails)
+        foreach (Rail rail in railList[rowIndexZplayer].xRows[rowIndexXplayer].rails)
         {
             railsInRange.Add(rail);
         }
@@ -83,7 +83,7 @@ public class RailSearchManager : MonoBehaviour
                 return;
             }
 
-            foreach (Shelf rail in railList[rowIndexZplayer].xRows[rowIndexXplayer + 1].rails)
+            foreach (Rail rail in railList[rowIndexZplayer].xRows[rowIndexXplayer + 1].rails)
             {
                 railsInRange.Add(rail);
             }
@@ -95,7 +95,7 @@ public class RailSearchManager : MonoBehaviour
                 return;
             }
 
-            foreach (Shelf rail in railList[rowIndexZplayer].xRows[rowIndexXplayer - 1].rails)
+            foreach (Rail rail in railList[rowIndexZplayer].xRows[rowIndexXplayer - 1].rails)
             {
                 railsInRange.Add(rail);
             }
@@ -108,7 +108,7 @@ public class RailSearchManager : MonoBehaviour
                 return;
             }
 
-            foreach (Shelf rail in railList[rowIndexZplayer + 1].xRows[rowIndexXplayer].rails)
+            foreach (Rail rail in railList[rowIndexZplayer + 1].xRows[rowIndexXplayer].rails)
             {
                 railsInRange.Add(rail);
             }
@@ -120,7 +120,7 @@ public class RailSearchManager : MonoBehaviour
                 return;
             }
 
-            foreach (Shelf rail in railList[rowIndexZplayer - 1].xRows[rowIndexXplayer].rails)
+            foreach (Rail rail in railList[rowIndexZplayer - 1].xRows[rowIndexXplayer].rails)
             {
                 railsInRange.Add(rail);
             }
@@ -131,7 +131,7 @@ public class RailSearchManager : MonoBehaviour
 [System.Serializable]
 public class XRowList
 {
-    public List<Shelf> rails = new List<Shelf>();
+    public List<Rail> rails = new List<Rail>();
 }
 
 [System.Serializable]
