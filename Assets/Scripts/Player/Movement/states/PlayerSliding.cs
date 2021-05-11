@@ -143,7 +143,7 @@ public class PlayerSliding : State
     {
         if (ladderSizeState.isFoldingUp)
         {
-            PlayerStateMachine.playerVelocity.y += (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier;
+            PlayerStateMachine.baseVelocity.y += (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier;
             Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier);
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = true;
@@ -160,7 +160,7 @@ public class PlayerSliding : State
             }
             else
             {
-                PlayerStateMachine.playerVelocity.y += stats.jumpHeight;
+                PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
             }
 
             Debug.Log("Normal slide jump");

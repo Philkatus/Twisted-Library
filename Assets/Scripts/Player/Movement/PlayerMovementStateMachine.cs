@@ -27,7 +27,23 @@ public class PlayerMovementStateMachine : StateMachine
     public bool isPerformedFold;
     public bool dismounting;
 
-    public Vector3 playerVelocity;
+    public Vector3 baseVelocity;
+    public Vector3 bonusVelocity;
+    public Vector3 playerVelocity 
+    {
+        get 
+        {
+            return baseVelocity + bonusVelocity;
+        }
+        set 
+        {
+            baseVelocity = value;
+        }
+
+    }
+
+
+
     public Vector3 railCheckLadderPosition;
 
     public bool isWallJumping;
@@ -105,6 +121,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void FixedUpdate()
     {
         GetInput();
+        looseBonusVelocity();
         State.Movement();
         Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
     }
@@ -127,6 +144,11 @@ public class PlayerMovementStateMachine : StateMachine
         slidingInput = slideAction.ReadValue<float>();
         swingingInput = swingAction.ReadValue<float>();
 
+    }
+
+    public void looseBonusVelocity() 
+    {
+        bonusVelocity = bonusVelocity.normalized * (bonusVelocity.magnitude - valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime);
     }
 
     ///<summary>

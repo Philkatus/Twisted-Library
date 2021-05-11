@@ -9,9 +9,11 @@ public class PlayerInTheAir : State
 
     float wallJumpingTime;
 
+    
+
     public PlayerInTheAir(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
-
+        
     }
 
     public override void Initialize()
@@ -21,10 +23,12 @@ public class PlayerInTheAir : State
         PlayerStateMachine.ladder.transform.parent = controller.transform;
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
+        
+
 
         values = PlayerStateMachine.valuesAsset;
         controller = PlayerStateMachine.controller;
-        PlayerStateMachine.playerVelocity.y = Mathf.Clamp(PlayerStateMachine.playerVelocity.y, 0, Mathf.Infinity);
+        PlayerStateMachine.baseVelocity.y = Mathf.Clamp(PlayerStateMachine.playerVelocity.y, 0, Mathf.Infinity);
 
         wallJumpingTime = 0;
     }
@@ -68,10 +72,10 @@ public class PlayerInTheAir : State
             Vector3 currentDragSideways = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionRight) / values.airMovementFactor;
             pSM.playerVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
-        pSM.playerVelocity.y -= values.gravity * Time.fixedDeltaTime;
+        pSM.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
         float ClampedVelocityY = Mathf.Clamp(pSM.playerVelocity.y, -values.maxFallingSpeed, Mathf.Infinity);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
-        pSM.playerVelocity.y = ClampedVelocityY;
+        pSM.baseVelocity.y = ClampedVelocityY;
 
 
         controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * values.jumpVelocityFactor);
