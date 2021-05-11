@@ -28,7 +28,7 @@ public class PlayerSwinging : PlayerSliding
 
     public override void Swing()
     {
-        VertexPath path = pSM.closestShelf.pathCreator.path;
+        VertexPath path = pSM.closestRail.pathCreator.path;
         Vector3 SwingingDirection = pSM.ladder.forward;
 
 

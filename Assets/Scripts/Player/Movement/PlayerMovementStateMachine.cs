@@ -33,7 +33,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
 
-    public Shelf closestShelf;
+    public Shelf closestRail;
     public Transform ladder;
     public Transform ladderMesh;
     public LadderSizeStateMachine ladderSizeStateMachine;
@@ -151,11 +151,11 @@ public class PlayerMovementStateMachine : StateMachine
                 float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
                 if (distance < closestDistance)
                 {
-                    closestShelf = possibleRails[i];
+                    closestRail = possibleRails[i];
                     closestDistance = distance;
                 }
             }
-            if (closestShelf)
+            if (closestRail)
             {
                 return true;
             }
@@ -209,7 +209,7 @@ public class PlayerMovementStateMachine : StateMachine
 
             if (nextClosestShelf != null)
             {
-                closestShelf = nextClosestShelf;
+                closestRail = nextClosestShelf;
                 return true;
             }
             else
