@@ -12,6 +12,7 @@ public class PlayerMovementStateMachine : StateMachine
     [Tooltip("Change to use different variable value sets. Found in Assets-> Scripts-> Cheat Sheets.")]
     public ValuesScriptableObject valuesAsset;
     public InputActionAsset actionAsset;
+    
     [Space]
     [Header("For reference")]
     public PlayerState playerState;
@@ -41,9 +42,6 @@ public class PlayerMovementStateMachine : StateMachine
         }
 
     }
-
-
-
     public Vector3 railCheckLadderPosition;
 
     public bool isWallJumping;
