@@ -56,6 +56,7 @@ public class PlayerMovementStateMachine : StateMachine
     #endregion
 
     #region Private
+    float railCheckTimer;
     RailSearchManager railAllocator;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
@@ -91,7 +92,12 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Update()
     {
-
+        railCheckTimer += Time.deltaTime;
+        if (railCheckTimer >= 0.6f)
+        {
+            CheckForRail();
+            railCheckTimer = 0;
+        }
     }
 
     private void FixedUpdate()
@@ -126,7 +132,6 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public bool CheckForRail()
     {
-        closestRail = null;
         if (playerState == PlayerState.walking)
         {
             railCheckLadderPosition = controller.transform.position;
