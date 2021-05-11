@@ -6,7 +6,7 @@ public class ChangeRailVisualization : MonoBehaviour
 {
     public GameObject g;
     public Material material;
-    public bool closestRail = false;
+    public bool isClosestRail = false;
 
     void Start()
     {
@@ -17,9 +17,11 @@ public class ChangeRailVisualization : MonoBehaviour
 
     void Update()
     {
-        if (closestRail)
+        if (isClosestRail)
         {
             material.SetColor("_EmissionColor", Color.white * 3);
+            material.SetColor("_Color", Color.black);
+            Debug.Log("dfhjfkjdgjhfd");
             DynamicGI.UpdateEnvironment();
         }
         else

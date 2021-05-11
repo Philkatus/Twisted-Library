@@ -168,6 +168,11 @@ public class PlayerMovementStateMachine : StateMachine
             }
             if (closestRail != null)
             {
+                var visualsRail = closestRail.transform.GetChild(0).gameObject.GetComponent<ChangeRailVisualization>();
+                if (visualsRail)
+                {
+                    visualsRail.isClosestRail = true;
+                }
                 return true;
             }
             else
