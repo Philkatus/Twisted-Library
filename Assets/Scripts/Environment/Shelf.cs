@@ -16,8 +16,6 @@ public class Shelf : MonoBehaviour
         " OnWall - has a Wall to push off from; " +
         " FreeHanging - Can Swing back and forth, but not necessarily up ")]
     public ShelfType shelfType; 
-    [Tooltip("how high can free Hanging rails swing (max angle)")]
-    public float maxSwingingAngle;
     #endregion
 
     #region Private
