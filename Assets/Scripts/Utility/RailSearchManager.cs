@@ -76,8 +76,6 @@ public class RailSearchManager : MonoBehaviour
 
         int distanceXplayer = (int)Mathf.Ceil((levelDimensions.position.x - playerPosition.position.x) / areaSize);
         int rowIndexXplayer = numberOfXRows / 2 + distanceXplayer - 1;
-        Debug.Log(rowIndexZplayer + " " + rowIndexXplayer);
-
 
         railsInRange.Clear();
         foreach (Rail rail in railList[rowIndexZplayer].xRows[rowIndexXplayer].rails)
