@@ -119,7 +119,7 @@ public class PlayerSwinging : PlayerSliding
                     currentStatePosition = PendulumUpdate(previousStatePosition);
                     break;
                 case Rail.RailType.OnWall:
-                    currentStatePosition = RepelUpdate(previousStatePosition);
+                    //currentStatePosition = RepelUpdate(previousStatePosition);
                     break;
                 case Rail.RailType.FreeHanging:
                     currentStatePosition = PendulumUpdate(previousStatePosition);
@@ -132,8 +132,8 @@ public class PlayerSwinging : PlayerSliding
 
         //die Leiter korrekt rotieren
         currentDistance = pSM.currentDistance;
-        Vector3 railDirection = closestRail.pathCreator.path.GetDirectionAtDistance(currentDistance);
-        pSM.ladder.transform.right = railDirection;
+        Vector3 railDirection = closestRail.pathCreator.path.GetNormalAtDistance(currentDistance);
+        pSM.ladder.transform.forward = -railDirection;
         Vector3 axis = pSM.ladder.right;
         float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition - pSM.ladder.transform.position, axis));
 
@@ -160,6 +160,13 @@ public class PlayerSwinging : PlayerSliding
         tensionForce = gravityForce * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
         float centripetalForce = ((mass * Mathf.Pow(playerVelocity.magnitude, 2)) / ropeLength);
         tensionForce += centripetalForce;
+
+        // if relative height > 0 -> remap tension force to get smaller
+        float relativeHeight = (bob_p - pivot_p).normalized.y;
+        if (relativeHeight > 0)
+        { // 0 - 1 -> 0.9f - 0.1f 
+            tensionForce = (tensionForce / 1) * (0.9f - 0.1f) + 0.1f;
+        }
         currentVelocity += tensionDirection * tensionForce * dt;
         Debug.DrawRay(Bob.transform.position, tensionDirection * tensionForce * dt, Color.green, dt);
 
@@ -188,12 +195,13 @@ public class PlayerSwinging : PlayerSliding
         // pSM.playerVelocity for the Jump
         SetCurrentPlayerVelocity(pivot_p);
 
+        /*
         //Debug.DrawRays
         Debug.DrawRay(Bob.transform.position + pSM.transform.up * 0.1f, currentVelocity, Color.cyan, dt);
         Debug.DrawRay(Bob.transform.position, playerVelocity, Color.white, dt);
-        //Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
-        //Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
-        Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);
+        Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
+        Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
+        Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);*/
 
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
@@ -213,17 +221,19 @@ public class PlayerSwinging : PlayerSliding
         if (movingForward && !onWall)
         {
             Vector3 axis = pSM.ladder.right;
-            float angle = Vector3.SignedAngle(pivot_p + Vector3.down, pivot_p - pSM.ladderDirection, axis);
-            if (angle >= -0.001f)
+            float angle = Vector3.SignedAngle(pivot_p + Vector3.down, pivot_p + (bob_p - pivot_p).normalized, axis);
+            angle = angle * Mathf.Rad2Deg;
+            if (angle >= stats.maxPushAngle)
             {
                 onWall = true;
+                return GetPointOnLine(pivot_p, pivot_p + Vector3.down * 100, ropeLength);
             }
         }
 
         if (onWall)
         {
             currentVelocity = Vector3.zero;
-            previousStatePosition = pivot_p + Vector3.down * ropeLength;
+            previousStatePosition = pivot_p + Vector3.down * 100;
         }
         else
         {
@@ -294,9 +304,9 @@ public class PlayerSwinging : PlayerSliding
     {
         if (onWall)
         {
-            inputForce = repelDirection * stats.swingingAcceleration * dt;
-            currentVelocity += inputForce;
             onWall = false;
+            inputForce = repelDirection * stats.swingingAcceleration * dt * 1.2f;
+            currentVelocity += inputForce;
         }
     }
 

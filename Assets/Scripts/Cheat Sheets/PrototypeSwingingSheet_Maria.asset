@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f06406a2f87f5a64781d8f07d19cd6c6, type: 3}
   m_Name: PrototypeSwingingSheet_Maria
   m_EditorClassIdentifier: 
-  movementAcceleration: 500
+  bonusVelocityDrag: 10
+  movementAcceleration: 20
   maximumMovementSpeed: 10
   movementDrag: 10
   movementVelocityFactor: 1
@@ -21,7 +22,7 @@ MonoBehaviour:
   airMovementFactor: 0.8
   jumpingDrag: 0.2
   gravity: 20
-  maxFallingSpeed: 40
+  maxFallingSpeed: 100
   jumpVelocityFactor: 1
   snappingDistance: 100
   slidingSnappingDistance: 3
@@ -35,13 +36,13 @@ MonoBehaviour:
   slidingVelocityFactor: 1
   preservesVelocityOnSnap: 0
   useSwinging: 1
-  swingingAcceleration: 1500
-  minSwingingDeceleration: 0.009
-  maxSwingingDeceleration: 0.03
+  swingingAcceleration: 2000
+  minSwingingDeceleration: 0.0075
+  maxSwingingDeceleration: 0.031
   minHangingDeceleration: 0.001
-  maxHangingDeceleration: 0.05
-  hangingAccelerationFactor: 0.798
-  maxPushAngle: -0.01
+  maxHangingDeceleration: 0.04
+  hangingAccelerationFactor: 0.761
+  maxPushAngle: -0.75
   maxSwingSpeed: 45
   swingingGravity: 70
   swingingVelocityFactor: 1

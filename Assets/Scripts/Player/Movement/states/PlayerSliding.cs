@@ -122,7 +122,7 @@ public class PlayerSliding : State
 
         currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
         ladder.transform.position = startingPoint;
-        //Debug.Log("B");
+
         //ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
 
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
@@ -141,8 +141,8 @@ public class PlayerSliding : State
     {
         if (ladderSizeState.isFoldingUp)
         {
-            PlayerStateMachine.playerVelocity.y += (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier;
-            Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier);
+            PlayerStateMachine.baseVelocity.y += (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier;
+            //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier);
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = true;
         }
@@ -158,7 +158,7 @@ public class PlayerSliding : State
             }
             else
             {
-                PlayerStateMachine.playerVelocity.y += stats.jumpHeight;
+                PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
             }
 
             Debug.Log("Normal slide jump");
@@ -169,6 +169,7 @@ public class PlayerSliding : State
 
     public override void Movement()
     {
+        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
         if (!pSM.dismounting)
         {
             // Go up and down.

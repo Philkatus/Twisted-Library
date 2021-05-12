@@ -3,11 +3,19 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/ValuesScriptableObject", order = 1)]
 public class ValuesScriptableObject : ScriptableObject
 {
+    #region general
+    [Header("General")]
+    [Tooltip("How fast the bonusvelocity is lost again")]
+    public float bonusVelocityDrag;
+
+    #endregion
+
+    [Space]
     #region movement and walking
     [Header("Movement/Walking")]
     [Tooltip("How fast the player accelerates to maximum speed while walking.")]
     public float movementAcceleration;
-
+    
     [Tooltip("How fast the player can move while walking and in the air at max.")]
     public float maximumMovementSpeed;
 
