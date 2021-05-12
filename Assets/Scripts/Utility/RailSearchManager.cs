@@ -5,7 +5,7 @@ using UnityEditor;
 public class RailSearchManager : MonoBehaviour
 {
     public static RailSearchManager instance;
-    public Rail currentClosestRail;
+    public Rail currentRailVisual;
     public Rail[] allRails;
     public List<Rail> railsInRange;
     public List<ZRowList> railList = new List<ZRowList>();
