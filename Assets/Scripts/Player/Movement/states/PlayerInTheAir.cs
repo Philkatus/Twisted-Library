@@ -8,8 +8,10 @@ public class PlayerInTheAir : State
     ValuesScriptableObject values;
 
     float wallJumpingTime;
+    bool didRocketJump = false;
 
-    
+
+
 
     public PlayerInTheAir(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
@@ -98,6 +100,65 @@ public class PlayerInTheAir : State
     public override void Snap()
     {
         PlayerStateMachine.OnSnap();
+
+    }
+
+    public override void RocketJump()
+    {
+        if (!didRocketJump)
+        {
+            Debug.Log("Rocket");
+            float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig;
+            float jumpheight = values.jumpHeight * 3f;
+            Vector3 origin = PlayerStateMachine.transform.position;
+            float sphereRadius = .2f;
+
+
+            LayerMask mask = LayerMask.GetMask("Environment");
+
+            List<RaycastHit> hits = new List<RaycastHit>();
+            Ray ray = new Ray(origin, Vector3.down);
+            //hits.AddRange( Physics.SphereCastAll(ray, MaxHeight, 1, mask));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.forward, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.back, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.right, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.left, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+
+
+            float closestDistance = Mathf.Infinity;
+            RaycastHit closestHit;
+            Vector3 target = Vector3.zero;
+
+            for (int i = 0; i < hits.Count; i++)
+            {
+
+                float distance = hits[i].distance;
+                if (distance < closestDistance)
+                {
+
+                    closestHit = hits[i];
+                    closestDistance = distance;
+                    target = closestHit.point;
+
+                }
+
+            }
+
+            if (target != Vector3.zero)
+            {
+                PlayerMovementStateMachine pSM = PlayerStateMachine;
+                pSM.ladderJumpTarget = target;
+                pSM.playerVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized) + (pSM.transform.position - target).normalized * jumpheight;
+                pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
+                Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
+                didRocketJump = true;
+                pSM.ladderSizeStateMachine.OnRocketJump();
+            }
+
+
+        }
+
 
     }
 }

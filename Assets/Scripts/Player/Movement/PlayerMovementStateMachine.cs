@@ -60,7 +60,7 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public InputAction stopSlidingAction;
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
-    [HideInInspector]
+    [HideInInspector] public Vector3 ladderJumpTarget;
     public Vector3 ladderDirection
     {
         get

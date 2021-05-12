@@ -83,6 +83,11 @@ public class LadderSizeStateMachine : StateMachine
         }
     }
 
+    public void OnRocketJump() 
+    {
+
+    }
+
  
     #endregion
 }
