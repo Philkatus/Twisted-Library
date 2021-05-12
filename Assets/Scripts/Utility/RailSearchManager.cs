@@ -5,6 +5,7 @@ using UnityEditor;
 public class RailSearchManager : MonoBehaviour
 {
     public static RailSearchManager instance;
+    public Rail currentClosestRail;
     public Rail[] allRails;
     public List<Rail> railsInRange;
     public List<ZRowList> railList = new List<ZRowList>();
@@ -35,8 +36,8 @@ public class RailSearchManager : MonoBehaviour
 
     public void SearchForAllRails()
     {
-        numberOfXRows = (int)Mathf.Ceil(levelDimensions.localScale.x / areaSize);
-        numberOfZRows = (int)Mathf.Ceil(levelDimensions.localScale.z / areaSize);
+        numberOfXRows = (int)Mathf.Ceil(levelDimensions.localScale.x / areaSize) + 1;
+        numberOfZRows = (int)Mathf.Ceil(levelDimensions.localScale.z / areaSize) + 1;
         allRails = GameObject.FindObjectsOfType<Rail>();
         Vector2 startPos = levelDimensions.position;
         railList.Clear();
@@ -76,32 +77,52 @@ public class RailSearchManager : MonoBehaviour
             railsInRange.Add(rail);
         }
 
-        if ((float)distanceXplayer - (levelDimensions.position.x - playerPosition.position.x) / areaSize >= 0.5f)
-        {
-            if (rowIndexXplayer + 1 > railList[rowIndexZplayer].xRows.Count)
-            {
-                return;
-            }
-
-            foreach (Rail rail in railList[rowIndexZplayer].xRows[rowIndexXplayer + 1].rails)
-            {
-                railsInRange.Add(rail);
-            }
-        }
-        else
+        if ((float)distanceZplayer - (levelDimensions.position.z - playerPosition.position.z) / areaSize >= 0.5f)
         {
             if (0 > rowIndexXplayer - 1)
             {
                 return;
             }
 
-            foreach (Rail rail in railList[rowIndexZplayer].xRows[rowIndexXplayer - 1].rails)
+            foreach (Rail rail in railList[rowIndexZplayer - 1].xRows[rowIndexXplayer].rails)
             {
                 railsInRange.Add(rail);
             }
-        }
 
-        if ((float)distanceZplayer - (levelDimensions.position.z - playerPosition.position.z) / areaSize >= 0.5f)
+            if ((float)distanceXplayer - (levelDimensions.position.x - playerPosition.position.x) / areaSize >= 0.5f)
+            {
+                if (0 > rowIndexXplayer - 1)
+                {
+                    return;
+                }
+
+                foreach (Rail rail in railList[rowIndexZplayer].xRows[rowIndexXplayer - 1].rails)
+                {
+                    railsInRange.Add(rail);
+                }
+                foreach (Rail rail in railList[rowIndexZplayer - 1].xRows[rowIndexXplayer - 1].rails)
+                {
+                    railsInRange.Add(rail);
+                }
+            }
+            else
+            {
+                if (rowIndexXplayer + 1 > railList[rowIndexZplayer].xRows.Count)
+                {
+                    return;
+                }
+
+                foreach (Rail rail in railList[rowIndexZplayer].xRows[rowIndexXplayer + 1].rails)
+                {
+                    railsInRange.Add(rail);
+                }
+                foreach (Rail rail in railList[rowIndexZplayer - 1].xRows[rowIndexXplayer + 1].rails)
+                {
+                    railsInRange.Add(rail);
+                }
+            }
+        }
+        else
         {
             if (rowIndexZplayer + 1 > railList.Count)
             {
@@ -112,17 +133,40 @@ public class RailSearchManager : MonoBehaviour
             {
                 railsInRange.Add(rail);
             }
-        }
-        else
-        {
-            if (0 > rowIndexXplayer - 1)
-            {
-                return;
-            }
 
-            foreach (Rail rail in railList[rowIndexZplayer - 1].xRows[rowIndexXplayer].rails)
+            if ((float)distanceXplayer - (levelDimensions.position.x - playerPosition.position.x) / areaSize >= 0.5f)
             {
-                railsInRange.Add(rail);
+                if (0 > rowIndexXplayer - 1)
+                {
+                    return;
+                }
+
+                foreach (Rail rail in railList[rowIndexZplayer].xRows[rowIndexXplayer - 1].rails)
+                {
+                    railsInRange.Add(rail);
+                }
+
+                foreach (Rail rail in railList[rowIndexZplayer + 1].xRows[rowIndexXplayer - 1].rails)
+                {
+                    railsInRange.Add(rail);
+                }
+            }
+            else
+            {
+                if (rowIndexXplayer + 1 > railList[rowIndexZplayer].xRows.Count)
+                {
+                    return;
+                }
+
+                foreach (Rail rail in railList[rowIndexZplayer].xRows[rowIndexXplayer + 1].rails)
+                {
+                    railsInRange.Add(rail);
+                }
+
+                foreach (Rail rail in railList[rowIndexZplayer + 1].xRows[rowIndexXplayer + 1].rails)
+                {
+                    railsInRange.Add(rail);
+                }
             }
         }
     }

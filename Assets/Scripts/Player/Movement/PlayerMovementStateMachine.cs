@@ -93,7 +93,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void Update()
     {
         railCheckTimer += Time.deltaTime;
-        if (railCheckTimer >= 0.6f)
+        if (railCheckTimer >= 0.1f)
         {
             CheckForRail();
             railCheckTimer = 0;
@@ -157,22 +157,22 @@ public class PlayerMovementStateMachine : StateMachine
             float closestDistance = valuesAsset.snappingDistance;
             for (int i = 0; i < possibleRails.Count; i++)
             {
-
                 float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
 
                 if (distance < closestDistance)
                 {
                     closestRail = possibleRails[i];
+                    railAllocator.currentClosestRail = closestRail;
                     closestDistance = distance;
                 }
             }
+            if (closestDistance >= valuesAsset.snappingDistance)
+            {
+                closestRail = null;
+                railAllocator.currentClosestRail = null;
+            }
             if (closestRail != null)
             {
-                var visualsRail = closestRail.transform.GetChild(0).gameObject.GetComponent<ChangeRailVisualization>();
-                if (visualsRail)
-                {
-                    visualsRail.isClosestRail = true;
-                }
                 return true;
             }
             else

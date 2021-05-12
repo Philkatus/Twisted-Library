@@ -1,32 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ChangeRailVisualization : MonoBehaviour
 {
     public GameObject g;
     public Material material;
-    public bool isClosestRail = false;
+    RailSearchManager railAllocator;
+    Rail thisRail;
 
     void Start()
     {
         g = this.gameObject;
         material = g.GetComponent<MeshRenderer>().material;
         material.EnableKeyword("_EMISSION");
+        railAllocator = RailSearchManager.instance;
+        thisRail = transform.parent.GetComponent<Rail>();
     }
 
     void Update()
     {
-        if (isClosestRail)
+        if (railAllocator.currentClosestRail == thisRail)
         {
-            material.SetColor("_EmissionColor", Color.white * 3);
-            material.SetColor("_Color", Color.black);
-            Debug.Log("dfhjfkjdgjhfd");
+            material.SetColor("_EmissiveColor", Color.white * 150);
             DynamicGI.UpdateEnvironment();
         }
         else
         {
-            material.SetColor("_EmissionColor", Color.black);
+            material.SetColor("_EmissiveColor", Color.black);
         }
     }
 }

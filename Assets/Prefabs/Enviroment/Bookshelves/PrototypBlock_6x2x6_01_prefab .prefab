@@ -113,7 +113,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 2121995307878479530}
-  shelfType: 1
+  railType: 0
   maxSwingingAngle: 0
 --- !u!1 &1286197371369885326
 GameObject:
@@ -126,6 +126,7 @@ GameObject:
   - component: {fileID: 2081488836034041430}
   - component: {fileID: 2349926516266546820}
   - component: {fileID: 5797546028249802059}
+  - component: {fileID: 8922055907061896230}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -196,6 +197,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8922055907061896230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1286197371369885326}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  g: {fileID: 0}
+  material: {fileID: 0}
+  isClosestRail: 0
 --- !u!1 &1389781449988028022
 GameObject:
   m_ObjectHideFlags: 0
@@ -262,7 +278,7 @@ MonoBehaviour:
       - 0
       globalNormalsAngle: 0
       flipNormals: 0
-    vertexPathUpToDate: 1
+    vertexPathUpToDate: 0
     vertexPathMaxAngleError: 0
     vertexPathMinVertexSpacing: 0
     showTransformTool: 1
@@ -296,7 +312,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 8774297279596552827}
-  shelfType: 1
+  railType: 0
   maxSwingingAngle: 0
 --- !u!65 &9180590097446304497
 BoxCollider:
@@ -635,6 +651,7 @@ GameObject:
   - component: {fileID: 6245741454022952779}
   - component: {fileID: 7794076295919323975}
   - component: {fileID: 2275818982180795704}
+  - component: {fileID: 6292211403945275620}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -705,6 +722,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6292211403945275620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3108449560047779014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  g: {fileID: 0}
+  material: {fileID: 0}
+  isClosestRail: 0
 --- !u!1 &3234641494402759383
 GameObject:
   m_ObjectHideFlags: 0
@@ -884,7 +916,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 750146300413798085}
-  shelfType: 1
+  railType: 0
   maxSwingingAngle: 0
 --- !u!1 &6754622101500598979
 GameObject:
@@ -897,6 +929,7 @@ GameObject:
   - component: {fileID: 6007385787924189169}
   - component: {fileID: 1198149591047419057}
   - component: {fileID: 6111050988683653056}
+  - component: {fileID: 5658827785071068028}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -967,6 +1000,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5658827785071068028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6754622101500598979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  g: {fileID: 0}
+  material: {fileID: 0}
+  isClosestRail: 0
 --- !u!1 &7831974103756790356
 GameObject:
   m_ObjectHideFlags: 0
@@ -978,6 +1026,7 @@ GameObject:
   - component: {fileID: 5472449421274294136}
   - component: {fileID: 9054238320460492557}
   - component: {fileID: 2306716341521982597}
+  - component: {fileID: 6870223632434832455}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -1048,6 +1097,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6870223632434832455
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7831974103756790356}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  g: {fileID: 0}
+  material: {fileID: 0}
+  isClosestRail: 0
 --- !u!1 &7929431960442509835
 GameObject:
   m_ObjectHideFlags: 0
@@ -1148,7 +1212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 134370861370147636}
-  shelfType: 1
+  railType: 0
   maxSwingingAngle: 0
 --- !u!65 &7636905157676792898
 BoxCollider:
