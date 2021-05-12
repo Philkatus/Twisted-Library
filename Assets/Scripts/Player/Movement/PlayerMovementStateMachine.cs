@@ -12,6 +12,7 @@ public class PlayerMovementStateMachine : StateMachine
     [Tooltip("Change to use different variable value sets. Found in Assets-> Scripts-> Cheat Sheets.")]
     public ValuesScriptableObject valuesAsset;
     public InputActionAsset actionAsset;
+    
     [Space]
     [Header("For reference")]
     public PlayerState playerState;
@@ -27,7 +28,20 @@ public class PlayerMovementStateMachine : StateMachine
     public bool isPerformedFold;
     public bool dismounting;
 
-    public Vector3 playerVelocity;
+    public Vector3 baseVelocity;
+    public Vector3 bonusVelocity;
+    public Vector3 playerVelocity 
+    {
+        get 
+        {
+            return baseVelocity + bonusVelocity;
+        }
+        set 
+        {
+            baseVelocity = value;
+        }
+
+    }
     public Vector3 railCheckLadderPosition;
 
     public bool isWallJumping;
@@ -39,13 +53,14 @@ public class PlayerMovementStateMachine : StateMachine
     public Transform ladderMesh;
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
+    public AnimationStateController animController;
     [HideInInspector] public InputAction slideAction;
     [HideInInspector] public InputAction swingAction;
     [HideInInspector] public InputAction snapAction;
     [HideInInspector] public InputAction stopSlidingAction;
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
-    [HideInInspector]
+    [HideInInspector] public Vector3 ladderJumpTarget;
     public Vector3 ladderDirection
     {
         get
@@ -94,6 +109,7 @@ public class PlayerMovementStateMachine : StateMachine
         jumpAction.performed += context => State.Jump();
         snapAction.performed += context => TryToSnapToShelf();
         foldAction.performed += context => ladderSizeStateMachine.OnFold();
+        foldAction.performed += context => State.RocketJump();
         #endregion
     }
 
@@ -105,6 +121,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void FixedUpdate()
     {
         GetInput();
+        looseBonusVelocity();
         State.Movement();
         Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
     }
@@ -127,6 +144,11 @@ public class PlayerMovementStateMachine : StateMachine
         slidingInput = slideAction.ReadValue<float>();
         swingingInput = swingAction.ReadValue<float>();
 
+    }
+
+    public void looseBonusVelocity() 
+    {
+        bonusVelocity = bonusVelocity.normalized * (bonusVelocity.magnitude - valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime);
     }
 
     ///<summary>
@@ -385,7 +407,8 @@ public class PlayerMovementStateMachine : StateMachine
         LadderBig,
         LadderSmall,
         LadderFold,
-        LadderUnfold
+        LadderUnfold,
+        LadderRocketJump
 
     };
 }

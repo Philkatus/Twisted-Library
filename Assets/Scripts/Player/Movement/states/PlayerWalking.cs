@@ -19,11 +19,11 @@ public class PlayerWalking : State
     {
         controller = PlayerStateMachine.controller;
         controller.transform.parent = PlayerStateMachine.myParent;
-        PlayerStateMachine.ladder.transform.parent = controller.transform;
+        PlayerStateMachine.ladder.transform.parent = PlayerStateMachine.animController.spine;
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
 
-        PlayerStateMachine.playerVelocity.y = -1f;
+        PlayerStateMachine.baseVelocity.y = -1f;
         values = PlayerStateMachine.valuesAsset;
     }
 
@@ -66,11 +66,11 @@ public class PlayerWalking : State
         #region rounding the play velocity down if close to 0
         if (pSM.playerVelocity.x >= -.1f && pSM.playerVelocity.x <= .1f)
         {
-            pSM.playerVelocity.x = 0;
+            pSM.baseVelocity.x = 0;
         }
         if (pSM.playerVelocity.z >= -.1f && pSM.playerVelocity.z <= .1f)
         {
-            pSM.playerVelocity.z = 0;
+            pSM.baseVelocity.z = 0;
         }
 
         #endregion
@@ -81,7 +81,7 @@ public class PlayerWalking : State
         */
 
 
-        PlayerStateMachine.playerVelocity.y -= values.gravity * Time.fixedDeltaTime;
+        PlayerStateMachine.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
         pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, Vector3.down, values.maxFallingSpeed);
         pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
         controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * values.movementVelocityFactor);
@@ -108,9 +108,7 @@ public class PlayerWalking : State
 
     public override void Jump()
     {
-        PlayerStateMachine.playerVelocity.y = values.jumpHeight;
-
-
+        PlayerStateMachine.baseVelocity.y = values.jumpHeight;
         PlayerStateMachine.OnFall();
     }
 

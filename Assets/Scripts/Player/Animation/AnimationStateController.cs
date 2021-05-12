@@ -56,10 +56,7 @@ public class AnimationStateController : MonoBehaviour
     public Rig armRig;
     RigBuilder rigBuilder;
 
-    [Header("Ladder")]
-    public GameObject ladderVisual;
-    public GameObject ladderVisualForCode;
-
+   
     [Header("Adjusting Head Aim Rig")]
     public Transform headAimTarget;
     [Tooltip("1 means target is right in front of PC, -1 behind. Number specifies the limit to wich the head can turn. Suggestion about -0.65")]
@@ -87,11 +84,7 @@ public class AnimationStateController : MonoBehaviour
         audioManager = FindObjectOfType<AudioManager>();
         //movementScript = GetComponent<PlayerMovementStateMachine>();
         //controller = GetComponent<CharacterController>();
-        if(ladderVisual != null && ladderVisualForCode != null)
-        {
-            ladderVisualForCode.SetActive(false);
-            ladderVisual.SetActive(true);
-        }
+       
         VelocityHash = Animator.StringToHash("Velocity");
         SideInputHash = Animator.StringToHash("SideInput");
         ForwardInputHash = Animator.StringToHash("ForwardInput");
@@ -359,11 +352,7 @@ public class AnimationStateController : MonoBehaviour
 
 
 
-            if (ladderVisual != null && ladderVisualForCode != null)
-            {
-                ladderVisualForCode.SetActive(true);
-                ladderVisual.SetActive(false);
-            }
+            
 
             //Slide Audio
             if (movementScript.slidingInput != 0 && !slideAudioPlaying)
@@ -398,11 +387,7 @@ public class AnimationStateController : MonoBehaviour
             //rigBuilder.enabled = true;
             armRig.weight = 1;
             
-            if (ladderVisual != null && ladderVisualForCode != null)
-            {
-                ladderVisualForCode.SetActive(false);
-                ladderVisual.SetActive(true);
-            }
+            
 
             //Audio
             if (attachAudioPlaying)

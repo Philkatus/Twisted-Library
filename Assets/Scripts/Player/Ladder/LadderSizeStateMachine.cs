@@ -67,18 +67,32 @@ public class LadderSizeStateMachine : StateMachine
     ///</summary>
     public void OnFold()
     {
-        if (State.GetType() != new LadderFold(this).GetType())
+        if (playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.sliding || playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
-            SetState(new LadderFold(this));
-            playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderFold;
-        }
-        else if (State.GetType() != new LadderUnfold(this).GetType())
-        {
-            SetState(new LadderUnfold(this));
-            playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderUnfold;
+
+            if (State.GetType() != new LadderFold(this).GetType())
+            {
+                SetState(new LadderFold(this));
+                playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderFold;
+            }
+            else if (State.GetType() != new LadderUnfold(this).GetType())
+            {
+                SetState(new LadderUnfold(this));
+                playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderUnfold;
+            }
         }
     }
 
- 
+    public void OnRocketJump() 
+    {
+        SetState(new LadderRocketJump(this));
+        playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderRocketJump;
+    }
+    public void OnRocketJumpEnd()
+    {
+        SetState(new LadderFold(this));
+        playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderFold;
+    }
+
     #endregion
 }

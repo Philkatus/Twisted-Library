@@ -1,9 +1,13 @@
 using System.Collections;
+using System;
+using UnityEngine;
 
 public abstract class State
 {
     protected PlayerMovementStateMachine PlayerStateMachine;
     protected LadderSizeStateMachine LadderSizeStateMachine;
+    protected Vector3 clamp;
+
 
     public State(PlayerMovementStateMachine playerStateMachine)
     {
@@ -45,6 +49,11 @@ public abstract class State
     }
 
     public virtual void Swing()
+    {
+
+    }
+
+    public virtual void RocketJump() 
     {
 
     }
