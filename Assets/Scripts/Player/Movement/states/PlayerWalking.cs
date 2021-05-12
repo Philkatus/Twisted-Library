@@ -47,27 +47,27 @@ public class PlayerWalking : State
             controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
         }
 
-        pSM.playerVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration;
+        pSM.baseVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration;
         #region apply drag when no input is applied
         if (pSM.forwardInput == 0)
         {
-            Vector3 currentDragForward = values.movementDrag * pSM.resultingVelocity(pSM.playerVelocity, directionForward);
-            pSM.playerVelocity -= currentDragForward * Time.fixedDeltaTime;
+            Vector3 currentDragForward = values.movementDrag * pSM.resultingVelocity(pSM.baseVelocity, directionForward);
+            pSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
 
         }
         if (pSM.sideWaysInput == 0)
         {
-            Vector3 currentDragSideways = values.movementDrag * pSM.resultingVelocity(pSM.playerVelocity, directionRight);
-            pSM.playerVelocity -= currentDragSideways * Time.fixedDeltaTime;
+            Vector3 currentDragSideways = values.movementDrag * pSM.resultingVelocity(pSM.baseVelocity, directionRight);
+            pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
         #endregion
 
         #region rounding the play velocity down if close to 0
-        if (pSM.playerVelocity.x >= -.1f && pSM.playerVelocity.x <= .1f)
+        if (pSM.baseVelocity.x >= -.1f && pSM.baseVelocity.x <= .1f)
         {
             pSM.baseVelocity.x = 0;
         }
-        if (pSM.playerVelocity.z >= -.1f && pSM.playerVelocity.z <= .1f)
+        if (pSM.baseVelocity.z >= -.1f && pSM.baseVelocity.z <= .1f)
         {
             pSM.baseVelocity.z = 0;
         }
