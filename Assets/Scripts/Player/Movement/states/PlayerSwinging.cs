@@ -121,7 +121,7 @@ public class PlayerSwinging : PlayerSliding
                     currentStatePosition = PendulumUpdate(previousStatePosition);
                     break;
                 case Shelf.ShelfType.OnWall:
-                    currentStatePosition = RepelUpdate(previousStatePosition);
+                    //currentStatePosition = RepelUpdate(previousStatePosition);
                     break;
                 case Shelf.ShelfType.FreeHanging:
                     currentStatePosition = PendulumUpdate(previousStatePosition);
