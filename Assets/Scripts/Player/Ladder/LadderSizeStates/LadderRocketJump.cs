@@ -24,15 +24,17 @@ public class LadderRocketJump : State
         lSM = LadderSizeStateMachine;
         pSM = lSM.playerStateMachine;
         target = pSM.ladderJumpTarget;
+       
+        LadderLocalRotation = lSM.ladderParent.localRotation;
         RotateLadder();
-        LadderLocalRotation = lSM.ladderParent.rotation;
 
     }
 
     public override IEnumerator Finish()
     {
 
-        lSM.ladderParent.rotation = LadderLocalRotation;
+        lSM.ladderParent.localRotation = LadderLocalRotation;
+        Debug.Log("end");
         yield return null;
     }
 

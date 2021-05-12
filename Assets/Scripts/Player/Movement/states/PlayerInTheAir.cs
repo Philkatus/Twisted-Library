@@ -107,7 +107,7 @@ public class PlayerInTheAir : State
     {
         if (!didRocketJump)
         {
-            Debug.Log("Rocket");
+            //Debug.Log("Rocket");
             float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig;
             float jumpheight = values.jumpHeight * 3f;
             Vector3 origin = PlayerStateMachine.transform.position;

@@ -67,7 +67,7 @@ public class LadderSizeStateMachine : StateMachine
     ///</summary>
     public void OnFold()
     {
-        if (playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.sliding)
+        if (playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.sliding || playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
 
             if (State.GetType() != new LadderFold(this).GetType())
@@ -88,7 +88,11 @@ public class LadderSizeStateMachine : StateMachine
         SetState(new LadderRocketJump(this));
         playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderRocketJump;
     }
+    public void OnRocketJumpEnd()
+    {
+        SetState(new LadderFold(this));
+        playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderFold;
+    }
 
- 
     #endregion
 }
