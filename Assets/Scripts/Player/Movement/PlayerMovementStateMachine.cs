@@ -12,7 +12,7 @@ public class PlayerMovementStateMachine : StateMachine
     [Tooltip("Change to use different variable value sets. Found in Assets-> Scripts-> Cheat Sheets.")]
     public ValuesScriptableObject valuesAsset;
     public InputActionAsset actionAsset;
-    
+
     [Space]
     [Header("For reference")]
     public PlayerState playerState;
@@ -30,13 +30,13 @@ public class PlayerMovementStateMachine : StateMachine
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
-    public Vector3 playerVelocity 
+    public Vector3 playerVelocity
     {
-        get 
+        get
         {
             return baseVelocity + bonusVelocity;
         }
-        set 
+        set
         {
             baseVelocity = value;
         }
@@ -145,10 +145,10 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
 
-    public void looseBonusVelocity() 
+    public void looseBonusVelocity()
     {
         bonusVelocity -= bonusVelocity.normalized * valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime;
-        if (bonusVelocity.magnitude <= valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime) 
+        if (bonusVelocity.magnitude <= valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime)
         {
             bonusVelocity = Vector3.zero;
         }
@@ -189,14 +189,21 @@ public class PlayerMovementStateMachine : StateMachine
                 if (distance < closestDistance)
                 {
                     closestRail = possibleRails[i];
-                    railAllocator.currentClosestRail = closestRail;
+                    if (playerState != PlayerState.sliding)
+                    {
+                        railAllocator.currentRailVisual = closestRail;
+                    }
+                    else
+                    {
+                        railAllocator.currentRailVisual = null;
+                    }
                     closestDistance = distance;
                 }
             }
             if (closestDistance >= valuesAsset.snappingDistance)
             {
                 closestRail = null;
-                railAllocator.currentClosestRail = null;
+                railAllocator.currentRailVisual = null;
             }
             if (closestRail != null)
             {

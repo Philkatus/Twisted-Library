@@ -18,7 +18,7 @@ public class ChangeRailVisualization : MonoBehaviour
 
     void Update()
     {
-        if (railAllocator.currentClosestRail == thisRail)
+        if (railAllocator.currentRailVisual == thisRail)
         {
             material.SetColor("_EmissiveColor", Color.white * 150);
             DynamicGI.UpdateEnvironment();
