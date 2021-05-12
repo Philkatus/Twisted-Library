@@ -47,8 +47,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
 
-    public List<Shelf> possibleRails;
-    public Shelf closestRail;
+    public Rail closestRail;
     public Transform ladder;
     public Transform ladderMesh;
     public LadderSizeStateMachine ladderSizeStateMachine;
@@ -72,29 +71,23 @@ public class PlayerMovementStateMachine : StateMachine
     #endregion
 
     #region Private
+    float railCheckTimer;
+    RailSearchManager railAllocator;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
-    
+
     InputAction foldAction;
     #endregion
 
     private void Start()
     {
         myParent = transform.parent;
-
+        railAllocator = RailSearchManager.instance;
         ladderWalkingPosition = ladder.localPosition;
         ladderWalkingRotation = ladder.localRotation;
 
         SetState(new PlayerWalking(this));
-        possibleRails = new List<Shelf>();
-        
-        Shelf[] allRails = GameObject.FindObjectsOfType<Shelf>();
-        foreach (Shelf rail in allRails)
-        {
-            possibleRails.Add(rail);
-        }
-        
         #region controls
         playerControlsMap = actionAsset.FindActionMap("PlayerControls");
         playerControlsMap.Enable();
@@ -115,7 +108,12 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Update()
     {
-       
+        railCheckTimer += Time.deltaTime;
+        if (railCheckTimer >= 0.1f)
+        {
+            CheckForRail();
+            railCheckTimer = 0;
+        }
     }
 
     private void FixedUpdate()
@@ -129,12 +127,12 @@ public class PlayerMovementStateMachine : StateMachine
 
     public void TryToSnapToShelf()
     {
-        
+
         if (CheckForRail())
         {
             State.Snap();
         }
-        
+
     }
 
     #region utility
@@ -173,7 +171,10 @@ public class PlayerMovementStateMachine : StateMachine
         {
             railCheckLadderPosition = controller.transform.position;
         }
-       
+
+        railAllocator.CheackForRailsInRange(controller.transform);
+        var possibleRails = railAllocator.railsInRange;
+
         if (possibleRails.Count == 0)
         {
             return false;
@@ -183,17 +184,21 @@ public class PlayerMovementStateMachine : StateMachine
             float closestDistance = valuesAsset.snappingDistance;
             for (int i = 0; i < possibleRails.Count; i++)
             {
-                
                 float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
-                
+
                 if (distance < closestDistance)
                 {
-                    
                     closestRail = possibleRails[i];
+                    railAllocator.currentClosestRail = closestRail;
                     closestDistance = distance;
                 }
             }
-            if (closestRail!=null)
+            if (closestDistance >= valuesAsset.snappingDistance)
+            {
+                closestRail = null;
+                railAllocator.currentClosestRail = null;
+            }
+            if (closestRail != null)
             {
                 return true;
             }
@@ -207,9 +212,11 @@ public class PlayerMovementStateMachine : StateMachine
     ///<summary>
     /// A function to determine the closest rail to the player that ignores the current rail. Return false if none are in range.
     ///</summary>
-    public bool CheckForNextClosestRail(Shelf currentClosestRail)
+    public bool CheckForNextClosestRail(Rail currentClosestRail)
     {
         railCheckLadderPosition = ladder.transform.position;
+        railAllocator.CheackForRailsInRange(controller.transform);
+        var possibleRails = railAllocator.railsInRange;
 
         if (possibleRails.Count == 1)
         {
@@ -222,7 +229,7 @@ public class PlayerMovementStateMachine : StateMachine
             Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
 
             float closestDistance = valuesAsset.slidingSnappingDistance;
-            Shelf nextClosestShelf = null;
+            Rail nextClosestShelf = null;
 
             for (int i = 0; i < possibleRails.Count; i++)
             {
@@ -348,7 +355,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
     ///<summary>
-    /// Gets called when the player snaps his ladder to a shelf.
+    /// Gets called when the player snaps his ladder to a rail.
     ///</summary>
     public void OnSnap()
     {
