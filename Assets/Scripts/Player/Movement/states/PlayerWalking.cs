@@ -23,7 +23,6 @@ public class PlayerWalking : State
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
 
-        PlayerStateMachine.baseVelocity.y = -1f;
         values = PlayerStateMachine.valuesAsset;
     }
 
@@ -82,8 +81,8 @@ public class PlayerWalking : State
 
 
         PlayerStateMachine.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
-        pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, Vector3.down, values.maxFallingSpeed);
-        pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
+        pSM.baseVelocity = pSM.ClampPlayerVelocity(pSM.baseVelocity, Vector3.down, values.maxFallingSpeed);
+        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, values.maximumMovementSpeed);
         controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * values.movementVelocityFactor);
 
         if (isGroundedWithCoyoteTime())
