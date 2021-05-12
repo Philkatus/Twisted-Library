@@ -109,6 +109,7 @@ public class PlayerMovementStateMachine : StateMachine
         jumpAction.performed += context => State.Jump();
         snapAction.performed += context => TryToSnapToShelf();
         foldAction.performed += context => ladderSizeStateMachine.OnFold();
+        foldAction.performed += context => State.RocketJump();
         #endregion
     }
 
@@ -406,7 +407,8 @@ public class PlayerMovementStateMachine : StateMachine
         LadderBig,
         LadderSmall,
         LadderFold,
-        LadderUnfold
+        LadderUnfold,
+        LadderRocketJump
 
     };
 }

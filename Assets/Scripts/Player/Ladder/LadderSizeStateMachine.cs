@@ -85,7 +85,8 @@ public class LadderSizeStateMachine : StateMachine
 
     public void OnRocketJump() 
     {
-
+        SetState(new LadderRocketJump(this));
+        playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderRocketJump;
     }
 
  
