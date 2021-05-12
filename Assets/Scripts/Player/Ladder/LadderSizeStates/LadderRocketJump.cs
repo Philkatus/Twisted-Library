@@ -58,7 +58,7 @@ public class LadderRocketJump : State
             lSM.ladderParent.transform.right = pSM.transform.position - target;
             lSM.ladderParent.transform.localScale = new Vector3(lSM.ladderLength, 1, 1);
 
-            if (distance >= lSM.ladderLengthBig)
+            if (distance >= lSM.ladderLengthBig || pSM.playerVelocity.y <= 0)
             {
                 isLerpGoing = false;
                 pSM.ladder.transform.parent = pSM.transform;

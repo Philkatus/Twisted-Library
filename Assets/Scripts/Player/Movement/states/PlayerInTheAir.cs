@@ -107,11 +107,12 @@ public class PlayerInTheAir : State
     {
         if (!didRocketJump)
         {
-            //Debug.Log("Rocket");
-            float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig;
+            Debug.Log("Rocket");
+            float sphereRadius = .2f;
+            float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig-sphereRadius;
             float acceleration = values.rocketJumpAcceleration;
             Vector3 origin = PlayerStateMachine.transform.position;
-            float sphereRadius = .2f;
+            
 
 
             LayerMask mask = LayerMask.GetMask("Environment");
@@ -149,10 +150,10 @@ public class PlayerInTheAir : State
             {
                 PlayerMovementStateMachine pSM = PlayerStateMachine;
                 pSM.ladderJumpTarget = target;
-                pSM.baseVelocity = Vector3.zero;
+                pSM.baseVelocity.y = 0;
                 //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
                 pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration ;
-                //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
+                Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                 didRocketJump = true;
                 pSM.ladderSizeStateMachine.OnRocketJump();
             }

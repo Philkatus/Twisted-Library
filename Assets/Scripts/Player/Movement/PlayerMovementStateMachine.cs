@@ -150,6 +150,10 @@ public class PlayerMovementStateMachine : StateMachine
     public void looseBonusVelocity() 
     {
         bonusVelocity -= bonusVelocity.normalized * valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime;
+        if (bonusVelocity.magnitude <= valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime) 
+        {
+            bonusVelocity = Vector3.zero;
+        }
     }
 
     ///<summary>
