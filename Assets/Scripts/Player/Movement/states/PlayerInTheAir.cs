@@ -55,7 +55,7 @@ public class PlayerInTheAir : State
         {
             controller.transform.forward = direction;
         }
-        pSM.playerVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration * values.airMovementFactor;
+        pSM.baseVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration * values.airMovementFactor;
 
         //when wall jump occured, set the isWallJumping to false after 1 sec
         wallJumpingTime += Time.deltaTime;
@@ -67,15 +67,15 @@ public class PlayerInTheAir : State
         if (pSM.forwardInput <= 0.3f && pSM.forwardInput >= -.3f && !pSM.isWallJumping)
         {
             Vector3 currentDragForward = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionForward) / values.airMovementFactor;
-            pSM.playerVelocity -= currentDragForward * Time.fixedDeltaTime;
+            pSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
         }
         if (pSM.sideWaysInput <= 0.3f && pSM.sideWaysInput >= -.3f && !pSM.isWallJumping)
         {
             Vector3 currentDragSideways = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionRight) / values.airMovementFactor;
-            pSM.playerVelocity -= currentDragSideways * Time.fixedDeltaTime;
+            pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
         pSM.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
-        float ClampedVelocityY = Mathf.Clamp(pSM.playerVelocity.y, -values.maxFallingSpeed, Mathf.Infinity);
+        float ClampedVelocityY = Mathf.Clamp(pSM.baseVelocity.y, -values.maxFallingSpeed, Mathf.Infinity);
         pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
         pSM.baseVelocity.y = ClampedVelocityY;
 
@@ -149,9 +149,10 @@ public class PlayerInTheAir : State
             {
                 PlayerMovementStateMachine pSM = PlayerStateMachine;
                 pSM.ladderJumpTarget = target;
+                pSM.baseVelocity = Vector3.zero;
                 //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
-                pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration *.1f;
-                Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
+                pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration ;
+                //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                 didRocketJump = true;
                 pSM.ladderSizeStateMachine.OnRocketJump();
             }
