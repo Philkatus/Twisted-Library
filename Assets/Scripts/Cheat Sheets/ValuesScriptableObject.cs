@@ -31,6 +31,10 @@ public class ValuesScriptableObject : ScriptableObject
     [Header("Jumping/Air Movement")]
     [Tooltip("How high the player jumps.")]
     public float jumpHeight;
+
+    [Tooltip("How fast the player accelerates with the rocketJump.")]
+    public float rocketJumpAcceleration;
+
     [Tooltip("Direction of the jump when facing the wall.")]
     public Vector3 wallJump;
 
@@ -46,6 +50,7 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("The factor to convert Velocity into air-Movementspeed")]
     public float jumpVelocityFactor = 1;
+
     #endregion
     [Space]
     #region Sliding

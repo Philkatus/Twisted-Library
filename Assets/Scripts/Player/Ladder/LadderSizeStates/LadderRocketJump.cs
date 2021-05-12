@@ -32,7 +32,7 @@ public class LadderRocketJump : State
 
     public override IEnumerator Finish()
     {
-
+        pSM.ladder.parent = pSM.animController.spine;
         lSM.ladderParent.localRotation = LadderLocalRotation;
         Debug.Log("end");
         yield return null;
@@ -40,11 +40,12 @@ public class LadderRocketJump : State
 
     void RotateLadder()
     {
+        pSM.ladder.parent = pSM.transform;
         lSM.ladderParent.transform.right = pSM.transform.position - target;
         distance = Vector3.Distance(target, pSM.transform.position);
         lSM.ladderParent.transform.localScale = new Vector3(distance, 1, 1);
         lSM.ladderLength = lSM.ladderLengthBig;
-        Debug.Log("hey");
+        //Debug.Log("hey");
 
     }
     public override void Fold()
@@ -54,7 +55,7 @@ public class LadderRocketJump : State
         {
             distance = Vector3.Distance(target, pSM.transform.position);
             lSM.ladderLength = Mathf.Clamp(distance, lSM.ladderLengthSmall, lSM.ladderLengthBig);
-
+            lSM.ladderParent.transform.right = pSM.transform.position - target;
             lSM.ladderParent.transform.localScale = new Vector3(lSM.ladderLength, 1, 1);
 
             if (distance >= lSM.ladderLengthBig)

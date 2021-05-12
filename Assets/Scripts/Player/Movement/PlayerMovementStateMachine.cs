@@ -123,7 +123,8 @@ public class PlayerMovementStateMachine : StateMachine
         GetInput();
         looseBonusVelocity();
         State.Movement();
-        Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
+        //Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
+        Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
     }
 
     public void TryToSnapToShelf()
@@ -148,7 +149,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     public void looseBonusVelocity() 
     {
-        bonusVelocity = bonusVelocity.normalized * (bonusVelocity.magnitude - valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime);
+        bonusVelocity -= bonusVelocity.normalized * valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime;
     }
 
     ///<summary>

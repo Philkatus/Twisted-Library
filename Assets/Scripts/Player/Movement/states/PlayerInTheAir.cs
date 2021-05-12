@@ -76,7 +76,7 @@ public class PlayerInTheAir : State
         }
         pSM.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
         float ClampedVelocityY = Mathf.Clamp(pSM.playerVelocity.y, -values.maxFallingSpeed, Mathf.Infinity);
-        pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
+        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
         pSM.baseVelocity.y = ClampedVelocityY;
 
 
@@ -109,7 +109,7 @@ public class PlayerInTheAir : State
         {
             //Debug.Log("Rocket");
             float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig;
-            float jumpheight = values.jumpHeight * 3f;
+            float acceleration = values.rocketJumpAcceleration;
             Vector3 origin = PlayerStateMachine.transform.position;
             float sphereRadius = .2f;
 
@@ -149,8 +149,8 @@ public class PlayerInTheAir : State
             {
                 PlayerMovementStateMachine pSM = PlayerStateMachine;
                 pSM.ladderJumpTarget = target;
-                pSM.playerVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized) + (pSM.transform.position - target).normalized * jumpheight;
-                pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
+                //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
+                pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration *.1f;
                 Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                 didRocketJump = true;
                 pSM.ladderSizeStateMachine.OnRocketJump();
