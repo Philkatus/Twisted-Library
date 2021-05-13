@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f06406a2f87f5a64781d8f07d19cd6c6, type: 3}
   m_Name: Prototype Values Daria
   m_EditorClassIdentifier: 
+  bonusVelocityDrag: 0
   movementAcceleration: 50
   maximumMovementSpeed: 15
   movementDrag: 50
   movementVelocityFactor: 1
   jumpHeight: 17
+  rocketJumpAcceleration: 0
   wallJump: {x: 0, y: 17, z: 3}
   airMovementFactor: 0.5
   jumpingDrag: 4
@@ -34,6 +36,13 @@ MonoBehaviour:
   ladderDismountTimer: 0.3
   slidingVelocityFactor: 1
   preservesVelocityOnSnap: 0
+  useNewSliding: 0
+  speedLevels:
+  - 4
+  - 7
+  - 13
+  timeToSwitchDirection: 1
+  accelerationCooldown: 0
   useSwinging: 0
   swingingAcceleration: 0
   minSwingingDeceleration: 0

@@ -20,7 +20,7 @@ public class ChangeRailVisualization : MonoBehaviour
     {
         if (railAllocator.currentRailVisual == thisRail)
         {
-            material.SetColor("_EmissiveColor", Color.white * 150);
+            material.SetColor("_EmissiveColor", Color.white * 1050);
             DynamicGI.UpdateEnvironment();
         }
         else
