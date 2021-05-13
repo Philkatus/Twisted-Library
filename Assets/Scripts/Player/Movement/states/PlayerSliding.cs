@@ -12,7 +12,7 @@ public class PlayerSliding : State
     PathCreator pathCreator;
     protected PlayerMovementStateMachine pSM;
     Transform ladder;
-    LadderSizeStateMachine ladderSizeState;
+    protected LadderSizeStateMachine ladderSizeState;
     #endregion
 
     #region PRIVATE
@@ -26,8 +26,6 @@ public class PlayerSliding : State
 
 
     #region PROTECTED
-    protected float ladderLength;
-
     protected VertexPath path;
     protected Rail closestRail;
     protected ValuesScriptableObject stats;
@@ -39,7 +37,6 @@ public class PlayerSliding : State
         stats = pSM.valuesAsset;
 
         ladderSizeState = pSM.ladderSizeStateMachine;
-        ladderLength = ladderSizeState.ladderLength;
         speed = stats.climbingSpeedOnLadder;
         closestRail = pSM.closestRail;
         controller = pSM.controller;
@@ -68,11 +65,11 @@ public class PlayerSliding : State
 
         // Place the character on ladder.
         ladder.transform.parent = pSM.myParent;
-        Vector3 targetPosition = startingPoint - pSM.ladderDirection * ladderLength;
+        Vector3 targetPosition = startingPoint - pSM.ladderDirection * ladderSizeState.ladderLength;
         targetPosition.y = Mathf.Clamp(controller.transform.position.y, targetPosition.y, startingPoint.y);
-        pSM.HeightOnLadder = -(startingPoint - targetPosition).magnitude / ladderLength;
+        pSM.HeightOnLadder = -(startingPoint - targetPosition).magnitude / ladderSizeState.ladderLength;
         pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
-        pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderLength * pSM.HeightOnLadder;
+        pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
         controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
         controller.transform.parent = ladder.transform;
         pSM.ladderSizeStateMachine.OnGrow();
@@ -101,7 +98,6 @@ public class PlayerSliding : State
         stats = pSM.valuesAsset;
 
         ladderSizeState = pSM.ladderSizeStateMachine;
-        ladderLength = ladderSizeState.ladderLength;
         speed = stats.climbingSpeedOnLadder;
         closestRail = pSM.closestRail;
         controller = pSM.controller;
@@ -333,7 +329,7 @@ public class PlayerSliding : State
         if ((pSM.transform.position - dismountStartPos).magnitude <= 1 && !dismountedHalfways)
         {
             pSM.HeightOnLadder += stats.ladderDismountSpeed * Time.fixedDeltaTime;
-            pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderLength * pSM.HeightOnLadder;
+            pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
         }
         else if (!dismountedHalfways)
         {
@@ -345,7 +341,7 @@ public class PlayerSliding : State
         if ((pSM.transform.position - dismountStartPos).magnitude <= 0.1f && dismountedHalfways)
         {
             pSM.HeightOnLadder += stats.ladderDismountSpeed * Time.fixedDeltaTime;
-            pSM.transform.position = ladder.transform.position + pSM.controller.transform.forward * ladderLength * pSM.HeightOnLadder;
+            pSM.transform.position = ladder.transform.position + pSM.controller.transform.forward * ladderSizeState.ladderLength * pSM.HeightOnLadder;
         }
         else if (dismountedHalfways)
         {

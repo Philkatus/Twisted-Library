@@ -49,7 +49,7 @@ public class PlayerSwinging : PlayerSliding
     public override void ReInitialize()
     {
         base.ReInitialize();
-        Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderLength;
+        Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLength;
         railType = closestRail.railType;
         onWall = true;
         inputGiven = false;
@@ -59,14 +59,12 @@ public class PlayerSwinging : PlayerSliding
 
     public override void Initialize()
     {
-        base.Initialize();
-        pSM.swingingPosition = 0;
-
-
+        //base.Initialize();
+        SnappingOrientation();
         Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
 
         Bob = Pivot.transform.GetChild(1).gameObject;
-        Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderLength;
+        Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLength;
 
         railType = closestRail.railType;
         onWall = false;
@@ -99,8 +97,10 @@ public class PlayerSwinging : PlayerSliding
 
     public override void Movement()
     {
-        Swing();
-        base.Movement();
+        //Swing();
+        //base.Movement();
+        //Vector3 railDirection = closestRail.pathCreator.path.GetNormalAtDistance(currentDistance);
+        //pSM.ladder.transform.forward = -railDirection;
 
     }
 
@@ -132,8 +132,7 @@ public class PlayerSwinging : PlayerSliding
 
         //die Leiter korrekt rotieren
         currentDistance = pSM.currentDistance;
-        Vector3 railDirection = closestRail.pathCreator.path.GetNormalAtDistance(currentDistance);
-        pSM.ladder.transform.forward = -railDirection;
+       
         Vector3 axis = pSM.ladder.right;
         float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition - pSM.ladder.transform.position, axis));
 
@@ -322,11 +321,57 @@ public class PlayerSwinging : PlayerSliding
         pSM.playerVelocity = (pSM.resultingVelocity(pSM.playerVelocity, pSM.ladder.right) + currentMovement) / stats.swingingVelocityFactor;
     }
 
+    void SnappingOrientation() 
+    {
+        #region  Variable assignment
+        pSM = PlayerStateMachine;
+        stats = pSM.valuesAsset;
+
+        ladderSizeState = pSM.ladderSizeStateMachine;
+        closestRail = pSM.closestRail;
+        float speed = stats.climbingSpeedOnLadder;
+        CharacterController controller = pSM.controller;
+        Transform ladder = pSM.ladder;
+        PathCreator pathCreator = closestRail.pathCreator;
+        path = pathCreator.path;
+        Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
+        #endregion
+        #region LadderPlacement
+        ladder.transform.parent = pSM.myParent;
+        currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
+        ladder.transform.position = startingPoint;
+
+        //Ladder Rotation
+        ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
+        Vector3 axis = pSM.ladder.right;
+        float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection,pSM.transform.position-startingPoint, axis));
+
+        Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
+        pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
+
+        //LadderLength Calculation
+
+        #endregion
+        #region PlayerPlacement
+        pSM.HeightOnLadder = -1;
+        pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
+        
+        controller.transform.up = pSM.ladderDirection;
+        controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
+        controller.transform.parent = ladder.transform;
+        #endregion
+        #region Velocity Calculation
+
+        #endregion
+    }
+
     public PlayerSwinging(PlayerMovementStateMachine playerStateMachine)
    : base(playerStateMachine)
     {
 
     }
+
+
 
 }
 
