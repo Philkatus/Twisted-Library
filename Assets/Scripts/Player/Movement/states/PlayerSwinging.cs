@@ -6,7 +6,7 @@ using PathCreation;
 public class PlayerSwinging : PlayerSliding
 {
     #region INHERITED
-    float currentDistance;
+    //float currentDistance;
     #endregion
 
     GameObject Pivot;
@@ -62,6 +62,8 @@ public class PlayerSwinging : PlayerSliding
         //base.Initialize();
         SnappingOrientation();
         Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
+        pSM.snapAction.started += context => AccelerationForce();
+
 
         Bob = Pivot.transform.GetChild(1).gameObject;
         Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLength;
@@ -83,7 +85,7 @@ public class PlayerSwinging : PlayerSliding
             case Rail.RailType.TwoSided:
                 minDecelerationFactor = stats.minSwingingDeceleration;
                 maxDecelerationFactor = stats.maxSwingingDeceleration;
-                accelerationFactor = 1;
+                accelerationFactor = stats.hangingAccelerationFactor;
                 break;
             case Rail.RailType.FreeHanging:
                 minDecelerationFactor = stats.minHangingDeceleration;
@@ -97,9 +99,9 @@ public class PlayerSwinging : PlayerSliding
 
     public override void Movement()
     {
-        //Swing();
-        //base.Movement();
-        //Vector3 railDirection = closestRail.pathCreator.path.GetNormalAtDistance(currentDistance);
+        Swing();
+        base.Movement();
+        //Vector3 railDirection = path.GetNormalAtDistance(currentDistance);
         //pSM.ladder.transform.forward = -railDirection;
 
     }
@@ -119,7 +121,7 @@ public class PlayerSwinging : PlayerSliding
                     currentStatePosition = PendulumUpdate(previousStatePosition);
                     break;
                 case Rail.RailType.OnWall:
-                    //currentStatePosition = RepelUpdate(previousStatePosition);
+                    currentStatePosition = PendulumUpdate(previousStatePosition);
                     break;
                 case Rail.RailType.FreeHanging:
                     currentStatePosition = PendulumUpdate(previousStatePosition);
@@ -157,15 +159,17 @@ public class PlayerSwinging : PlayerSliding
         float inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
 
         tensionForce = gravityForce * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
-        float centripetalForce = ((mass * Mathf.Pow(playerVelocity.magnitude, 2)) / ropeLength);
+        float centripetalForce = mass * Mathf.Pow(playerVelocity.magnitude, 2) / ropeLength;
         tensionForce += centripetalForce;
 
         // if relative height > 0 -> remap tension force to get smaller
+        /*
         float relativeHeight = (bob_p - pivot_p).normalized.y;
         if (relativeHeight > 0)
         { // 0 - 1 -> 0.9f - 0.1f 
             tensionForce = (tensionForce / 1) * (0.9f - 0.1f) + 0.1f;
         }
+        */
         currentVelocity += tensionDirection * tensionForce * dt;
         Debug.DrawRay(Bob.transform.position, tensionDirection * tensionForce * dt, Color.green, dt);
 
@@ -178,7 +182,7 @@ public class PlayerSwinging : PlayerSliding
 
         //Acceleration
         inputForce = Vector3.zero;
-        pSM.snapAction.started += context => AccelerationForce();
+        
 
         // set max speed
         currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
@@ -192,7 +196,7 @@ public class PlayerSwinging : PlayerSliding
         playerVelocity = Bob.transform.forward * pSM.resultingSpeed(currentVelocity, Bob.transform.forward);
 
         // pSM.playerVelocity for the Jump
-        SetCurrentPlayerVelocity(pivot_p);
+        //SetCurrentPlayerVelocity(pivot_p);
 
         /*
         //Debug.DrawRays
@@ -329,10 +333,10 @@ public class PlayerSwinging : PlayerSliding
 
         ladderSizeState = pSM.ladderSizeStateMachine;
         closestRail = pSM.closestRail;
-        float speed = stats.climbingSpeedOnLadder;
-        CharacterController controller = pSM.controller;
-        Transform ladder = pSM.ladder;
-        PathCreator pathCreator = closestRail.pathCreator;
+        speed = stats.climbingSpeedOnLadder;
+        controller = pSM.controller;
+        ladder = pSM.ladder;
+        pathCreator = closestRail.pathCreator;
         path = pathCreator.path;
         Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
         #endregion
@@ -354,17 +358,32 @@ public class PlayerSwinging : PlayerSliding
         #endregion
         #region PlayerPlacement
         pSM.HeightOnLadder = -1;
-        pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
-        
-        controller.transform.up = pSM.ladderDirection;
-        controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
         controller.transform.parent = ladder.transform;
+        //pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
+        pSM.transform.localPosition = new Vector3(0, -ladderSizeState.ladderLength, -.7f);
+        controller.transform.localRotation = Quaternion.Euler(6.25f, 0, 0);
+
         #endregion
         #region Velocity Calculation
+        if (!stats.preservesVelocityOnSnap) 
+        {
+            pSM.baseVelocity = pSM.resultingClampedVelocity(pSM.baseVelocity, ladder.transform.forward, stats.maxSwingSpeed);
+            pSM.bonusVelocity = pSM.resultingVelocity(pSM.bonusVelocity, ladder.transform.forward);
+
+        }
+
+
+
 
         #endregion
     }
 
+    public override IEnumerator Finish()
+    {
+       
+        return base.Finish();
+        
+    }
     public PlayerSwinging(PlayerMovementStateMachine playerStateMachine)
    : base(playerStateMachine)
     {

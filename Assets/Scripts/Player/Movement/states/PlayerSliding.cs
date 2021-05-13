@@ -5,14 +5,8 @@ using PathCreation;
 public class PlayerSliding : State
 {
     #region INHERITED
-    float currentDistance;
-    float speed;
-    float pathLength;
-    CharacterController controller;
-    PathCreator pathCreator;
-    protected PlayerMovementStateMachine pSM;
-    Transform ladder;
-    protected LadderSizeStateMachine ladderSizeState;
+   
+    
     #endregion
 
     #region PRIVATE
@@ -29,6 +23,16 @@ public class PlayerSliding : State
     protected VertexPath path;
     protected Rail closestRail;
     protected ValuesScriptableObject stats;
+    protected PathCreator pathCreator;
+    protected PlayerMovementStateMachine pSM;
+    protected LadderSizeStateMachine ladderSizeState;
+    protected Transform ladder;
+    protected float currentDistance;
+    protected float speed;
+    protected float pathLength;
+    protected CharacterController controller;
+
+
     #endregion
     public override void Initialize()
     {
