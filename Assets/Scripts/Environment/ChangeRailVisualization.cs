@@ -4,6 +4,7 @@ public class ChangeRailVisualization : MonoBehaviour
 {
     public GameObject g;
     public Material material;
+    public Material changeToThisMaterial;
     RailSearchManager railAllocator;
     Rail thisRail;
 
@@ -20,12 +21,14 @@ public class ChangeRailVisualization : MonoBehaviour
     {
         if (railAllocator.currentRailVisual == thisRail)
         {
-            material.SetColor("_EmissiveColor", Color.white * 1050);
+            g.GetComponent<MeshRenderer>().material = changeToThisMaterial;
+            //material.SetColor("_EmissiveColor", Color.white * 1050);
             DynamicGI.UpdateEnvironment();
         }
         else
         {
-            material.SetColor("_EmissiveColor", Color.black);
+            g.GetComponent<MeshRenderer>().material = material;
+            //material.SetColor("_EmissiveColor", Color.black);
         }
     }
 }
