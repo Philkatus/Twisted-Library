@@ -18,7 +18,7 @@ public class PlayerMovementStateMachine : StateMachine
     public PlayerState playerState;
     public LadderState ladderState;
     [Space]
-    
+
     public float HeightOnLadder = -1;
     public float currentDistance;
     public float sideWaysInput;
@@ -394,7 +394,7 @@ public class PlayerMovementStateMachine : StateMachine
         ladderSizeStateMachine.OnGrow();
 
 
-        if (valuesAsset.useSwinging)
+        if (valuesAsset.useSwinging && closestRail.railType != Rail.RailType.OnWall)
         {
             SetState(new PlayerSwinging(this));
             playerState = PlayerState.swinging;
