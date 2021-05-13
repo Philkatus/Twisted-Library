@@ -63,7 +63,7 @@ public class PlayerSwinging : PlayerSliding
         SnappingOrientation();
         Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
         pSM.snapAction.started += context => AccelerationForce();
-
+        pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
 
         Bob = Pivot.transform.GetChild(1).gameObject;
         Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLength;
@@ -134,7 +134,7 @@ public class PlayerSwinging : PlayerSliding
 
         //die Leiter korrekt rotieren
         currentDistance = pSM.currentDistance;
-       
+
         Vector3 axis = pSM.ladder.right;
         float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition - pSM.ladder.transform.position, axis));
 
@@ -182,7 +182,7 @@ public class PlayerSwinging : PlayerSliding
 
         //Acceleration
         inputForce = Vector3.zero;
-        
+
 
         // set max speed
         currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
@@ -190,7 +190,7 @@ public class PlayerSwinging : PlayerSliding
         //Deceleration 
         // the higher the velocity, the higher the deceleration Factor
         float DecelerationFactor = (currentVelocity.magnitude) / (stats.maxSwingSpeed) * (maxDecelerationFactor - minDecelerationFactor) + minDecelerationFactor;
-        currentVelocity = currentVelocity.normalized * (currentVelocity.magnitude * (1-DecelerationFactor));
+        currentVelocity = currentVelocity.normalized * (currentVelocity.magnitude * (1 - DecelerationFactor));
 
         // Get only the forward/backward force
         playerVelocity = Bob.transform.forward * pSM.resultingSpeed(currentVelocity, Bob.transform.forward);
@@ -323,10 +323,10 @@ public class PlayerSwinging : PlayerSliding
         maxJumpSpeed = maxJumpSpeed * playerHeightOnLadder;
         currentMovement = playerVelocity.normalized * Mathf.Clamp(playerVelocity.magnitude, 0, maxJumpSpeed);
         pSM.playerVelocity = (pSM.resultingVelocity(pSM.playerVelocity, pSM.ladder.right) + currentMovement) / stats.swingingVelocityFactor;
-        
+
     }
 
-    void SnappingOrientation() 
+    void SnappingOrientation()
     {
         #region  Variable assignment
         pSM = PlayerStateMachine;
@@ -342,14 +342,15 @@ public class PlayerSwinging : PlayerSliding
         Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
         #endregion
         #region LadderPlacement
-        ladder.transform.parent = pSM.myParent;
         currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
         ladder.transform.position = startingPoint;
+        ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
+        pSM.currentDistance = currentDistance;
+        ladder.transform.parent = pSM.myParent;
 
         //Ladder Rotation
-        ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
         Vector3 axis = pSM.ladder.right;
-        float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection,pSM.transform.position-startingPoint, axis));
+        float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, pSM.transform.position - startingPoint, axis));
 
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
@@ -370,7 +371,7 @@ public class PlayerSwinging : PlayerSliding
 
         #endregion
         #region Velocity Calculation
-        if (!stats.preservesVelocityOnSnap) 
+        if (!stats.preservesVelocityOnSnap)
         {
             pSM.baseVelocity = pSM.resultingClampedVelocity(pSM.baseVelocity, ladder.transform.forward, stats.maxSwingSpeed);
             pSM.bonusVelocity = pSM.resultingVelocity(pSM.bonusVelocity, ladder.transform.forward);
@@ -385,9 +386,9 @@ public class PlayerSwinging : PlayerSliding
 
     public override IEnumerator Finish()
     {
-       
+
         return base.Finish();
-        
+
     }
     public PlayerSwinging(PlayerMovementStateMachine playerStateMachine)
    : base(playerStateMachine)

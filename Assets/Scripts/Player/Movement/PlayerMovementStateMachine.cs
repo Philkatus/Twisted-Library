@@ -412,7 +412,7 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnResnap()
     {
-        if (valuesAsset.useSwinging)
+        if (valuesAsset.useSwinging && closestRail.railType != Rail.RailType.OnWall)
         {
             SetState(this.State);
             playerState = PlayerState.swinging;
