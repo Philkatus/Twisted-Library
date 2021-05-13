@@ -1,8 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using PathCreation;
-using UnityEngine.InputSystem;
 
 public class PlayerSliding : State
 {
@@ -31,7 +29,7 @@ public class PlayerSliding : State
     protected float ladderLength;
 
     protected VertexPath path;
-    protected Shelf closestRail;
+    protected Rail closestRail;
     protected ValuesScriptableObject stats;
     #endregion
     public override void Initialize()
@@ -134,7 +132,7 @@ public class PlayerSliding : State
 
     public override IEnumerator Finish()
     {
-        
+        pSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
         yield break;
     }
@@ -234,9 +232,9 @@ public class PlayerSliding : State
                                         - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0)); //ende - start
                 }
 
-                Plane shelfPlane = new Plane(endOfShelfDirection.normalized, Vector3.zero);
+                Plane railPlane = new Plane(endOfShelfDirection.normalized, Vector3.zero);
 
-                if (/* pSM.resultingSpeed( pSM.playerVelocity, pathDirection) >0   )*/shelfPlane.GetSide(Vector3.zero + pSM.playerVelocity)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
+                if (/* pSM.resultingSpeed( pSM.playerVelocity, pathDirection) >0   )*/railPlane.GetSide(Vector3.zero + pSM.playerVelocity)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
                 {
                     if (pSM.CheckForNextClosestRail(pSM.closestRail))
                     {
@@ -323,7 +321,7 @@ public class PlayerSliding : State
 
     void Dismount()
     {
-        // 1 is how much units the player needs to move up to be on top of the shelf.
+        // 1 is how much units the player needs to move up to be on top of the rail.
         if ((pSM.transform.position - dismountStartPos).magnitude <= 1 && !dismountedHalfways)
         {
             pSM.HeightOnLadder += stats.ladderDismountSpeed * Time.fixedDeltaTime;
@@ -335,7 +333,7 @@ public class PlayerSliding : State
             dismountedHalfways = true;
         }
 
-        // Make one step forward on the shelf before changing to walking state.
+        // Make one step forward on the rail before changing to walking state.
         if ((pSM.transform.position - dismountStartPos).magnitude <= 0.1f && dismountedHalfways)
         {
             pSM.HeightOnLadder += stats.ladderDismountSpeed * Time.fixedDeltaTime;

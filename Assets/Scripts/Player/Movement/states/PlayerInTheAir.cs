@@ -55,7 +55,7 @@ public class PlayerInTheAir : State
         {
             controller.transform.forward = direction;
         }
-        pSM.playerVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration * values.airMovementFactor;
+        pSM.baseVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration * values.airMovementFactor;
 
         //when wall jump occured, set the isWallJumping to false after 1 sec
         wallJumpingTime += Time.deltaTime;
@@ -67,16 +67,16 @@ public class PlayerInTheAir : State
         if (pSM.forwardInput <= 0.3f && pSM.forwardInput >= -.3f && !pSM.isWallJumping)
         {
             Vector3 currentDragForward = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionForward) / values.airMovementFactor;
-            pSM.playerVelocity -= currentDragForward * Time.fixedDeltaTime;
+            pSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
         }
         if (pSM.sideWaysInput <= 0.3f && pSM.sideWaysInput >= -.3f && !pSM.isWallJumping)
         {
             Vector3 currentDragSideways = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionRight) / values.airMovementFactor;
-            pSM.playerVelocity -= currentDragSideways * Time.fixedDeltaTime;
+            pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
         pSM.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
-        float ClampedVelocityY = Mathf.Clamp(pSM.playerVelocity.y, -values.maxFallingSpeed, Mathf.Infinity);
-        pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
+        float ClampedVelocityY = Mathf.Clamp(pSM.baseVelocity.y, -values.maxFallingSpeed, Mathf.Infinity);
+        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
         pSM.baseVelocity.y = ClampedVelocityY;
 
 
@@ -107,11 +107,12 @@ public class PlayerInTheAir : State
     {
         if (!didRocketJump)
         {
-            //Debug.Log("Rocket");
-            float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig;
-            float jumpheight = values.jumpHeight * 3f;
-            Vector3 origin = PlayerStateMachine.transform.position;
+            Debug.Log("Rocket");
             float sphereRadius = .2f;
+            float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig-sphereRadius;
+            float acceleration = values.rocketJumpAcceleration;
+            Vector3 origin = PlayerStateMachine.transform.position;
+            
 
 
             LayerMask mask = LayerMask.GetMask("Environment");
@@ -149,8 +150,9 @@ public class PlayerInTheAir : State
             {
                 PlayerMovementStateMachine pSM = PlayerStateMachine;
                 pSM.ladderJumpTarget = target;
-                pSM.playerVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized) + (pSM.transform.position - target).normalized * jumpheight;
-                pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
+                pSM.baseVelocity.y = 0;
+                //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
+                pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration ;
                 Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                 didRocketJump = true;
                 pSM.ladderSizeStateMachine.OnRocketJump();
