@@ -18,7 +18,7 @@ public class PlayerMovementStateMachine : StateMachine
     public PlayerState playerState;
     public LadderState ladderState;
     [Space]
-    public float swingingPosition;
+    
     public float HeightOnLadder = -1;
     public float currentDistance;
     public float sideWaysInput;
