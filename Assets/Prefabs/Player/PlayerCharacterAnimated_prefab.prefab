@@ -534,13 +534,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CollideAgainst:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 192
   m_IgnoreTag: Player
   m_TransparentLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_MinimumDistanceFromTarget: 0.1
-  m_AvoidObstacles: 1
+  m_MinimumDistanceFromTarget: 0.22
+  m_AvoidObstacles: 0
   m_DistanceLimit: 0
   m_MinimumOcclusionTime: 0
   m_CameraRadius: 0.1
@@ -959,8 +959,8 @@ MonoBehaviour:
   m_BindingMode: 5
   m_FollowOffset: {x: 0, y: 2.88, z: -11}
   m_XDamping: 1
-  m_YDamping: 1
-  m_ZDamping: 1
+  m_YDamping: 1.41
+  m_ZDamping: 1.41
   m_AngularDampingMode: 0
   m_PitchDamping: 0
   m_YawDamping: 0
@@ -1014,14 +1014,14 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_HorizontalDamping: 0
-  m_VerticalDamping: 0
+  m_HorizontalDamping: 0.4
+  m_VerticalDamping: 0.4
   m_ScreenX: 0.5
   m_ScreenY: 0.5
   m_DeadZoneWidth: 0
   m_DeadZoneHeight: 0
   m_SoftZoneWidth: 0.8
-  m_SoftZoneHeight: 0.8
+  m_SoftZoneHeight: 1.6
   m_BiasX: 0
   m_BiasY: 0
   m_CenterOnActivate: 1
@@ -1489,8 +1489,8 @@ MonoBehaviour:
   m_BindingMode: 5
   m_FollowOffset: {x: 0, y: 2.88, z: -11}
   m_XDamping: 1
-  m_YDamping: 1
-  m_ZDamping: 1
+  m_YDamping: 1.4
+  m_ZDamping: 1.4
   m_AngularDampingMode: 0
   m_PitchDamping: 0
   m_YawDamping: 0
@@ -1544,8 +1544,8 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_HorizontalDamping: 0
-  m_VerticalDamping: 0
+  m_HorizontalDamping: 0.4
+  m_VerticalDamping: 0.4
   m_ScreenX: 0.5
   m_ScreenY: 0.55
   m_DeadZoneWidth: 0
@@ -4694,8 +4694,8 @@ MonoBehaviour:
   m_BindingMode: 5
   m_FollowOffset: {x: 0, y: 2.88, z: -11}
   m_XDamping: 1
-  m_YDamping: 1
-  m_ZDamping: 1
+  m_YDamping: 1.4
+  m_ZDamping: 1.4
   m_AngularDampingMode: 0
   m_PitchDamping: 0
   m_YawDamping: 0
@@ -4749,8 +4749,8 @@ MonoBehaviour:
   m_LookaheadTime: 0
   m_LookaheadSmoothing: 0
   m_LookaheadIgnoreY: 0
-  m_HorizontalDamping: 0
-  m_VerticalDamping: 0
+  m_HorizontalDamping: 0.4
+  m_VerticalDamping: 0.4
   m_ScreenX: 0.5
   m_ScreenY: 0.6
   m_DeadZoneWidth: 0
@@ -7455,7 +7455,6 @@ MonoBehaviour:
   actionAsset: {fileID: -944628639613478452, guid: 0ccf52d866c41c64aa7f832aff443be5, type: 3}
   playerState: 0
   ladderState: 0
-  swingingPosition: 0
   HeightOnLadder: 0
   currentDistance: 0
   sideWaysInput: 0
@@ -7469,7 +7468,6 @@ MonoBehaviour:
   railCheckLadderPosition: {x: 0, y: 0, z: 0}
   isWallJumping: 0
   animationControllerisFoldingJumped: 0
-  possibleRails: []
   closestRail: {fileID: 0}
   ladder: {fileID: 7511473034649444847}
   ladderMesh: {fileID: 315051518992854806}
@@ -7510,6 +7508,7 @@ MonoBehaviour:
     m_SingletonActionBindings: []
   ladderWalkingRotation: {x: 0, y: 0, z: 0, w: 0}
   ladderWalkingPosition: {x: 0, y: 0, z: 0}
+  ladderJumpTarget: {x: 0, y: 0, z: 0}
   myParent: {fileID: 0}
 --- !u!1 &7511473034649444846
 GameObject:

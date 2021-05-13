@@ -83,6 +83,12 @@ public class LadderSizeStateMachine : StateMachine
         }
     }
 
+    public void OnSnap() 
+    {
+        SetState(new LadderUnfold(this));
+        playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderUnfold;
+    }
+
     public void OnRocketJump() 
     {
         SetState(new LadderRocketJump(this));

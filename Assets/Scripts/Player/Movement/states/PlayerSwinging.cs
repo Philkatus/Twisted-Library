@@ -190,13 +190,13 @@ public class PlayerSwinging : PlayerSliding
         //Deceleration 
         // the higher the velocity, the higher the deceleration Factor
         float DecelerationFactor = (currentVelocity.magnitude) / (stats.maxSwingSpeed) * (maxDecelerationFactor - minDecelerationFactor) + minDecelerationFactor;
-        currentVelocity = currentVelocity.normalized * (currentVelocity.magnitude * (1 - DecelerationFactor));
+        currentVelocity = currentVelocity.normalized * (currentVelocity.magnitude * (1-DecelerationFactor));
 
         // Get only the forward/backward force
         playerVelocity = Bob.transform.forward * pSM.resultingSpeed(currentVelocity, Bob.transform.forward);
 
         // pSM.playerVelocity for the Jump
-        //SetCurrentPlayerVelocity(pivot_p);
+        SetCurrentPlayerVelocity(pivot_p);
 
         /*
         //Debug.DrawRays
@@ -323,6 +323,7 @@ public class PlayerSwinging : PlayerSliding
         maxJumpSpeed = maxJumpSpeed * playerHeightOnLadder;
         currentMovement = playerVelocity.normalized * Mathf.Clamp(playerVelocity.magnitude, 0, maxJumpSpeed);
         pSM.playerVelocity = (pSM.resultingVelocity(pSM.playerVelocity, pSM.ladder.right) + currentMovement) / stats.swingingVelocityFactor;
+        
     }
 
     void SnappingOrientation() 
@@ -354,6 +355,10 @@ public class PlayerSwinging : PlayerSliding
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
 
         //LadderLength Calculation
+        pSM.ladderSizeStateMachine.ladderLength = Vector3.Distance(pSM.transform.position, startingPoint);
+        pSM.ladderSizeStateMachine.OnSnap();
+
+
 
         #endregion
         #region PlayerPlacement
