@@ -121,7 +121,7 @@ public class PlayerSwinging : PlayerSliding
                     currentStatePosition = PendulumUpdate(previousStatePosition);
                     break;
                 case Shelf.ShelfType.OnWall:
-                    //currentStatePosition = RepelUpdate(previousStatePosition);
+                    currentStatePosition = RepelUpdate(previousStatePosition);
                     break;
                 case Shelf.ShelfType.FreeHanging:
                     currentStatePosition = PendulumUpdate(previousStatePosition);
@@ -259,7 +259,7 @@ public class PlayerSwinging : PlayerSliding
 
         //Acceleration
         inputForce = Vector3.zero;
-        pSM.snapAction.started += context => RepellingForce();
+        //pSM.snapAction.started += context => RepellingForce();
 
         // set max speed
         currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);

@@ -210,14 +210,6 @@ public class PlayerSliding : State
 
                 pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
 
-                /*
-                float rotateByAngle2 = Vector3.SignedAngle(pSM.ladder.forward, -path.GetNormalAtDistance(pSM.currentDistance), pSM.ladder.up);
-                Debug.Log(rotateByAngle2);
-
-                Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle2, pSM.ladder.up);
-                pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
-                // Debug.Log(pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * values.slidingVelocityFactor + " " + values.slidingVelocityFactor);
-                */
             }
             else
             {
