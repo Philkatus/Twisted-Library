@@ -18,13 +18,14 @@ public class PlayerMovementStateMachine : StateMachine
     public PlayerState playerState;
     public LadderState ladderState;
     [Space]
-    
+
     public float HeightOnLadder = -1;
     public float currentDistance;
     public float sideWaysInput;
     public float forwardInput;
     public float swingingInput;
     public float slidingInput;
+    public float startingSlidingInput;
     public bool isPerformedFold;
     public bool dismounting;
 
@@ -54,6 +55,10 @@ public class PlayerMovementStateMachine : StateMachine
     public CharacterController controller;
     public AnimationStateController animController;
     [HideInInspector] public InputAction slideAction;
+    [HideInInspector] public InputAction slideLeftAction;
+    [HideInInspector] public InputAction slideRightAction;
+    [HideInInspector] public InputAction slideHoldLeftAction;
+    [HideInInspector] public InputAction slideHoldRightAction;
     [HideInInspector] public InputAction swingAction;
     [HideInInspector] public InputAction snapAction;
     [HideInInspector] public InputAction stopSlidingAction;
@@ -89,12 +94,29 @@ public class PlayerMovementStateMachine : StateMachine
 
         SetState(new PlayerWalking(this));
         #region controls
-        playerControlsMap = actionAsset.FindActionMap("PlayerControls");
+        if (valuesAsset.useNewSliding)
+        {
+            playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
+            slideLeftAction = playerControlsMap.FindAction("SlideLeft");
+            slideRightAction = playerControlsMap.FindAction("SlideRight");
+            slideHoldLeftAction = playerControlsMap.FindAction("SlideHoldLeft");
+            slideHoldRightAction = playerControlsMap.FindAction("SlideHoldRight");
+            slideHoldLeftAction.performed += context => slidingInput = -1;
+            slideHoldRightAction.performed += context => slidingInput = +1;
+            slideHoldLeftAction.started += context => startingSlidingInput = -1;
+            slideHoldRightAction.started += context => startingSlidingInput = +1;
+            slideRightAction.canceled += context => startingSlidingInput = 0;
+            slideLeftAction.canceled += context => startingSlidingInput = 0;
+        }
+        else
+        {
+            playerControlsMap = actionAsset.FindActionMap("PlayerControls");
+            slideAction = playerControlsMap.FindAction("Slide");
+        }
         playerControlsMap.Enable();
         jumpAction = playerControlsMap.FindAction("Jump");
         moveAction = playerControlsMap.FindAction("Movement");
         snapAction = playerControlsMap.FindAction("Snap");
-        slideAction = playerControlsMap.FindAction("Slide");
         swingAction = playerControlsMap.FindAction("Swing");
         foldAction = playerControlsMap.FindAction("Fold");
         stopSlidingAction = playerControlsMap.FindAction("StopSliding");
@@ -140,8 +162,11 @@ public class PlayerMovementStateMachine : StateMachine
     {
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
-        slidingInput = slideAction.ReadValue<float>();
         swingingInput = swingAction.ReadValue<float>();
+        if (!valuesAsset.useNewSliding)
+        {
+            slidingInput = slideAction.ReadValue<float>();
+        }
 
     }
 
@@ -369,7 +394,7 @@ public class PlayerMovementStateMachine : StateMachine
         ladderSizeStateMachine.OnGrow();
 
 
-        if (valuesAsset.useSwinging)
+        if (valuesAsset.useSwinging && closestRail.railType != Rail.RailType.OnWall)
         {
             SetState(new PlayerSwinging(this));
             playerState = PlayerState.swinging;
@@ -387,7 +412,7 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnResnap()
     {
-        if (valuesAsset.useSwinging)
+        if (valuesAsset.useSwinging && closestRail.railType != Rail.RailType.OnWall)
         {
             SetState(this.State);
             playerState = PlayerState.swinging;

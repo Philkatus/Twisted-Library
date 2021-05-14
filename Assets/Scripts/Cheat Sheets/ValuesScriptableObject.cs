@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/ValuesScriptableObject", order = 1)]
@@ -15,7 +16,7 @@ public class ValuesScriptableObject : ScriptableObject
     [Header("Movement/Walking")]
     [Tooltip("How fast the player accelerates to maximum speed while walking.")]
     public float movementAcceleration;
-    
+
     [Tooltip("How fast the player can move while walking and in the air at max.")]
     public float maximumMovementSpeed;
 
@@ -82,6 +83,21 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("If true the player preserves their velocity on snap.")]
     public bool preservesVelocityOnSnap = false;
+
+    [Space]
+    [Header("New Sliding")]
+    [Tooltip("Temporary bool which enables the new sliding code.")]
+    public bool useNewSliding;
+
+    [Tooltip("The sliding speed for each speed level.")]
+    public List<float> speedLevels;
+
+    [Tooltip("The time needed for the player to slow down and start sliding in the opposite direction.")]
+    public float timeToSwitchDirection;
+
+    [Tooltip("The time players need to wait before accelerating again.")]
+    public float accelerationCooldown;
+
     #endregion
     [Space]
     #region swinging
