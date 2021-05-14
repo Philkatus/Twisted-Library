@@ -36,7 +36,7 @@ public class UILogic : MonoBehaviour
 
         if (controlsActive)
         {
-            Debug.LogError("jdjd");
+            //Debug.LogError("jdjd");
             playerControlsMap.Enable();
             Cursor.lockState = CursorLockMode.Locked;
             playerControlsMap.Enable();
@@ -46,7 +46,7 @@ public class UILogic : MonoBehaviour
         else
         {
             UIControlsMap.Enable();
-            Debug.LogError("ffff");
+            //Debug.LogError("ffff");
             Cursor.lockState = CursorLockMode.None;
             playerControlsMap.Disable();
             controls.SetActive(true);
