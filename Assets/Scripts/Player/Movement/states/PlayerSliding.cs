@@ -143,7 +143,8 @@ public class PlayerSliding : State
         if (ladderSizeState.isFoldingUp)
         {
             //PlayerStateMachine.baseVelocity.y += Mathf.Clamp((pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y), 0, 1f) * ladderSizeState.foldJumpMultiplier;
-            PlayerStateMachine.baseVelocity += pSM.ladderDirection * Mathf.Clamp((pSM.transform.position - ladderSizeState.startFoldingUpPos).magnitude + 1, 1, 2.5f) * ladderSizeState.foldJumpMultiplier;
+            PlayerStateMachine.baseVelocity += Vector3.up * 2.5f * ladderSizeState.foldJumpMultiplier;
+            Debug.Log("fold jump: " + Vector3.up * 2.5f * ladderSizeState.foldJumpMultiplier);
             //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) );
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = true;
@@ -471,7 +472,6 @@ public class PlayerSliding : State
             dismountTimer += Time.fixedDeltaTime;
             RaycastHit hit;
             Vector3 boxExtents = new Vector3(1.540491f * 0.5f, 0.4483852f * 0.5f, 1.37359f * 0.5f);
-
             if (dismountTimer >= stats.ladderDismountTimer
             && !Physics.BoxCast(controller.transform.position + Vector3.up * 1.5f + controller.transform.forward * -1, boxExtents,
             controller.transform.forward, out hit, controller.transform.rotation, 4f, LayerMask.GetMask("SlidingObstacle", "Environment")))
@@ -486,13 +486,13 @@ public class PlayerSliding : State
         }
         else if (pSM.HeightOnLadder == -1 && pSM.forwardInput < 0)
         {
-            dismountTimer += Time.fixedDeltaTime;
-            if (dismountTimer >= stats.ladderDismountTimer)
-            {
-                dismountTimer = 0;
-                controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
-                PlayerStateMachine.OnLadderBottom();
-            }
+            // dismountTimer += Time.fixedDeltaTime;
+            // if (dismountTimer >= stats.ladderDismountTimer)
+            // {
+            //     dismountTimer = 0;
+            //     controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
+            //     PlayerStateMachine.OnLadderBottom();
+            // }
         }
         else if (dismountTimer != 0)
         {
