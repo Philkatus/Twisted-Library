@@ -90,7 +90,6 @@ public class AnimationStateController : MonoBehaviour
         ForwardInputHash = Animator.StringToHash("ForwardInput");
         SlideInputHash = Animator.StringToHash("SlideInput");
 
-        Cursor.lockState = CursorLockMode.Locked;
 
         rigBuilder = GetComponent<RigBuilder>();
 
@@ -249,11 +248,13 @@ public class AnimationStateController : MonoBehaviour
             canLand = true;
              
         }
+        /*
         if (airTimer >= timeForRoll)
         {
             canRoll = true;
             canLand = false;
         }
+        */
         if(airTimer >= timeForHardLanding)
         {
             canHardLand = true;
@@ -273,6 +274,7 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isLanding", false);
         }
+        /*
         if (canRoll && controller.isGrounded)
         {
             animator.SetBool("isRolling", true);
@@ -283,7 +285,20 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isRolling", false);
         }
-        if(canHardLand && controller.isGrounded)
+        */
+        //Rolling after fall if Input != 0
+        if (canHardLand && controller.isGrounded && forwardAmount > 0.1)
+        {
+            animator.SetBool("isRolling", true);
+            canHardLand = false;
+            audioManager.Play("LandingAfterJump");
+        }
+        else
+        {
+            animator.SetBool("isRolling", false);
+        }
+        //HardImpact after fall if Input == 0
+        if (canHardLand && controller.isGrounded && forwardAmount < 0.1)
         {
             animator.SetBool("isHardLanding", true);
             canHardLand = false;
