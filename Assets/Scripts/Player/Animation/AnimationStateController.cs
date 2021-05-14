@@ -288,11 +288,19 @@ public class AnimationStateController : MonoBehaviour
             animator.SetBool("isHardLanding", true);
             canHardLand = false;
             audioManager.Play("LandingAfterFall");
+            playerControlsMap.Disable();
+            StartCoroutine(ImpactInput());
         }
         else
         {
             animator.SetBool("isHardLanding", false);
         }
+    }
+
+    IEnumerator ImpactInput()
+    {
+        yield return new WaitForSeconds(1);
+        playerControlsMap.Enable();
     }
 
     void Falling()
