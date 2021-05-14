@@ -19,11 +19,10 @@ public class PlayerWalking : State
     {
         controller = PlayerStateMachine.controller;
         controller.transform.parent = PlayerStateMachine.myParent;
-        PlayerStateMachine.ladder.transform.parent = controller.transform;
+        PlayerStateMachine.ladder.transform.parent = PlayerStateMachine.animController.spine;
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
 
-        PlayerStateMachine.playerVelocity.y = -1f;
         values = PlayerStateMachine.valuesAsset;
     }
 
@@ -48,29 +47,29 @@ public class PlayerWalking : State
             controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
         }
 
-        pSM.playerVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration;
+        pSM.baseVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration;
         #region apply drag when no input is applied
         if (pSM.forwardInput == 0)
         {
-            Vector3 currentDragForward = values.movementDrag * pSM.resultingVelocity(pSM.playerVelocity, directionForward);
-            pSM.playerVelocity -= currentDragForward * Time.fixedDeltaTime;
+            Vector3 currentDragForward = values.movementDrag * pSM.resultingVelocity(pSM.baseVelocity, directionForward);
+            pSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
 
         }
         if (pSM.sideWaysInput == 0)
         {
-            Vector3 currentDragSideways = values.movementDrag * pSM.resultingVelocity(pSM.playerVelocity, directionRight);
-            pSM.playerVelocity -= currentDragSideways * Time.fixedDeltaTime;
+            Vector3 currentDragSideways = values.movementDrag * pSM.resultingVelocity(pSM.baseVelocity, directionRight);
+            pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
         #endregion
 
         #region rounding the play velocity down if close to 0
-        if (pSM.playerVelocity.x >= -.1f && pSM.playerVelocity.x <= .1f)
+        if (pSM.baseVelocity.x >= -.1f && pSM.baseVelocity.x <= .1f)
         {
-            pSM.playerVelocity.x = 0;
+            pSM.baseVelocity.x = 0;
         }
-        if (pSM.playerVelocity.z >= -.1f && pSM.playerVelocity.z <= .1f)
+        if (pSM.baseVelocity.z >= -.1f && pSM.baseVelocity.z <= .1f)
         {
-            pSM.playerVelocity.z = 0;
+            pSM.baseVelocity.z = 0;
         }
 
         #endregion
@@ -81,9 +80,9 @@ public class PlayerWalking : State
         */
 
 
-        PlayerStateMachine.playerVelocity.y -= values.gravity * Time.fixedDeltaTime;
-        pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, Vector3.down, values.maxFallingSpeed);
-        pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
+        PlayerStateMachine.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
+        pSM.baseVelocity = pSM.ClampPlayerVelocity(pSM.baseVelocity, Vector3.down, values.maxFallingSpeed);
+        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, values.maximumMovementSpeed);
         controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * values.movementVelocityFactor);
 
         if (isGroundedWithCoyoteTime())
@@ -108,9 +107,7 @@ public class PlayerWalking : State
 
     public override void Jump()
     {
-        PlayerStateMachine.playerVelocity.y = values.jumpHeight;
-
-
+        PlayerStateMachine.baseVelocity.y = values.jumpHeight;
         PlayerStateMachine.OnFall();
     }
 

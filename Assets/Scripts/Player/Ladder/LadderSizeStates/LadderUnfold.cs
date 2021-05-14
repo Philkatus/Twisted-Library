@@ -19,7 +19,7 @@ public class LadderUnfold : State
     public override void Initialize()
     {
         pSM = PlayerStateMachine;
-        time = 0;
+        time = LadderSizeStateMachine.ladderLength/LadderSizeStateMachine.ladderLengthBig *LadderSizeStateMachine.foldSpeed;
         isLerpGoing = true;
     }
 

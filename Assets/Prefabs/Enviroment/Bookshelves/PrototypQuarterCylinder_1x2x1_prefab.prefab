@@ -640,7 +640,7 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
+  m_SelectedEditorRenderState: 2
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -682,6 +682,7 @@ GameObject:
   - component: {fileID: 8255689730702355699}
   - component: {fileID: 5345517367654682135}
   - component: {fileID: 4403910634605628167}
+  - component: {fileID: 755659797044648908}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -752,6 +753,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &755659797044648908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6803605682986182636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  g: {fileID: 0}
+  material: {fileID: 0}
+  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &7804155847839227010
 GameObject:
   m_ObjectHideFlags: 0
@@ -812,7 +828,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 1880956534089381555}
-  shelfType: 1
+  railType: 1
   maxSwingingAngle: 0
 --- !u!114 &1880956534089381555
 MonoBehaviour:

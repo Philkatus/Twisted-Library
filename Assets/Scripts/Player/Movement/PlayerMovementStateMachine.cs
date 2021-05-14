@@ -12,40 +12,59 @@ public class PlayerMovementStateMachine : StateMachine
     [Tooltip("Change to use different variable value sets. Found in Assets-> Scripts-> Cheat Sheets.")]
     public ValuesScriptableObject valuesAsset;
     public InputActionAsset actionAsset;
+
     [Space]
     [Header("For reference")]
     public PlayerState playerState;
     public LadderState ladderState;
     [Space]
-    public float swingingPosition;
+
     public float HeightOnLadder = -1;
     public float currentDistance;
     public float sideWaysInput;
     public float forwardInput;
     public float swingingInput;
     public float slidingInput;
+    public float startingSlidingInput;
     public bool isPerformedFold;
     public bool dismounting;
 
-    public Vector3 playerVelocity;
+    public Vector3 baseVelocity;
+    public Vector3 bonusVelocity;
+    public Vector3 playerVelocity
+    {
+        get
+        {
+            return baseVelocity + bonusVelocity;
+        }
+        set
+        {
+            baseVelocity = value;
+        }
+
+    }
     public Vector3 railCheckLadderPosition;
 
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
 
-    public List<Shelf> possibleRails;
-    public Shelf closestRail;
+    public Rail closestRail;
     public Transform ladder;
     public Transform ladderMesh;
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
+    public AnimationStateController animController;
     [HideInInspector] public InputAction slideAction;
+    [HideInInspector] public InputAction slideLeftAction;
+    [HideInInspector] public InputAction slideRightAction;
+    [HideInInspector] public InputAction slideHoldLeftAction;
+    [HideInInspector] public InputAction slideHoldRightAction;
     [HideInInspector] public InputAction swingAction;
     [HideInInspector] public InputAction snapAction;
     [HideInInspector] public InputAction stopSlidingAction;
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
-    [HideInInspector]
+    [HideInInspector] public Vector3 ladderJumpTarget;
     public Vector3 ladderDirection
     {
         get
@@ -57,36 +76,47 @@ public class PlayerMovementStateMachine : StateMachine
     #endregion
 
     #region Private
+    float railCheckTimer;
+    RailSearchManager railAllocator;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
-    
+
     InputAction foldAction;
     #endregion
 
     private void Start()
     {
         myParent = transform.parent;
-
+        railAllocator = RailSearchManager.instance;
         ladderWalkingPosition = ladder.localPosition;
         ladderWalkingRotation = ladder.localRotation;
 
         SetState(new PlayerWalking(this));
-        possibleRails = new List<Shelf>();
-        
-        Shelf[] allRails = GameObject.FindObjectsOfType<Shelf>();
-        foreach (Shelf rail in allRails)
-        {
-            possibleRails.Add(rail);
-        }
-        
         #region controls
-        playerControlsMap = actionAsset.FindActionMap("PlayerControls");
+        if (valuesAsset.useNewSliding)
+        {
+            playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
+            slideLeftAction = playerControlsMap.FindAction("SlideLeft");
+            slideRightAction = playerControlsMap.FindAction("SlideRight");
+            slideHoldLeftAction = playerControlsMap.FindAction("SlideHoldLeft");
+            slideHoldRightAction = playerControlsMap.FindAction("SlideHoldRight");
+            slideHoldLeftAction.performed += context => slidingInput = -1;
+            slideHoldRightAction.performed += context => slidingInput = +1;
+            slideHoldLeftAction.started += context => startingSlidingInput = -1;
+            slideHoldRightAction.started += context => startingSlidingInput = +1;
+            slideRightAction.canceled += context => startingSlidingInput = 0;
+            slideLeftAction.canceled += context => startingSlidingInput = 0;
+        }
+        else
+        {
+            playerControlsMap = actionAsset.FindActionMap("PlayerControls");
+            slideAction = playerControlsMap.FindAction("Slide");
+        }
         playerControlsMap.Enable();
         jumpAction = playerControlsMap.FindAction("Jump");
         moveAction = playerControlsMap.FindAction("Movement");
         snapAction = playerControlsMap.FindAction("Snap");
-        slideAction = playerControlsMap.FindAction("Slide");
         swingAction = playerControlsMap.FindAction("Swing");
         foldAction = playerControlsMap.FindAction("Fold");
         stopSlidingAction = playerControlsMap.FindAction("StopSliding");
@@ -94,29 +124,37 @@ public class PlayerMovementStateMachine : StateMachine
         jumpAction.performed += context => State.Jump();
         snapAction.performed += context => TryToSnapToShelf();
         foldAction.performed += context => ladderSizeStateMachine.OnFold();
+        foldAction.performed += context => State.RocketJump();
         #endregion
     }
 
     private void Update()
     {
-       
+        railCheckTimer += Time.deltaTime;
+        if (railCheckTimer >= 0.1f)
+        {
+            CheckForRail();
+            railCheckTimer = 0;
+        }
     }
 
     private void FixedUpdate()
     {
         GetInput();
+        looseBonusVelocity();
         State.Movement();
         Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
+        Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
     }
 
     public void TryToSnapToShelf()
     {
-        
+
         if (CheckForRail())
         {
             State.Snap();
         }
-        
+
     }
 
     #region utility
@@ -124,9 +162,21 @@ public class PlayerMovementStateMachine : StateMachine
     {
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
-        slidingInput = slideAction.ReadValue<float>();
         swingingInput = swingAction.ReadValue<float>();
+        if (!valuesAsset.useNewSliding)
+        {
+            slidingInput = slideAction.ReadValue<float>();
+        }
 
+    }
+
+    public void looseBonusVelocity()
+    {
+        bonusVelocity -= bonusVelocity.normalized * valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime;
+        if (bonusVelocity.magnitude <= valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime)
+        {
+            bonusVelocity = Vector3.zero;
+        }
     }
 
     ///<summary>
@@ -146,7 +196,10 @@ public class PlayerMovementStateMachine : StateMachine
         {
             railCheckLadderPosition = controller.transform.position;
         }
-       
+
+        railAllocator.CheackForRailsInRange(controller.transform);
+        var possibleRails = railAllocator.railsInRange;
+
         if (possibleRails.Count == 0)
         {
             return false;
@@ -156,17 +209,28 @@ public class PlayerMovementStateMachine : StateMachine
             float closestDistance = valuesAsset.snappingDistance;
             for (int i = 0; i < possibleRails.Count; i++)
             {
-                
                 float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
-                
+
                 if (distance < closestDistance)
                 {
-                    
                     closestRail = possibleRails[i];
+                    if (playerState != PlayerState.sliding)
+                    {
+                        railAllocator.currentRailVisual = closestRail;
+                    }
+                    else
+                    {
+                        railAllocator.currentRailVisual = null;
+                    }
                     closestDistance = distance;
                 }
             }
-            if (closestRail!=null)
+            if (closestDistance >= valuesAsset.snappingDistance)
+            {
+                closestRail = null;
+                railAllocator.currentRailVisual = null;
+            }
+            if (closestRail != null)
             {
                 return true;
             }
@@ -180,9 +244,11 @@ public class PlayerMovementStateMachine : StateMachine
     ///<summary>
     /// A function to determine the closest rail to the player that ignores the current rail. Return false if none are in range.
     ///</summary>
-    public bool CheckForNextClosestRail(Shelf currentClosestRail)
+    public bool CheckForNextClosestRail(Rail currentClosestRail)
     {
         railCheckLadderPosition = ladder.transform.position;
+        railAllocator.CheackForRailsInRange(controller.transform);
+        var possibleRails = railAllocator.railsInRange;
 
         if (possibleRails.Count == 1)
         {
@@ -195,7 +261,7 @@ public class PlayerMovementStateMachine : StateMachine
             Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
 
             float closestDistance = valuesAsset.slidingSnappingDistance;
-            Shelf nextClosestShelf = null;
+            Rail nextClosestShelf = null;
 
             for (int i = 0; i < possibleRails.Count; i++)
             {
@@ -321,14 +387,14 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
     ///<summary>
-    /// Gets called when the player snaps his ladder to a shelf.
+    /// Gets called when the player snaps his ladder to a rail.
     ///</summary>
     public void OnSnap()
     {
         ladderSizeStateMachine.OnGrow();
 
 
-        if (valuesAsset.useSwinging)
+        if (valuesAsset.useSwinging && closestRail.railType != Rail.RailType.OnWall)
         {
             SetState(new PlayerSwinging(this));
             playerState = PlayerState.swinging;
@@ -346,7 +412,7 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnResnap()
     {
-        if (valuesAsset.useSwinging)
+        if (valuesAsset.useSwinging && closestRail.railType != Rail.RailType.OnWall)
         {
             SetState(this.State);
             playerState = PlayerState.swinging;
@@ -385,7 +451,8 @@ public class PlayerMovementStateMachine : StateMachine
         LadderBig,
         LadderSmall,
         LadderFold,
-        LadderUnfold
+        LadderUnfold,
+        LadderRocketJump
 
     };
 }

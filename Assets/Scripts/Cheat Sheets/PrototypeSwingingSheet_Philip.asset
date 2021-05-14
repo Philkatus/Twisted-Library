@@ -12,11 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f06406a2f87f5a64781d8f07d19cd6c6, type: 3}
   m_Name: PrototypeSwingingSheet_Philip
   m_EditorClassIdentifier: 
+  bonusVelocityDrag: 1
   movementAcceleration: 500
   maximumMovementSpeed: 10
   movementDrag: 10
   movementVelocityFactor: 1
   jumpHeight: 12
+  rocketJumpAcceleration: 30
   wallJump: {x: 0, y: 0, z: 0}
   airMovementFactor: 0.8
   jumpingDrag: 0.2
@@ -34,13 +36,13 @@ MonoBehaviour:
   ladderDismountTimer: 0.5
   slidingVelocityFactor: 1
   preservesVelocityOnSnap: 0
-  useSwinging: 0
+  useSwinging: 1
   swingingAcceleration: 3100
-  minSwingingDeceleration: 0.009
-  maxSwingingDeceleration: 0.03
+  minSwingingDeceleration: 0.7
+  maxSwingingDeceleration: 0.9
   minHangingDeceleration: 0.002
   maxHangingDeceleration: 0.07
-  hangingAccelerationFactor: 0.7
+  hangingAccelerationFactor: 0.603
   maxPushAngle: -0.01
   maxSwingSpeed: 45
   swingingGravity: 120

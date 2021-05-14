@@ -1,8 +1,17 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/ValuesScriptableObject", order = 1)]
 public class ValuesScriptableObject : ScriptableObject
 {
+    #region general
+    [Header("General")]
+    [Tooltip("How fast the bonusvelocity is lost again")]
+    public float bonusVelocityDrag;
+
+    #endregion
+
+    [Space]
     #region movement and walking
     [Header("Movement/Walking")]
     [Tooltip("How fast the player accelerates to maximum speed while walking.")]
@@ -23,6 +32,10 @@ public class ValuesScriptableObject : ScriptableObject
     [Header("Jumping/Air Movement")]
     [Tooltip("How high the player jumps.")]
     public float jumpHeight;
+
+    [Tooltip("How fast the player accelerates with the rocketJump.")]
+    public float rocketJumpAcceleration;
+
     [Tooltip("Direction of the jump when facing the wall.")]
     public Vector3 wallJump;
 
@@ -38,6 +51,7 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("The factor to convert Velocity into air-Movementspeed")]
     public float jumpVelocityFactor = 1;
+
     #endregion
     [Space]
     #region Sliding
@@ -69,6 +83,21 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("If true the player preserves their velocity on snap.")]
     public bool preservesVelocityOnSnap = false;
+
+    [Space]
+    [Header("New Sliding")]
+    [Tooltip("Temporary bool which enables the new sliding code.")]
+    public bool useNewSliding;
+
+    [Tooltip("The sliding speed for each speed level.")]
+    public List<float> speedLevels;
+
+    [Tooltip("The time needed for the player to slow down and start sliding in the opposite direction.")]
+    public float timeToSwitchDirection;
+
+    [Tooltip("The time players need to wait before accelerating again.")]
+    public float accelerationCooldown;
+
     #endregion
     [Space]
     #region swinging

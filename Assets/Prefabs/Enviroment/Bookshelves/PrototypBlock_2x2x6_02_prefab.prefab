@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 4410527564164568027}
   - component: {fileID: 1018772220777413182}
   - component: {fileID: 8169643305126143345}
+  - component: {fileID: 8890659218725781239}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -115,6 +116,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8890659218725781239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 595351713926690555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  g: {fileID: 0}
+  material: {fileID: 0}
+  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &867876732177823960
 GameObject:
   m_ObjectHideFlags: 0
@@ -126,6 +142,7 @@ GameObject:
   - component: {fileID: 6476339033129790005}
   - component: {fileID: 5540897761299875732}
   - component: {fileID: 8256468799905604037}
+  - component: {fileID: 8943064597736771461}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -196,6 +213,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &8943064597736771461
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 867876732177823960}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  g: {fileID: 0}
+  material: {fileID: 0}
+  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &1004903972778427492
 GameObject:
   m_ObjectHideFlags: 0
@@ -296,7 +328,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 2586789953441340093}
-  shelfType: 2
+  railType: 2
   maxSwingingAngle: 80
 --- !u!65 &1446718641879517373
 BoxCollider:
@@ -322,6 +354,7 @@ GameObject:
   - component: {fileID: 6392509758374036874}
   - component: {fileID: 8402936373343681698}
   - component: {fileID: 940550566414824447}
+  - component: {fileID: 142559367328785909}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -392,6 +425,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &142559367328785909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1373471381611133236}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  g: {fileID: 0}
+  material: {fileID: 0}
+  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &2004042924839575009
 GameObject:
   m_ObjectHideFlags: 0
@@ -436,6 +484,7 @@ GameObject:
   - component: {fileID: 7026002326227230845}
   - component: {fileID: 6558952144819432561}
   - component: {fileID: 2934480464348828174}
+  - component: {fileID: 3557856536821691973}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -506,6 +555,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3557856536821691973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021946113010047984}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  g: {fileID: 0}
+  material: {fileID: 0}
+  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &2622632086189199680
 GameObject:
   m_ObjectHideFlags: 0
@@ -606,7 +670,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 5685965787083867469}
-  shelfType: 1
+  railType: 1
   maxSwingingAngle: 0
 --- !u!65 &5207297156866547143
 BoxCollider:
@@ -632,6 +696,7 @@ GameObject:
   - component: {fileID: 3156711284916875616}
   - component: {fileID: 1707029831549014450}
   - component: {fileID: 7446999145780445821}
+  - component: {fileID: 3648928014443114398}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -702,6 +767,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3648928014443114398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2807280307603302840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  g: {fileID: 0}
+  material: {fileID: 0}
+  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &3610817753983780682
 GameObject:
   m_ObjectHideFlags: 0
@@ -984,7 +1064,7 @@ MeshRenderer:
   m_IgnoreNormalsForChartDetection: 0
   m_ImportantGI: 0
   m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 3
+  m_SelectedEditorRenderState: 2
   m_MinimumChartSize: 4
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
@@ -1115,7 +1195,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 3637505276553587387}
-  shelfType: 2
+  railType: 2
   maxSwingingAngle: 80
 --- !u!65 &3526479162729195146
 BoxCollider:
@@ -1243,7 +1323,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 3053119886794133916}
-  shelfType: 1
+  railType: 1
   maxSwingingAngle: 0
 --- !u!1 &6424116012364463421
 GameObject:
@@ -1345,7 +1425,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 3959062882117641218}
-  shelfType: 1
+  railType: 1
   maxSwingingAngle: 0
 --- !u!65 &6834133159546952564
 BoxCollider:
@@ -1473,7 +1553,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 2157677778573008127}
-  shelfType: 2
+  railType: 2
   maxSwingingAngle: 80
 --- !u!1 &6601373060020092258
 GameObject:
@@ -1486,6 +1566,7 @@ GameObject:
   - component: {fileID: 8997630068250853454}
   - component: {fileID: 5371412161072007227}
   - component: {fileID: 1670573141227619251}
+  - component: {fileID: 6230237871422456849}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -1556,6 +1637,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &6230237871422456849
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6601373060020092258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  g: {fileID: 0}
+  material: {fileID: 0}
+  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &7656700464226096152
 GameObject:
   m_ObjectHideFlags: 0
@@ -1601,6 +1697,7 @@ GameObject:
   - component: {fileID: 7238004414447642823}
   - component: {fileID: 2849834724695135111}
   - component: {fileID: 7197556351816829174}
+  - component: {fileID: 1254381703343895782}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -1671,6 +1768,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1254381703343895782
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7678978362519191029}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  g: {fileID: 0}
+  material: {fileID: 0}
+  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &8056570975181391908
 GameObject:
   m_ObjectHideFlags: 0
@@ -1682,6 +1794,7 @@ GameObject:
   - component: {fileID: 9204455138593049701}
   - component: {fileID: 8938398944332827702}
   - component: {fileID: 7553412431990562125}
+  - component: {fileID: 1824326440258975767}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -1752,6 +1865,21 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &1824326440258975767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8056570975181391908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  g: {fileID: 0}
+  material: {fileID: 0}
+  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &8280366161077266865
 GameObject:
   m_ObjectHideFlags: 0
@@ -1865,7 +1993,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 8067650185402585143}
-  shelfType: 2
+  railType: 2
   maxSwingingAngle: 80
 --- !u!1 &9012713699799070033
 GameObject:
@@ -1980,5 +2108,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 4414940734052041203}
-  shelfType: 1
+  railType: 1
   maxSwingingAngle: 0

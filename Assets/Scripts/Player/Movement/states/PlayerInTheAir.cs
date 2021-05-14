@@ -8,23 +8,29 @@ public class PlayerInTheAir : State
     ValuesScriptableObject values;
 
     float wallJumpingTime;
+    bool didRocketJump = false;
+
+
+
 
     public PlayerInTheAir(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
-
+        
     }
 
     public override void Initialize()
     {
         controller = PlayerStateMachine.controller;
         controller.transform.parent = PlayerStateMachine.myParent;
-        PlayerStateMachine.ladder.transform.parent = controller.transform;
+        PlayerStateMachine.ladder.transform.parent = PlayerStateMachine.animController.spine;
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
+        
+
 
         values = PlayerStateMachine.valuesAsset;
         controller = PlayerStateMachine.controller;
-        PlayerStateMachine.playerVelocity.y = Mathf.Clamp(PlayerStateMachine.playerVelocity.y, 0, Mathf.Infinity);
+        PlayerStateMachine.baseVelocity.y = Mathf.Clamp(PlayerStateMachine.playerVelocity.y, 0, Mathf.Infinity);
 
         wallJumpingTime = 0;
     }
@@ -49,7 +55,7 @@ public class PlayerInTheAir : State
         {
             controller.transform.forward = direction;
         }
-        pSM.playerVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration * values.airMovementFactor;
+        pSM.baseVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration * values.airMovementFactor;
 
         //when wall jump occured, set the isWallJumping to false after 1 sec
         wallJumpingTime += Time.deltaTime;
@@ -61,17 +67,17 @@ public class PlayerInTheAir : State
         if (pSM.forwardInput <= 0.3f && pSM.forwardInput >= -.3f && !pSM.isWallJumping)
         {
             Vector3 currentDragForward = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionForward) / values.airMovementFactor;
-            pSM.playerVelocity -= currentDragForward * Time.fixedDeltaTime;
+            pSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
         }
         if (pSM.sideWaysInput <= 0.3f && pSM.sideWaysInput >= -.3f && !pSM.isWallJumping)
         {
             Vector3 currentDragSideways = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionRight) / values.airMovementFactor;
-            pSM.playerVelocity -= currentDragSideways * Time.fixedDeltaTime;
+            pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
-        pSM.playerVelocity.y -= values.gravity * Time.fixedDeltaTime;
-        float ClampedVelocityY = Mathf.Clamp(pSM.playerVelocity.y, -values.maxFallingSpeed, Mathf.Infinity);
-        pSM.playerVelocity = pSM.playerVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
-        pSM.playerVelocity.y = ClampedVelocityY;
+        pSM.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
+        float ClampedVelocityY = Mathf.Clamp(pSM.baseVelocity.y, -values.maxFallingSpeed, Mathf.Infinity);
+        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
+        pSM.baseVelocity.y = ClampedVelocityY;
 
 
         controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * values.jumpVelocityFactor);
@@ -94,6 +100,67 @@ public class PlayerInTheAir : State
     public override void Snap()
     {
         PlayerStateMachine.OnSnap();
+
+    }
+
+    public override void RocketJump()
+    {
+        if (!didRocketJump)
+        {
+            Debug.Log("Rocket");
+            float sphereRadius = .2f;
+            float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig-sphereRadius;
+            float acceleration = values.rocketJumpAcceleration;
+            Vector3 origin = PlayerStateMachine.transform.position;
+            
+
+
+            LayerMask mask = LayerMask.GetMask("Environment");
+
+            List<RaycastHit> hits = new List<RaycastHit>();
+            Ray ray = new Ray(origin, Vector3.down);
+            //hits.AddRange( Physics.SphereCastAll(ray, MaxHeight, 1, mask));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.forward, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.back, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.right, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.left, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+
+
+            float closestDistance = Mathf.Infinity;
+            RaycastHit closestHit;
+            Vector3 target = Vector3.zero;
+
+            for (int i = 0; i < hits.Count; i++)
+            {
+
+                float distance = hits[i].distance;
+                if (distance < closestDistance)
+                {
+
+                    closestHit = hits[i];
+                    closestDistance = distance;
+                    target = closestHit.point;
+
+                }
+
+            }
+
+            if (target != Vector3.zero)
+            {
+                PlayerMovementStateMachine pSM = PlayerStateMachine;
+                pSM.ladderJumpTarget = target;
+                pSM.baseVelocity.y = 0;
+                //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
+                pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration ;
+                Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
+                didRocketJump = true;
+                pSM.ladderSizeStateMachine.OnRocketJump();
+            }
+
+
+        }
+
 
     }
 }
