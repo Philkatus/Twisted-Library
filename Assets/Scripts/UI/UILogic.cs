@@ -39,6 +39,7 @@ public class UILogic : MonoBehaviour
             Debug.LogError("jdjd");
             playerControlsMap.Enable();
             Cursor.lockState = CursorLockMode.Locked;
+            playerControlsMap.Enable();
             controls.SetActive(false);
             controlsActive = false;
         }
@@ -47,6 +48,7 @@ public class UILogic : MonoBehaviour
             UIControlsMap.Enable();
             Debug.LogError("ffff");
             Cursor.lockState = CursorLockMode.None;
+            playerControlsMap.Disable();
             controls.SetActive(true);
             controlsActive = true;
         }
@@ -56,6 +58,7 @@ public class UILogic : MonoBehaviour
     {
         playerControlsMap.Enable();
         Cursor.lockState = CursorLockMode.Locked;
+        playerControlsMap.Enable();
         controls.SetActive(false);
         controlsActive = false;
     }
