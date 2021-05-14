@@ -48,7 +48,7 @@ public class SoundManager : MonoBehaviour
     void Update()
     {
         Footsteps();
-        Dismount();
+        Exhale();
     }
 
     public void FallingSound()
@@ -117,7 +117,7 @@ public class SoundManager : MonoBehaviour
         lastFrameFootstepRight = animator.GetFloat("FootstepR");
     }
 
-    public void Dismount()
+    public void Exhale()
     {
         currentFrameExhale = animator.GetFloat("Exhale");
         if (currentFrameExhale > 0 && lastFrameExhale < 0)
