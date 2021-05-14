@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Prototype Folding Variables Lila
   m_EditorClassIdentifier: 
   movementAcceleration: 50
-  maximumMovementSpeed: 15
+  maximumMovementSpeed: 10
   movementDrag: 50
   movementVelocityFactor: 1
   jumpHeight: 17
@@ -23,6 +23,7 @@ MonoBehaviour:
   gravity: 40
   maxFallingSpeed: 40
   jumpVelocityFactor: 1
+  snappingDistance: 0
   climbingSpeedOnLadder: 1
   slidingAcceleration: 0.5
   maxSlidingSpeed: 0.1
@@ -34,7 +35,12 @@ MonoBehaviour:
   preservesVelocityOnSnap: 0
   useSwinging: 0
   swingingAcceleration: 0
-  swingingDeceleration: 0
+  minSwingingDeceleration: 0
+  maxSwingingDeceleration: 0
+  minHangingDeceleration: 0
+  maxHangingDeceleration: 0
+  hangingAccelerationFactor: 0
+  maxPushAngle: 0
   maxSwingSpeed: 0
   swingingGravity: 0
   swingingVelocityFactor: 0
