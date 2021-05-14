@@ -47,6 +47,8 @@ public class AnimationStateController : MonoBehaviour
     float jumpingTimer = 0;
     bool foldJump;
     bool wallJump;
+    bool isRocketJumping;
+    float rocketJumpTimer;
 
     InputActionMap playerControlsMap;
     InputAction jumpAction;
@@ -145,6 +147,7 @@ public class AnimationStateController : MonoBehaviour
         DismountingTop();
         ladderStateChange();
         MovementParameters();
+        RocketJump();
 
         if(useFeetIK && footIKScript != null)
         {
@@ -366,9 +369,35 @@ public class AnimationStateController : MonoBehaviour
         audioManager.Play("JumpStart");
     }
 
+    void RocketJump()
+    {
+        if (movementScript.isRocketJumping && !isRocketJumping)
+        {
+            animator.SetBool("isRocketJumping", true);
+            isRocketJumping = true;         
+        }
+        if (isRocketJumping)
+        {
+            rocketJumpTimer += Time.deltaTime;
+        }
+
+        if(rocketJumpTimer >= 0.2)
+        {
+            animator.SetBool("isRocketJumping", false);
+            rocketJumpTimer = 0;
+
+        }
+
+        if(!movementScript.isRocketJumping)
+        {
+            animator.SetBool("isRocketJumping", false);
+            isRocketJumping = false;
+        }
+    }
+
     void Sliding()
     {
-        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding || movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging )
+        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding || movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
             animator.SetBool("isClimbingLadder", true);
             armRig.weight = 0;
