@@ -28,6 +28,7 @@ public class PlayerMovementStateMachine : StateMachine
     public float startingSlidingInput;
     public bool isPerformedFold;
     public bool dismounting;
+    public bool isRocketJumping;
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
@@ -113,7 +114,14 @@ public class PlayerMovementStateMachine : StateMachine
             playerControlsMap = actionAsset.FindActionMap("PlayerControls");
             slideAction = playerControlsMap.FindAction("Slide");
         }
-        playerControlsMap.Enable();
+        if (GameObject.FindGameObjectWithTag("Canvas"))
+        {
+            playerControlsMap.Disable();
+        }
+        else
+        {
+            playerControlsMap.Enable();
+        }
         jumpAction = playerControlsMap.FindAction("Jump");
         moveAction = playerControlsMap.FindAction("Movement");
         snapAction = playerControlsMap.FindAction("Snap");
