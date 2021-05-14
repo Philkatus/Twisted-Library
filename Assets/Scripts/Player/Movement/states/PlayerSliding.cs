@@ -142,8 +142,9 @@ public class PlayerSliding : State
     {
         if (ladderSizeState.isFoldingUp)
         {
-            PlayerStateMachine.baseVelocity.y += (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier;
-            //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier);
+            //PlayerStateMachine.baseVelocity.y += (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) * ladderSizeState.foldJumpMultiplier;
+            PlayerStateMachine.baseVelocity += pSM.ladderDirection * Mathf.Clamp((pSM.transform.position - ladderSizeState.startFoldingUpPos).magnitude, 0, 1.5f) * ladderSizeState.foldJumpMultiplier;
+            //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) );
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = true;
         }
