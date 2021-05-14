@@ -10,12 +10,9 @@ public class DestroyOnTouch : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            Instantiate(particle, this.transform.position, Quaternion.identity);
             Destroy(this.transform.parent.gameObject);
         }
     }
 
-    private void OnDestroy()
-    {
-        Instantiate(particle, this.transform.position, Quaternion.identity);
-    }
 }
