@@ -27,12 +27,14 @@ public class UILogic : MonoBehaviour
         if (controlsActive)
         {
             Cursor.lockState = CursorLockMode.Locked;
+            playerControlsMap.Enable();
             controls.SetActive(false);
             controlsActive = false;
         }
         else
         {
             Cursor.lockState = CursorLockMode.None;
+            playerControlsMap.Disable();
             controls.SetActive(true);
             controlsActive = true;
         }
@@ -41,6 +43,7 @@ public class UILogic : MonoBehaviour
     public void Resume()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        playerControlsMap.Enable();
         controls.SetActive(false);
         controlsActive = false;
     }
