@@ -30,9 +30,11 @@ public class PlayerSwinging : PlayerSliding
 
     bool onWall;
     float accelerationFactor;
-
     float minDecelerationFactor;
     float maxDecelerationFactor;
+
+    float inputTimer;
+    float nextSwingingTime = 1.5f;
 
     Vector3 repelDirection;
 
@@ -62,11 +64,12 @@ public class PlayerSwinging : PlayerSliding
         //base.Initialize();
         SnappingOrientation();
         Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
-        pSM.snapAction.started += context => AccelerationForce();
+        
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
-
+        ladderSizeState = pSM.ladderSizeStateMachine;
         Bob = Pivot.transform.GetChild(1).gameObject;
-        Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLength;
+        Debug.Log(ladderSizeState.ladderLength);
+        Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * 4; //* ladderLength
 
         railType = closestRail.railType;
         onWall = false;
@@ -83,18 +86,24 @@ public class PlayerSwinging : PlayerSliding
         switch (railType)
         {
             case Rail.RailType.TwoSided:
+                pSM.snapAction.started += context => AccelerationForce();
                 minDecelerationFactor = stats.minSwingingDeceleration;
                 maxDecelerationFactor = stats.maxSwingingDeceleration;
                 accelerationFactor = stats.hangingAccelerationFactor;
                 break;
             case Rail.RailType.FreeHanging:
+                pSM.snapAction.started += context => AccelerationForce();
                 minDecelerationFactor = stats.minHangingDeceleration;
                 maxDecelerationFactor = stats.maxHangingDeceleration;
                 accelerationFactor = stats.hangingAccelerationFactor;
                 break;
+            case Rail.RailType.OnWall:
+                pSM.snapAction.started += context => RepellingForce();
+                break;
         }
 
         currentVelocity += pSM.resultingVelocity(pSM.playerVelocity, Bob.transform.forward);
+        currentVelocity = Vector3.ClampMagnitude(currentVelocity, stats.maxSwingSpeed);
     }
 
     public override void Movement()
@@ -163,26 +172,26 @@ public class PlayerSwinging : PlayerSliding
         tensionForce += centripetalForce;
 
         // if relative height > 0 -> remap tension force to get smaller
-        /*
+        
         float relativeHeight = (bob_p - pivot_p).normalized.y;
         if (relativeHeight > 0)
         { // 0 - 1 -> 0.9f - 0.1f 
-            tensionForce = (tensionForce / 1) * (0.9f - 0.1f) + 0.1f;
+            tensionForce *= (relativeHeight / 1) * (0.1f - 0.9f) + 0.9f;
         }
-        */
+        
         currentVelocity += tensionDirection * tensionForce * dt;
         Debug.DrawRay(Bob.transform.position, tensionDirection * tensionForce * dt, Color.green, dt);
 
         // Check for Direction Change
         Vector3 currentNormal = -path.GetNormalAtDistance(currentDistance);
-        if (inputGiven && !new Plane(currentNormal, pivot_p).GetSide(Bob.transform.position)) //Vector3.Dot(currentMovement, pSM.transform.forward) <= .97f)
+        if (!new Plane(currentNormal, pivot_p).GetSide(Bob.transform.position) || currentVelocity.magnitude == 0) // && inputGiven && 
         {
             inputGiven = false;
         }
-
+        else
         //Acceleration
         inputForce = Vector3.zero;
-
+        inputTimer += dt;
 
         // set max speed
         currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
@@ -198,13 +207,13 @@ public class PlayerSwinging : PlayerSliding
         // pSM.playerVelocity for the Jump
         SetCurrentPlayerVelocity(pivot_p);
 
-        /*
+        
         //Debug.DrawRays
         Debug.DrawRay(Bob.transform.position + pSM.transform.up * 0.1f, currentVelocity, Color.cyan, dt);
         Debug.DrawRay(Bob.transform.position, playerVelocity, Color.white, dt);
         Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
         Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
-        Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);*/
+        Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);
 
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
@@ -260,7 +269,6 @@ public class PlayerSwinging : PlayerSliding
 
         //Acceleration
         inputForce = Vector3.zero;
-        pSM.snapAction.started += context => RepellingForce();
 
         // set max speed
         currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
@@ -295,11 +303,14 @@ public class PlayerSwinging : PlayerSliding
     {
         if (Vector3.Dot(currentMovement.normalized, Bob.transform.forward) >= .93f
             && currentVelocity.magnitude < stats.maxSwingSpeed
-            && !inputGiven)
+            && !inputGiven
+            && inputTimer > nextSwingingTime)
         {
             inputForce = Bob.transform.forward * stats.swingingAcceleration * dt * accelerationFactor;
             currentVelocity += inputForce;
             inputGiven = true;
+            inputTimer = 0;
+            Debug.Log("A");
         }
     }
 
