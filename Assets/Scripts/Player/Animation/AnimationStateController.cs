@@ -456,7 +456,7 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isSwingingLadder", true);
             armRig.weight = 0;
-
+            /*
             //Slide Audio
             if (movementScript.slidingInput != 0 && !slideAudioPlaying)
             {
@@ -468,7 +468,7 @@ public class AnimationStateController : MonoBehaviour
                 audioManager.StopSound("Sliding");
                 slideAudioPlaying = false;
             }
-
+            */
             //Fall Audio
             if (fallAudioPlaying)
             {
@@ -476,13 +476,14 @@ public class AnimationStateController : MonoBehaviour
                 fallAudioPlaying = false;
             }
 
-
+            /*
             //Attach Audio
             if (!attachAudioPlaying)
             {
                 audioManager.Play("AttachLadder");
                 attachAudioPlaying = true;
             }
+            */
         }
         else
         {
