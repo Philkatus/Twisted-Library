@@ -10,20 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f06406a2f87f5a64781d8f07d19cd6c6, type: 3}
-  m_Name: Prototype_301_Felix
+  m_Name: Mai14PrototypeValues
   m_EditorClassIdentifier: 
+  bonusVelocityDrag: 20
   movementAcceleration: 50
   maximumMovementSpeed: 15
   movementDrag: 50
   movementVelocityFactor: 1
   jumpHeight: 17.7
+  rocketJumpAcceleration: 25
   wallJump: {x: 0, y: 17.7, z: 3}
   airMovementFactor: 0.5
   jumpingDrag: 4
   gravity: 60
   maxFallingSpeed: 15
   jumpVelocityFactor: 1
-  snappingDistance: 10
+  snappingDistance: 5
   slidingSnappingDistance: 2
   climbingSpeedOnLadder: 1
   slidingAcceleration: 50
@@ -34,14 +36,18 @@ MonoBehaviour:
   ladderDismountTimer: 10
   slidingVelocityFactor: 0.01
   preservesVelocityOnSnap: 1
-  useSwinging: 0
-  swingingAcceleration: 0
-  minSwingingDeceleration: 0
-  maxSwingingDeceleration: 0
-  minHangingDeceleration: 0
-  maxHangingDeceleration: 0
-  hangingAccelerationFactor: 0
-  maxPushAngle: 0
-  maxSwingSpeed: 0
-  swingingGravity: 0
+  useNewSliding: 0
+  speedLevels: []
+  timeToSwitchDirection: 0
+  accelerationCooldown: 0
+  useSwinging: 1
+  swingingAcceleration: 2000
+  minSwingingDeceleration: 0.0075
+  maxSwingingDeceleration: 0.031
+  minHangingDeceleration: 0.001
+  maxHangingDeceleration: 0.04
+  hangingAccelerationFactor: 0.761
+  maxPushAngle: -0.75
+  maxSwingSpeed: 45
+  swingingGravity: 70
   swingingVelocityFactor: 1
