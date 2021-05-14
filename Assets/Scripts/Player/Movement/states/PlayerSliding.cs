@@ -486,13 +486,13 @@ public class PlayerSliding : State
         }
         else if (pSM.HeightOnLadder == -1 && pSM.forwardInput < 0)
         {
-            dismountTimer += Time.fixedDeltaTime;
-            if (dismountTimer >= stats.ladderDismountTimer)
-            {
-                dismountTimer = 0;
-                controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
-                PlayerStateMachine.OnLadderBottom();
-            }
+            // dismountTimer += Time.fixedDeltaTime;
+            // if (dismountTimer >= stats.ladderDismountTimer)
+            // {
+            //     dismountTimer = 0;
+            //     controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
+            //     PlayerStateMachine.OnLadderBottom();
+            // }
         }
         else if (dismountTimer != 0)
         {
