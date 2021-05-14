@@ -141,6 +141,7 @@ public class AnimationStateController : MonoBehaviour
 
         GroundedCheck();
         Sliding();
+        Swinging();
         Falling();
         HeadAim();
         FallImpact();
@@ -397,14 +398,10 @@ public class AnimationStateController : MonoBehaviour
 
     void Sliding()
     {
-        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding || movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging)
+        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding)
         {
             animator.SetBool("isClimbingLadder", true);
             armRig.weight = 0;
-
-
-
-            
 
             //Slide Audio
             if (movementScript.slidingInput != 0 && !slideAudioPlaying)
@@ -440,6 +437,60 @@ public class AnimationStateController : MonoBehaviour
             armRig.weight = 1;
             
             
+
+            //Audio
+            if (attachAudioPlaying)
+            {
+                audioManager.StopSound("AttachLadder");
+                attachAudioPlaying = false;
+            }
+
+            audioManager.StopSound("Sliding");
+            slideAudioPlaying = false;
+        }
+    }
+
+    void Swinging()
+    {
+        if(movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging)
+        {
+            animator.SetBool("isSwingingLadder", true);
+            armRig.weight = 0;
+
+            //Slide Audio
+            if (movementScript.slidingInput != 0 && !slideAudioPlaying)
+            {
+                audioManager.Play("Sliding");
+                slideAudioPlaying = true;
+            }
+            if (movementScript.slidingInput == 0 && slideAudioPlaying)
+            {
+                audioManager.StopSound("Sliding");
+                slideAudioPlaying = false;
+            }
+
+            //Fall Audio
+            if (fallAudioPlaying)
+            {
+                audioManager.StopSound("Falling");
+                fallAudioPlaying = false;
+            }
+
+
+            //Attach Audio
+            if (!attachAudioPlaying)
+            {
+                audioManager.Play("AttachLadder");
+                attachAudioPlaying = true;
+            }
+        }
+        else
+        {
+            animator.SetBool("isSlidingLadder", false);
+            //rigBuilder.enabled = true;
+            armRig.weight = 1;
+
+
 
             //Audio
             if (attachAudioPlaying)
