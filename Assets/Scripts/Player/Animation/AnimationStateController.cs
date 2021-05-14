@@ -87,21 +87,11 @@ public class AnimationStateController : MonoBehaviour
         audioManager = FindObjectOfType<AudioManager>();
         //movementScript = GetComponent<PlayerMovementStateMachine>();
         //controller = GetComponent<CharacterController>();
-
-        ///
-        //
-        //
-        /*
         if(ladderVisual != null && ladderVisualForCode != null)
         {
             ladderVisualForCode.SetActive(false);
             ladderVisual.SetActive(true);
         }
-        */
-        //
-        //
-        //
-
         VelocityHash = Animator.StringToHash("Velocity");
         SideInputHash = Animator.StringToHash("SideInput");
         ForwardInputHash = Animator.StringToHash("ForwardInput");
@@ -169,7 +159,6 @@ public class AnimationStateController : MonoBehaviour
             CheckIK();
         }
     }
-
     void MovementParameters()
     {
         move = movementScript.playerVelocity;
