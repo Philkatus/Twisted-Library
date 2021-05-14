@@ -8,14 +8,13 @@ public class PlayerInTheAir : State
     ValuesScriptableObject values;
 
     float wallJumpingTime;
-    bool didRocketJump = false;
 
 
 
 
     public PlayerInTheAir(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
-        
+
     }
 
     public override void Initialize()
@@ -25,7 +24,7 @@ public class PlayerInTheAir : State
         PlayerStateMachine.ladder.transform.parent = PlayerStateMachine.animController.spine;
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
-        
+
 
 
         values = PlayerStateMachine.valuesAsset;
@@ -93,6 +92,7 @@ public class PlayerInTheAir : State
 
         if (controller.isGrounded)
         {
+            PlayerStateMachine.isRocketJumping = false;
             pSM.OnLand();
         }
     }
@@ -105,14 +105,14 @@ public class PlayerInTheAir : State
 
     public override void RocketJump()
     {
-        if (!didRocketJump)
+        if (!PlayerStateMachine.isRocketJumping)
         {
             Debug.Log("Rocket");
             float sphereRadius = .2f;
-            float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig-sphereRadius;
+            float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig - sphereRadius;
             float acceleration = values.rocketJumpAcceleration;
             Vector3 origin = PlayerStateMachine.transform.position;
-            
+
 
 
             LayerMask mask = LayerMask.GetMask("Environment");
@@ -152,9 +152,9 @@ public class PlayerInTheAir : State
                 pSM.ladderJumpTarget = target;
                 pSM.baseVelocity.y = 0;
                 //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
-                pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration ;
+                pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration;
                 Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
-                didRocketJump = true;
+                PlayerStateMachine.isRocketJumping = true;
                 pSM.ladderSizeStateMachine.OnRocketJump();
             }
 
