@@ -156,6 +156,7 @@ public class PlayerSliding : State
                 fromWallVector = fromWallVector * stats.wallJump.z;
                 Vector3 fromWallValued = new Vector3(fromWallVector.x, stats.wallJump.y, fromWallVector.z);
                 PlayerStateMachine.playerVelocity += fromWallValued;
+                PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
                 PlayerStateMachine.isWallJumping = true;
             }
             else
