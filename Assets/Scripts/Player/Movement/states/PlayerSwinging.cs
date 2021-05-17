@@ -69,7 +69,6 @@ public class PlayerSwinging : PlayerSliding
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
         ladderSizeState = pSM.ladderSizeStateMachine;
         pSM.bob = Pivot.transform.GetChild(1).gameObject;
-        Debug.Log(ladderSizeState.ladderLength);
         pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLengthBig; //* ladderLength
 
         railType = closestRail.railType;

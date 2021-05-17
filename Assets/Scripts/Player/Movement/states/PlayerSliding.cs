@@ -144,7 +144,10 @@ public class PlayerSliding : State
         {
             //PlayerStateMachine.baseVelocity.y += Mathf.Clamp((pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y), 0, 1f) * ladderSizeState.foldJumpMultiplier;
             PlayerStateMachine.baseVelocity += Vector3.up * 2.5f * ladderSizeState.foldJumpMultiplier;
+            PlayerStateMachine.ClampPlayerVelocity(PlayerStateMachine.baseVelocity, Vector3.up, stats.maxJumpingSpeed);
+            PlayerStateMachine.bonusVelocity.y = 2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed;
             Debug.Log("fold jump: " + Vector3.up * 2.5f * ladderSizeState.foldJumpMultiplier);
+            Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
             //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) );
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = true;

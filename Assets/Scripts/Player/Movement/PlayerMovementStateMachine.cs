@@ -268,7 +268,7 @@ public class PlayerMovementStateMachine : StateMachine
             VertexPath currentClosestPath = currentClosestRail.pathCreator.path;
             Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
 
-            float closestDistance = valuesAsset.slidingSnappingDistance;
+            float closestDistance = valuesAsset.resnappingDistance;
             Rail nextClosestShelf = null;
 
             for (int i = 0; i < possibleRails.Count; i++)
