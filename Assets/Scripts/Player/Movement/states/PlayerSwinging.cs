@@ -395,9 +395,9 @@ public class PlayerSwinging : PlayerSliding
         {
             pSM.baseVelocity = pSM.resultingClampedVelocity(pSM.baseVelocity, ladder.transform.forward, stats.maxSwingSpeed);
             pSM.bonusVelocity = pSM.resultingVelocity(pSM.bonusVelocity, ladder.transform.forward);
-
+            //pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, axis, 0);
         }
-        
+        Time.fixedDeltaTime = 0.002f;
 
 
 
