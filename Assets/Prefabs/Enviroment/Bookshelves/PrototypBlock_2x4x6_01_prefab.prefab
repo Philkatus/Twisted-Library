@@ -164,6 +164,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   g: {fileID: 0}
   material: {fileID: 0}
+  changeToThisMaterial: {fileID: 0}
 --- !u!1 &2071224600955495061
 GameObject:
   m_ObjectHideFlags: 0
@@ -357,6 +358,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   g: {fileID: 0}
   material: {fileID: 0}
+  changeToThisMaterial: {fileID: 0}
 --- !u!1 &2799859068820564050
 GameObject:
   m_ObjectHideFlags: 0
@@ -421,7 +423,7 @@ MonoBehaviour:
       - 0
       globalNormalsAngle: 0
       flipNormals: 0
-    vertexPathUpToDate: 1
+    vertexPathUpToDate: 0
     vertexPathMaxAngleError: 0
     vertexPathMinVertexSpacing: 0
     showTransformTool: 1
@@ -452,7 +454,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6496426185304775549}
   - component: {fileID: 3208433861320351078}
-  - component: {fileID: 4746104069055787660}
   - component: {fileID: 5457179035247823061}
   m_Layer: 6
   m_Name: Slide2
@@ -529,19 +530,6 @@ MonoBehaviour:
     showNormalsHelpInfo: 0
     tabIndex: 0
   initialized: 1
---- !u!65 &4746104069055787660
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3735294363963219760}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.75438166, y: 4.5531263, z: 6.9751253}
-  m_Center: {x: -0.12280905, y: -0.70351887, z: 4.071749}
 --- !u!114 &5457179035247823061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -621,7 +609,7 @@ MonoBehaviour:
       - 0
       globalNormalsAngle: 0
       flipNormals: 0
-    vertexPathUpToDate: 1
+    vertexPathUpToDate: 0
     vertexPathMaxAngleError: 0
     vertexPathMinVertexSpacing: 0
     showTransformTool: 1
@@ -738,6 +726,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   g: {fileID: 0}
   material: {fileID: 0}
+  changeToThisMaterial: {fileID: 0}
 --- !u!1 &5430195572621297555
 GameObject:
   m_ObjectHideFlags: 0
@@ -748,7 +737,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5686827415131513640}
   - component: {fileID: 757817677282117400}
-  - component: {fileID: 6833092078012381032}
   m_Layer: 6
   m_Name: Slide4
   m_TagString: Untagged
@@ -786,19 +774,6 @@ MonoBehaviour:
   pathCreator: {fileID: 0}
   railType: 1
   maxSwingingAngle: 0
---- !u!65 &6833092078012381032
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5430195572621297555}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 3.5186787, y: 3.9584908, z: 6.0578556}
-  m_Center: {x: -3.7500157, y: -0.025596142, z: 2.9754133}
 --- !u!1 &6248833546924473436
 GameObject:
   m_ObjectHideFlags: 0
@@ -895,6 +870,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   g: {fileID: 0}
   material: {fileID: 0}
+  changeToThisMaterial: {fileID: 0}
 --- !u!1 &7389524449008173048
 GameObject:
   m_ObjectHideFlags: 0
@@ -905,7 +881,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4864954787800840221}
   - component: {fileID: 1765185493090419917}
-  - component: {fileID: 5485057150091600706}
   m_Layer: 6
   m_Name: Slide2
   m_TagString: Untagged
@@ -943,19 +918,6 @@ MonoBehaviour:
   pathCreator: {fileID: 0}
   railType: 1
   maxSwingingAngle: 0
---- !u!65 &5485057150091600706
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7389524449008173048}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 3.5720131, y: 3.9584908, z: 6.0578556}
-  m_Center: {x: 1.7866827, y: -0.025596142, z: 2.9754133}
 --- !u!1 &7405704310653471178
 GameObject:
   m_ObjectHideFlags: 0
@@ -966,7 +928,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6025465095275811590}
   - component: {fileID: 3141987962390351549}
-  - component: {fileID: 2614963099016280509}
   m_Layer: 6
   m_Name: Slide3
   m_TagString: Untagged
@@ -1004,19 +965,6 @@ MonoBehaviour:
   pathCreator: {fileID: 0}
   railType: 1
   maxSwingingAngle: 0
---- !u!65 &2614963099016280509
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7405704310653471178}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.987683, y: 3.9923592, z: 3.4803395}
-  m_Center: {x: -0.99984586, y: -0.006873369, z: 3.7442033}
 --- !u!1 &7513260801982683975
 GameObject:
   m_ObjectHideFlags: 0
@@ -1113,6 +1061,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   g: {fileID: 0}
   material: {fileID: 0}
+  changeToThisMaterial: {fileID: 0}
 --- !u!1 &7538554770187015426
 GameObject:
   m_ObjectHideFlags: 0
@@ -1209,6 +1158,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   g: {fileID: 0}
   material: {fileID: 0}
+  changeToThisMaterial: {fileID: 0}
 --- !u!1 &8068828568204943451
 GameObject:
   m_ObjectHideFlags: 0
@@ -1273,7 +1223,7 @@ MonoBehaviour:
       - 0
       globalNormalsAngle: 0
       flipNormals: 0
-    vertexPathUpToDate: 1
+    vertexPathUpToDate: 0
     vertexPathMaxAngleError: 0
     vertexPathMinVertexSpacing: 0
     showTransformTool: 1
@@ -1390,6 +1340,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   g: {fileID: 0}
   material: {fileID: 0}
+  changeToThisMaterial: {fileID: 0}
 --- !u!1 &8389065849059805488
 GameObject:
   m_ObjectHideFlags: 0
@@ -1400,7 +1351,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7453977890418171337}
   - component: {fileID: 6169239797547948400}
-  - component: {fileID: 2081928031502689261}
   m_Layer: 6
   m_Name: Slide1
   m_TagString: Untagged
@@ -1438,19 +1388,6 @@ MonoBehaviour:
   pathCreator: {fileID: 0}
   railType: 1
   maxSwingingAngle: 0
---- !u!65 &2081928031502689261
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8389065849059805488}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.9876829, y: 3.9923592, z: 3.5270321}
-  m_Center: {x: -0.9998458, y: -0.006873369, z: -1.7575494}
 --- !u!1 &9052599865809670412
 GameObject:
   m_ObjectHideFlags: 0
@@ -1547,3 +1484,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   g: {fileID: 0}
   material: {fileID: 0}
+  changeToThisMaterial: {fileID: 0}
