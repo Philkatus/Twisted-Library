@@ -33,6 +33,9 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("How high the player jumps.")]
     public float jumpHeight;
 
+    [Tooltip("To put a clamp on the upwards velocity")]
+    public float maxJumpingSpeed = 15;
+
     [Tooltip("How fast the player accelerates with the rocketJump.")]
     public float rocketJumpAcceleration;
 
@@ -59,7 +62,7 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The maximum distance between ladder and rail to snap to the rails.")]
     public float snappingDistance = 10;
     [Tooltip("The maximum distance between ladder and rail to snap to the next rail while sliding.")]
-    public float slidingSnappingDistance = 2;
+    public float resnappingDistance = .5f;
 
     [Tooltip("How fast the player climbs the ladder up and down while sliding.")]
     public float climbingSpeedOnLadder;
