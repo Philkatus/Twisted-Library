@@ -205,7 +205,7 @@ public class PlayerMovementStateMachine : StateMachine
             railCheckLadderPosition = controller.transform.position;
         }
 
-        railAllocator.CheackForRailsInRange(controller.transform);
+        railAllocator.CheckForRailsInRange(controller.transform);
         var possibleRails = railAllocator.railsInRange;
 
         if (possibleRails.Count == 0)
@@ -255,7 +255,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool CheckForNextClosestRail(Rail currentClosestRail)
     {
         railCheckLadderPosition = ladder.transform.position;
-        railAllocator.CheackForRailsInRange(controller.transform);
+        railAllocator.CheckForRailsInRange(controller.transform);
         var possibleRails = railAllocator.railsInRange;
 
         if (possibleRails.Count == 1)
@@ -278,9 +278,10 @@ public class PlayerMovementStateMachine : StateMachine
                 Vector3 possiblePathDirection = possiblePath.GetDirectionAtDistance(
                 possiblePath.GetClosestDistanceAlongPath(currentClosestPath.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop)), EndOfPathInstruction.Stop);
 
+
                 if (distance < closestDistance
-                    && possibleRails[i] != currentClosestRail
-                    && possibleRails[i].transform.position.y == currentClosestRail.transform.position.y)
+                    && possibleRails[i] != currentClosestRail)
+                    //&& possibleRails[i].transform.position.y == currentClosestRail.transform.position.y)
                 {
                     if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .99f)
                     {
