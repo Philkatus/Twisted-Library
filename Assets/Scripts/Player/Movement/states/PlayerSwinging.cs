@@ -54,7 +54,7 @@ public class PlayerSwinging : PlayerSliding
         base.ReInitialize();
         Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLength;
         railType = closestRail.railType;
-        onWall = true;
+        onWall = false;
         inputGiven = false;
         ropeLength = Vector3.Distance(Pivot.transform.position, Bob.transform.position);
     }
@@ -131,7 +131,7 @@ public class PlayerSwinging : PlayerSliding
                     currentStatePosition = PendulumUpdate(previousStatePosition);
                     break;
                 case Rail.RailType.OnWall:
-                    currentStatePosition = PendulumUpdate(previousStatePosition);
+                    currentStatePosition = RepelUpdate(previousStatePosition);
                     break;
                 case Rail.RailType.FreeHanging:
                     currentStatePosition = PendulumUpdate(previousStatePosition);
@@ -210,11 +210,13 @@ public class PlayerSwinging : PlayerSliding
 
         
         //Debug.DrawRays
+        /*
         Debug.DrawRay(Bob.transform.position + pSM.transform.up * 0.1f, currentVelocity, Color.cyan, dt);
         Debug.DrawRay(Bob.transform.position, playerVelocity, Color.white, dt);
         Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
         Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
         Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);
+        */
 
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
@@ -224,6 +226,7 @@ public class PlayerSwinging : PlayerSliding
 
     Vector3 RepelUpdate(Vector3 previousStatePosition)
     {
+        Debug.Log("A");
         // Get normal at current position
         repelDirection = -Bob.transform.forward;
         Vector3 pivot_p = Pivot.transform.position;

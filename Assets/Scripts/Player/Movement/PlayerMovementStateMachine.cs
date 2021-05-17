@@ -402,7 +402,7 @@ public class PlayerMovementStateMachine : StateMachine
         ladderSizeStateMachine.OnGrow();
 
 
-        if (valuesAsset.useSwinging && closestRail.railType != Rail.RailType.OnWall)
+        if (valuesAsset.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
         {
             SetState(new PlayerSwinging(this));
             playerState = PlayerState.swinging;
@@ -420,7 +420,7 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnResnap()
     {
-        if (valuesAsset.useSwinging && closestRail.railType != Rail.RailType.OnWall)
+        if (valuesAsset.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
         {
             SetState(this.State);
             playerState = PlayerState.swinging;
