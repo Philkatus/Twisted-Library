@@ -32,6 +32,7 @@ public class PlayerSwinging : PlayerSliding
     float accelerationFactor;
     float minDecelerationFactor;
     float maxDecelerationFactor;
+    float minSwingSpeed = 1f;
 
     float inputTimer;
     float nextSwingingTime = 1.5f;
@@ -184,7 +185,7 @@ public class PlayerSwinging : PlayerSliding
 
         // Check for Direction Change
         Vector3 currentNormal = -path.GetNormalAtDistance(currentDistance);
-        if (!new Plane(currentNormal, pivot_p).GetSide(Bob.transform.position) || currentVelocity.magnitude == 0) // && inputGiven && 
+        if (inputGiven && !new Plane(currentNormal, pivot_p).GetSide(Bob.transform.position))
         {
             inputGiven = false;
         }
@@ -304,13 +305,13 @@ public class PlayerSwinging : PlayerSliding
         if (Vector3.Dot(currentMovement.normalized, Bob.transform.forward) >= .93f
             && currentVelocity.magnitude < stats.maxSwingSpeed
             && !inputGiven
-            && inputTimer > nextSwingingTime)
+            && inputTimer > nextSwingingTime
+            || currentVelocity.magnitude <= minSwingSpeed)
         {
             inputForce = Bob.transform.forward * stats.swingingAcceleration * dt * accelerationFactor;
             currentVelocity += inputForce;
             inputGiven = true;
             inputTimer = 0;
-            Debug.Log("A");
         }
     }
 
