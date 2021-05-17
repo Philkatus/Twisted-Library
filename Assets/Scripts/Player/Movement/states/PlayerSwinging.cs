@@ -69,8 +69,7 @@ public class PlayerSwinging : PlayerSliding
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
         ladderSizeState = pSM.ladderSizeStateMachine;
         Bob = Pivot.transform.GetChild(1).gameObject;
-        Debug.Log(ladderSizeState.ladderLength);
-        Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * 4; //* ladderLength
+        Bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLength;
 
         railType = closestRail.railType;
         onWall = false;
@@ -226,7 +225,6 @@ public class PlayerSwinging : PlayerSliding
 
     Vector3 RepelUpdate(Vector3 previousStatePosition)
     {
-        Debug.Log("A");
         // Get normal at current position
         repelDirection = -Bob.transform.forward;
         Vector3 pivot_p = Pivot.transform.position;
