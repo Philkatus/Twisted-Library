@@ -84,8 +84,12 @@ public class PlayerSwinging : PlayerSliding
 
         currentVelocity = Vector3.zero;
         currentStatePosition = pSM.bob.transform.position;
+
         bobPosition = pSM.bob.transform.position;
         bobForward = pSM.bob.transform.forward;
+
+        currentStatePosition = pSM.bob.transform.position;
+        previousStatePosition = pSM.bob.transform.position;
 
         switch (railType)
         {
@@ -103,8 +107,6 @@ public class PlayerSwinging : PlayerSliding
                 break;
             case Rail.RailType.OnWall:
                 pSM.snapAction.started += context => RepellingForce();
-                currentStatePosition = pSM.bob.transform.position;
-                previousStatePosition = pSM.bob.transform.position;
                 break;
         }
 
@@ -115,12 +117,11 @@ public class PlayerSwinging : PlayerSliding
     public override void Movement()
     {
         Swing();
-        bobPosition = pSM.bob.transform.position;
-        bobForward = pSM.bob.transform.forward;
         base.Movement();
 
-       // Vector3 railDirection = path.GetNormalAtDistance(currentDistance);
-       // pSM.ladder.transform.forward = -railDirection;
+
+        //Vector3 railDirection = path.GetNormalAtDistance(currentDistance);
+        //pSM.ladder.transform.forward = -railDirection;
     }
 
     public override void Swing()
@@ -152,12 +153,19 @@ public class PlayerSwinging : PlayerSliding
         //die Leiter korrekt rotieren
         currentDistance = pSM.currentDistance;
 
+        //this actually needs to be HERE and not in the Update
+        //Vector3 railDirection = path.GetNormalAtDistance(currentDistance);
+        //pSM.ladder.transform.forward = -railDirection;
+
         Vector3 axis = pSM.ladder.right;
         float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition - pSM.ladder.transform.position, axis));
 
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
 
+        // The values that otherwise get deleted by the rotation in Update()
+        bobPosition = pSM.bob.transform.position;
+        bobForward = pSM.bob.transform.forward;
     }
 
     Vector3 PendulumUpdate()
