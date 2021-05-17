@@ -89,7 +89,7 @@ public class PlayerSwinging : PlayerSliding
                 pSM.snapAction.started += context => AccelerationForce();
                 minDecelerationFactor = stats.minSwingingDeceleration;
                 maxDecelerationFactor = stats.maxSwingingDeceleration;
-                accelerationFactor = stats.hangingAccelerationFactor;
+                accelerationFactor = 1;
                 break;
             case Rail.RailType.FreeHanging:
                 pSM.snapAction.started += context => AccelerationForce();
@@ -301,17 +301,19 @@ public class PlayerSwinging : PlayerSliding
 
     void AccelerationForce()
     {
+        /*
         if (Vector3.Dot(currentMovement.normalized, Bob.transform.forward) >= .93f
             && currentVelocity.magnitude < stats.maxSwingSpeed
             && !inputGiven
             && inputTimer > nextSwingingTime)
         {
+            */
             inputForce = Bob.transform.forward * stats.swingingAcceleration * dt * accelerationFactor;
             currentVelocity += inputForce;
             inputGiven = true;
             inputTimer = 0;
             Debug.Log("A");
-        }
+        //}
     }
 
     void RepellingForce()
@@ -350,12 +352,14 @@ public class PlayerSwinging : PlayerSliding
         ladder = pSM.ladder;
         pathCreator = closestRail.pathCreator;
         path = pathCreator.path;
-        Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
+
         #endregion
         #region LadderPlacement
+        Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
         currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
         ladder.transform.position = startingPoint;
         ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
+
         pSM.currentDistance = currentDistance;
         ladder.transform.parent = pSM.myParent;
 

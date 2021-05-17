@@ -34,6 +34,8 @@ public class LadderUnfold : State
             if (time >= LadderSizeStateMachine.foldSpeed)
             {
                 isLerpGoing = false;
+                LadderSizeStateMachine.ladderLength = LadderSizeStateMachine.ladderLengthBig;
+                LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
             }
         }
     }

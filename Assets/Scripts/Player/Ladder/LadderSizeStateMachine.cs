@@ -33,6 +33,7 @@ public class LadderSizeStateMachine : StateMachine
     private void Update()
     {
         State.Fold();
+        Debug.Log(ladderLength);
     }
 
     #region Functions to change the State
