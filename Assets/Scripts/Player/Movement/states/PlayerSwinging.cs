@@ -111,8 +111,8 @@ public class PlayerSwinging : PlayerSliding
     {
         Swing();
         base.Movement();
-        //Vector3 railDirection = path.GetNormalAtDistance(currentDistance);
-        //pSM.ladder.transform.forward = -railDirection;
+        Vector3 railDirection = path.GetNormalAtDistance(currentDistance);
+        pSM.ladder.transform.forward = -railDirection;
 
     }
 
@@ -226,7 +226,6 @@ public class PlayerSwinging : PlayerSliding
 
     Vector3 RepelUpdate(Vector3 previousStatePosition)
     {
-        Debug.Log("A");
         // Get normal at current position
         repelDirection = -pSM.bob.transform.forward;
         Vector3 pivot_p = Pivot.transform.position;
@@ -250,6 +249,7 @@ public class PlayerSwinging : PlayerSliding
         {
             currentVelocity = Vector3.zero;
             previousStatePosition = pivot_p + Vector3.down * 100;
+            pSM.bob.transform.position = previousStatePosition;
         }
         else
         {
