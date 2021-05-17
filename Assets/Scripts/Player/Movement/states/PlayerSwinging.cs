@@ -119,8 +119,8 @@ public class PlayerSwinging : PlayerSliding
         bobForward = pSM.bob.transform.forward;
         base.Movement();
 
-        Vector3 railDirection = path.GetNormalAtDistance(currentDistance);
-        pSM.ladder.transform.forward = -railDirection;
+       // Vector3 railDirection = path.GetNormalAtDistance(currentDistance);
+       // pSM.ladder.transform.forward = -railDirection;
     }
 
     public override void Swing()
