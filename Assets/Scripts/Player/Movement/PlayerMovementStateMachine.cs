@@ -51,7 +51,6 @@ public class PlayerMovementStateMachine : StateMachine
 
     public Rail closestRail;
     public Transform ladder;
-    public Transform ladderMesh;
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
     public AnimationStateController animController;
@@ -71,7 +70,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         get
         {
-            return ladderMesh.right;
+            return  ladderSizeStateMachine.ladderParent.right;
         }
     }
     [HideInInspector] public Transform myParent;

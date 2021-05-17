@@ -70,7 +70,7 @@ public class PlayerSwinging : PlayerSliding
         ladderSizeState = pSM.ladderSizeStateMachine;
         pSM.bob = Pivot.transform.GetChild(1).gameObject;
         Debug.Log(ladderSizeState.ladderLength);
-        pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLength; //* ladderLength
+        pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLengthBig; //* ladderLength
 
         railType = closestRail.railType;
         onWall = false;
@@ -397,9 +397,9 @@ public class PlayerSwinging : PlayerSliding
         {
             pSM.baseVelocity = pSM.resultingClampedVelocity(pSM.baseVelocity, ladder.transform.forward, stats.maxSwingSpeed);
             pSM.bonusVelocity = pSM.resultingVelocity(pSM.bonusVelocity, ladder.transform.forward);
-
+            //pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, axis, 0);
         }
-        
+        Time.fixedDeltaTime = 0.002f;
 
 
 
