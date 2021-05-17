@@ -70,7 +70,7 @@ public class PlayerSwinging : PlayerSliding
         ladderSizeState = pSM.ladderSizeStateMachine;
         pSM.bob = Pivot.transform.GetChild(1).gameObject;
         Debug.Log(ladderSizeState.ladderLength);
-        pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * 4; //* ladderLength
+        pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLengthBig; //* ladderLength
 
         railType = closestRail.railType;
         onWall = false;
