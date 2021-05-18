@@ -56,7 +56,7 @@ public class PlayerInTheAir : State
         pSM.baseVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration * values.airMovementFactor;
 
         //when wall jump occured, set the isWallJumping to false after 1 sec
-        wallJumpingTime += Time.deltaTime;
+        wallJumpingTime += Time.fixedDeltaTime;
         if (wallJumpingTime >= 1)
         {
             pSM.isWallJumping = false;

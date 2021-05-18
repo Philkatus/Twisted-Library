@@ -135,6 +135,7 @@ public class PlayerSliding : State
     {
         pSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
+        Debug.Log("hey");
         yield break;
     }
 
@@ -222,7 +223,7 @@ public class PlayerSliding : State
                 //drag calculation
                 float resultingSpeed = pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
 
-                //speed Clamp (dependant on ladder size)
+                //speed Drag (dependant on ladder size)
                 float maxSlidingSpeed = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, stats.maxSlidingSpeed * stats.slidingSpeedSizeFactor, stats.maxSlidingSpeed);
                 pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * stats.slidingDragPercentage / 100, -maxSlidingSpeed, maxSlidingSpeed);
 
