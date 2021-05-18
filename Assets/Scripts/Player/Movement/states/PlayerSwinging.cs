@@ -384,7 +384,16 @@ public class PlayerSwinging : PlayerSliding
         //Ladder Rotation
         Vector3 axis = pSM.ladder.right;
         float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, pSM.transform.position - startingPoint, axis));
-
+        if (rotateByAngle < 0)
+        {
+            if (rotateByAngle < -90)
+            {
+                rotateByAngle = 160;
+            }
+            else
+                rotateByAngle = 0;
+        }
+        Debug.Log(rotateByAngle);
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
 
