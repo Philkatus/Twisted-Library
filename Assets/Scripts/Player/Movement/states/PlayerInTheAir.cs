@@ -74,7 +74,7 @@ public class PlayerInTheAir : State
             pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
         pSM.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
-        float ClampedVelocityY = Mathf.Clamp(pSM.baseVelocity.y, -values.maxFallingSpeed, Mathf.Infinity);
+        float ClampedVelocityY = Mathf.Clamp(pSM.baseVelocity.y, -values.maxFallingSpeed, values.maxJumpingSpeed);
         pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
         pSM.baseVelocity.y = ClampedVelocityY;
 

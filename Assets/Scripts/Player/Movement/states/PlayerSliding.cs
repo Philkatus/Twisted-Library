@@ -143,8 +143,12 @@ public class PlayerSliding : State
         if (ladderSizeState.isFoldingUp)
         {
             //PlayerStateMachine.baseVelocity.y += Mathf.Clamp((pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y), 0, 1f) * ladderSizeState.foldJumpMultiplier;
-            PlayerStateMachine.baseVelocity += Vector3.up * 2.5f * ladderSizeState.foldJumpMultiplier;
-            Debug.Log("fold jump: " + Vector3.up * 2.5f * ladderSizeState.foldJumpMultiplier);
+            Vector3 direction = pSM.ladderDirection;
+            PlayerStateMachine.baseVelocity += direction * 2.5f * ladderSizeState.foldJumpMultiplier;
+            PlayerStateMachine.ClampPlayerVelocity(PlayerStateMachine.baseVelocity, Vector3.up, stats.maxJumpingSpeed);
+            PlayerStateMachine.bonusVelocity = direction *( 2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed);
+            //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
+           // Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
             //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) );
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = true;
@@ -455,9 +459,10 @@ public class PlayerSliding : State
     protected bool CheckForCollisionLadder(Vector3 moveDirection)
     {
         RaycastHit hit;
-        Vector3 boxExtents = new Vector3(pSM.ladderMesh.localScale.x * 0.5f, pSM.ladderMesh.localScale.y * 0.5f, pSM.ladderMesh.localScale.z * 0.5f);
+        LadderSizeStateMachine lSM = pSM.ladderSizeStateMachine;
+        Vector3 boxExtents = new Vector3(lSM.ladderParent.localScale.x * 0.5f, lSM.ladderParent.localScale.y * 0.5f, lSM.ladderParent.localScale.z * 0.5f);
 
-        if (Physics.BoxCast(pSM.ladder.position, pSM.ladderMesh.localScale, moveDirection, out hit, Quaternion.identity, 0.1f, LayerMask.GetMask("SlidingObstacle")))
+        if (Physics.BoxCast(pSM.ladder.position, lSM.ladderParent.localScale, moveDirection, out hit, Quaternion.identity, 0.1f, LayerMask.GetMask("SlidingObstacle")))
         {
             return true;
         }

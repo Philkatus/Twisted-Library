@@ -51,10 +51,10 @@ public class PlayerMovementStateMachine : StateMachine
 
     public Rail closestRail;
     public Transform ladder;
-    public Transform ladderMesh;
     public LadderSizeStateMachine ladderSizeStateMachine;
     public CharacterController controller;
     public AnimationStateController animController;
+    public GameObject bob;
     [HideInInspector] public InputAction slideAction;
     [HideInInspector] public InputAction slideLeftAction;
     [HideInInspector] public InputAction slideRightAction;
@@ -70,7 +70,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         get
         {
-            return ladderMesh.right;
+            return  ladderSizeStateMachine.ladderParent.right;
         }
     }
     [HideInInspector] public Transform myParent;
@@ -205,7 +205,7 @@ public class PlayerMovementStateMachine : StateMachine
             railCheckLadderPosition = controller.transform.position;
         }
 
-        railAllocator.CheackForRailsInRange(controller.transform);
+        railAllocator.CheckForRailsInRange(controller.transform);
         var possibleRails = railAllocator.railsInRange;
 
         if (possibleRails.Count == 0)
@@ -255,7 +255,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool CheckForNextClosestRail(Rail currentClosestRail)
     {
         railCheckLadderPosition = ladder.transform.position;
-        railAllocator.CheackForRailsInRange(controller.transform);
+        railAllocator.CheckForRailsInRange(controller.transform);
         var possibleRails = railAllocator.railsInRange;
 
         if (possibleRails.Count == 1)
@@ -268,7 +268,7 @@ public class PlayerMovementStateMachine : StateMachine
             VertexPath currentClosestPath = currentClosestRail.pathCreator.path;
             Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
 
-            float closestDistance = valuesAsset.slidingSnappingDistance;
+            float closestDistance = valuesAsset.resnappingDistance;
             Rail nextClosestShelf = null;
 
             for (int i = 0; i < possibleRails.Count; i++)
@@ -278,9 +278,10 @@ public class PlayerMovementStateMachine : StateMachine
                 Vector3 possiblePathDirection = possiblePath.GetDirectionAtDistance(
                 possiblePath.GetClosestDistanceAlongPath(currentClosestPath.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop)), EndOfPathInstruction.Stop);
 
+
                 if (distance < closestDistance
-                    && possibleRails[i] != currentClosestRail
-                    && possibleRails[i].transform.position.y == currentClosestRail.transform.position.y)
+                    && possibleRails[i] != currentClosestRail)
+                    //&& possibleRails[i].transform.position.y == currentClosestRail.transform.position.y)
                 {
                     if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .99f)
                     {
@@ -402,7 +403,7 @@ public class PlayerMovementStateMachine : StateMachine
         ladderSizeStateMachine.OnGrow();
 
 
-        if (valuesAsset.useSwinging && closestRail.railType != Rail.RailType.OnWall)
+        if (valuesAsset.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
         {
             SetState(new PlayerSwinging(this));
             playerState = PlayerState.swinging;
@@ -420,7 +421,7 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnResnap()
     {
-        if (valuesAsset.useSwinging && closestRail.railType != Rail.RailType.OnWall)
+        if (valuesAsset.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
         {
             SetState(this.State);
             playerState = PlayerState.swinging;

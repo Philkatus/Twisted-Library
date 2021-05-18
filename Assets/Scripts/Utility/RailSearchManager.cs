@@ -69,7 +69,7 @@ public class RailSearchManager : MonoBehaviour
         }
     }
 
-    public void CheackForRailsInRange(Transform playerPosition)
+    public void CheckForRailsInRange(Transform playerPosition)
     {
         int distanceZplayer = (int)Mathf.Ceil((levelDimensions.position.z - playerPosition.position.z) / areaSize);
         int rowIndexZplayer = numberOfZRows / 2 + distanceZplayer - 1;

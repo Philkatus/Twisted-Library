@@ -35,7 +35,7 @@ public class Prototype_Respawn_script : MonoBehaviour
 
         if(quitButton.triggered)
         {
-            Application.Quit();
+            //Application.Quit();
         }
     }
 
