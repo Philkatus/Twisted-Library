@@ -22,7 +22,6 @@ public class LadderFold : State
         time = 0;
         isLerpGoing = true;
         LadderSizeStateMachine.isFoldingUp = true;
-        LadderSizeStateMachine.startFoldingUpPos = pSM.transform.position;
     }
 
     public override void Fold()

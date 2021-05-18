@@ -29,7 +29,6 @@ public class PlayerInTheAir : State
 
         values = PlayerStateMachine.valuesAsset;
         controller = PlayerStateMachine.controller;
-        PlayerStateMachine.baseVelocity.y = Mathf.Clamp(PlayerStateMachine.playerVelocity.y, 0, Mathf.Infinity);
 
         wallJumpingTime = 0;
     }

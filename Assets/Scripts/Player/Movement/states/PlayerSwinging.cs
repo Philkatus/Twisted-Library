@@ -59,6 +59,24 @@ public class PlayerSwinging : PlayerSliding
         onWall = false;
         inputGiven = false;
         ropeLength = Vector3.Distance(Pivot.transform.position, pSM.bob.transform.position);
+        switch (railType)
+        {
+            case Rail.RailType.TwoSided:
+                pSM.snapAction.started += context => AccelerationForce();
+                minDecelerationFactor = stats.minSwingingDeceleration;
+                maxDecelerationFactor = stats.maxSwingingDeceleration;
+                accelerationFactor = 1;
+                break;
+            case Rail.RailType.FreeHanging:
+                pSM.snapAction.started += context => AccelerationForce();
+                minDecelerationFactor = stats.minHangingDeceleration;
+                maxDecelerationFactor = stats.maxHangingDeceleration;
+                accelerationFactor = stats.hangingAccelerationFactor;
+                break;
+            case Rail.RailType.OnWall:
+                pSM.snapAction.started += context => RepellingForce();
+                break;
+        }
     }
 
 

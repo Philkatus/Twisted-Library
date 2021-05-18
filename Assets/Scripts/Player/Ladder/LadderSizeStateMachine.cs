@@ -15,6 +15,7 @@ public class LadderSizeStateMachine : StateMachine
     [Header("For reference")]
     public float ladderLength;
     public bool isFoldingUp;
+    public bool isUnFolding = false;
     public Vector3 startFoldingUpPos;
     public PlayerMovementStateMachine playerStateMachine;
     public Transform ladderParent;
