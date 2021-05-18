@@ -379,7 +379,7 @@ public class PlayerSwinging : PlayerSliding
         ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
 
         pSM.currentDistance = currentDistance;
-        ladder.transform.parent = pSM.myParent;
+        ladder.transform.SetParent(pSM.myParent);
 
         //Ladder Rotation
         Vector3 axis = pSM.ladder.right;
@@ -397,7 +397,7 @@ public class PlayerSwinging : PlayerSliding
         #endregion
         #region PlayerPlacement
         pSM.HeightOnLadder = -1;
-        controller.transform.parent = ladder.transform;
+        controller.transform.SetParent(ladder.transform);
         //pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
         pSM.transform.localPosition = new Vector3(0, -ladderSizeState.ladderLength, -.7f);
         controller.transform.localRotation = Quaternion.Euler(6.25f, 0, 0);

@@ -18,8 +18,8 @@ public class PlayerWalking : State
     public override void Initialize()
     {
         controller = PlayerStateMachine.controller;
-        controller.transform.parent = PlayerStateMachine.myParent;
-        PlayerStateMachine.ladder.transform.parent = PlayerStateMachine.animController.spine;
+        controller.transform.SetParent(PlayerStateMachine.myParent);
+        PlayerStateMachine.ladder.transform.SetParent(PlayerStateMachine.animController.spine);
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
 

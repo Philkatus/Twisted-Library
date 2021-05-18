@@ -71,14 +71,14 @@ public class PlayerSliding : State
         pSM.currentDistance = currentDistance;
 
         // Place the character on ladder.
-        ladder.transform.parent = pSM.myParent;
+        ladder.transform.SetParent(pSM.myParent);
         Vector3 targetPosition = startingPoint - pSM.ladderDirection * ladderSizeState.ladderLength;
         targetPosition.y = Mathf.Clamp(controller.transform.position.y, targetPosition.y, startingPoint.y);
         pSM.HeightOnLadder = -(startingPoint - targetPosition).magnitude / ladderSizeState.ladderLength;
         pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
         pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
         controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
-        controller.transform.parent = ladder.transform;
+        controller.transform.SetParent(ladder.transform);
         pSM.ladderSizeStateMachine.OnGrow();
 
         pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
