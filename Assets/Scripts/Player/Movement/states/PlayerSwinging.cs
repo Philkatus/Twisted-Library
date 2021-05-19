@@ -84,6 +84,7 @@ public class PlayerSwinging : PlayerSliding
 
     public override void Initialize()
     {
+        
         //base.Initialize();
         SnappingOrientation();
 
@@ -96,7 +97,7 @@ public class PlayerSwinging : PlayerSliding
         ladderParent = ladderSizeState.ladderParent.gameObject;
         swingingFeedback = ladderParent.transform.GetChild(5).gameObject;
 
-        railType = closestRail.railType;
+        
         onWall = false;
         inputGiven = false;
         canPress = true;
@@ -393,6 +394,7 @@ public class PlayerSwinging : PlayerSliding
 
         ladderSizeState = pSM.ladderSizeStateMachine;
         closestRail = pSM.closestRail;
+        railType = closestRail.railType;
         speed = stats.climbingSpeedOnLadder;
         controller = pSM.controller;
         ladder = pSM.ladder;
@@ -404,8 +406,18 @@ public class PlayerSwinging : PlayerSliding
         Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
         currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
         ladder.transform.position = startingPoint;
-        ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
+        Vector3 startingNormal = path.GetNormalAtDistance(currentDistance);
 
+        if (railType == Rail.RailType.TwoSided && Vector3.Dot(startingPoint-pSM.transform.position, startingNormal )>=0)
+        {
+            ladder.transform.forward = startingNormal;
+        }
+        else 
+        {
+            ladder.transform.forward = -startingNormal;
+
+
+        }
         pSM.currentDistance = currentDistance;
         ladder.transform.SetParent(pSM.myParent);
         ladder.transform.localScale = new Vector3(1, 1, 1);

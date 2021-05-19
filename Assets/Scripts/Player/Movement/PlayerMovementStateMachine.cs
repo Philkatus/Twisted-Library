@@ -188,6 +188,7 @@ public class PlayerMovementStateMachine : StateMachine
     }
     public void looseBonusVelocityPercentage(float dragAmount)
     {
+        dragAmount /= 100;
         bonusVelocity *= dragAmount * Time.fixedDeltaTime;
         if (bonusVelocity.magnitude <= dragAmount * Time.fixedDeltaTime)
         {
