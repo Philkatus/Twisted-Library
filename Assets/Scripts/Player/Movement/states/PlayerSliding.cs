@@ -464,7 +464,7 @@ public class PlayerSliding : State
         Vector3 p1 = pSM.transform.position + controller.center + Vector3.up * -controller.height / 1.5f;
         Vector3 p2 = p1 + Vector3.up * controller.height;
 
-        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection, out hit, 0.2f, LayerMask.GetMask("SlidingObstacle")))
+        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.2f, LayerMask.GetMask("SlidingObstacle")))
         {
             return true;
         }
@@ -477,7 +477,7 @@ public class PlayerSliding : State
         LadderSizeStateMachine lSM = pSM.ladderSizeStateMachine;
         Vector3 boxExtents = new Vector3(lSM.ladderParent.localScale.x * 0.5f, lSM.ladderParent.localScale.y * 0.5f, lSM.ladderParent.localScale.z * 0.5f);
 
-        if (Physics.BoxCast(pSM.ladder.position, lSM.ladderParent.localScale, moveDirection, out hit, Quaternion.identity, 0.1f, LayerMask.GetMask("SlidingObstacle")))
+        if (Physics.BoxCast(pSM.ladder.position, lSM.ladderParent.localScale, moveDirection.normalized, out hit, Quaternion.identity, 0.1f, LayerMask.GetMask("SlidingObstacle")))
         {
             return true;
         }

@@ -402,6 +402,8 @@ public class PlayerSwinging : PlayerSliding
 
         pSM.currentDistance = currentDistance;
         ladder.transform.SetParent(pSM.myParent);
+        ladder.transform.localScale = new Vector3(1, 1, 1);
+        controller.transform.localScale = new Vector3(1, 1, 1);
 
         //Ladder Rotation
         Vector3 axis = pSM.ladder.right;

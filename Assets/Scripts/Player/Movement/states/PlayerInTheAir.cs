@@ -21,6 +21,8 @@ public class PlayerInTheAir : State
     {
         controller = PlayerStateMachine.controller;
         controller.transform.SetParent(PlayerStateMachine.myParent);
+        PlayerStateMachine.ladder.transform.localScale = new Vector3(1, 1, 1);
+        controller.transform.localScale = new Vector3(1, 1, 1);
         PlayerStateMachine.ladder.transform.SetParent(PlayerStateMachine.animController.spine);
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
