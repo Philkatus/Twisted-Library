@@ -2019,6 +2019,7 @@ GameObject:
   m_Component:
   - component: {fileID: 93001121716191192}
   - component: {fileID: 3516743775578058811}
+  - component: {fileID: 4698937638036850393}
   m_Layer: 0
   m_Name: Decal Projector
   m_TagString: Untagged
@@ -2037,8 +2038,8 @@ Transform:
   m_LocalPosition: {x: 0, y: -0.966, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 7511473034388439086}
-  m_RootOrder: 5
+  m_Father: {fileID: 7511473033327022823}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3516743775578058811
 MonoBehaviour:
@@ -2065,6 +2066,19 @@ MonoBehaviour:
   m_Offset: {x: 0, y: 0, z: 3.5}
   m_Size: {x: 1, y: 1, z: 7}
   m_FadeFactor: 1
+--- !u!114 &4698937638036850393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5210653611193295014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4c0fe04605ac17b42b29271fee0d7fe2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 7511473034388439085}
 --- !u!1 &5214918277483982148
 GameObject:
   m_ObjectHideFlags: 0
@@ -4685,8 +4699,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6164259229706539056}
-  m_LocalRotation: {x: 0.060121186, y: 0.7045602, z: -0.060123574, w: 0.70453215}
-  m_LocalPosition: {x: -32, y: 25.571999, z: 16.100647}
+  m_LocalRotation: {x: 0.06012118, y: 0.70456046, z: -0.06012361, w: 0.7045319}
+  m_LocalPosition: {x: -31.768997, y: 25.737, z: 16.100657}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6164259229316237293}
@@ -6984,6 +6998,7 @@ Transform:
   - {fileID: 3550473115490298242}
   - {fileID: 6164259229706539060}
   - {fileID: 7511473034388439086}
+  - {fileID: 93001121716191192}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -7022,7 +7037,6 @@ Transform:
   - {fileID: 5224045388008558921}
   - {fileID: 4895331058414985018}
   - {fileID: 7511473033241274112}
-  - {fileID: 93001121716191192}
   m_Father: {fileID: 7511473033327022823}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
