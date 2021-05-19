@@ -20,8 +20,10 @@ public class PlayerInTheAir : State
     public override void Initialize()
     {
         controller = PlayerStateMachine.controller;
-        controller.transform.parent = PlayerStateMachine.myParent;
-        PlayerStateMachine.ladder.transform.parent = PlayerStateMachine.animController.spine;
+        controller.transform.SetParent(PlayerStateMachine.myParent);
+        PlayerStateMachine.ladder.transform.localScale = new Vector3(1, 1, 1);
+        controller.transform.localScale = new Vector3(1, 1, 1);
+        PlayerStateMachine.ladder.transform.SetParent(PlayerStateMachine.animController.spine);
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
 
@@ -29,7 +31,6 @@ public class PlayerInTheAir : State
 
         values = PlayerStateMachine.valuesAsset;
         controller = PlayerStateMachine.controller;
-        PlayerStateMachine.baseVelocity.y = Mathf.Clamp(PlayerStateMachine.playerVelocity.y, 0, Mathf.Infinity);
 
         wallJumpingTime = 0;
     }
@@ -57,25 +58,26 @@ public class PlayerInTheAir : State
         pSM.baseVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration * values.airMovementFactor;
 
         //when wall jump occured, set the isWallJumping to false after 1 sec
-        wallJumpingTime += Time.deltaTime;
+        wallJumpingTime += Time.fixedDeltaTime;
         if (wallJumpingTime >= 1)
         {
             pSM.isWallJumping = false;
         }
-
-        if (pSM.forwardInput <= 0.3f && pSM.forwardInput >= -.3f && !pSM.isWallJumping)
+        /*
+        if (pSM.forwardInput <= 0.1f && pSM.forwardInput >= -.1f && !pSM.isWallJumping)
         {
             Vector3 currentDragForward = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionForward) / values.airMovementFactor;
             pSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
         }
-        if (pSM.sideWaysInput <= 0.3f && pSM.sideWaysInput >= -.3f && !pSM.isWallJumping)
+        if (pSM.sideWaysInput <= 0.1f && pSM.sideWaysInput >= -.1f && !pSM.isWallJumping)
         {
             Vector3 currentDragSideways = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionRight) / values.airMovementFactor;
             pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
+        */
         pSM.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
         float ClampedVelocityY = Mathf.Clamp(pSM.baseVelocity.y, -values.maxFallingSpeed, values.maxJumpingSpeed);
-        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
+        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, values.maximumMovementSpeed);
         pSM.baseVelocity.y = ClampedVelocityY;
 
 
@@ -99,6 +101,7 @@ public class PlayerInTheAir : State
 
     public override void Snap()
     {
+        PlayerStateMachine.isRocketJumping = false;
         PlayerStateMachine.OnSnap();
 
     }

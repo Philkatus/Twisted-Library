@@ -73,14 +73,14 @@ public class PlayerSliding : State
         pSM.currentDistance = currentDistance;
 
         // Place the character on ladder.
-        ladder.transform.parent = pSM.myParent;
+        ladder.transform.SetParent(pSM.myParent);
         Vector3 targetPosition = startingPoint - pSM.ladderDirection * ladderSizeState.ladderLength;
         targetPosition.y = Mathf.Clamp(controller.transform.position.y, targetPosition.y, startingPoint.y);
         pSM.HeightOnLadder = -(startingPoint - targetPosition).magnitude / ladderSizeState.ladderLength;
         pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
         pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
         controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
-        controller.transform.parent = ladder.transform;
+        controller.transform.SetParent(ladder.transform);
         pSM.ladderSizeStateMachine.OnGrow();
 
         pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
@@ -165,15 +165,32 @@ public class PlayerSliding : State
 
     public override void Jump()
     {
+        if (ladderSizeState.isUnFolding)
+        {
+            //PlayerStateMachine.baseVelocity.y += Mathf.Clamp((pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y), 0, 1f) * ladderSizeState.foldJumpMultiplier;
+            Vector3 direction = -pSM.ladderDirection;
+            //PlayerStateMachine.baseVelocity += direction * 2.5f * ladderSizeState.foldJumpMultiplier;
+            //PlayerStateMachine.ClampPlayerVelocity(PlayerStateMachine.baseVelocity, Vector3.up, stats.maxJumpingSpeed);
+            //PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed);
+
+            PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier);
+            //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
+            // Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
+            //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) );
+            PlayerStateMachine.OnFall();
+            pSM.animationControllerisFoldingJumped = true;
+        }
+
         if (ladderSizeState.isFoldingUp)
         {
             //PlayerStateMachine.baseVelocity.y += Mathf.Clamp((pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y), 0, 1f) * ladderSizeState.foldJumpMultiplier;
             Vector3 direction = pSM.ladderDirection;
-            PlayerStateMachine.baseVelocity += direction * 2.5f * ladderSizeState.foldJumpMultiplier;
-            PlayerStateMachine.ClampPlayerVelocity(PlayerStateMachine.baseVelocity, Vector3.up, stats.maxJumpingSpeed);
-            PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed);
+            //PlayerStateMachine.baseVelocity += direction * 2.5f * ladderSizeState.foldJumpMultiplier;
+            //PlayerStateMachine.ClampPlayerVelocity(PlayerStateMachine.baseVelocity, Vector3.up, stats.maxJumpingSpeed);
+            //PlayerStateMachine.bonusVelocity = direction *( 2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed);
+            PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier);
             //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
-            // Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
+            //Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
             //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) );
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = true;
@@ -231,7 +248,7 @@ public class PlayerSliding : State
                 //drag calculation
                 float resultingSpeed = pSM.resultingSpeed(pSM.playerVelocity, pathDirection);
 
-                //speed Clamp (dependant on ladder size)
+                //speed Drag (dependant on ladder size)
                 float maxSlidingSpeed = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, stats.maxSlidingSpeed * stats.slidingSpeedSizeFactor, stats.maxSlidingSpeed);
                 pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * stats.slidingDragPercentage / 100, -maxSlidingSpeed, maxSlidingSpeed);
 
@@ -526,7 +543,7 @@ public class PlayerSliding : State
         Vector3 p1 = pSM.transform.position + controller.center + Vector3.up * -controller.height / 1.5f;
         Vector3 p2 = p1 + Vector3.up * controller.height;
 
-        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection, out hit, 0.2f, LayerMask.GetMask("SlidingObstacle")))
+        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.2f, LayerMask.GetMask("SlidingObstacle")))
         {
             return true;
         }
@@ -539,7 +556,7 @@ public class PlayerSliding : State
         LadderSizeStateMachine lSM = pSM.ladderSizeStateMachine;
         Vector3 boxExtents = new Vector3(lSM.ladderParent.localScale.x * 0.5f, lSM.ladderParent.localScale.y * 0.5f, lSM.ladderParent.localScale.z * 0.5f);
 
-        if (Physics.BoxCast(pSM.ladder.position, lSM.ladderParent.localScale, moveDirection, out hit, Quaternion.identity, 0.1f, LayerMask.GetMask("SlidingObstacle")))
+        if (Physics.BoxCast(pSM.ladder.position, lSM.ladderParent.localScale, moveDirection.normalized, out hit, Quaternion.identity, 0.1f, LayerMask.GetMask("SlidingObstacle")))
         {
             return true;
         }

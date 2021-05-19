@@ -19,8 +19,12 @@ public class LadderUnfold : State
     public override void Initialize()
     {
         pSM = PlayerStateMachine;
-        time = LadderSizeStateMachine.ladderLength/LadderSizeStateMachine.ladderLengthBig *LadderSizeStateMachine.foldSpeed;
+        time = (LadderSizeStateMachine.ladderLength-LadderSizeStateMachine.ladderLengthSmall)/LadderSizeStateMachine.ladderLengthBig *LadderSizeStateMachine.foldSpeed;
         isLerpGoing = true;
+        if (time==0)
+        {
+            LadderSizeStateMachine.isUnFolding = true;
+        }
     }
 
     public override void Fold()
@@ -38,5 +42,18 @@ public class LadderUnfold : State
                 LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
             }
         }
+        if (time >= LadderSizeStateMachine.foldSpeed + LadderSizeStateMachine.extraFoldJumpTimer)
+        {
+            LadderSizeStateMachine.isUnFolding = false;
+        }
+
+        
+    }
+
+
+    public override IEnumerator Finish()
+    {
+        LadderSizeStateMachine.isUnFolding = false;
+        return base.Finish();
     }
 }

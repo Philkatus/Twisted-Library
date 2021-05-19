@@ -18,8 +18,10 @@ public class PlayerWalking : State
     public override void Initialize()
     {
         controller = PlayerStateMachine.controller;
-        controller.transform.parent = PlayerStateMachine.myParent;
-        PlayerStateMachine.ladder.transform.parent = PlayerStateMachine.animController.spine;
+        controller.transform.SetParent(PlayerStateMachine.myParent);
+        PlayerStateMachine.ladder.transform.localScale = new Vector3(1, 1, 1);
+        controller.transform.localScale = new Vector3(1, 1, 1);
+        PlayerStateMachine.ladder.transform.SetParent(PlayerStateMachine.animController.spine);
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
 
@@ -82,6 +84,7 @@ public class PlayerWalking : State
         PlayerStateMachine.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
         pSM.baseVelocity = pSM.ClampPlayerVelocity(pSM.baseVelocity, Vector3.down, values.maxFallingSpeed);
         pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, values.maximumMovementSpeed);
+        pSM.looseBonusVelocityPercentage(values.walkingBonusVelocityDrag);
         controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * values.movementVelocityFactor);
 
         if (isGroundedWithCoyoteTime())

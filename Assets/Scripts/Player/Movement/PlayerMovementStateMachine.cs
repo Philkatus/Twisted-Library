@@ -146,7 +146,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void FixedUpdate()
     {
         GetInput();
-        looseBonusVelocity();
+        looseBonusVelocity(valuesAsset.bonusVelocityDrag);
         State.Movement();
         Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
         Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
@@ -175,10 +175,19 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
 
-    public void looseBonusVelocity()
+    public void looseBonusVelocity(float dragAmount)
     {
-        bonusVelocity -= bonusVelocity.normalized * valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime;
-        if (bonusVelocity.magnitude <= valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime)
+        bonusVelocity -= bonusVelocity.normalized * dragAmount * Time.fixedDeltaTime;
+        if (bonusVelocity.magnitude <= dragAmount * Time.fixedDeltaTime)
+        {
+            bonusVelocity = Vector3.zero;
+        }
+    }
+    public void looseBonusVelocityPercentage(float dragAmount)
+    {
+        dragAmount /= 100;
+        bonusVelocity *= dragAmount * Time.fixedDeltaTime;
+        if (bonusVelocity.magnitude <= dragAmount * Time.fixedDeltaTime)
         {
             bonusVelocity = Vector3.zero;
         }
