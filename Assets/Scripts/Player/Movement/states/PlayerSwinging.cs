@@ -388,11 +388,13 @@ public class PlayerSwinging : PlayerSliding
         {
             if (rotateByAngle < -90)
             {
-                rotateByAngle = 160;
+                rotateByAngle = 150;
             }
             else
                 rotateByAngle = 0;
         }
+        else
+            rotateByAngle =  Mathf.Clamp(rotateByAngle, 0, 150);
         Debug.Log(rotateByAngle);
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
