@@ -133,7 +133,7 @@ public class PlayerSwinging : PlayerSliding
                 break;
         }
 
-
+        pSM.baseVelocity = Vector3.zero;
     }
 
     public override void Movement()
@@ -181,11 +181,11 @@ public class PlayerSwinging : PlayerSliding
 
         Vector3 axis = pSM.ladder.right;
         float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition - pSM.ladder.transform.position, axis));
-        
+
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
-        
-       
+
+
 
 
 
@@ -209,7 +209,6 @@ public class PlayerSwinging : PlayerSliding
         gravityForce = mass * stats.swingingGravity;
         gravityDirection = Physics.gravity.normalized;
         currentVelocity += gravityDirection * gravityForce * dt;
-        //Debug.DrawRay(bobPosition, gravityDirection * gravityForce * dt, Color.red, dt);
 
         Vector3 pivot_p = Pivot.transform.position;
         Vector3 bob_p = bobPosition;
@@ -231,7 +230,6 @@ public class PlayerSwinging : PlayerSliding
         }
 
         currentVelocity += tensionDirection * tensionForce * dt;
-        //Debug.DrawRay(bobPosition, tensionDirection * tensionForce * dt, Color.green, dt);
 
         // Check for Direction Change
         Vector3 currentNormal = -path.GetNormalAtDistance(currentDistance);
@@ -273,18 +271,7 @@ public class PlayerSwinging : PlayerSliding
         // Get only the forward/backward force
         playerVelocity = bobForward * pSM.resultingSpeed(currentVelocity, bobForward);
 
-        // pSM.playerVelocity for the Jump
-        SetCurrentPlayerVelocity(pivot_p);
-
-
-        //Debug.DrawRays
-        /*
-        Debug.DrawRay(Bob.transform.position + pSM.transform.up * 0.1f, currentVelocity, Color.cyan, dt);
-        Debug.DrawRay(Bob.transform.position, playerVelocity, Color.white, dt);
-        Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
-        Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
-        Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);
-        */
+        SetCurrentPlayerVelocity(Pivot.transform.position);
 
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
@@ -303,12 +290,11 @@ public class PlayerSwinging : PlayerSliding
         //Check if OnWall
         if (movingForward && !onWall)
         {
-            
+
             Vector3 axis = pSM.ladder.right;
             float angle = Vector3.SignedAngle(Vector3.down, (bob_p - pivot_p).normalized, axis);
             if (angle <= stats.maxPushAngle)
             {
-                Debug.Log("on Wall = true");
                 onWall = true;
 
                 return GetPointOnLine(pivot_p, pivot_p + Vector3.down * 100, ropeLength);
@@ -319,6 +305,7 @@ public class PlayerSwinging : PlayerSliding
         {
             currentVelocity = Vector3.zero;
             bobPosition = pivot_p + Vector3.down * 100;
+            SetCurrentPlayerVelocity(pivot_p);
         }
         else
         {
@@ -340,27 +327,16 @@ public class PlayerSwinging : PlayerSliding
             currentVelocity += tensionDirection * tensionForce * dt;
         }
 
-            //Acceleration
-            inputForce = Vector3.zero;
+        //Acceleration
+        inputForce = Vector3.zero;
 
-            // set max speed
-            currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
+        // set max speed
+        currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
 
-            // Get only the forward/backward force
-            playerVelocity = bobForward * pSM.resultingSpeed(bobForward, currentVelocity);
-            Debug.Log(playerVelocity);
-            // pSM.playerVelocity for the Jump
-            SetCurrentPlayerVelocity(pivot_p);
+        // Get only the forward/backward force
+        playerVelocity = bobForward * pSM.resultingSpeed(bobForward, currentVelocity);
+        SetCurrentPlayerVelocity(Pivot.transform.position);
 
-            /*
-            //Debug.DrawRays
-            Debug.DrawRay(Bob.transform.position + pSM.transform.up * 0.1f, currentVelocity, Color.cyan, dt);
-            Debug.DrawRay(Bob.transform.position, playerVelocity, Color.white, dt);
-            Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
-            Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
-            Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);
-            */
-        
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
         movementDelta += playerVelocity * dt;
@@ -405,7 +381,7 @@ public class PlayerSwinging : PlayerSliding
         playerHeightOnLadder = (playerHeightOnLadder) / (ropeLength) * (1 - 0.1f) + 0.1f;
         maxJumpSpeed = maxJumpSpeed * playerHeightOnLadder;
         currentMovement = playerVelocity.normalized * Mathf.Clamp(playerVelocity.magnitude, 0, maxJumpSpeed);
-        pSM.playerVelocity = (pSM.resultingVelocity(pSM.playerVelocity, pSM.ladder.right) + currentMovement) / stats.swingingVelocityFactor;
+
 
     }
 
@@ -465,7 +441,6 @@ public class PlayerSwinging : PlayerSliding
         pSM.ladderSizeStateMachine.OnSnap();
 
 
-
         #endregion
         #region PlayerPlacement
         pSM.HeightOnLadder = -1;
@@ -479,9 +454,10 @@ public class PlayerSwinging : PlayerSliding
 
         if (!stats.preservesVelocityOnSnap)
         {
+
             pSM.baseVelocity = pSM.resultingClampedVelocity(pSM.baseVelocity, ladder.transform.forward, stats.maxSwingSpeed);
             pSM.bonusVelocity = pSM.resultingVelocity(pSM.bonusVelocity, ladder.transform.forward);
-            //pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, axis, 0);
+
         }
         Time.fixedDeltaTime = 0.002f;
 
@@ -492,6 +468,8 @@ public class PlayerSwinging : PlayerSliding
 
     public override IEnumerator Finish()
     {
+        SetCurrentPlayerVelocity(Pivot.transform.position);
+        pSM.bonusVelocity += currentMovement / stats.swingingVelocityFactor;
         swingingFeedback.SetActive(false);
         return base.Finish();
 
