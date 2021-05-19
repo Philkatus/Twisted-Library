@@ -8,7 +8,7 @@ public class ShadowScript : MonoBehaviour
 	Vector3 offset;
     private void Start()
     {
-        offset = transform.localPosition;
+        offset = transform.position - player.transform.position;
     }
     void Update()
 	{

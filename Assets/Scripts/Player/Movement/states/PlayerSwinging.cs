@@ -10,7 +10,7 @@ public class PlayerSwinging : PlayerSliding
     #endregion
 
     GameObject Pivot;
-
+    GameObject swingingFeedback;
 
     float mass = 1f;
     float ropeLength = 2f;
@@ -31,13 +31,14 @@ public class PlayerSwinging : PlayerSliding
     Rail.RailType railType;
 
     bool onWall;
+    bool canPress;
     float accelerationFactor;
     float minDecelerationFactor;
     float maxDecelerationFactor;
-    float minSwingSpeed = 1f;
+    float minSwingSpeed = 10f;
 
     float inputTimer;
-    float nextSwingingTime = 1.5f;
+    float nextSwingingTime = 1f;
 
     Vector3 repelDirection;
 
@@ -72,11 +73,12 @@ public class PlayerSwinging : PlayerSliding
         ladderSizeState = pSM.ladderSizeStateMachine;
         pSM.bob = Pivot.transform.GetChild(1).gameObject;
         pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLengthBig;
-
+        swingingFeedback = pSM.bob.transform.GetChild(0).gameObject;
 
         railType = closestRail.railType;
         onWall = false;
         inputGiven = false;
+        canPress = true;
 
         // Get the initial rope length from how far away the bob is now
         ropeLength = Vector3.Distance(Pivot.transform.position, pSM.bob.transform.position);
@@ -207,242 +209,256 @@ public class PlayerSwinging : PlayerSliding
         {
             inputGiven = false;
         }
-        else
-            //Acceleration
-            inputForce = Vector3.zero;
-        inputTimer += dt;
 
-        // set max speed
-        currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
+        //Check if input can be given and give feedback accordingly
 
-        //Deceleration 
-        // the higher the velocity, the higher the deceleration Factor
-        float DecelerationFactor = (currentVelocity.magnitude) / (stats.maxSwingSpeed) * (maxDecelerationFactor - minDecelerationFactor) + minDecelerationFactor;
-        currentVelocity = currentVelocity.normalized * (currentVelocity.magnitude * (1 - DecelerationFactor));
-
-        // Get only the forward/backward force
-        playerVelocity = bobForward * pSM.resultingSpeed(currentVelocity, bobForward);
-
-        // pSM.playerVelocity for the Jump
-        SetCurrentPlayerVelocity(pivot_p);
-
-
-        //Debug.DrawRays
-        /*
-        Debug.DrawRay(Bob.transform.position + pSM.transform.up * 0.1f, currentVelocity, Color.cyan, dt);
-        Debug.DrawRay(Bob.transform.position, playerVelocity, Color.white, dt);
-        Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
-        Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
-        Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);
-        */
-
-        // Get the movement delta
-        Vector3 movementDelta = Vector3.zero;
-        movementDelta += playerVelocity * dt;
-        return GetPointOnLine(pivot_p, bobPosition + movementDelta, ropeLength);
-    }
-
-    Vector3 RepelUpdate()
-    {
-        // Get normal at current position
-        repelDirection = -bobForward;
-        Vector3 pivot_p = Pivot.transform.position;
-        Vector3 bob_p = bobPosition;
-        bool movingForward = Vector3.Dot(currentMovement.normalized, bobForward) >= .93f;
-
-        //Check if OnWall
-        if (movingForward && !onWall)
+        if (Vector3.Dot(currentMovement.normalized, bobForward) >= .93f
+           && currentVelocity.magnitude < stats.maxSwingSpeed
+           && !inputGiven
+           && inputTimer > nextSwingingTime
+           || currentVelocity.magnitude <= minSwingSpeed)
         {
-            Vector3 axis = pSM.ladder.right;
-            float angle = Vector3.SignedAngle(Vector3.down, (bob_p - pivot_p).normalized, axis);
-            if (angle <= stats.maxPushAngle)
-            {
-                onWall = true;
-                
-                return GetPointOnLine(pivot_p, pivot_p + Vector3.down * 100, ropeLength);
-            }
+            canPress = true;
+            swingingFeedback.SetActive(true);
         }
-
-        if (onWall)
-        {
-            currentVelocity = Vector3.zero;
-            bobPosition = pivot_p + Vector3.down * 100;
-        }
+    
         else
         {
-            // Erstellt eine Gravity und addiert sie auf die currentVelocity
-            gravityForce = mass * stats.swingingGravity;
-            gravityDirection = Physics.gravity.normalized;
-            currentVelocity += gravityDirection * gravityForce * dt;
-
-            tensionDirection = (pivot_p - bob_p).normalized;
-
-            // Winkel zwischen Gravity Direction & Vektor -> Bob
-            float inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
-
-            //Gravitystaerke * Cos(inclinationAngle)
-            tensionForce = mass * stats.swingingGravity * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
-            float centripetalForce = ((mass * Mathf.Pow(currentVelocity.magnitude, 2)) / ropeLength);
-
-            tensionForce += centripetalForce;
-            currentVelocity += tensionDirection * tensionForce * dt;
+            canPress = false;
+            swingingFeedback.SetActive(false);
         }
 
         //Acceleration
         inputForce = Vector3.zero;
+        inputTimer += dt;
 
         // set max speed
-        currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
+        currentVelocity = currentVelocity.normalized* Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
+
+    //Deceleration 
+    // the higher the velocity, the higher the deceleration Factor
+    float DecelerationFactor = (currentVelocity.magnitude) / (stats.maxSwingSpeed) * (maxDecelerationFactor - minDecelerationFactor) + minDecelerationFactor;
+    currentVelocity = currentVelocity.normalized* (currentVelocity.magnitude* (1 - DecelerationFactor));
 
         // Get only the forward/backward force
-        playerVelocity = bobForward * pSM.resultingSpeed(bobForward, currentVelocity);
+        playerVelocity = bobForward* pSM.resultingSpeed(currentVelocity, bobForward);
 
-        // pSM.playerVelocity for the Jump
-        SetCurrentPlayerVelocity(pivot_p);
+    // pSM.playerVelocity for the Jump
+    SetCurrentPlayerVelocity(pivot_p);
 
-        /*
-        //Debug.DrawRays
-        Debug.DrawRay(Bob.transform.position + pSM.transform.up * 0.1f, currentVelocity, Color.cyan, dt);
-        Debug.DrawRay(Bob.transform.position, playerVelocity, Color.white, dt);
-        Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
-        Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
-        Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);
-        */
 
-        // Get the movement delta
-        Vector3 movementDelta = Vector3.zero;
-        movementDelta += playerVelocity * dt;
+    //Debug.DrawRays
+    /*
+    Debug.DrawRay(Bob.transform.position + pSM.transform.up * 0.1f, currentVelocity, Color.cyan, dt);
+    Debug.DrawRay(Bob.transform.position, playerVelocity, Color.white, dt);
+    Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
+    Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
+    Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);
+    */
+
+    // Get the movement delta
+    Vector3 movementDelta = Vector3.zero;
+    movementDelta += playerVelocity* dt;
         return GetPointOnLine(pivot_p, bobPosition + movementDelta, ropeLength);
-    }
+}
 
-    Vector3 GetPointOnLine(Vector3 start, Vector3 end, float distanceFromStart)
+Vector3 RepelUpdate()
+{
+    // Get normal at current position
+    repelDirection = -bobForward;
+    Vector3 pivot_p = Pivot.transform.position;
+    Vector3 bob_p = bobPosition;
+    bool movingForward = Vector3.Dot(currentMovement.normalized, bobForward) >= .93f;
+
+    //Check if OnWall
+    if (movingForward && !onWall)
     {
-        return start + (distanceFromStart * Vector3.Normalize(end - start));
-    }
-
-    void AccelerationForce()
-    {
-
-        if (Vector3.Dot(currentMovement.normalized, bobForward) >= .93f
-            && currentVelocity.magnitude < stats.maxSwingSpeed
-            && !inputGiven
-            && inputTimer > nextSwingingTime
-            || currentVelocity.magnitude <= minSwingSpeed)
-        {
-
-            inputForce = bobForward * stats.swingingAcceleration * dt * accelerationFactor;
-            currentVelocity += inputForce;
-            inputGiven = true;
-            inputTimer = 0;
-        }
-    }
-
-    void RepellingForce()
-    {
-        if (onWall)
-        {
-            onWall = false;
-            inputForce = repelDirection * stats.swingingAcceleration * dt * 1.2f;
-            currentVelocity += inputForce;
-        }
-    }
-
-    void SetCurrentPlayerVelocity(Vector3 pivot_p)
-    {
-        // Set currentMovement Force
-        float maxJumpSpeed = stats.maximumMovementSpeed * stats.jumpingDrag;
-        float playerHeightOnLadder = (pivot_p - pSM.transform.position).magnitude;
-
-        //remap the height of the player on the ladder from 0 -> ladderLength to 0.1f -> 1
-        playerHeightOnLadder = (playerHeightOnLadder) / (ropeLength) * (1 - 0.1f) + 0.1f;
-        maxJumpSpeed = maxJumpSpeed * playerHeightOnLadder;
-        currentMovement = playerVelocity.normalized * Mathf.Clamp(playerVelocity.magnitude, 0, maxJumpSpeed);
-        pSM.playerVelocity = (pSM.resultingVelocity(pSM.playerVelocity, pSM.ladder.right) + currentMovement) / stats.swingingVelocityFactor;
-
-    }
-
-    void SnappingOrientation()
-    {
-        #region  Variable assignment
-        pSM = PlayerStateMachine;
-        stats = pSM.valuesAsset;
-
-        ladderSizeState = pSM.ladderSizeStateMachine;
-        closestRail = pSM.closestRail;
-        speed = stats.climbingSpeedOnLadder;
-        controller = pSM.controller;
-        ladder = pSM.ladder;
-        pathCreator = closestRail.pathCreator;
-        path = pathCreator.path;
-
-        #endregion
-        #region LadderPlacement
-        Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
-        currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
-        ladder.transform.position = startingPoint;
-        ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
-
-        pSM.currentDistance = currentDistance;
-        ladder.transform.parent = pSM.myParent;
-
-        //Ladder Rotation
         Vector3 axis = pSM.ladder.right;
-        float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, pSM.transform.position - startingPoint, axis));
-        if (rotateByAngle < 0)
+        float angle = Vector3.SignedAngle(Vector3.down, (bob_p - pivot_p).normalized, axis);
+        if (angle <= stats.maxPushAngle)
         {
-            if (rotateByAngle < -90)
-            {
-                rotateByAngle = 150;
-            }
-            else
-                rotateByAngle = 0;
+            onWall = true;
+
+            return GetPointOnLine(pivot_p, pivot_p + Vector3.down * 100, ropeLength);
+        }
+    }
+
+    if (onWall)
+    {
+        currentVelocity = Vector3.zero;
+        bobPosition = pivot_p + Vector3.down * 100;
+    }
+    else
+    {
+        // Erstellt eine Gravity und addiert sie auf die currentVelocity
+        gravityForce = mass * stats.swingingGravity;
+        gravityDirection = Physics.gravity.normalized;
+        currentVelocity += gravityDirection * gravityForce * dt;
+
+        tensionDirection = (pivot_p - bob_p).normalized;
+
+        // Winkel zwischen Gravity Direction & Vektor -> Bob
+        float inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
+
+        //Gravitystaerke * Cos(inclinationAngle)
+        tensionForce = mass * stats.swingingGravity * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
+        float centripetalForce = ((mass * Mathf.Pow(currentVelocity.magnitude, 2)) / ropeLength);
+
+        tensionForce += centripetalForce;
+        currentVelocity += tensionDirection * tensionForce * dt;
+    }
+
+    //Acceleration
+    inputForce = Vector3.zero;
+
+    // set max speed
+    currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
+
+    // Get only the forward/backward force
+    playerVelocity = bobForward * pSM.resultingSpeed(bobForward, currentVelocity);
+
+    // pSM.playerVelocity for the Jump
+    SetCurrentPlayerVelocity(pivot_p);
+
+    /*
+    //Debug.DrawRays
+    Debug.DrawRay(Bob.transform.position + pSM.transform.up * 0.1f, currentVelocity, Color.cyan, dt);
+    Debug.DrawRay(Bob.transform.position, playerVelocity, Color.white, dt);
+    Debug.DrawRay(pSM.transform.position, pSM.playerVelocity, Color.magenta, dt);
+    Debug.DrawRay(pSM.transform.position + pSM.transform.up * 0.01f, currentMovement, Color.green, dt);
+    Debug.DrawRay(Bob.transform.position, inputForce, Color.black, dt);
+    */
+
+    // Get the movement delta
+    Vector3 movementDelta = Vector3.zero;
+    movementDelta += playerVelocity * dt;
+    return GetPointOnLine(pivot_p, bobPosition + movementDelta, ropeLength);
+}
+
+Vector3 GetPointOnLine(Vector3 start, Vector3 end, float distanceFromStart)
+{
+    return start + (distanceFromStart * Vector3.Normalize(end - start));
+}
+
+void AccelerationForce()
+{
+
+    if (canPress)
+    {
+
+        inputForce = bobForward * stats.swingingAcceleration * dt * accelerationFactor;
+        currentVelocity += inputForce;
+        inputGiven = true;
+        inputTimer = 0;
+    }
+}
+
+void RepellingForce()
+{
+    if (onWall)
+    {
+        onWall = false;
+        inputForce = repelDirection * stats.swingingAcceleration * dt * 1.2f;
+        currentVelocity += inputForce;
+    }
+}
+
+void SetCurrentPlayerVelocity(Vector3 pivot_p)
+{
+    // Set currentMovement Force
+    float maxJumpSpeed = stats.maximumMovementSpeed * stats.jumpingDrag;
+    float playerHeightOnLadder = (pivot_p - pSM.transform.position).magnitude;
+
+    //remap the height of the player on the ladder from 0 -> ladderLength to 0.1f -> 1
+    playerHeightOnLadder = (playerHeightOnLadder) / (ropeLength) * (1 - 0.1f) + 0.1f;
+    maxJumpSpeed = maxJumpSpeed * playerHeightOnLadder;
+    currentMovement = playerVelocity.normalized * Mathf.Clamp(playerVelocity.magnitude, 0, maxJumpSpeed);
+    pSM.playerVelocity = (pSM.resultingVelocity(pSM.playerVelocity, pSM.ladder.right) + currentMovement) / stats.swingingVelocityFactor;
+
+}
+
+void SnappingOrientation()
+{
+    #region  Variable assignment
+    pSM = PlayerStateMachine;
+    stats = pSM.valuesAsset;
+
+    ladderSizeState = pSM.ladderSizeStateMachine;
+    closestRail = pSM.closestRail;
+    speed = stats.climbingSpeedOnLadder;
+    controller = pSM.controller;
+    ladder = pSM.ladder;
+    pathCreator = closestRail.pathCreator;
+    path = pathCreator.path;
+
+    #endregion
+    #region LadderPlacement
+    Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
+    currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
+    ladder.transform.position = startingPoint;
+    ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
+
+    pSM.currentDistance = currentDistance;
+    ladder.transform.parent = pSM.myParent;
+
+    //Ladder Rotation
+    Vector3 axis = pSM.ladder.right;
+    float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, pSM.transform.position - startingPoint, axis));
+    if (rotateByAngle < 0)
+    {
+        if (rotateByAngle < -90)
+        {
+            rotateByAngle = 150;
         }
         else
-            rotateByAngle =  Mathf.Clamp(rotateByAngle, 0, 150);
-        Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
-        pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
-
-        //LadderLength Calculation
-        pSM.ladderSizeStateMachine.ladderLength = Vector3.Distance(pSM.transform.position, startingPoint);
-        pSM.ladderSizeStateMachine.OnSnap();
-
-
-
-        #endregion
-        #region PlayerPlacement
-        pSM.HeightOnLadder = -1;
-        controller.transform.parent = ladder.transform;
-        //pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
-        pSM.transform.localPosition = new Vector3(0, -ladderSizeState.ladderLength, -.7f);
-        controller.transform.localRotation = Quaternion.Euler(6.25f, 0, 0);
-
-        #endregion
-        #region Velocity Calculation
-
-        if (!stats.preservesVelocityOnSnap)
-        {
-            pSM.baseVelocity = pSM.resultingClampedVelocity(pSM.baseVelocity, ladder.transform.forward, stats.maxSwingSpeed);
-            pSM.bonusVelocity = pSM.resultingVelocity(pSM.bonusVelocity, ladder.transform.forward);
-            //pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, axis, 0);
-        }
-        Time.fixedDeltaTime = 0.002f;
-
-
-
-        #endregion
+            rotateByAngle = 0;
     }
+    else
+        rotateByAngle = Mathf.Clamp(rotateByAngle, 0, 150);
+    Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
+    pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
 
-    public override IEnumerator Finish()
+    //LadderLength Calculation
+    pSM.ladderSizeStateMachine.ladderLength = Vector3.Distance(pSM.transform.position, startingPoint);
+    pSM.ladderSizeStateMachine.OnSnap();
+
+
+
+    #endregion
+    #region PlayerPlacement
+    pSM.HeightOnLadder = -1;
+    controller.transform.parent = ladder.transform;
+    //pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
+    pSM.transform.localPosition = new Vector3(0, -ladderSizeState.ladderLength, -.7f);
+    controller.transform.localRotation = Quaternion.Euler(6.25f, 0, 0);
+
+    #endregion
+    #region Velocity Calculation
+
+    if (!stats.preservesVelocityOnSnap)
     {
-
-        return base.Finish();
-
+        pSM.baseVelocity = pSM.resultingClampedVelocity(pSM.baseVelocity, ladder.transform.forward, stats.maxSwingSpeed);
+        pSM.bonusVelocity = pSM.resultingVelocity(pSM.bonusVelocity, ladder.transform.forward);
+        //pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, axis, 0);
     }
-    public PlayerSwinging(PlayerMovementStateMachine playerStateMachine)
-   : base(playerStateMachine)
-    {
+    Time.fixedDeltaTime = 0.002f;
 
-    }
+
+
+    #endregion
+}
+
+public override IEnumerator Finish()
+{
+
+    return base.Finish();
+
+}
+public PlayerSwinging(PlayerMovementStateMachine playerStateMachine)
+: base(playerStateMachine)
+{
+
+}
 
 
 
