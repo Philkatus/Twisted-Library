@@ -41,7 +41,6 @@ public class PlayerWalking : State
         }
         */
 
-
         if (direction != Vector3.zero)
         {
             controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
@@ -99,7 +98,6 @@ public class PlayerWalking : State
         }
         else
         {
-
             coyoteTime += Time.fixedDeltaTime;
         }
         return coyoteTimer < coyoteTime;

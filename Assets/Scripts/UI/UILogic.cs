@@ -13,13 +13,20 @@ public class UILogic : MonoBehaviour
     public GameObject controls;
     public GameObject controller;
     public GameObject keyboard;
+    public bool usesNewSliding;
     bool controlsActive = false;
-
 
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        playerControlsMap = iaa.FindActionMap("PlayerControls");
+        if (usesNewSliding)
+        {
+            playerControlsMap = iaa.FindActionMap("PlayerControlsNewSliding");
+        }
+        else
+        {
+            playerControlsMap = iaa.FindActionMap("PlayerControls");
+        }
         UIControlsMap = iaa.FindActionMap("UIControls");
         escape = playerControlsMap.FindAction("Escape");
         escape.performed += context => ShowControls();
@@ -36,7 +43,6 @@ public class UILogic : MonoBehaviour
 
         if (controlsActive)
         {
-            //Debug.LogError("jdjd");
             playerControlsMap.Enable();
             Cursor.lockState = CursorLockMode.Locked;
             playerControlsMap.Enable();
@@ -46,7 +52,6 @@ public class UILogic : MonoBehaviour
         else
         {
             UIControlsMap.Enable();
-            //Debug.LogError("ffff");
             Cursor.lockState = CursorLockMode.None;
             playerControlsMap.Disable();
             controls.SetActive(true);
