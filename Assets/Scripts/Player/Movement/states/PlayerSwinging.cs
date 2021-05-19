@@ -94,19 +94,19 @@ public class PlayerSwinging : PlayerSliding
         switch (railType)
         {
             case Rail.RailType.TwoSided:
-                pSM.snapAction.started += context => AccelerationForce();
+                pSM.swingAction.started += context => AccelerationForce();
                 minDecelerationFactor = stats.minSwingingDeceleration;
                 maxDecelerationFactor = stats.maxSwingingDeceleration;
                 accelerationFactor = 1;
                 break;
             case Rail.RailType.FreeHanging:
-                pSM.snapAction.started += context => AccelerationForce();
+                pSM.swingAction.started += context => AccelerationForce();
                 minDecelerationFactor = stats.minHangingDeceleration;
                 maxDecelerationFactor = stats.maxHangingDeceleration;
                 accelerationFactor = stats.hangingAccelerationFactor;
                 break;
             case Rail.RailType.OnWall:
-                pSM.snapAction.started += context => RepellingForce();
+                pSM.swingAction.started += context => RepellingForce();
                 break;
         }
 
