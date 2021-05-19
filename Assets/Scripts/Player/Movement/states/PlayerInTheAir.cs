@@ -101,6 +101,7 @@ public class PlayerInTheAir : State
 
     public override void Snap()
     {
+        PlayerStateMachine.isRocketJumping = false;
         PlayerStateMachine.OnSnap();
 
     }
