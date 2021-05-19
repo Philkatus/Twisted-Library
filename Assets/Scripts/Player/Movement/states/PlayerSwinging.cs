@@ -171,10 +171,6 @@ public class PlayerSwinging : PlayerSliding
         //die Leiter korrekt rotieren
         currentDistance = pSM.currentDistance;
 
-        //this actually needs to be HERE and not in the Update
-        //Vector3 railDirection = path.GetNormalAtDistance(currentDistance);
-        //pSM.ladder.transform.forward = -railDirection;
-
         Vector3 axis = pSM.ladder.right;
         float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition - pSM.ladder.transform.position, axis));
 
@@ -184,6 +180,13 @@ public class PlayerSwinging : PlayerSliding
         // The values that otherwise get deleted by the rotation in Update()
         bobPosition = pSM.bob.transform.position;
         bobForward = pSM.bob.transform.forward;
+
+        //rotate the ladder, so that its not stuck in the wall, this is a shitty fix, but otherwise wed have to rewrite A LOT
+        if (onWall)
+        {
+            Vector3 localVector = ladder.transform.localEulerAngles;
+            ladder.transform.localEulerAngles = new Vector3(0, localVector.y, localVector.z);
+        }
     }
 
     Vector3 PendulumUpdate()
@@ -273,6 +276,7 @@ public class PlayerSwinging : PlayerSliding
             if (angle <= stats.maxPushAngle)
             {
                 onWall = true;
+                
                 return GetPointOnLine(pivot_p, pivot_p + Vector3.down * 100, ropeLength);
             }
         }
@@ -402,7 +406,17 @@ public class PlayerSwinging : PlayerSliding
         //Ladder Rotation
         Vector3 axis = pSM.ladder.right;
         float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, pSM.transform.position - startingPoint, axis));
-
+        if (rotateByAngle < 0)
+        {
+            if (rotateByAngle < -90)
+            {
+                rotateByAngle = 150;
+            }
+            else
+                rotateByAngle = 0;
+        }
+        else
+            rotateByAngle =  Mathf.Clamp(rotateByAngle, 0, 150);
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
 
