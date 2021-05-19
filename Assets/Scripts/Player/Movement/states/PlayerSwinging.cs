@@ -419,7 +419,7 @@ public class PlayerSwinging : PlayerSliding
         {
             rotateByAngle = Mathf.Clamp(rotateByAngle, 0, 150);
         }
-        if (rotateByAngle < 90)
+        if (rotateByAngle < 120)
         {
             currentVelocity += pSM.resultingVelocity(pSM.playerVelocity, pSM.bob.transform.forward);
             currentVelocity = Vector3.ClampMagnitude(currentVelocity, stats.maxSwingSpeed);
