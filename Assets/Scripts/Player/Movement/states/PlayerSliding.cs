@@ -135,7 +135,6 @@ public class PlayerSliding : State
     {
         pSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
-        Debug.Log("hey");
         yield break;
     }
 
