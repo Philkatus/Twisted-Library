@@ -194,11 +194,13 @@ public class PlayerSwinging : PlayerSliding
         bobForward = pSM.bob.transform.forward;
 
         //rotate the ladder, so that its not stuck in the wall, this is a shitty fix, but otherwise wed have to rewrite A LOT
+        /*
         if (onWall)
         {
             Vector3 localVector = ladder.transform.localEulerAngles;
             ladder.transform.localEulerAngles = new Vector3(0, localVector.y, localVector.z);
         }
+        */
     }
 
     Vector3 PendulumUpdate()
@@ -336,7 +338,7 @@ public class PlayerSwinging : PlayerSliding
 
             tensionForce += centripetalForce;
             currentVelocity += tensionDirection * tensionForce * dt;
-       }
+        }
 
             //Acceleration
             inputForce = Vector3.zero;
@@ -346,7 +348,7 @@ public class PlayerSwinging : PlayerSliding
 
             // Get only the forward/backward force
             playerVelocity = bobForward * pSM.resultingSpeed(bobForward, currentVelocity);
-
+            Debug.Log(playerVelocity);
             // pSM.playerVelocity for the Jump
             SetCurrentPlayerVelocity(pivot_p);
 
