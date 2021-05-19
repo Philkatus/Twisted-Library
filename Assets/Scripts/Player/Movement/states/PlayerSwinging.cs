@@ -166,6 +166,12 @@ public class PlayerSwinging : PlayerSliding
         // The values that otherwise get deleted by the rotation in Update()
         bobPosition = pSM.bob.transform.position;
         bobForward = pSM.bob.transform.forward;
+
+        if (onWall)
+        {
+            Vector3 localVector = ladder.transform.localEulerAngles;
+            ladder.transform.localEulerAngles = new Vector3(0, localVector.y, localVector.z);
+        }
     }
 
     Vector3 PendulumUpdate()
@@ -255,6 +261,7 @@ public class PlayerSwinging : PlayerSliding
             if (angle <= stats.maxPushAngle)
             {
                 onWall = true;
+                
                 return GetPointOnLine(pivot_p, pivot_p + Vector3.down * 100, ropeLength);
             }
         }
@@ -395,7 +402,6 @@ public class PlayerSwinging : PlayerSliding
         }
         else
             rotateByAngle =  Mathf.Clamp(rotateByAngle, 0, 150);
-        Debug.Log(rotateByAngle);
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
 
