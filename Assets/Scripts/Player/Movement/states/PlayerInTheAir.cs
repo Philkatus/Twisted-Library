@@ -63,20 +63,21 @@ public class PlayerInTheAir : State
         {
             pSM.isWallJumping = false;
         }
-
-        if (pSM.forwardInput <= 0.3f && pSM.forwardInput >= -.3f && !pSM.isWallJumping)
+        /*
+        if (pSM.forwardInput <= 0.1f && pSM.forwardInput >= -.1f && !pSM.isWallJumping)
         {
             Vector3 currentDragForward = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionForward) / values.airMovementFactor;
             pSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
         }
-        if (pSM.sideWaysInput <= 0.3f && pSM.sideWaysInput >= -.3f && !pSM.isWallJumping)
+        if (pSM.sideWaysInput <= 0.1f && pSM.sideWaysInput >= -.1f && !pSM.isWallJumping)
         {
             Vector3 currentDragSideways = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionRight) / values.airMovementFactor;
             pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
+        */
         pSM.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
         float ClampedVelocityY = Mathf.Clamp(pSM.baseVelocity.y, -values.maxFallingSpeed, values.maxJumpingSpeed);
-        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.playerVelocity.magnitude, 0, values.maximumMovementSpeed);
+        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, values.maximumMovementSpeed);
         pSM.baseVelocity.y = ClampedVelocityY;
 
 
