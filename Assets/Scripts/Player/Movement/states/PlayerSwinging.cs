@@ -153,10 +153,6 @@ public class PlayerSwinging : PlayerSliding
         //die Leiter korrekt rotieren
         currentDistance = pSM.currentDistance;
 
-        //this actually needs to be HERE and not in the Update
-        //Vector3 railDirection = path.GetNormalAtDistance(currentDistance);
-        //pSM.ladder.transform.forward = -railDirection;
-
         Vector3 axis = pSM.ladder.right;
         float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition - pSM.ladder.transform.position, axis));
 
@@ -167,6 +163,7 @@ public class PlayerSwinging : PlayerSliding
         bobPosition = pSM.bob.transform.position;
         bobForward = pSM.bob.transform.forward;
 
+        //rotate the ladder, so that its not stuck in the wall, this is a shitty fix, but otherwise wed have to rewrite A LOT
         if (onWall)
         {
             Vector3 localVector = ladder.transform.localEulerAngles;
