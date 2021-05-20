@@ -90,8 +90,8 @@ public class PlayerSwinging : PlayerSliding
         if (stats.useNewSliding)
         {
             pSM.slidingInput = pSM.startingSlidingInput;
-            pSM.slideLeftAction.started += context => { leftHoldTimer = 0; if (pSM.slidingInput * pSM.adjustedSlideDirection == 1) { startLeftHoldTimer = true; } holdingChangeDirection = false; holdingSlideButton = true; };
-            pSM.slideRightAction.started += context => { rightHoldTimer = 0; if (pSM.slidingInput * pSM.adjustedSlideDirection == -1) { startRightHoldTimer = true; } holdingChangeDirection = false; holdingSlideButton = true; };
+            pSM.slideLeftAction.started += context => { leftHoldTimer = 0; startLeftHoldTimer = true; holdingChangeDirection = false; };
+            pSM.slideRightAction.started += context => { rightHoldTimer = 0; startRightHoldTimer = true; holdingChangeDirection = false; };
             pSM.slideLeftAction.canceled += context => SwitchSpeedLevel("left");
             pSM.slideRightAction.canceled += context => SwitchSpeedLevel("right");
             if (pSM.startingSlidingInput == 0)
@@ -447,16 +447,29 @@ public class PlayerSwinging : PlayerSliding
         ladder.transform.position = startingPoint;
         Vector3 startingNormal = path.GetNormalAtDistance(currentDistance);
 
-        if (railType == Rail.RailType.TwoSided && Vector3.Dot(startingPoint - pSM.transform.position, startingNormal) >= 0)
+
+        /*
+         * evtl. für später noch wichtig wenn ich nochmal versuche das ganze velocity base zu machen
+        if (railType == Rail.RailType.TwoSided && pSM.playerVelocity.magnitude >= stats.minVelocityToChangeSnapDirection) 
+        {
+            if (Vector3.Dot(pSM.playerVelocity.normalized, startingNormal) >= 0)
+            {
+                ladder.transform.forward = -startingNormal;
+            }
+            else 
+            {
+                ladder.transform.forward = startingNormal;
+            }
+        } 
+        else */if (railType == Rail.RailType.TwoSided && Vector3.Dot(startingPoint - pSM.transform.position, startingNormal) >= 0)
         {
             ladder.transform.forward = startingNormal;
         }
         else
         {
             ladder.transform.forward = -startingNormal;
-
-
         }
+
         pSM.currentDistance = currentDistance;
         ladder.transform.SetParent(pSM.myParent);
         ladder.transform.localScale = new Vector3(1, 1, 1);
@@ -482,15 +495,6 @@ public class PlayerSwinging : PlayerSliding
         {
             currentVelocity += pSM.resultingVelocity(pSM.playerVelocity, pSM.bob.transform.forward);
             currentVelocity = Vector3.ClampMagnitude(currentVelocity, stats.maxSwingSpeed);
-        }
-
-        if (ladder.right != pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop).normalized)
-        {
-            pSM.adjustedSlideDirection = -1;
-        }
-        else
-        {
-            pSM.adjustedSlideDirection = 1;
         }
 
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);

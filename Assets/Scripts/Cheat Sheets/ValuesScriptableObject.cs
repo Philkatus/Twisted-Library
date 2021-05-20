@@ -77,6 +77,9 @@ public class ValuesScriptableObject : ScriptableObject
     public float snappingDistance = 10;
     [Tooltip("The maximum distance between ladder and rail to snap to the next rail while sliding.")]
     public float resnappingDistance = .5f;
+    [Tooltip("die minimale velocity die der spieler haben muss damit sie einfluss auf die snap direction hat")]
+    public float minVelocityToChangeSnapDirection = 1;
+
 
     [Tooltip("How fast the player climbs the ladder up and down while sliding.")]
     public float climbingSpeedOnLadder;

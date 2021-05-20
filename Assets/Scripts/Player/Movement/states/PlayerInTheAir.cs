@@ -103,14 +103,12 @@ public class PlayerInTheAir : State
     {
         PlayerStateMachine.isRocketJumping = false;
         PlayerStateMachine.OnSnap();
-
     }
 
     public override void RocketJump()
     {
-        if (!PlayerStateMachine.isRocketJumping)
-        {
-            Debug.Log("Rocket");
+       
+            
             float sphereRadius = .2f;
             float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig - sphereRadius;
             float acceleration = values.rocketJumpAcceleration;
@@ -123,11 +121,17 @@ public class PlayerInTheAir : State
             List<RaycastHit> hits = new List<RaycastHit>();
             Ray ray = new Ray(origin, Vector3.down);
             //hits.AddRange( Physics.SphereCastAll(ray, MaxHeight, 1, mask));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down, MaxHeight, mask, QueryTriggerInteraction.Ignore));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.forward, MaxHeight, mask, QueryTriggerInteraction.Ignore));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.back, MaxHeight, mask, QueryTriggerInteraction.Ignore));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.right, MaxHeight, mask, QueryTriggerInteraction.Ignore));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.left, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            if (!PlayerStateMachine.isRocketJumping)
+            {
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            }
+            if (hits.Count == 0)
+            {
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.forward, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.back, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.right, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.left, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            }
 
 
             float closestDistance = Mathf.Infinity;
@@ -161,10 +165,6 @@ public class PlayerInTheAir : State
                 PlayerStateMachine.isRocketJumping = true;
                 pSM.ladderSizeStateMachine.OnRocketJump();
             }
-
-
-        }
-
 
     }
 }
