@@ -372,7 +372,7 @@ public class AnimationStateController : MonoBehaviour
 
     void RocketJump()
     {
-        if (movementScript.isRocketJumping && !isRocketJumping)
+        if (movementScript.didRocketJump && !isRocketJumping)
         {
             animator.SetBool("isRocketJumping", true);
             isRocketJumping = true;         
@@ -389,7 +389,7 @@ public class AnimationStateController : MonoBehaviour
 
         }
 
-        if(!movementScript.isRocketJumping)
+        if(!movementScript.didRocketJump)
         {
             animator.SetBool("isRocketJumping", false);
             isRocketJumping = false;

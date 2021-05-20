@@ -28,7 +28,7 @@ public class PlayerMovementStateMachine : StateMachine
     public int adjustedSlideDirection;
     public float startingSlidingInput;
     public bool dismounting;
-    public bool isRocketJumping;
+    public bool didRocketJump;
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
