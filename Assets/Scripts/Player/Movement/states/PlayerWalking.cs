@@ -43,7 +43,6 @@ public class PlayerWalking : State
         }
         */
 
-
         if (direction != Vector3.zero)
         {
             controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
@@ -85,6 +84,7 @@ public class PlayerWalking : State
         PlayerStateMachine.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
         pSM.baseVelocity = pSM.ClampPlayerVelocity(pSM.baseVelocity, Vector3.down, values.maxFallingSpeed);
         pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, values.maximumMovementSpeed);
+        pSM.looseBonusVelocityPercentage(values.walkingBonusVelocityDrag);
         controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * values.movementVelocityFactor);
 
         if (isGroundedWithCoyoteTime())
@@ -101,7 +101,6 @@ public class PlayerWalking : State
         }
         else
         {
-
             coyoteTime += Time.fixedDeltaTime;
         }
         return coyoteTimer < coyoteTime;

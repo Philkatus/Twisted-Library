@@ -23,6 +23,10 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("How much drag is applied when there is no input while walking.")]
     public float movementDrag;
 
+    [Tooltip("How much percentag drag to the bonusvelocity is applied while walking.")]
+    [Range(0,100)]
+    public float walkingBonusVelocityDrag = 50;
+
     [Tooltip("The factor to convert Velocity into Movementspeed")]
     public float movementVelocityFactor = 1;
 

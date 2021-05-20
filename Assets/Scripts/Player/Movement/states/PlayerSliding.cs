@@ -11,13 +11,11 @@ public class PlayerSliding : State
 
     #region PRIVATE
     float dismountTimer;
-    float currentSlidingLevelSpeed;
-    int currentSlidingLevel;
     float currentSlidingDirection;
     float accelerateTimer;
     bool dismountedHalfways;
-    bool stopping;
     bool canAccalerate;
+    bool donethisCallbackAlready;
     Vector3 dismountStartPos;
     Vector3 pathDirection;
 
@@ -31,17 +29,27 @@ public class PlayerSliding : State
     protected PathCreator pathCreator;
     protected PlayerMovementStateMachine pSM;
     protected LadderSizeStateMachine ladderSizeState;
+    protected CharacterController controller;
     protected Transform ladder;
     protected float currentDistance;
     protected float speed;
     protected float pathLength;
-    protected CharacterController controller;
+    protected float currentSlidingLevelSpeed;
+    protected int currentSlidingLevel;
+    protected bool stopping;
+    protected bool startLeftHoldTimer;
+    protected bool startRightHoldTimer;
+    protected bool holdingChangeDirection;
+    protected float leftHoldTimer;
+    protected float rightHoldTimer;
 
 
     #endregion
     public override void Initialize()
     {
-        // Assign variables.
+        // Done in PlayerSwinging
+
+        /*
         pSM = PlayerStateMachine;
         stats = pSM.valuesAsset;
 
@@ -53,12 +61,6 @@ public class PlayerSliding : State
         pathCreator = closestRail.pathCreator;
         path = pathCreator.path;
         //pSM.HeightOnLadder = -1;
-
-        // set the sliding direction for new sliding
-        if (stats.useNewSliding)
-        {
-            pSM.slidingInput = pSM.startingSlidingInput;
-        }
 
         // Place the ladder on the path.
         Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
@@ -93,7 +95,30 @@ public class PlayerSliding : State
 
         pSM.stopSlidingAction.started += context => stopping = true;
         pSM.stopSlidingAction.canceled += context => stopping = false;
-        Time.fixedDeltaTime = 0.002f;
+        Debug.LogError("fffd");
+        if (stats.useNewSliding)
+        {
+            pSM.slidingInput = pSM.startingSlidingInput;
+            pSM.slideLeftAction.performed += context => SwitchSpeedLevel("left");
+            pSM.slideRightAction.performed += context => SwitchSpeedLevel("right");
+            pSM.slideHoldLeftAction.performed += context => currentSlidingLevel = 1;
+            pSM.slideHoldRightAction.performed += context => currentSlidingLevel = 1;
+            Debug.LogError(pSM.startingSlidingInput);
+            Debug.LogError("pSM.startingSlidingInput");
+            if (pSM.startingSlidingInput == 0)
+            {
+                currentSlidingLevel = 0;
+                currentSlidingLevelSpeed = 0;
+                Debug.LogError("zes");
+            }
+            else
+            {
+                currentSlidingLevel = 1;
+                currentSlidingLevelSpeed = stats.speedLevels[currentSlidingLevel];
+            }
+        }
+
+        Time.fixedDeltaTime = 0.002f;*/
     }
 
     public override void ReInitialize()
@@ -186,7 +211,6 @@ public class PlayerSliding : State
                 PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
             }
 
-            Debug.Log("Normal slide jump");
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = false;
         }
@@ -215,7 +239,6 @@ public class PlayerSliding : State
                 if (pSM.slideAction.triggered && pSM.slideAction.ReadValue<float>() == 0)
                 {
                     pSM.playerVelocity -= pSM.resultingVelocity(pSM.playerVelocity, pathDirection);
-
                 }
 
                 //playervelocity increased with input
@@ -291,11 +314,15 @@ public class PlayerSliding : State
         }
         else
         {
+            CustomHoldInput();
+            donethisCallbackAlready = false;
             accelerateTimer += Time.fixedDeltaTime;
             if (accelerateTimer >= stats.accelerationCooldown)
             {
                 canAccalerate = true;
             }
+            // Debug.LogError("speed " + currentSlidingLevelSpeed);
+            // Debug.LogError("level " + currentSlidingLevel);
 
             pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
             if (!pSM.dismounting)
@@ -327,11 +354,12 @@ public class PlayerSliding : State
 
                 //speed Clamp (dependant on ladder size)
                 float maxSlidingSpeed = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, stats.maxSlidingSpeed * stats.slidingSpeedSizeFactor, stats.maxSlidingSpeed);
-                pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * stats.slidingDragPercentage / 100, -currentSlidingLevelSpeed, currentSlidingLevelSpeed);
+                pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * stats.slidingDragPercentage / 100, --maxSlidingSpeed, maxSlidingSpeed);
 
                 //moving the object
                 if (!CheckForCollisionCharacter(pSM.playerVelocity) && !stopping && !CheckForCollisionLadder(pSM.playerVelocity))
                 {
+                    pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, currentSlidingLevelSpeed * -pSM.slidingInput);
                     pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * stats.slidingVelocityFactor;
 
                     pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
@@ -392,72 +420,121 @@ public class PlayerSliding : State
         }
     }
 
-    void SwitchSpeedLevel(string direction)
+    void CustomHoldInput()
     {
-        if (canAccalerate)
+        if (startLeftHoldTimer)
         {
-            if (direction == "left")
+            leftHoldTimer += Time.fixedDeltaTime;
+            if (leftHoldTimer >= stats.timeToSwitchDirection)
             {
-                if (pSM.slidingInput == -1)
-                {
-                    if (stats.speedLevels.Count < currentSlidingLevel + 1)
-                    {
-                        currentSlidingLevel += 1;
-                        currentSlidingLevelSpeed = stats.speedLevels[currentSlidingLevel];
-                    }
-                }
-                if (pSM.slidingInput == 0)
-                {
-                    pSM.slidingInput = -1;
-                    currentSlidingLevel = 1;
-                    currentSlidingLevelSpeed = stats.speedLevels[currentSlidingLevel];
-                }
-                if (pSM.slidingInput == +1)
-                {
-                    if (currentSlidingLevel == 0)
-                    {
-                        pSM.slidingInput = -1;
-                        currentSlidingLevel = 1;
-                        currentSlidingLevelSpeed = stats.speedLevels[currentSlidingLevel];
-                    }
-                    else
-                    {
-                        currentSlidingLevel -= 1;
-                        currentSlidingLevelSpeed = stats.speedLevels[currentSlidingLevel];
-                    }
-                }
+                holdingChangeDirection = true;
+                ChangeDirection("left");
+                leftHoldTimer = 0;
+                startLeftHoldTimer = false;
             }
-            if (direction == "right")
-            {
-                if (pSM.slidingInput == -1)
-                {
-                    if (currentSlidingLevel == 0)
-                    {
-                        pSM.slidingInput = +1;
-                        currentSlidingLevel = 1;
-                    }
-                    else
-                    {
-                        currentSlidingLevel -= 1;
-                    }
-                }
-                if (pSM.slidingInput == 0)
-                {
-                    pSM.slidingInput = -1;
-                    currentSlidingLevel = 1;
-                }
-                if (pSM.slidingInput == +1)
-                {
-                    if (stats.speedLevels.Count < currentSlidingLevel + 1)
-                    {
-                        currentSlidingLevel += 1;
-                    }
-                }
-            }
-            currentSlidingLevelSpeed = stats.speedLevels[currentSlidingLevel];
-            canAccalerate = false;
-            accelerateTimer = 0;
         }
+        else if (startRightHoldTimer)
+        {
+            rightHoldTimer += Time.fixedDeltaTime;
+            if (rightHoldTimer >= stats.timeToSwitchDirection)
+            {
+                holdingChangeDirection = true;
+                ChangeDirection("right");
+                rightHoldTimer = 0;
+                startRightHoldTimer = false;
+            }
+        }
+    }
+
+    void ChangeDirection(string direction)
+    {
+        if ((direction == "left" && pSM.slidingInput == 1) || (direction == "right" && pSM.slidingInput == -1))
+        {
+            currentSlidingLevel = 1;
+            currentSlidingLevelSpeed = stats.speedLevels[1];
+            pSM.slidingInput *= -1;
+        }
+    }
+
+    protected void SwitchSpeedLevel(string direction)
+    {
+        if (donethisCallbackAlready)
+        {
+            return;
+        }
+
+        if (direction == "left" && !holdingChangeDirection)
+        {
+            if (pSM.slidingInput == -1 && canAccalerate)
+            {
+                if (stats.speedLevels[stats.speedLevels.Count - 1] != stats.speedLevels[currentSlidingLevel])
+                {
+                    accelerateTimer = 0;
+                    currentSlidingLevel += 1;
+                }
+            }
+            else if (pSM.slidingInput == 0)
+            {
+                pSM.slidingInput = -1;
+                currentSlidingLevel = 1;
+            }
+            else if (pSM.slidingInput == +1)
+            {
+                if (currentSlidingLevel == 0)
+                {
+                    pSM.slidingInput = -1;
+                    currentSlidingLevel = 1;
+                }
+                else if (currentSlidingLevel == 1)
+                {
+                    currentSlidingLevel = 0;
+                    pSM.slidingInput = 0;
+                }
+                else
+                {
+                    currentSlidingLevel -= 1;
+                }
+            }
+        }
+        else if (direction == "right" && !holdingChangeDirection)
+        {
+            if (pSM.slidingInput == -1)
+            {
+                if (currentSlidingLevel == 0)
+                {
+                    pSM.slidingInput = 1;
+                    currentSlidingLevel = 1;
+                }
+                else if (currentSlidingLevel == 1)
+                {
+                    currentSlidingLevel = 0;
+                    pSM.slidingInput = 0;
+                }
+                else
+                {
+                    currentSlidingLevel -= 1;
+                }
+            }
+            else if (pSM.slidingInput == 0)
+            {
+                pSM.slidingInput = 1;
+                currentSlidingLevel = 1;
+            }
+            else if (pSM.slidingInput == 1 && canAccalerate)
+            {
+                if (stats.speedLevels[stats.speedLevels.Count - 1] != stats.speedLevels[currentSlidingLevel])
+                {
+                    accelerateTimer = 0;
+                    currentSlidingLevel += 1;
+                }
+            }
+        }
+        currentSlidingLevelSpeed = stats.speedLevels[currentSlidingLevel];
+        canAccalerate = false;
+        holdingChangeDirection = false;
+        startLeftHoldTimer = false;
+        startRightHoldTimer = false;
+        donethisCallbackAlready = true;
     }
 
     protected bool CheckForCollisionCharacter(Vector3 moveDirection)

@@ -70,7 +70,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         get
         {
-            return  ladderSizeStateMachine.ladderParent.right;
+            return ladderSizeStateMachine.ladderParent.right;
         }
     }
     [HideInInspector] public Transform myParent;
@@ -100,18 +100,16 @@ public class PlayerMovementStateMachine : StateMachine
             playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
             slideLeftAction = playerControlsMap.FindAction("SlideLeft");
             slideRightAction = playerControlsMap.FindAction("SlideRight");
-            slideHoldLeftAction = playerControlsMap.FindAction("SlideHoldLeft");
-            slideHoldRightAction = playerControlsMap.FindAction("SlideHoldRight");
-            slideHoldLeftAction.performed += context => slidingInput = -1;
-            slideHoldRightAction.performed += context => slidingInput = +1;
-            slideHoldLeftAction.started += context => startingSlidingInput = -1;
-            slideHoldRightAction.started += context => startingSlidingInput = +1;
-            slideRightAction.canceled += context => startingSlidingInput = 0;
-            slideLeftAction.canceled += context => startingSlidingInput = 0;
+            slideLeftAction.started += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = -1; } };
+            slideRightAction.started += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = +1; } };
+            slideRightAction.canceled += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = 0; } };
+            slideLeftAction.canceled += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = 0; } };
+            startingSlidingInput = 0;
         }
         else
         {
             playerControlsMap = actionAsset.FindActionMap("PlayerControls");
+            stopSlidingAction = playerControlsMap.FindAction("StopSliding");
             slideAction = playerControlsMap.FindAction("Slide");
         }
         if (GameObject.FindGameObjectWithTag("Canvas"))
@@ -127,7 +125,6 @@ public class PlayerMovementStateMachine : StateMachine
         snapAction = playerControlsMap.FindAction("Snap");
         swingAction = playerControlsMap.FindAction("Swing");
         foldAction = playerControlsMap.FindAction("Fold");
-        stopSlidingAction = playerControlsMap.FindAction("StopSliding");
 
         jumpAction.performed += context => State.Jump();
         snapAction.performed += context => TryToSnapToShelf();
@@ -149,7 +146,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void FixedUpdate()
     {
         GetInput();
-        looseBonusVelocity();
+        looseBonusVelocity(valuesAsset.bonusVelocityDrag);
         State.Movement();
         Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
         Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
@@ -178,10 +175,19 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
 
-    public void looseBonusVelocity()
+    public void looseBonusVelocity(float dragAmount)
     {
-        bonusVelocity -= bonusVelocity.normalized * valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime;
-        if (bonusVelocity.magnitude <= valuesAsset.bonusVelocityDrag * Time.fixedDeltaTime)
+        bonusVelocity -= bonusVelocity.normalized * dragAmount * Time.fixedDeltaTime;
+        if (bonusVelocity.magnitude <= dragAmount * Time.fixedDeltaTime)
+        {
+            bonusVelocity = Vector3.zero;
+        }
+    }
+    public void looseBonusVelocityPercentage(float dragAmount)
+    {
+        dragAmount /= 100;
+        bonusVelocity *= dragAmount * Time.fixedDeltaTime;
+        if (bonusVelocity.magnitude <= dragAmount * Time.fixedDeltaTime)
         {
             bonusVelocity = Vector3.zero;
         }
@@ -281,7 +287,7 @@ public class PlayerMovementStateMachine : StateMachine
 
                 if (distance < closestDistance
                     && possibleRails[i] != currentClosestRail)
-                    //&& possibleRails[i].transform.position.y == currentClosestRail.transform.position.y)
+                //&& possibleRails[i].transform.position.y == currentClosestRail.transform.position.y)
                 {
                     if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .99f)
                     {

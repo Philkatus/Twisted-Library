@@ -84,8 +84,48 @@ public class PlayerSwinging : PlayerSliding
 
     public override void Initialize()
     {
-        //base.Initialize();
         SnappingOrientation();
+
+        // Input Callbacks
+        if (stats.useNewSliding)
+        {
+            pSM.slidingInput = pSM.startingSlidingInput;
+            pSM.slideLeftAction.started += context => { leftHoldTimer = 0; startLeftHoldTimer = true; holdingChangeDirection = false; };
+            pSM.slideRightAction.started += context => { rightHoldTimer = 0; startRightHoldTimer = true; holdingChangeDirection = false; };
+            pSM.slideLeftAction.canceled += context => SwitchSpeedLevel("left");
+            pSM.slideRightAction.canceled += context => SwitchSpeedLevel("right");
+            if (pSM.startingSlidingInput == 0)
+            {
+                currentSlidingLevel = 0;
+                currentSlidingLevelSpeed = 0;
+            }
+            else
+            {
+                holdingChangeDirection = true;
+                //float resultingSpeed = pSM.resultingSpeed(pSM.playerVelocity, pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop));
+                //float resultingSpeed = Mathf.Abs(Vector3.Project(pSM.playerVelocity, pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop).normalized).magnitude);
+                float resultingSpeed = pSM.playerVelocity.magnitude;
+
+                float tempSpeed = 100;
+                int closestSpeedLevel = 1;
+                for (int i = 1; i < stats.speedLevels.Count; i++)
+                {
+                    float newTempSpeed = Mathf.Abs(stats.speedLevels[i] - resultingSpeed);
+                    if (tempSpeed > stats.speedLevels[i])
+                    {
+                        tempSpeed = newTempSpeed;
+                        closestSpeedLevel = i;
+                    }
+                }
+                currentSlidingLevel = closestSpeedLevel;
+                currentSlidingLevelSpeed = stats.speedLevels[currentSlidingLevel];
+            }
+        }
+        else
+        {
+            pSM.stopSlidingAction.started += context => stopping = true;
+            pSM.stopSlidingAction.canceled += context => stopping = false;
+        }
 
         Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
@@ -96,7 +136,7 @@ public class PlayerSwinging : PlayerSliding
         ladderParent = ladderSizeState.ladderParent.gameObject;
         swingingFeedback = ladderParent.transform.GetChild(5).gameObject;
 
-        railType = closestRail.railType;
+
         onWall = false;
         inputGiven = false;
         canPress = true;
@@ -393,6 +433,7 @@ public class PlayerSwinging : PlayerSliding
 
         ladderSizeState = pSM.ladderSizeStateMachine;
         closestRail = pSM.closestRail;
+        railType = closestRail.railType;
         speed = stats.climbingSpeedOnLadder;
         controller = pSM.controller;
         ladder = pSM.ladder;
@@ -404,8 +445,18 @@ public class PlayerSwinging : PlayerSliding
         Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
         currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
         ladder.transform.position = startingPoint;
-        ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
+        Vector3 startingNormal = path.GetNormalAtDistance(currentDistance);
 
+        if (railType == Rail.RailType.TwoSided && Vector3.Dot(startingPoint - pSM.transform.position, startingNormal) >= 0)
+        {
+            ladder.transform.forward = startingNormal;
+        }
+        else
+        {
+            ladder.transform.forward = -startingNormal;
+
+
+        }
         pSM.currentDistance = currentDistance;
         ladder.transform.SetParent(pSM.myParent);
         ladder.transform.localScale = new Vector3(1, 1, 1);
@@ -471,6 +522,8 @@ public class PlayerSwinging : PlayerSliding
         SetCurrentPlayerVelocity(Pivot.transform.position);
         pSM.bonusVelocity += currentMovement / stats.swingingVelocityFactor;
         swingingFeedback.SetActive(false);
+        pSM.slideLeftAction.canceled += context => SwitchSpeedLevel("left");
+        pSM.slideRightAction.canceled += context => SwitchSpeedLevel("right");
         return base.Finish();
 
     }
