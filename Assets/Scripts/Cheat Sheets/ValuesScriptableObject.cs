@@ -8,6 +8,19 @@ public class ValuesScriptableObject : ScriptableObject
     [Header("General")]
     [Tooltip("How fast the bonusvelocity is lost again")]
     public float bonusVelocityDrag;
+    [Space]
+    [Header("Input Coyote Timer")]
+    [Tooltip("Determines how long the jump input gets saved ")]
+    public float jumpInputTimer;
+
+    [Tooltip("Determines how long the snap input gets saved ")]
+    public float snapInputTimer;
+
+    [Tooltip("Determines how long the swing input gets saved ")]
+    public float swingInputTimer;
+
+    [Tooltip("Determines how long the fold input gets saved ")]
+    public float foldInputTimer;
 
     #endregion
 

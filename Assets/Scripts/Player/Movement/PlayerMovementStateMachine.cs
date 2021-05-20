@@ -66,6 +66,44 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
     [HideInInspector] public Vector3 ladderJumpTarget;
+
+    public bool[] inputBools = new bool[3];
+    public bool jumpInputBool
+    {
+        get
+        {
+            return inputBools[0];
+        }
+        set
+        {
+            inputBools[0] = value;
+        }
+
+    }
+    public bool snapInputBool
+    {
+        get
+        {
+            return inputBools[1];
+        }
+        set
+        {
+            inputBools[1] = value;
+        }
+
+    }
+    public bool foldInputBool
+    {
+        get
+        {
+            return inputBools[2];
+        }
+        set
+        {
+            inputBools[2] = value;
+        }
+
+    }
     public Vector3 ladderDirection
     {
         get
@@ -82,8 +120,9 @@ public class PlayerMovementStateMachine : StateMachine
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
-
     InputAction foldAction;
+
+    Coroutine[] inputTimer=new Coroutine[3];
     #endregion
 
     private void Start()
@@ -95,6 +134,91 @@ public class PlayerMovementStateMachine : StateMachine
 
         SetState(new PlayerWalking(this));
         #region controls
+        GetControlls();
+        #endregion
+    }
+
+   
+
+    private void Update()
+    {
+        railCheckTimer += Time.deltaTime;
+        if (railCheckTimer >= 0.1f)
+        {
+            CheckForRail();
+            railCheckTimer = 0;
+        }
+
+        CheckForInputBools();
+
+    }
+
+    private void CheckForInputBools()
+    {
+        if (jumpInputBool)
+        {
+            State.Jump();
+        }
+        if (snapInputBool)
+        {
+            TryToSnapToShelf();
+        }
+        if (foldInputBool)
+        {
+            State.RocketJump();
+            ladderSizeStateMachine.OnFold();
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        GetInput();
+        looseBonusVelocity(valuesAsset.bonusVelocityDrag);
+        State.Movement();
+        Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
+        Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
+    }
+
+    public void TryToSnapToShelf()
+    {
+        if (CheckForRail())
+        {
+            State.Snap();
+        }
+    }
+
+
+    #region utility
+    public void GetInput()
+    {
+        forwardInput = moveAction.ReadValue<Vector2>().y;
+        sideWaysInput = moveAction.ReadValue<Vector2>().x;
+        swingingInput = swingAction.ReadValue<float>();
+        if (!valuesAsset.useNewSliding)
+        {
+            slidingInput = slideAction.ReadValue<float>() * adjustedSlideDirection;
+        }
+
+    }
+
+    public void SaveInput(int index, float duration)
+    {
+        if (inputTimer[index] != null)
+        {
+            StopCoroutine(inputTimer[index]);
+        }
+        inputTimer[index] = StartCoroutine(InputTimer(index, duration));
+    }
+
+    IEnumerator InputTimer(int index,float duration) 
+    {
+        inputBools[index] = true;
+        yield return new WaitForSeconds(duration);
+        inputBools[index] = false;
+    }
+
+    private void GetControlls()
+    {
         if (valuesAsset.useNewSliding)
         {
             playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
@@ -126,51 +250,10 @@ public class PlayerMovementStateMachine : StateMachine
         swingAction = playerControlsMap.FindAction("Swing");
         foldAction = playerControlsMap.FindAction("Fold");
 
-        jumpAction.performed += context => State.Jump();
-        snapAction.performed += context => TryToSnapToShelf();
-        foldAction.performed += context => ladderSizeStateMachine.OnFold();
-        foldAction.performed += context => State.RocketJump();
-        #endregion
-    }
-
-    private void Update()
-    {
-        railCheckTimer += Time.deltaTime;
-        if (railCheckTimer >= 0.1f)
-        {
-            CheckForRail();
-            railCheckTimer = 0;
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        GetInput();
-        looseBonusVelocity(valuesAsset.bonusVelocityDrag);
-        State.Movement();
-        Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
-        Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
-    }
-
-    public void TryToSnapToShelf()
-    {
-        if (CheckForRail())
-        {
-            State.Snap();
-        }
-    }
-
-    #region utility
-    public void GetInput()
-    {
-        forwardInput = moveAction.ReadValue<Vector2>().y;
-        sideWaysInput = moveAction.ReadValue<Vector2>().x;
-        swingingInput = swingAction.ReadValue<float>();
-        if (!valuesAsset.useNewSliding)
-        {
-            slidingInput = slideAction.ReadValue<float>() * adjustedSlideDirection;
-        }
-
+        jumpAction.performed += context => SaveInput(0, valuesAsset.jumpInputTimer);// State.Jump();
+        snapAction.performed += context => SaveInput(1, valuesAsset.snapInputTimer);   //TryToSnapToShelf();
+        foldAction.performed += context => SaveInput(2, valuesAsset.foldInputTimer); //ladderSizeStateMachine.OnFold();
+        //foldAction.performed += context => State.RocketJump();
     }
 
     public void looseBonusVelocity(float dragAmount)
@@ -405,7 +488,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnSnap()
     {
         ladderSizeStateMachine.OnGrow();
-
+        snapInputBool = false;
 
         if (valuesAsset.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
         {
