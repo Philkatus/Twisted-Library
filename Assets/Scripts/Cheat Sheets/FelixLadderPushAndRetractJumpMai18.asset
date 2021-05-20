@@ -16,6 +16,7 @@ MonoBehaviour:
   movementAcceleration: 50
   maximumMovementSpeed: 20
   movementDrag: 20
+  walkingBonusVelocityDrag: 50
   movementVelocityFactor: 1
   jumpHeight: 18
   maxJumpingSpeed: 15
@@ -37,10 +38,13 @@ MonoBehaviour:
   ladderDismountTimer: 0.2
   slidingVelocityFactor: 0.01
   preservesVelocityOnSnap: 0
-  useNewSliding: 0
-  speedLevels: []
-  timeToSwitchDirection: 0
-  accelerationCooldown: 0
+  useNewSliding: 1
+  speedLevels:
+  - 0.5
+  - 1
+  - 2
+  timeToSwitchDirection: 0.2
+  accelerationCooldown: 0.25
   useSwinging: 1
   swingingAcceleration: 2000
   minSwingingDeceleration: 0.0075
@@ -51,4 +55,4 @@ MonoBehaviour:
   maxPushAngle: -0.75
   maxSwingSpeed: 45
   swingingGravity: 70
-  swingingVelocityFactor: 1
+  swingingVelocityFactor: 1.6
