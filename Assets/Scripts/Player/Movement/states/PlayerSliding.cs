@@ -11,7 +11,6 @@ public class PlayerSliding : State
 
     #region PRIVATE
     float dismountTimer;
-    float currentSlidingDirection;
     float accelerateTimer;
     bool dismountedHalfways;
     bool canAccalerate;
@@ -35,6 +34,7 @@ public class PlayerSliding : State
     protected float speed;
     protected float pathLength;
     protected float currentSlidingLevelSpeed;
+    protected int adjustedSlideDirection;
     protected int currentSlidingLevel;
     protected bool stopping;
     protected bool startLeftHoldTimer;
@@ -153,7 +153,6 @@ public class PlayerSliding : State
 
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
         pSM.currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
-
     }
 
     public override IEnumerator Finish()
@@ -233,7 +232,7 @@ public class PlayerSliding : State
                 }
 
                 #region Move horizontally.
-                pathDirection = path.GetDirectionAtDistance(currentDistance);
+                pathDirection = path.GetDirectionAtDistance(currentDistance) * adjustedSlideDirection;
 
                 // Get sideways input, no input if both buttons held down.
                 if (pSM.slideAction.triggered && pSM.slideAction.ReadValue<float>() == 0)
@@ -363,15 +362,6 @@ public class PlayerSliding : State
                     pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * stats.slidingVelocityFactor;
 
                     pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
-
-                    /*
-                    float rotateByAngle2 = Vector3.SignedAngle(pSM.ladder.forward, -path.GetNormalAtDistance(pSM.currentDistance), pSM.ladder.up);
-                    Debug.Log(rotateByAngle2);
-
-                    Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle2, pSM.ladder.up);
-                    pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
-                    // Debug.Log(pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * values.slidingVelocityFactor + " " + values.slidingVelocityFactor);
-                    */
                 }
                 else
                 {
@@ -448,7 +438,7 @@ public class PlayerSliding : State
 
     void ChangeDirection(string direction)
     {
-        if ((direction == "left" && pSM.slidingInput == 1) || (direction == "right" && pSM.slidingInput == -1))
+        if ((direction == "left" && pSM.slidingInput * adjustedSlideDirection == 1) || (direction == "right" && pSM.slidingInput * adjustedSlideDirection == -1))
         {
             currentSlidingLevel = 1;
             currentSlidingLevelSpeed = stats.speedLevels[1];
@@ -463,9 +453,10 @@ public class PlayerSliding : State
             return;
         }
 
+        float slidingInput = pSM.slidingInput * adjustedSlideDirection;
         if (direction == "left" && !holdingChangeDirection)
         {
-            if (pSM.slidingInput == -1 && canAccalerate)
+            if (slidingInput == -1 && canAccalerate)
             {
                 if (stats.speedLevels[stats.speedLevels.Count - 1] != stats.speedLevels[currentSlidingLevel])
                 {
@@ -473,16 +464,16 @@ public class PlayerSliding : State
                     currentSlidingLevel += 1;
                 }
             }
-            else if (pSM.slidingInput == 0)
+            else if (slidingInput == 0)
             {
-                pSM.slidingInput = -1;
+                pSM.slidingInput = -1 * adjustedSlideDirection;
                 currentSlidingLevel = 1;
             }
-            else if (pSM.slidingInput == +1)
+            else if (slidingInput == +1)
             {
                 if (currentSlidingLevel == 0)
                 {
-                    pSM.slidingInput = -1;
+                    pSM.slidingInput = -1 * adjustedSlideDirection;
                     currentSlidingLevel = 1;
                 }
                 else if (currentSlidingLevel == 1)
@@ -498,11 +489,11 @@ public class PlayerSliding : State
         }
         else if (direction == "right" && !holdingChangeDirection)
         {
-            if (pSM.slidingInput == -1)
+            if (slidingInput == -1)
             {
                 if (currentSlidingLevel == 0)
                 {
-                    pSM.slidingInput = 1;
+                    pSM.slidingInput = 1 * adjustedSlideDirection;
                     currentSlidingLevel = 1;
                 }
                 else if (currentSlidingLevel == 1)
@@ -517,10 +508,10 @@ public class PlayerSliding : State
             }
             else if (pSM.slidingInput == 0)
             {
-                pSM.slidingInput = 1;
+                pSM.slidingInput = 1 * adjustedSlideDirection;
                 currentSlidingLevel = 1;
             }
-            else if (pSM.slidingInput == 1 && canAccalerate)
+            else if (slidingInput == 1 && canAccalerate)
             {
                 if (stats.speedLevels[stats.speedLevels.Count - 1] != stats.speedLevels[currentSlidingLevel])
                 {
