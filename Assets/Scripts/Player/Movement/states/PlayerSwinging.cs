@@ -90,8 +90,8 @@ public class PlayerSwinging : PlayerSliding
         if (stats.useNewSliding)
         {
             pSM.slidingInput = pSM.startingSlidingInput;
-            pSM.slideLeftAction.started += context => { leftHoldTimer = 0; startLeftHoldTimer = true; holdingChangeDirection = false; };
-            pSM.slideRightAction.started += context => { rightHoldTimer = 0; startRightHoldTimer = true; holdingChangeDirection = false; };
+            pSM.slideLeftAction.started += context => { leftHoldTimer = 0; if (pSM.slidingInput * pSM.adjustedSlideDirection == 1) { startLeftHoldTimer = true; } holdingChangeDirection = false; holdingSlideButton = true; };
+            pSM.slideRightAction.started += context => { rightHoldTimer = 0; if (pSM.slidingInput * pSM.adjustedSlideDirection == -1) { startRightHoldTimer = true; } holdingChangeDirection = false; holdingSlideButton = true; };
             pSM.slideLeftAction.canceled += context => SwitchSpeedLevel("left");
             pSM.slideRightAction.canceled += context => SwitchSpeedLevel("right");
             if (pSM.startingSlidingInput == 0)
@@ -486,11 +486,11 @@ public class PlayerSwinging : PlayerSliding
 
         if (ladder.right != pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop).normalized)
         {
-            adjustedSlideDirection = -1;
+            pSM.adjustedSlideDirection = -1;
         }
         else
         {
-            adjustedSlideDirection = 1;
+            pSM.adjustedSlideDirection = 1;
         }
 
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);

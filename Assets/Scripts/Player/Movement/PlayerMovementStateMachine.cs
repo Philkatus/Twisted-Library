@@ -25,8 +25,8 @@ public class PlayerMovementStateMachine : StateMachine
     public float forwardInput;
     public float swingingInput;
     public float slidingInput;
+    public int adjustedSlideDirection;
     public float startingSlidingInput;
-    public bool isPerformedFold;
     public bool dismounting;
     public bool isRocketJumping;
 
@@ -116,13 +116,14 @@ public class PlayerMovementStateMachine : StateMachine
 
     #region Private
     float railCheckTimer;
+    GameObject snapVisualisation;
     RailSearchManager railAllocator;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
     InputAction foldAction;
 
-    Coroutine[] inputTimer=new Coroutine[3];
+    Coroutine[] inputTimer = new Coroutine[3];
     #endregion
 
     private void Start()
@@ -131,6 +132,7 @@ public class PlayerMovementStateMachine : StateMachine
         railAllocator = RailSearchManager.instance;
         ladderWalkingPosition = ladder.localPosition;
         ladderWalkingRotation = ladder.localRotation;
+        snapVisualisation = myParent.transform.GetChild(3).GetChild(1).gameObject;
 
         SetState(new PlayerWalking(this));
         #region controls
@@ -138,7 +140,7 @@ public class PlayerMovementStateMachine : StateMachine
         #endregion
     }
 
-   
+
 
     private void Update()
     {
@@ -146,6 +148,7 @@ public class PlayerMovementStateMachine : StateMachine
         if (railCheckTimer >= 0.1f)
         {
             CheckForRail();
+            ChangeSnapVisualisationPoint();
             railCheckTimer = 0;
         }
 
@@ -181,12 +184,10 @@ public class PlayerMovementStateMachine : StateMachine
 
     public void TryToSnapToShelf()
     {
-
         if (CheckForRail())
         {
             State.Snap();
         }
-
     }
 
 
@@ -198,7 +199,7 @@ public class PlayerMovementStateMachine : StateMachine
         swingingInput = swingAction.ReadValue<float>();
         if (!valuesAsset.useNewSliding)
         {
-            slidingInput = slideAction.ReadValue<float>();
+            slidingInput = slideAction.ReadValue<float>() * adjustedSlideDirection;
         }
 
     }
@@ -212,7 +213,7 @@ public class PlayerMovementStateMachine : StateMachine
         inputTimer[index] = StartCoroutine(InputTimer(index, duration));
     }
 
-    IEnumerator InputTimer(int index,float duration) 
+    IEnumerator InputTimer(int index, float duration)
     {
         inputBools[index] = true;
         yield return new WaitForSeconds(duration);
@@ -450,10 +451,6 @@ public class PlayerMovementStateMachine : StateMachine
         return currentVelocity;
     }
     #endregion
-
-
-
-
     #region functions to change states
     ///<summary>
     /// Gets called when the player lands on the floor.
@@ -532,6 +529,19 @@ public class PlayerMovementStateMachine : StateMachine
         playerState = PlayerState.inTheAir;
         ladderSizeStateMachine.OnShrink();
         HeightOnLadder = -1;
+    }
+    #endregion
+    #region VFX
+    void ChangeSnapVisualisationPoint()
+    {
+        if (closestRail != null)
+        {
+            snapVisualisation.SetActive(true);
+            snapVisualisation.transform.position = closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+        }
+            
+        else
+            snapVisualisation.SetActive(false);
     }
     #endregion
 
