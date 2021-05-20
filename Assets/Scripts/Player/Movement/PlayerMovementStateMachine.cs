@@ -66,6 +66,44 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
     [HideInInspector] public Vector3 ladderJumpTarget;
+
+    public bool[] inputBools = new bool[3];
+    public bool jumpInputBool
+    {
+        get
+        {
+            return inputBools[0];
+        }
+        set
+        {
+            inputBools[0] = value;
+        }
+
+    }
+    public bool snapInputBool
+    {
+        get
+        {
+            return inputBools[1];
+        }
+        set
+        {
+            inputBools[1] = value;
+        }
+
+    }
+    public bool foldInputBool
+    {
+        get
+        {
+            return inputBools[2];
+        }
+        set
+        {
+            inputBools[2] = value;
+        }
+
+    }
     public Vector3 ladderDirection
     {
         get
@@ -83,6 +121,8 @@ public class PlayerMovementStateMachine : StateMachine
     InputAction jumpAction;
     InputAction moveAction;
     InputAction foldAction;
+
+    Coroutine[] inputTimer=new Coroutine[3];
     #endregion
 
     private void Start()
@@ -146,11 +186,20 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
 
-    IEnumerator SaveInput(bool inputBool,float duration) 
+    public void SaveInput(int index, float duration)
     {
-        inputBool = true;
+        if (inputTimer[index] != null)
+        {
+            StopCoroutine(inputTimer[index]);
+        }
+        inputTimer[index] = StartCoroutine(InputTimer(index, duration));
+    }
+
+    IEnumerator InputTimer(int index,float duration) 
+    {
+        inputBools[index] = true;
         yield return new WaitForSeconds(duration);
-        inputBool = false;
+        inputBools[index] = false;
     }
 
     private void GetControlls()
@@ -186,10 +235,10 @@ public class PlayerMovementStateMachine : StateMachine
         swingAction = playerControlsMap.FindAction("Swing");
         foldAction = playerControlsMap.FindAction("Fold");
 
-        jumpAction.performed += context => State.Jump();
-        snapAction.performed += context => TryToSnapToShelf();
-        foldAction.performed += context => ladderSizeStateMachine.OnFold();
-        foldAction.performed += context => State.RocketJump();
+        jumpAction.performed += context => SaveInput(0, valuesAsset.jumpInputTimer);// State.Jump();
+        snapAction.performed += context => SaveInput(1, valuesAsset.snapInputTimer);   //TryToSnapToShelf();
+        foldAction.performed += context => SaveInput(2, valuesAsset.foldInputTimer); //ladderSizeStateMachine.OnFold();
+        //foldAction.performed += context => State.RocketJump();
     }
 
     public void looseBonusVelocity(float dragAmount)

@@ -11,16 +11,16 @@ public class ValuesScriptableObject : ScriptableObject
     [Space]
     [Header("Input Coyote Timer")]
     [Tooltip("Determines how long the jump input gets saved ")]
-    public bool jumpInputTimer;
+    public float jumpInputTimer;
 
     [Tooltip("Determines how long the snap input gets saved ")]
-    public bool snapInputTimer;
+    public float snapInputTimer;
 
     [Tooltip("Determines how long the swing input gets saved ")]
-    public bool swingInputTimer;
+    public float swingInputTimer;
 
     [Tooltip("Determines how long the fold input gets saved ")]
-    public bool foldTimer;
+    public float foldInputTimer;
 
     #endregion
 
