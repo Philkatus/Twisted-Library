@@ -51,7 +51,7 @@ public class PlayerSliding : State
 
         /*
         pSM = PlayerStateMachine;
-        stats = pSM.valuesAsset;
+        stats = pSM.stats;
 
         ladderSizeState = pSM.ladderSizeStateMachine;
         speed = stats.climbingSpeedOnLadder;
@@ -125,7 +125,7 @@ public class PlayerSliding : State
     {
         // Assign variables.
         pSM = PlayerStateMachine;
-        stats = pSM.valuesAsset;
+        stats = pSM.stats;
 
         ladderSizeState = pSM.ladderSizeStateMachine;
         speed = stats.climbingSpeedOnLadder;

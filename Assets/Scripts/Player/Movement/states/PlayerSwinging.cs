@@ -431,7 +431,7 @@ public class PlayerSwinging : PlayerSliding
     {
         #region  Variable assignment
         pSM = PlayerStateMachine;
-        stats = pSM.valuesAsset;
+        stats = pSM.stats;
 
         ladderSizeState = pSM.ladderSizeStateMachine;
         closestRail = pSM.closestRail;
