@@ -484,6 +484,15 @@ public class PlayerSwinging : PlayerSliding
             currentVelocity = Vector3.ClampMagnitude(currentVelocity, stats.maxSwingSpeed);
         }
 
+        if (ladder.right != pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop).normalized)
+        {
+            adjustedSlideDirection = -1;
+        }
+        else
+        {
+            adjustedSlideDirection = 1;
+        }
+
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
 
