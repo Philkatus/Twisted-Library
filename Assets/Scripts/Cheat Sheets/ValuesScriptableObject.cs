@@ -19,8 +19,8 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("Determines how long the swing input gets saved ")]
     public bool swingInputTimer;
 
-    [Tooltip("Determines how long the rocket jump input gets saved ")]
-    public bool rocketJumpTimer;
+    [Tooltip("Determines how long the fold input gets saved ")]
+    public bool foldTimer;
 
     #endregion
 
