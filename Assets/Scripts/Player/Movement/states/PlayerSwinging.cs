@@ -173,7 +173,9 @@ public class PlayerSwinging : PlayerSliding
                 break;
         }
 
+        pSM.playerVelocity = Vector3.zero;
         pSM.baseVelocity = Vector3.zero;
+        pSM.bonusVelocity = Vector3.zero;
     }
 
     public override void Movement()

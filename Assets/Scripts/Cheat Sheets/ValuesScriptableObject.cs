@@ -13,6 +13,9 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("Use the button used for jumping instead of the fold button for the ladder shoot.")]
     public bool useJumpForLadderShoot;
 
+    [Tooltip("Use the button used for jumping instead of the fold button for the ladder shoot.")]
+    public bool useTriggerToSlideWithMomentum;
+
     [Space]
     [Header("General")]
     [Tooltip("How fast the bonusvelocity is lost again")]
