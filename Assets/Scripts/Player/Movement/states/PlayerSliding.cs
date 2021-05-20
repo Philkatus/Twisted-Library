@@ -217,12 +217,12 @@ public class PlayerSliding : State
 
     public override void Movement()
     {
-        if (!holdingSlideButton)
-        {
-            SwitchSlidingDirectionWithCameraRotation();
-        }
         if (!stats.useNewSliding)
         {
+            if (pSM.slidingInput == 0)
+            {
+                SwitchSlidingDirectionWithCameraRotation();
+            }
             pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
             if (!pSM.dismounting)
             {
@@ -317,6 +317,10 @@ public class PlayerSliding : State
         }
         else
         {
+            if (!holdingSlideButton)
+            {
+                SwitchSlidingDirectionWithCameraRotation();
+            }
             CustomHoldInput();
             donethisCallbackAlready = false;
             accelerateTimer += Time.fixedDeltaTime;
