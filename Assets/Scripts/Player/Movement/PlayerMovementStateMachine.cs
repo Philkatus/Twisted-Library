@@ -10,7 +10,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     [Header("Changeable")]
     [Tooltip("Change to use different variable value sets. Found in Assets-> Scripts-> Cheat Sheets.")]
-    public ValuesScriptableObject valuesAsset;
+    public ValuesScriptableObject stats;
     public InputActionAsset actionAsset;
 
     [Space]
@@ -159,7 +159,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void FixedUpdate()
     {
         GetInput();
-        looseBonusVelocity(valuesAsset.bonusVelocityDrag);
+        looseBonusVelocity(stats.bonusVelocityDrag);
         State.Movement();
         Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
         Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
@@ -181,7 +181,7 @@ public class PlayerMovementStateMachine : StateMachine
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
         swingingInput = swingAction.ReadValue<float>();
-        if (!valuesAsset.useNewSliding)
+        if (!stats.useNewSliding)
         {
             slidingInput = slideAction.ReadValue<float>() * adjustedSlideDirection;
         }
@@ -201,6 +201,10 @@ public class PlayerMovementStateMachine : StateMachine
     {
         if (jumpInputBool)
         {
+            if (stats.useJumpForLadderShoot)
+            {
+                State.RocketJump();
+            }
             State.Jump();
         }
         if (snapInputBool)
@@ -209,7 +213,10 @@ public class PlayerMovementStateMachine : StateMachine
         }
         if (foldInputBool)
         {
-            State.RocketJump();
+            if (!stats.useJumpForLadderShoot)
+            {
+                State.RocketJump();
+            }
             ladderSizeStateMachine.OnFold();
         }
     }
@@ -224,7 +231,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void GetControlls()
     {
-        if (valuesAsset.useNewSliding)
+        if (stats.useNewSliding)
         {
             playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
             slideLeftAction = playerControlsMap.FindAction("SlideLeft");
@@ -255,9 +262,9 @@ public class PlayerMovementStateMachine : StateMachine
         swingAction = playerControlsMap.FindAction("Swing");
         foldAction = playerControlsMap.FindAction("Fold");
 
-        jumpAction.performed += context => SaveInput(0, valuesAsset.jumpInputTimer);// State.Jump();
-        snapAction.performed += context => SaveInput(1, valuesAsset.snapInputTimer);   //TryToSnapToShelf();
-        foldAction.performed += context => SaveInput(2, valuesAsset.foldInputTimer); //ladderSizeStateMachine.OnFold();
+        jumpAction.performed += context => SaveInput(0, stats.jumpInputTimer);// State.Jump();
+        snapAction.performed += context => SaveInput(1, stats.snapInputTimer);   //TryToSnapToShelf();
+        foldAction.performed += context => SaveInput(2, stats.foldInputTimer); //ladderSizeStateMachine.OnFold();
         //foldAction.performed += context => State.RocketJump();
     }
     #endregion
@@ -271,9 +278,9 @@ public class PlayerMovementStateMachine : StateMachine
     }
     public void looseBonusVelocityPercentage(float dragAmount)
     {
-        dragAmount = (100- dragAmount)/ 100;
+        dragAmount = (100 - dragAmount) / 100;
         bonusVelocity *= dragAmount * Time.fixedDeltaTime;
-       
+
     }
 
     ///<summary>
@@ -303,7 +310,7 @@ public class PlayerMovementStateMachine : StateMachine
         }
         else
         {
-            float closestDistance = valuesAsset.snappingDistance;
+            float closestDistance = stats.snappingDistance;
             for (int i = 0; i < possibleRails.Count; i++)
             {
                 float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
@@ -322,7 +329,7 @@ public class PlayerMovementStateMachine : StateMachine
                     closestDistance = distance;
                 }
             }
-            if (closestDistance >= valuesAsset.snappingDistance)
+            if (closestDistance >= stats.snappingDistance)
             {
                 closestRail = null;
                 railAllocator.currentRailVisual = null;
@@ -357,7 +364,7 @@ public class PlayerMovementStateMachine : StateMachine
             VertexPath currentClosestPath = currentClosestRail.pathCreator.path;
             Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
 
-            float closestDistance = valuesAsset.resnappingDistance;
+            float closestDistance = stats.resnappingDistance;
             Rail nextClosestShelf = null;
 
             for (int i = 0; i < possibleRails.Count; i++)
@@ -488,7 +495,7 @@ public class PlayerMovementStateMachine : StateMachine
         ladderSizeStateMachine.OnGrow();
         snapInputBool = false;
 
-        if (valuesAsset.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
+        if (stats.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
         {
             SetState(new PlayerSwinging(this));
             playerState = PlayerState.swinging;
@@ -506,7 +513,7 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnResnap()
     {
-        if (valuesAsset.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
+        if (stats.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
         {
             SetState(this.State);
             playerState = PlayerState.swinging;
@@ -538,7 +545,7 @@ public class PlayerMovementStateMachine : StateMachine
             snapVisualisation.SetActive(true);
             snapVisualisation.transform.position = closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
         }
-            
+
         else
             snapVisualisation.SetActive(false);
     }

@@ -5,6 +5,15 @@ using UnityEngine;
 public class ValuesScriptableObject : ScriptableObject
 {
     #region general
+    [Header("Enable Features")]
+    [Space]
+    [Tooltip("Temporary bool which enables the new sliding code.")]
+    public bool useNewSliding;
+
+    [Tooltip("Use the button used for jumping instead of the fold button for the ladder shoot.")]
+    public bool useJumpForLadderShoot;
+
+    [Space]
     [Header("General")]
     [Tooltip("How fast the bonusvelocity is lost again")]
     public float bonusVelocityDrag;
@@ -34,7 +43,7 @@ public class ValuesScriptableObject : ScriptableObject
     public float movementDrag;
 
     [Tooltip("How much percentag drag to the bonusvelocity is applied while walking.")]
-    [Range(0,100)]
+    [Range(0, 100)]
     public float walkingBonusVelocityDrag = 50;
 
     [Tooltip("The factor to convert Velocity into Movementspeed")]
@@ -106,8 +115,6 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Space]
     [Header("New Sliding")]
-    [Tooltip("Temporary bool which enables the new sliding code.")]
-    public bool useNewSliding;
 
     [Tooltip("The sliding speed for each speed level.")]
     public List<float> speedLevels;

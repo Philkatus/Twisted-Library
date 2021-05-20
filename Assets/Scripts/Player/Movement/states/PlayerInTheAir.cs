@@ -29,7 +29,7 @@ public class PlayerInTheAir : State
 
 
 
-        values = PlayerStateMachine.valuesAsset;
+        values = PlayerStateMachine.stats;
         controller = PlayerStateMachine.controller;
 
         wallJumpingTime = 0;
@@ -113,11 +113,7 @@ public class PlayerInTheAir : State
             float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig - sphereRadius;
             float acceleration = values.rocketJumpAcceleration;
             Vector3 origin = PlayerStateMachine.transform.position;
-
-
-
             LayerMask mask = LayerMask.GetMask("Environment");
-
             List<RaycastHit> hits = new List<RaycastHit>();
             Ray ray = new Ray(origin, Vector3.down);
             //hits.AddRange( Physics.SphereCastAll(ray, MaxHeight, 1, mask));
@@ -133,24 +129,19 @@ public class PlayerInTheAir : State
                 hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.left, MaxHeight, mask, QueryTriggerInteraction.Ignore));
             }
 
-
             float closestDistance = Mathf.Infinity;
             RaycastHit closestHit;
             Vector3 target = Vector3.zero;
 
             for (int i = 0; i < hits.Count; i++)
             {
-
                 float distance = hits[i].distance;
                 if (distance < closestDistance)
                 {
-
                     closestHit = hits[i];
                     closestDistance = distance;
                     target = closestHit.point;
-
                 }
-
             }
 
             if (target != Vector3.zero)

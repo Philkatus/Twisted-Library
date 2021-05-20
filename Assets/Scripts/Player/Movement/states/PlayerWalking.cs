@@ -25,7 +25,7 @@ public class PlayerWalking : State
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
 
-        values = PlayerStateMachine.valuesAsset;
+        values = PlayerStateMachine.stats;
     }
 
     public override void Movement()
