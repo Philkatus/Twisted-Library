@@ -34,12 +34,12 @@ public class PlayerSliding : State
     protected float speed;
     protected float pathLength;
     protected float currentSlidingLevelSpeed;
-    protected int adjustedSlideDirection;
     protected int currentSlidingLevel;
     protected bool stopping;
     protected bool startLeftHoldTimer;
     protected bool startRightHoldTimer;
     protected bool holdingChangeDirection;
+    protected bool holdingSlideButton;
     protected float leftHoldTimer;
     protected float rightHoldTimer;
 
@@ -217,6 +217,10 @@ public class PlayerSliding : State
 
     public override void Movement()
     {
+        if (!holdingSlideButton)
+        {
+            SwitchSlidingDirectionWithCameraRotation();
+        }
         if (!stats.useNewSliding)
         {
             pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
@@ -232,7 +236,7 @@ public class PlayerSliding : State
                 }
 
                 #region Move horizontally.
-                pathDirection = path.GetDirectionAtDistance(currentDistance) * adjustedSlideDirection;
+                pathDirection = path.GetDirectionAtDistance(currentDistance);
 
                 // Get sideways input, no input if both buttons held down.
                 if (pSM.slideAction.triggered && pSM.slideAction.ReadValue<float>() == 0)
@@ -438,7 +442,7 @@ public class PlayerSliding : State
 
     void ChangeDirection(string direction)
     {
-        if ((direction == "left" && pSM.slidingInput * adjustedSlideDirection == 1) || (direction == "right" && pSM.slidingInput * adjustedSlideDirection == -1))
+        if ((direction == "left" && pSM.slidingInput * pSM.adjustedSlideDirection == 1) || (direction == "right" && pSM.slidingInput * pSM.adjustedSlideDirection == -1))
         {
             currentSlidingLevel = 1;
             currentSlidingLevelSpeed = stats.speedLevels[1];
@@ -453,7 +457,7 @@ public class PlayerSliding : State
             return;
         }
 
-        float slidingInput = pSM.slidingInput * adjustedSlideDirection;
+        float slidingInput = pSM.slidingInput * pSM.adjustedSlideDirection;
         if (direction == "left" && !holdingChangeDirection)
         {
             if (slidingInput == -1 && canAccalerate)
@@ -466,14 +470,14 @@ public class PlayerSliding : State
             }
             else if (slidingInput == 0)
             {
-                pSM.slidingInput = -1 * adjustedSlideDirection;
+                pSM.slidingInput = -1 * pSM.adjustedSlideDirection;
                 currentSlidingLevel = 1;
             }
             else if (slidingInput == +1)
             {
                 if (currentSlidingLevel == 0)
                 {
-                    pSM.slidingInput = -1 * adjustedSlideDirection;
+                    pSM.slidingInput = -1 * pSM.adjustedSlideDirection;
                     currentSlidingLevel = 1;
                 }
                 else if (currentSlidingLevel == 1)
@@ -493,7 +497,7 @@ public class PlayerSliding : State
             {
                 if (currentSlidingLevel == 0)
                 {
-                    pSM.slidingInput = 1 * adjustedSlideDirection;
+                    pSM.slidingInput = 1 * pSM.adjustedSlideDirection;
                     currentSlidingLevel = 1;
                 }
                 else if (currentSlidingLevel == 1)
@@ -508,7 +512,7 @@ public class PlayerSliding : State
             }
             else if (pSM.slidingInput == 0)
             {
-                pSM.slidingInput = 1 * adjustedSlideDirection;
+                pSM.slidingInput = 1 * pSM.adjustedSlideDirection;
                 currentSlidingLevel = 1;
             }
             else if (slidingInput == 1 && canAccalerate)
@@ -526,6 +530,21 @@ public class PlayerSliding : State
         startLeftHoldTimer = false;
         startRightHoldTimer = false;
         donethisCallbackAlready = true;
+        holdingSlideButton = false;
+    }
+
+    void SwitchSlidingDirectionWithCameraRotation()
+    {
+        var camDirection = ExtensionMethods.AngleDirection(pathDirection, Camera.main.transform.forward, Vector3.up);
+
+        if (camDirection == -1)
+        {
+            pSM.adjustedSlideDirection = 1;
+        }
+        if (camDirection == 1)
+        {
+            pSM.adjustedSlideDirection = -1;
+        }
     }
 
     protected bool CheckForCollisionCharacter(Vector3 moveDirection)

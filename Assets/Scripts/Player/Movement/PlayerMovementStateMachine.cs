@@ -25,8 +25,8 @@ public class PlayerMovementStateMachine : StateMachine
     public float forwardInput;
     public float swingingInput;
     public float slidingInput;
+    public int adjustedSlideDirection;
     public float startingSlidingInput;
-    public bool isPerformedFold;
     public bool dismounting;
     public bool isRocketJumping;
 
@@ -154,12 +154,10 @@ public class PlayerMovementStateMachine : StateMachine
 
     public void TryToSnapToShelf()
     {
-
         if (CheckForRail())
         {
             State.Snap();
         }
-
     }
 
     #region utility
@@ -170,7 +168,7 @@ public class PlayerMovementStateMachine : StateMachine
         swingingInput = swingAction.ReadValue<float>();
         if (!valuesAsset.useNewSliding)
         {
-            slidingInput = slideAction.ReadValue<float>();
+            slidingInput = slideAction.ReadValue<float>() * adjustedSlideDirection;
         }
 
     }
