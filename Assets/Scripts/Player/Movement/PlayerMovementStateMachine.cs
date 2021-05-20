@@ -82,7 +82,6 @@ public class PlayerMovementStateMachine : StateMachine
     InputActionMap playerControlsMap;
     InputAction jumpAction;
     InputAction moveAction;
-
     InputAction foldAction;
     #endregion
 
@@ -95,6 +94,67 @@ public class PlayerMovementStateMachine : StateMachine
 
         SetState(new PlayerWalking(this));
         #region controls
+        GetControlls();
+        #endregion
+    }
+
+   
+
+    private void Update()
+    {
+        railCheckTimer += Time.deltaTime;
+        if (railCheckTimer >= 0.1f)
+        {
+            CheckForRail();
+            railCheckTimer = 0;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        GetInput();
+        looseBonusVelocity(valuesAsset.bonusVelocityDrag);
+        State.Movement();
+        Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
+        Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
+    }
+
+    public void TryToSnapToShelf()
+    {
+
+        if (CheckForRail())
+        {
+            State.Snap();
+        }
+
+    }
+
+
+
+
+
+    #region utility
+    public void GetInput()
+    {
+        forwardInput = moveAction.ReadValue<Vector2>().y;
+        sideWaysInput = moveAction.ReadValue<Vector2>().x;
+        swingingInput = swingAction.ReadValue<float>();
+        if (!valuesAsset.useNewSliding)
+        {
+            slidingInput = slideAction.ReadValue<float>();
+        }
+
+    }
+
+    IEnumerator SaveInput(bool inputBool,float duration) 
+    {
+        inputBool = true;
+        yield return new WaitForSeconds(duration);
+        inputBool = false;
+    }
+
+    private void GetControlls()
+    {
         if (valuesAsset.useNewSliding)
         {
             playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
@@ -130,49 +190,6 @@ public class PlayerMovementStateMachine : StateMachine
         snapAction.performed += context => TryToSnapToShelf();
         foldAction.performed += context => ladderSizeStateMachine.OnFold();
         foldAction.performed += context => State.RocketJump();
-        #endregion
-    }
-
-    private void Update()
-    {
-        railCheckTimer += Time.deltaTime;
-        if (railCheckTimer >= 0.1f)
-        {
-            CheckForRail();
-            railCheckTimer = 0;
-        }
-    }
-
-    private void FixedUpdate()
-    {
-        GetInput();
-        looseBonusVelocity(valuesAsset.bonusVelocityDrag);
-        State.Movement();
-        Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
-        Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
-    }
-
-    public void TryToSnapToShelf()
-    {
-
-        if (CheckForRail())
-        {
-            State.Snap();
-        }
-
-    }
-
-    #region utility
-    public void GetInput()
-    {
-        forwardInput = moveAction.ReadValue<Vector2>().y;
-        sideWaysInput = moveAction.ReadValue<Vector2>().x;
-        swingingInput = swingAction.ReadValue<float>();
-        if (!valuesAsset.useNewSliding)
-        {
-            slidingInput = slideAction.ReadValue<float>();
-        }
-
     }
 
     public void looseBonusVelocity(float dragAmount)
