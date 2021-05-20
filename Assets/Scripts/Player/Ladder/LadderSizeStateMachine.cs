@@ -70,7 +70,7 @@ public class LadderSizeStateMachine : StateMachine
     {
         if (playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.sliding || playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
-
+            playerStateMachine.foldInputBool = false;
             if (State.GetType() != new LadderFold(this).GetType())
             {
                 SetState(new LadderFold(this));

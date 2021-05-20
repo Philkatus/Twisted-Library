@@ -109,6 +109,7 @@ public class PlayerWalking : State
     public override void Jump()
     {
         PlayerStateMachine.baseVelocity.y = values.jumpHeight;
+        PlayerStateMachine.jumpInputBool = false;
         PlayerStateMachine.OnFall();
     }
 

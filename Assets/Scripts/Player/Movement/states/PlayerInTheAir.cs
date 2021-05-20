@@ -154,6 +154,7 @@ public class PlayerInTheAir : State
                 PlayerMovementStateMachine pSM = PlayerStateMachine;
                 pSM.ladderJumpTarget = target;
                 pSM.baseVelocity.y = 0;
+                pSM.foldInputBool = false;
                 //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
                 pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration;
                 Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
