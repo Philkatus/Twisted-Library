@@ -213,6 +213,7 @@ public class PlayerSliding : State
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = false;
         }
+        PlayerStateMachine.jumpInputBool = false;
     }
 
     public override void Movement()

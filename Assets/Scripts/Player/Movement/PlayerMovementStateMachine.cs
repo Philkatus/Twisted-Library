@@ -148,6 +148,26 @@ public class PlayerMovementStateMachine : StateMachine
             CheckForRail();
             railCheckTimer = 0;
         }
+
+        CheckForInputBools();
+
+    }
+
+    private void CheckForInputBools()
+    {
+        if (jumpInputBool)
+        {
+            State.Jump();
+        }
+        if (snapInputBool)
+        {
+            TryToSnapToShelf();
+        }
+        if (foldInputBool)
+        {
+            State.RocketJump();
+            ladderSizeStateMachine.OnFold();
+        }
     }
 
     private void FixedUpdate()
@@ -168,9 +188,6 @@ public class PlayerMovementStateMachine : StateMachine
         }
 
     }
-
-
-
 
 
     #region utility
@@ -473,7 +490,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnSnap()
     {
         ladderSizeStateMachine.OnGrow();
-
+        snapInputBool = false;
 
         if (valuesAsset.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
         {
