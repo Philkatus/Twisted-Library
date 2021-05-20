@@ -116,6 +116,8 @@ public class PlayerMovementStateMachine : StateMachine
 
     #region Private
     float railCheckTimer;
+    Vector3 lastVisualizationPoint;
+
     GameObject snapVisualisation;
     RailSearchManager railAllocator;
     InputActionMap playerControlsMap;
@@ -148,7 +150,7 @@ public class PlayerMovementStateMachine : StateMachine
         if (railCheckTimer >= 0.1f)
         {
             CheckForRail();
-            ChangeSnapVisualisationPoint();
+            StartCoroutine(ChangeSnapVisualisationPoint());
             railCheckTimer = 0;
         }
 
@@ -532,16 +534,40 @@ public class PlayerMovementStateMachine : StateMachine
     }
     #endregion
     #region VFX
-    void ChangeSnapVisualisationPoint()
+    IEnumerator ChangeSnapVisualisationPoint()
     {
+        float timer = 0;
+        float t = 0;
+        Vector3 nextPosition;
+
         if (closestRail != null)
         {
+            nextPosition = closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
             snapVisualisation.SetActive(true);
-            snapVisualisation.transform.position = closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
         }
-            
         else
+        {
+            nextPosition = Vector3.zero;
             snapVisualisation.SetActive(false);
+        }
+
+
+        while (timer < 0.1f)
+        {
+            timer += Time.deltaTime;
+            t = timer / 0.1f;
+            t = Mathf.Clamp(t, 0, 1);
+            if (closestRail != null)
+            {
+                snapVisualisation.SetActive(true);
+                snapVisualisation.transform.position = Vector3.Lerp(lastVisualizationPoint, nextPosition, t);
+            }
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        lastVisualizationPoint = nextPosition;
+        yield return true;
     }
     #endregion
 
