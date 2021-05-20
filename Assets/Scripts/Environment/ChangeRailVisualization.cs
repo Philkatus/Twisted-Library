@@ -10,16 +10,17 @@ public class ChangeRailVisualization : MonoBehaviour
 
     void Start()
     {
-        g = this.gameObject;
+        /*g = this.gameObject;
         material = g.GetComponent<MeshRenderer>().material;
         material.EnableKeyword("_EMISSION");
         railAllocator = RailSearchManager.instance;
-        thisRail = transform.parent.GetComponent<Rail>();
+        thisRail = transform.parent.GetComponent<Rail>();*/
     }
 
     void Update()
     {
-        if (railAllocator.currentRailVisual == thisRail)
+
+        /*if (railAllocator.currentRailVisual == thisRail)
         {
             g.GetComponent<MeshRenderer>().material = changeToThisMaterial;
             //material.SetColor("_EmissiveColor", Color.white * 1050);
@@ -29,6 +30,6 @@ public class ChangeRailVisualization : MonoBehaviour
         {
             g.GetComponent<MeshRenderer>().material = material;
             //material.SetColor("_EmissiveColor", Color.black);
-        }
+        }*/
     }
 }
