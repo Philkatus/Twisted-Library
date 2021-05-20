@@ -16,11 +16,11 @@ public class Rail : MonoBehaviour
         " OnWall - has a Wall to push off from; " +
         " FreeHanging - Can Swing back and forth, but not necessarily up ")]
     public RailType railType;
+    public bool stopSlidingAtTheEnd;
     #endregion
 
     #region Private
     PlayerMovementStateMachine playerStateMachine;
     #endregion
-
 
 }

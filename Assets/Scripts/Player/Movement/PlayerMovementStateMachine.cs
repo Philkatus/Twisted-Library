@@ -158,23 +158,6 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
 
-    private void CheckForInputBools()
-    {
-        if (jumpInputBool)
-        {
-            State.Jump();
-        }
-        if (snapInputBool)
-        {
-            TryToSnapToShelf();
-        }
-        if (foldInputBool)
-        {
-            State.RocketJump();
-            ladderSizeStateMachine.OnFold();
-        }
-    }
-
     private void FixedUpdate()
     {
         GetInput();
@@ -194,6 +177,7 @@ public class PlayerMovementStateMachine : StateMachine
 
 
     #region utility
+    #region Input/Controlls
     public void GetInput()
     {
         forwardInput = moveAction.ReadValue<Vector2>().y;
@@ -214,6 +198,24 @@ public class PlayerMovementStateMachine : StateMachine
         }
         inputTimer[index] = StartCoroutine(InputTimer(index, duration));
     }
+
+    private void CheckForInputBools()
+    {
+        if (jumpInputBool)
+        {
+            State.Jump();
+        }
+        if (snapInputBool)
+        {
+            TryToSnapToShelf();
+        }
+        if (foldInputBool)
+        {
+            State.RocketJump();
+            ladderSizeStateMachine.OnFold();
+        }
+    }
+
 
     IEnumerator InputTimer(int index, float duration)
     {
@@ -260,7 +262,7 @@ public class PlayerMovementStateMachine : StateMachine
         foldAction.performed += context => SaveInput(2, valuesAsset.foldInputTimer); //ladderSizeStateMachine.OnFold();
         //foldAction.performed += context => State.RocketJump();
     }
-
+    #endregion
     public void looseBonusVelocity(float dragAmount)
     {
         bonusVelocity -= bonusVelocity.normalized * dragAmount * Time.fixedDeltaTime;
@@ -271,12 +273,9 @@ public class PlayerMovementStateMachine : StateMachine
     }
     public void looseBonusVelocityPercentage(float dragAmount)
     {
-        dragAmount /= 100;
+        dragAmount = (100- dragAmount)/ 100;
         bonusVelocity *= dragAmount * Time.fixedDeltaTime;
-        if (bonusVelocity.magnitude <= dragAmount * Time.fixedDeltaTime)
-        {
-            bonusVelocity = Vector3.zero;
-        }
+       
     }
 
     ///<summary>
