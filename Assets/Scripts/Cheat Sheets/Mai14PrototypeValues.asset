@@ -16,6 +16,7 @@ MonoBehaviour:
   movementAcceleration: 50
   maximumMovementSpeed: 15
   movementDrag: 50
+  walkingBonusVelocityDrag: 50
   movementVelocityFactor: 1
   jumpHeight: 18
   maxJumpingSpeed: 15
@@ -40,9 +41,10 @@ MonoBehaviour:
   useNewSliding: 1
   speedLevels:
   - 0
-  - 0.03
-  - 0.17
   - 0.3
+  - 1
+  - 1.5
+  timeToSwitchDirection: 1
   accelerationCooldown: 1
   useSwinging: 1
   swingingAcceleration: 2000
