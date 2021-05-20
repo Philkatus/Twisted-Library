@@ -16,9 +16,6 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("Determines how long the snap input gets saved ")]
     public float snapInputTimer;
 
-    [Tooltip("Determines how long the swing input gets saved ")]
-    public float swingInputTimer;
-
     [Tooltip("Determines how long the fold input gets saved ")]
     public float foldInputTimer;
 

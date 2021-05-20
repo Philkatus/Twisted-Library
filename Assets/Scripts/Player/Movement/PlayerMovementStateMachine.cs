@@ -123,7 +123,7 @@ public class PlayerMovementStateMachine : StateMachine
     InputAction moveAction;
     InputAction foldAction;
 
-    Coroutine[] inputTimer=new Coroutine[3];
+    Coroutine[] inputTimer = new Coroutine[3];
     #endregion
 
     private void Start()
@@ -132,6 +132,7 @@ public class PlayerMovementStateMachine : StateMachine
         railAllocator = RailSearchManager.instance;
         ladderWalkingPosition = ladder.localPosition;
         ladderWalkingRotation = ladder.localRotation;
+        snapVisualisation = myParent.transform.GetChild(3).GetChild(1).gameObject;
 
         SetState(new PlayerWalking(this));
         #region controls
@@ -139,7 +140,7 @@ public class PlayerMovementStateMachine : StateMachine
         #endregion
     }
 
-   
+
 
     private void Update()
     {
@@ -147,28 +148,12 @@ public class PlayerMovementStateMachine : StateMachine
         if (railCheckTimer >= 0.1f)
         {
             CheckForRail();
+            ChangeSnapVisualisationPoint();
             railCheckTimer = 0;
         }
 
         CheckForInputBools();
 
-    }
-
-    private void CheckForInputBools()
-    {
-        if (jumpInputBool)
-        {
-            State.Jump();
-        }
-        if (snapInputBool)
-        {
-            TryToSnapToShelf();
-        }
-        if (foldInputBool)
-        {
-            State.RocketJump();
-            ladderSizeStateMachine.OnFold();
-        }
     }
 
     private void FixedUpdate()
@@ -190,6 +175,7 @@ public class PlayerMovementStateMachine : StateMachine
 
 
     #region utility
+    #region Input/Controlls
     public void GetInput()
     {
         forwardInput = moveAction.ReadValue<Vector2>().y;
@@ -211,7 +197,25 @@ public class PlayerMovementStateMachine : StateMachine
         inputTimer[index] = StartCoroutine(InputTimer(index, duration));
     }
 
-    IEnumerator InputTimer(int index,float duration) 
+    private void CheckForInputBools()
+    {
+        if (jumpInputBool)
+        {
+            State.Jump();
+        }
+        if (snapInputBool)
+        {
+            TryToSnapToShelf();
+        }
+        if (foldInputBool)
+        {
+            State.RocketJump();
+            ladderSizeStateMachine.OnFold();
+        }
+    }
+
+
+    IEnumerator InputTimer(int index, float duration)
     {
         inputBools[index] = true;
         yield return new WaitForSeconds(duration);
@@ -256,7 +260,7 @@ public class PlayerMovementStateMachine : StateMachine
         foldAction.performed += context => SaveInput(2, valuesAsset.foldInputTimer); //ladderSizeStateMachine.OnFold();
         //foldAction.performed += context => State.RocketJump();
     }
-
+    #endregion
     public void looseBonusVelocity(float dragAmount)
     {
         bonusVelocity -= bonusVelocity.normalized * dragAmount * Time.fixedDeltaTime;
@@ -267,12 +271,9 @@ public class PlayerMovementStateMachine : StateMachine
     }
     public void looseBonusVelocityPercentage(float dragAmount)
     {
-        dragAmount /= 100;
+        dragAmount = (100- dragAmount)/ 100;
         bonusVelocity *= dragAmount * Time.fixedDeltaTime;
-        if (bonusVelocity.magnitude <= dragAmount * Time.fixedDeltaTime)
-        {
-            bonusVelocity = Vector3.zero;
-        }
+       
     }
 
     ///<summary>
@@ -532,7 +533,14 @@ public class PlayerMovementStateMachine : StateMachine
     #region VFX
     void ChangeSnapVisualisationPoint()
     {
-
+        if (closestRail != null)
+        {
+            snapVisualisation.SetActive(true);
+            snapVisualisation.transform.position = closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+        }
+            
+        else
+            snapVisualisation.SetActive(false);
     }
     #endregion
 
