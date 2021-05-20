@@ -116,6 +116,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     #region Private
     float railCheckTimer;
+    GameObject snapVisualisation;
     RailSearchManager railAllocator;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
@@ -448,10 +449,6 @@ public class PlayerMovementStateMachine : StateMachine
         return currentVelocity;
     }
     #endregion
-
-
-
-
     #region functions to change states
     ///<summary>
     /// Gets called when the player lands on the floor.
@@ -530,6 +527,12 @@ public class PlayerMovementStateMachine : StateMachine
         playerState = PlayerState.inTheAir;
         ladderSizeStateMachine.OnShrink();
         HeightOnLadder = -1;
+    }
+    #endregion
+    #region VFX
+    void ChangeSnapVisualisationPoint()
+    {
+
     }
     #endregion
 
