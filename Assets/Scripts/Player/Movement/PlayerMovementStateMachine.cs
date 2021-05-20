@@ -123,7 +123,7 @@ public class PlayerMovementStateMachine : StateMachine
     InputAction moveAction;
     InputAction foldAction;
 
-    Coroutine[] inputTimer=new Coroutine[3];
+    Coroutine[] inputTimer = new Coroutine[3];
     #endregion
 
     private void Start()
@@ -132,6 +132,7 @@ public class PlayerMovementStateMachine : StateMachine
         railAllocator = RailSearchManager.instance;
         ladderWalkingPosition = ladder.localPosition;
         ladderWalkingRotation = ladder.localRotation;
+        snapVisualisation = myParent.transform.GetChild(3).GetChild(1).gameObject;
 
         SetState(new PlayerWalking(this));
         #region controls
@@ -139,7 +140,7 @@ public class PlayerMovementStateMachine : StateMachine
         #endregion
     }
 
-   
+
 
     private void Update()
     {
@@ -147,6 +148,7 @@ public class PlayerMovementStateMachine : StateMachine
         if (railCheckTimer >= 0.1f)
         {
             CheckForRail();
+            ChangeSnapVisualisationPoint();
             railCheckTimer = 0;
         }
 
@@ -211,7 +213,7 @@ public class PlayerMovementStateMachine : StateMachine
         inputTimer[index] = StartCoroutine(InputTimer(index, duration));
     }
 
-    IEnumerator InputTimer(int index,float duration) 
+    IEnumerator InputTimer(int index, float duration)
     {
         inputBools[index] = true;
         yield return new WaitForSeconds(duration);
@@ -532,7 +534,14 @@ public class PlayerMovementStateMachine : StateMachine
     #region VFX
     void ChangeSnapVisualisationPoint()
     {
-
+        if (closestRail != null)
+        {
+            snapVisualisation.SetActive(true);
+            snapVisualisation.transform.position = closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+        }
+            
+        else
+            snapVisualisation.SetActive(false);
     }
     #endregion
 
