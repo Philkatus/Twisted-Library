@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8860862594573613441}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: WithoutPathCreator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -682,8 +682,7 @@ GameObject:
   - component: {fileID: 1303423024008298182}
   - component: {fileID: 8923106284089184113}
   - component: {fileID: 2558769968097340226}
-  - component: {fileID: 97921219725350556}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Visualisation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -753,21 +752,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &97921219725350556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5863984856797370062}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &6244649130868051151
 GameObject:
   m_ObjectHideFlags: 0
@@ -779,7 +763,7 @@ GameObject:
   - component: {fileID: 2686672379357949108}
   - component: {fileID: 1991664697075569481}
   - component: {fileID: 5247349172586701926}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Slide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -815,7 +799,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 5247349172586701926}
   railType: 1
-  maxSwingingAngle: 80
+  stopSlidingAtTheEnd: 0
 --- !u!114 &5247349172586701926
 MonoBehaviour:
   m_ObjectHideFlags: 0

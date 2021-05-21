@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 4108949522348767822}
   - component: {fileID: 4108949522348767820}
   - component: {fileID: 4108949522348767821}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Slide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -80,7 +80,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 4108949522348767821}
   railType: 2
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!114 &4108949522348767821
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -143,7 +143,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4108949522989777050}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: SlideWithPathCreator (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -176,8 +176,7 @@ GameObject:
   - component: {fileID: 4108949523030889603}
   - component: {fileID: 4108949523030889601}
   - component: {fileID: 4108949523030889602}
-  - component: {fileID: 4620406072645903310}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Visualisation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -247,21 +246,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &4620406072645903310
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4108949523030889604}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &4428813804969242915
 GameObject:
   m_ObjectHideFlags: 0
@@ -271,7 +255,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4058470649516330304}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: SlideWithPathCreator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -304,8 +288,7 @@ GameObject:
   - component: {fileID: 8158220671937101005}
   - component: {fileID: 5299294007005322793}
   - component: {fileID: 4519394148250180409}
-  - component: {fileID: 7684246765921710692}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Visualisation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -375,21 +358,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7684246765921710692
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6759493169914443730}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &6848369906046663170
 GameObject:
   m_ObjectHideFlags: 0
@@ -1009,7 +977,7 @@ GameObject:
   - component: {fileID: 3979496406489379595}
   - component: {fileID: 6547206440970940298}
   - component: {fileID: 1855281197308798605}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Slide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1045,7 +1013,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 1855281197308798605}
   railType: 1
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!114 &1855281197308798605
 MonoBehaviour:
   m_ObjectHideFlags: 0
