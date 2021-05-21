@@ -281,11 +281,8 @@ public class PlayerSwinging : PlayerSliding
             swingingFeedback.SetActive(false);
         }
 
-        if (pSM.swingInputBool && railType == Rail.RailType.OnWall) 
-        {
-            RepellingForce();
-        }
-        else if (pSM.swingInputBool)
+        
+        if (pSM.swingInputBool)
         {
             AccelerationForce();
         }
@@ -359,7 +356,10 @@ public class PlayerSwinging : PlayerSliding
             tensionForce += centripetalForce;
             currentVelocity += tensionDirection * tensionForce * dt;
         }
-
+        if (pSM.swingInputBool)
+        {
+            RepellingForce();
+        }
         //Acceleration
         inputForce = Vector3.zero;
 
@@ -392,7 +392,7 @@ public class PlayerSwinging : PlayerSliding
             inputTimer = 0;
            
             pSM.swingInputBool = false;
-           // Debug.Log("a Force");
+            Debug.Log("a Force");
         }
     }
 
@@ -404,7 +404,7 @@ public class PlayerSwinging : PlayerSliding
             inputForce = repelDirection * stats.swingingAcceleration * dt * 1.2f;
             currentVelocity += inputForce;
             pSM.swingInputBool = false;
-            //Debug.Log("r Force");
+            Debug.Log("r Force");
         }
     }
 
