@@ -392,7 +392,7 @@ public class PlayerSwinging : PlayerSliding
             inputTimer = 0;
            
             pSM.swingInputBool = false;
-            Debug.Log("a Force");
+           // Debug.Log("a Force");
         }
     }
 
@@ -404,7 +404,7 @@ public class PlayerSwinging : PlayerSliding
             inputForce = repelDirection * stats.swingingAcceleration * dt * 1.2f;
             currentVelocity += inputForce;
             pSM.swingInputBool = false;
-            Debug.Log("r Force");
+           // Debug.Log("r Force");
         }
     }
 

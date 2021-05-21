@@ -63,7 +63,7 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public Vector3 ladderWalkingPosition;
     [HideInInspector] public Vector3 ladderJumpTarget;
 
-    public bool[] inputBools = new bool[4];
+    bool[] inputBools = new bool[4];
     public bool jumpInputBool
     {
         get
