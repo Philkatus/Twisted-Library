@@ -47,7 +47,10 @@ public class TimerChallenge : MonoBehaviour
 
         UpdateUI();
 
-        time -= Time.deltaTime;
+        if(isChallengeActive)
+        {
+            time -= Time.deltaTime;
+        }
 
         if(time <= 0)
         {

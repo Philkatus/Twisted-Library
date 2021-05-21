@@ -63,7 +63,7 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public Vector3 ladderWalkingPosition;
     [HideInInspector] public Vector3 ladderJumpTarget;
 
-    public bool[] inputBools = new bool[3];
+    bool[] inputBools = new bool[3];
     public bool jumpInputBool
     {
         get
@@ -100,6 +100,7 @@ public class PlayerMovementStateMachine : StateMachine
         }
 
     }
+    public float coyoteTimer=0;
     public Vector3 ladderDirection
     {
         get
@@ -131,7 +132,7 @@ public class PlayerMovementStateMachine : StateMachine
         ladderWalkingPosition = ladder.localPosition;
         ladderWalkingRotation = ladder.localRotation;
         snapVisualisation = myParent.transform.GetChild(3).GetChild(1).gameObject;
-
+        coyoteTimer = stats.slidingCoyoteTime;
         SetState(new PlayerWalking(this));
         GetControlls();
     }
@@ -140,6 +141,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Update()
     {
+        coyoteTimer += Time.deltaTime;
         railCheckTimer += Time.deltaTime;
         if (railCheckTimer >= 0.1f)
         {
@@ -155,6 +157,7 @@ public class PlayerMovementStateMachine : StateMachine
             railCheckTimer = 0;
         }
         CheckForInputBools();
+        
     }
 
     private void FixedUpdate()
@@ -240,6 +243,11 @@ public class PlayerMovementStateMachine : StateMachine
             slideRightAction.started += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = +1; } };
             slideRightAction.canceled += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = 0; } };
             slideLeftAction.canceled += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = 0; } };
+            if (stats.useTriggerToSlideWithMomentum)
+            {
+                slideLeftAction.started += context => SaveInput(1, stats.snapInputTimer);
+                slideRightAction.started += context => SaveInput(1, stats.snapInputTimer);
+            }
             startingSlidingInput = 0;
         }
         else
@@ -247,6 +255,10 @@ public class PlayerMovementStateMachine : StateMachine
             playerControlsMap = actionAsset.FindActionMap("PlayerControls");
             stopSlidingAction = playerControlsMap.FindAction("StopSliding");
             slideAction = playerControlsMap.FindAction("Slide");
+            if (stats.useTriggerToSlideWithMomentum)
+            {
+                slideAction.started += context => SaveInput(1, stats.snapInputTimer);
+            }
         }
         if (GameObject.FindGameObjectWithTag("Canvas"))
         {
