@@ -5,7 +5,8 @@ using UnityEngine.InputSystem;
 
 public class UILogic : MonoBehaviour
 {
-    public InputActionAsset iaa;
+    public PlayerMovementStateMachine pSM;
+    InputActionAsset iaa;
     InputActionMap playerControlsMap;
     InputActionMap UIControlsMap;
     InputAction escape;
@@ -13,11 +14,13 @@ public class UILogic : MonoBehaviour
     public GameObject controls;
     public GameObject controller;
     public GameObject keyboard;
-    public bool usesNewSliding;
+    bool usesNewSliding;
     bool controlsActive = false;
 
     private void Start()
     {
+        iaa = pSM.actionAsset;
+        usesNewSliding = pSM.stats.useNewSliding;
         Cursor.lockState = CursorLockMode.Locked;
         if (usesNewSliding)
         {
