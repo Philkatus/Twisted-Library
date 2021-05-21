@@ -206,7 +206,7 @@ public class PlayerMovementStateMachine : StateMachine
         {
             if (stats.useJumpForLadderShoot)
             {
-                Debug.LogError("rocket");
+               
                 State.LadderPush();
             }
             State.Jump();
