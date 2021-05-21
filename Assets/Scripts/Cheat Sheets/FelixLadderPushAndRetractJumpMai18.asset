@@ -35,6 +35,7 @@ MonoBehaviour:
   jumpVelocityFactor: 1
   snappingDistance: 5
   resnappingDistance: 0.5
+  minVelocityToChangeSnapDirection: 1
   climbingSpeedOnLadder: 1
   slidingAcceleration: 50
   maxSlidingSpeed: 10
@@ -46,10 +47,10 @@ MonoBehaviour:
   preservesVelocityOnSnap: 0
   speedLevels:
   - 1
+  - 2
   - 3
-  - 5
   timeToSwitchDirection: 0.2
-  accelerationCooldown: 2
+  accelerationCooldown: 0.3
   useSwinging: 1
   swingingAcceleration: 2000
   minSwingingDeceleration: 0.0075
