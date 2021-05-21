@@ -2,20 +2,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class TimerChallenge : MonoBehaviour
 {
 
     public float timeForChallenge;
     private float time;
-    public List<GameObject> boxesToGet;
+    public List<GameObject> boxesToGet = new List<GameObject>();
     public int nbrOfBoxesCollected;
-    public bool isChallengeActive;
+    public bool isChallengeActive, isCompleted;
 
     public GameObject challengePanel;
     public Text UITimer, UICollectedInfo, prefabText;
 
     public Material unactive, active;
+
+    [SerializeField] private Transform player, respawnPoint;
+    public InputActionAsset actionAsset;
+    InputActionMap playerControlsMap;
+    InputAction stopChallengeAction;
+    InputAction restartButton;
 
     // Start is called before the first frame update
     void Start()
@@ -24,6 +31,13 @@ public class TimerChallenge : MonoBehaviour
         time = timeForChallenge;
 
         UpdateUI();
+
+        playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
+        playerControlsMap.Enable();
+        stopChallengeAction = playerControlsMap.FindAction("StopChallenge");
+        restartButton = playerControlsMap.FindAction("Restart");
+
+        prefabText.text = "Pick Up to start Challenge";
     }
 
     // Update is called once per frame
@@ -38,8 +52,26 @@ public class TimerChallenge : MonoBehaviour
         if(time <= 0)
         {
             //lose
+            //challengePanel.SetActive(false);
+            //isChallengeActive = false;
+            //prefabText.text = "Pick Up to start Challenge";
+            //UITimer.text = "Over!";
+
+            //restart
             challengePanel.SetActive(false);
             isChallengeActive = false;
+            time = timeForChallenge;
+            prefabText.text = "Pick Up to start Challenge";
+
+            foreach (GameObject box in boxesToGet)
+            {
+                box.GetComponent<MeshRenderer>().enabled = true;
+                box.GetComponent<MeshRenderer>().material = unactive;
+            }
+
+            player.GetComponentInChildren<CharacterController>().enabled = false;
+            player.transform.position = respawnPoint.transform.position;
+            player.GetComponentInChildren<CharacterController>().enabled = true;
             Debug.Log("Lose");
         }
 
@@ -48,7 +80,45 @@ public class TimerChallenge : MonoBehaviour
             //win
             challengePanel.SetActive(false);
             isChallengeActive = false;
+            isCompleted = true;
+            this.transform.parent.gameObject.SetActive(false);
             Debug.Log("Win");
+        }
+
+        //STOP
+        if(stopChallengeAction.triggered)
+        {
+            Debug.Log("Stopped");
+            challengePanel.SetActive(false);
+            isChallengeActive = false;
+            time = timeForChallenge;
+            prefabText.text = "Pick Up to start Challenge";
+
+            foreach (GameObject box in boxesToGet)
+            {
+                box.GetComponent<MeshRenderer>().enabled = true;
+                box.GetComponent<MeshRenderer>().material = unactive;
+            }
+        }
+
+        //RESTART
+        if(isChallengeActive && restartButton.triggered)
+        {
+            Debug.Log("restart");
+            challengePanel.SetActive(false);
+            isChallengeActive = false;
+            time = timeForChallenge;
+            prefabText.text = "Pick Up to start Challenge";
+
+            foreach (GameObject box in boxesToGet)
+            {
+                box.GetComponent<MeshRenderer>().enabled = true;
+                box.GetComponent<MeshRenderer>().material = unactive;
+            }
+
+            player.GetComponentInChildren<CharacterController>().enabled = false;
+            player.transform.position = respawnPoint.transform.position;
+            player.GetComponentInChildren<CharacterController>().enabled = true;
         }
 
     }
