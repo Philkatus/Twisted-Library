@@ -346,8 +346,16 @@ public class PlayerMovementStateMachine : StateMachine
                 if (distance < closestDistance)
                 {
                     Debug.DrawLine(railCheckLadderPosition, snappingPoint, Color.blue);
-                    if (!Physics.Linecast(railCheckLadderPosition, snappingPoint,mask))
+                    RaycastHit hit;
+                    if (!Physics.Linecast(railCheckLadderPosition, snappingPoint,out hit,mask,QueryTriggerInteraction.Ignore))
                     {
+                        
+                        closestRail = possibleRails[i];
+                        closestDistance = distance;
+                    }
+                    if (hit.point != new RaycastHit().point && Vector3.Distance(snappingPoint, hit.point) <= .1f) 
+                    {
+
                         closestRail = possibleRails[i];
                         closestDistance = distance;
                     }
