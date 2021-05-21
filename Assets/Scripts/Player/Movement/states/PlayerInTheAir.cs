@@ -10,9 +10,6 @@ public class PlayerInTheAir : State
 
     float wallJumpingTime;
 
-
-
-
     public PlayerInTheAir(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
 
@@ -28,11 +25,8 @@ public class PlayerInTheAir : State
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
 
-
-
         values = PlayerStateMachine.stats;
         controller = PlayerStateMachine.controller;
-
         wallJumpingTime = 0;
     }
 
@@ -106,10 +100,10 @@ public class PlayerInTheAir : State
         PlayerStateMachine.OnSnap();
     }
 
-    public override void Jump() 
+    public override void Jump()
     {
-        
-        if (PlayerStateMachine.coyoteTimer < values.slidingCoyoteTime && PlayerStateMachine.closestRail!=null) 
+
+        if (PlayerStateMachine.coyoteTimer < values.slidingCoyoteTime && PlayerStateMachine.closestRail != null)
         {
             Vector3 pathDirection = PlayerStateMachine.closestRail.pathCreator.path.GetDirectionAtDistance(PlayerStateMachine.currentDistance, EndOfPathInstruction.Stop);
             if (values.wallJump != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
@@ -124,22 +118,18 @@ public class PlayerInTheAir : State
             else
             {
                 PlayerStateMachine.baseVelocity.y += values.jumpHeight;
-                
             }
 
             PlayerStateMachine.coyoteTimer = values.slidingCoyoteTime;
             PlayerStateMachine.animationControllerisFoldingJumped = false;
-
         }
         PlayerStateMachine.jumpInputBool = false;
 
 
     }
 
-    public override void RocketJump()
+    public override void LadderPush()
     {
-       
-            
         float sphereRadius = .2f;
         float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig - sphereRadius;
         float acceleration = values.rocketJumpAcceleration;
@@ -161,7 +151,7 @@ public class PlayerInTheAir : State
             float distance = hits[i].distance;
             if (distance < closestDistance && Vector3.Dot(hits[i].normal, Vector3.up) >= .93f)
             {
-                
+
                 closestHit = hits[i];
                 closestDistance = distance;
                 target = closestHit.point;
@@ -170,9 +160,8 @@ public class PlayerInTheAir : State
 
             }
         }
-        if (hits.Count==0)
+        if (hits.Count == 0)
         {
-           
             hits = new List<RaycastHit>();
             hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.forward, MaxHeight, mask, QueryTriggerInteraction.Ignore));
             hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.back, MaxHeight, mask, QueryTriggerInteraction.Ignore));
@@ -183,20 +172,19 @@ public class PlayerInTheAir : State
                 float distance = hits[i].distance;
                 if (distance < closestDistance && Vector3.Dot(hits[i].normal, Vector3.up) <= .93f)
                 {
-
                     closestHit = hits[i];
                     closestDistance = distance;
                     target = closestHit.point;
-                   // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point, Color.red, 2);
+                    // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point, Color.red, 2);
                 }
             }
         }
-        else 
+        else
         {
             PlayerStateMachine.didRocketJump = true;
         }
 
-       
+
 
         if (target != Vector3.zero)
         {

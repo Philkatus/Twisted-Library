@@ -100,7 +100,7 @@ public class PlayerMovementStateMachine : StateMachine
         }
 
     }
-    public float coyoteTimer=0;
+    public float coyoteTimer = 0;
     public Vector3 ladderDirection
     {
         get
@@ -157,7 +157,7 @@ public class PlayerMovementStateMachine : StateMachine
             railCheckTimer = 0;
         }
         CheckForInputBools();
-        
+
     }
 
     private void FixedUpdate()
@@ -206,7 +206,8 @@ public class PlayerMovementStateMachine : StateMachine
         {
             if (stats.useJumpForLadderShoot)
             {
-                State.RocketJump();
+                Debug.LogError("rocket");
+                State.LadderPush();
             }
             State.Jump();
         }
@@ -218,7 +219,7 @@ public class PlayerMovementStateMachine : StateMachine
         {
             if (!stats.useJumpForLadderShoot)
             {
-                State.RocketJump();
+                State.LadderPush();
             }
             ladderSizeStateMachine.OnFold();
         }
