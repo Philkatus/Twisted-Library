@@ -100,7 +100,7 @@ public class PlayerMovementStateMachine : StateMachine
         }
 
     }
-    public float coyoteTimer=0;
+    public float coyoteTimer = 0;
     public Vector3 ladderDirection
     {
         get
@@ -157,7 +157,7 @@ public class PlayerMovementStateMachine : StateMachine
             railCheckTimer = 0;
         }
         CheckForInputBools();
-        
+
     }
 
     private void FixedUpdate()
@@ -206,7 +206,8 @@ public class PlayerMovementStateMachine : StateMachine
         {
             if (stats.useJumpForLadderShoot)
             {
-                State.RocketJump();
+               
+                State.LadderPush();
             }
             State.Jump();
         }
@@ -218,7 +219,7 @@ public class PlayerMovementStateMachine : StateMachine
         {
             if (!stats.useJumpForLadderShoot)
             {
-                State.RocketJump();
+                State.LadderPush();
             }
             ladderSizeStateMachine.OnFold();
         }
@@ -324,12 +325,18 @@ public class PlayerMovementStateMachine : StateMachine
             float closestDistance = stats.snappingDistance;
             for (int i = 0; i < possibleRails.Count; i++)
             {
-                float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
+                Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition);
+                float distance = Vector3.Distance(snappingPoint, railCheckLadderPosition);
+                LayerMask mask = LayerMask.GetMask("Environment");
 
                 if (distance < closestDistance)
                 {
-                    closestRail = possibleRails[i];
-                    closestDistance = distance;
+                    Debug.DrawLine(railCheckLadderPosition, snappingPoint, Color.blue);
+                    if (!Physics.Linecast(railCheckLadderPosition, snappingPoint,mask))
+                    {
+                        closestRail = possibleRails[i];
+                        closestDistance = distance;
+                    }
                 }
             }
             if (closestDistance >= stats.snappingDistance)

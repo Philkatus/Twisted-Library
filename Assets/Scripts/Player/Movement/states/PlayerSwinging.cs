@@ -400,6 +400,7 @@ public class PlayerSwinging : PlayerSliding
             currentVelocity += inputForce;
             inputGiven = true;
             inputTimer = 0;
+            pSM.snapInputBool = false;
         }
     }
 
@@ -410,6 +411,7 @@ public class PlayerSwinging : PlayerSliding
             onWall = false;
             inputForce = repelDirection * stats.swingingAcceleration * dt * 1.2f;
             currentVelocity += inputForce;
+            pSM.snapInputBool = false;
         }
     }
 

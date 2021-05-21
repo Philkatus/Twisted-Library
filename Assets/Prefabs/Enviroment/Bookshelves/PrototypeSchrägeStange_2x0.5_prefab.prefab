@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3061844211478256234}
   - component: {fileID: 3061844211478256233}
   - component: {fileID: 3061844211478256232}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Pro Builder Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -322,7 +322,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3061844211880529034}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: "PrototypeSchr\xE4geStange_2x0.5_prefab"
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -354,7 +354,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3061844212104853660}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: SlideWithPathCreator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -387,7 +387,7 @@ GameObject:
   - component: {fileID: 3061844212371379908}
   - component: {fileID: 3061844212371379910}
   - component: {fileID: 3061844212371379909}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Slide
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -422,7 +422,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 3061844212371379909}
   railType: 0
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!114 &3061844212371379909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -455,7 +455,7 @@ MonoBehaviour:
       - 0
       globalNormalsAngle: 90
       flipNormals: 0
-    vertexPathUpToDate: 1
+    vertexPathUpToDate: 0
     vertexPathMaxAngleError: 0.3
     vertexPathMinVertexSpacing: 0.01
     showTransformTool: 1

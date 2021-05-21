@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7751017200799435730}
   - component: {fileID: 1693396649068102274}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Slide4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6598527146866273136}
   - component: {fileID: 832337056154623899}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Slide3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -131,7 +131,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 0}
   railType: 1
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!1 &1170725246568667021
 GameObject:
   m_ObjectHideFlags: 0
@@ -142,7 +142,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8366200369911513432}
   - component: {fileID: 549469839252209195}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Slide4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -178,7 +178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 0}
   railType: 1
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!1 &1854232794773340766
 GameObject:
   m_ObjectHideFlags: 0
@@ -189,7 +189,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8219175868262452303}
   - component: {fileID: 8301929451024389715}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Slide3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -243,7 +243,7 @@ MonoBehaviour:
       - 0
       globalNormalsAngle: 0
       flipNormals: 0
-    vertexPathUpToDate: 1
+    vertexPathUpToDate: 0
     vertexPathMaxAngleError: 0
     vertexPathMinVertexSpacing: 0
     showTransformTool: 1
@@ -275,8 +275,7 @@ GameObject:
   - component: {fileID: 1589804941989307006}
   - component: {fileID: 3057501652827783852}
   - component: {fileID: 6523452376867705187}
-  - component: {fileID: 3684088369753735720}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Visualisation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -346,21 +345,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3684088369753735720
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1957814092389808806}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 0}
 --- !u!1 &2071156345477787895
 GameObject:
   m_ObjectHideFlags: 0
@@ -372,8 +356,7 @@ GameObject:
   - component: {fileID: 5170310138387779168}
   - component: {fileID: 300264595294744884}
   - component: {fileID: 4585907923018347567}
-  - component: {fileID: 3792883413842863032}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Visualisation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -443,21 +426,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &3792883413842863032
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2071156345477787895}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 0}
 --- !u!1 &2436902996902349038
 GameObject:
   m_ObjectHideFlags: 0
@@ -469,8 +437,7 @@ GameObject:
   - component: {fileID: 6656220160599700323}
   - component: {fileID: 7410936117022605167}
   - component: {fileID: 1542383318980673808}
-  - component: {fileID: 6450972349507012110}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Visualisation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -540,21 +507,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &6450972349507012110
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2436902996902349038}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 0}
 --- !u!1 &2743028038424039167
 GameObject:
   m_ObjectHideFlags: 0
@@ -662,7 +614,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2032177894390577570}
   - component: {fileID: 3815928549699495566}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Slide1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -698,7 +650,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 0}
   railType: 1
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!1 &3458701718949046935
 GameObject:
   m_ObjectHideFlags: 0
@@ -710,8 +662,7 @@ GameObject:
   - component: {fileID: 4955335054567839200}
   - component: {fileID: 1699980268409856635}
   - component: {fileID: 8362834057051863984}
-  - component: {fileID: 2733745477591066392}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Visualisation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -781,21 +732,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2733745477591066392
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3458701718949046935}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 0}
 --- !u!1 &4580953269666173190
 GameObject:
   m_ObjectHideFlags: 0
@@ -805,7 +741,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3794192003320701544}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: SlidesWithPathCreator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -840,7 +776,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5284732131298191456}
   - component: {fileID: 43908101003416301}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Slide1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -924,7 +860,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8944163571394975242}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: WithoutPathCreator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -959,7 +895,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2298083269879964643}
   - component: {fileID: 4163422923940427401}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Slide2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -995,7 +931,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 0}
   railType: 1
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!1 &5829812870248313197
 GameObject:
   m_ObjectHideFlags: 0
@@ -1007,8 +943,7 @@ GameObject:
   - component: {fileID: 6574317788447537530}
   - component: {fileID: 3010479301249810293}
   - component: {fileID: 6085044969941034612}
-  - component: {fileID: 1998628860274353846}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Visualisation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1078,21 +1013,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1998628860274353846
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5829812870248313197}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 0}
 --- !u!1 &6291472849582223083
 GameObject:
   m_ObjectHideFlags: 0
@@ -1104,8 +1024,7 @@ GameObject:
   - component: {fileID: 6461668969301244889}
   - component: {fileID: 1896682360888869017}
   - component: {fileID: 6790337821147601896}
-  - component: {fileID: 2828946643360974401}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Visualisation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1175,21 +1094,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2828946643360974401
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6291472849582223083}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 0}
 --- !u!1 &7010906067071820701
 GameObject:
   m_ObjectHideFlags: 0
@@ -1201,8 +1105,7 @@ GameObject:
   - component: {fileID: 5368667335047792343}
   - component: {fileID: 1322996431464750435}
   - component: {fileID: 8134160225920632213}
-  - component: {fileID: 5268298330309619913}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Visualisation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1272,21 +1175,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &5268298330309619913
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7010906067071820701}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 0}
 --- !u!1 &7276110975456046627
 GameObject:
   m_ObjectHideFlags: 0
@@ -1297,7 +1185,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2868647584988006186}
   - component: {fileID: 806023029372974876}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Slide2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1383,8 +1271,7 @@ GameObject:
   - component: {fileID: 4684020670084305744}
   - component: {fileID: 8599040736235100965}
   - component: {fileID: 3094512186151620781}
-  - component: {fileID: 1207536692104974572}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: Visualisation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1454,18 +1341,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1207536692104974572
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7368507780121341564}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 0}
