@@ -16,6 +16,8 @@ public class LadderRocketJump : State
     float distance;
     Vector3 target;
     Quaternion LadderLocalRotation;
+    Vector3 startingLocalPosition;
+    Quaternion startingLocalRotation;
 
 
 
@@ -34,7 +36,7 @@ public class LadderRocketJump : State
     {
         pSM.ladder.SetParent(pSM.animController.spine);
         lSM.ladderParent.localRotation = LadderLocalRotation;
-        Debug.Log("end");
+        
         yield return null;
     }
 
@@ -61,7 +63,18 @@ public class LadderRocketJump : State
             if (distance >= lSM.ladderLengthBig || pSM.playerVelocity.y <= 0)
             {
                 isLerpGoing = false;
-                pSM.ladder.transform.SetParent(pSM.transform);
+                startingLocalPosition = pSM.ladder.localPosition;
+                startingLocalRotation = pSM.ladder.localRotation;
+            }
+        }
+        else 
+        {
+            time += Time.deltaTime;
+
+            pSM.ladder.localPosition = Vector3.Lerp( startingLocalPosition,pSM.ladderWalkingPosition,time/LadderSizeStateMachine.foldSpeed);
+            pSM.ladder.localRotation = Quaternion.Lerp( startingLocalRotation, pSM.ladderWalkingRotation, time / LadderSizeStateMachine.foldSpeed);
+            if (time >= LadderSizeStateMachine.foldSpeed)
+            {
                 pSM.ladder.localPosition = pSM.ladderWalkingPosition;
                 pSM.ladder.localRotation = pSM.ladderWalkingRotation;
                 lSM.OnShrink();

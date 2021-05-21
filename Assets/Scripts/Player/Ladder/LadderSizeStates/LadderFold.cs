@@ -19,7 +19,7 @@ public class LadderFold : State
     public override void Initialize()
     {
         pSM = LadderSizeStateMachine.playerStateMachine;
-        time = 0;
+        time = ExtensionMethods.Remap(LadderSizeStateMachine.ladderLength, LadderSizeStateMachine.ladderLengthSmall, LadderSizeStateMachine.ladderLengthBig, LadderSizeStateMachine.foldSpeed,0);
         isLerpGoing = true;
         LadderSizeStateMachine.isFoldingUp = true;
     }

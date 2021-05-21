@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PathCreation;
 
 public class PlayerInTheAir : State
 {
@@ -94,63 +95,120 @@ public class PlayerInTheAir : State
 
         if (controller.isGrounded)
         {
-            PlayerStateMachine.isRocketJumping = false;
+            PlayerStateMachine.didRocketJump = false;
             pSM.OnLand();
         }
     }
 
     public override void Snap()
     {
-        PlayerStateMachine.isRocketJumping = false;
+        PlayerStateMachine.didRocketJump = false;
         PlayerStateMachine.OnSnap();
+    }
+
+    public override void Jump() 
+    {
+        
+        if (PlayerStateMachine.coyoteTimer < values.slidingCoyoteTime && PlayerStateMachine.closestRail!=null) 
+        {
+            Vector3 pathDirection = PlayerStateMachine.closestRail.pathCreator.path.GetDirectionAtDistance(PlayerStateMachine.currentDistance, EndOfPathInstruction.Stop);
+            if (values.wallJump != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
+            {
+                Vector3 fromWallVector = (Quaternion.AngleAxis(90, Vector3.up) * pathDirection).normalized;
+                fromWallVector = fromWallVector * values.wallJump.z;
+                Vector3 fromWallValued = new Vector3(fromWallVector.x, values.wallJump.y, fromWallVector.z);
+                PlayerStateMachine.playerVelocity += fromWallValued;
+                PlayerStateMachine.baseVelocity.y += values.jumpHeight;
+                PlayerStateMachine.isWallJumping = true;
+            }
+            else
+            {
+                PlayerStateMachine.baseVelocity.y += values.jumpHeight;
+                
+            }
+
+            PlayerStateMachine.coyoteTimer = values.slidingCoyoteTime;
+            PlayerStateMachine.animationControllerisFoldingJumped = false;
+
+        }
+        PlayerStateMachine.jumpInputBool = false;
+
+
     }
 
     public override void RocketJump()
     {
-        if (!PlayerStateMachine.isRocketJumping)
+       
+            
+        float sphereRadius = .2f;
+        float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig - sphereRadius;
+        float acceleration = values.rocketJumpAcceleration;
+        Vector3 origin = PlayerStateMachine.transform.position;
+        LayerMask mask = LayerMask.GetMask("Environment");
+        List<RaycastHit> hits = new List<RaycastHit>();
+        Ray ray = new Ray(origin, Vector3.down);
+        //hits.AddRange( Physics.SphereCastAll(ray, MaxHeight, 1, mask));
+        if (!PlayerStateMachine.didRocketJump)
         {
-            Debug.Log("Rocket");
-            float sphereRadius = .2f;
-            float MaxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig - sphereRadius;
-            float acceleration = values.rocketJumpAcceleration;
-            Vector3 origin = PlayerStateMachine.transform.position;
-            LayerMask mask = LayerMask.GetMask("Environment");
-            List<RaycastHit> hits = new List<RaycastHit>();
-            Ray ray = new Ray(origin, Vector3.down);
-            //hits.AddRange( Physics.SphereCastAll(ray, MaxHeight, 1, mask));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, 0.00001f, Vector3.down, MaxHeight, mask, QueryTriggerInteraction.Ignore));
+        }
+        float closestDistance = Mathf.Infinity;
+        RaycastHit closestHit;
+        Vector3 target = Vector3.zero;
+
+        for (int i = 0; i < hits.Count; i++)
+        {
+            float distance = hits[i].distance;
+            if (distance < closestDistance && Vector3.Dot(hits[i].normal, Vector3.up) >= .93f)
+            {
+                
+                closestHit = hits[i];
+                closestDistance = distance;
+                target = closestHit.point;
+                Debug.Log(hits[i].normal);
+                //Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
+
+            }
+        }
+        if (hits.Count==0)
+        {
+           
+            hits = new List<RaycastHit>();
             hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.forward, MaxHeight, mask, QueryTriggerInteraction.Ignore));
             hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.back, MaxHeight, mask, QueryTriggerInteraction.Ignore));
             hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.right, MaxHeight, mask, QueryTriggerInteraction.Ignore));
             hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.left, MaxHeight, mask, QueryTriggerInteraction.Ignore));
-
-            float closestDistance = Mathf.Infinity;
-            RaycastHit closestHit;
-            Vector3 target = Vector3.zero;
-
             for (int i = 0; i < hits.Count; i++)
             {
                 float distance = hits[i].distance;
-                if (distance < closestDistance)
+                if (distance < closestDistance && Vector3.Dot(hits[i].normal, Vector3.up) <= .93f)
                 {
+
                     closestHit = hits[i];
                     closestDistance = distance;
                     target = closestHit.point;
+                   // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point, Color.red, 2);
                 }
             }
-
-            if (target != Vector3.zero)
-            {
-                PlayerMovementStateMachine pSM = PlayerStateMachine;
-                pSM.ladderJumpTarget = target;
-                pSM.baseVelocity.y = 0;
-                pSM.foldInputBool = false;
-                //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
-                pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration;
-                Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
-                PlayerStateMachine.isRocketJumping = true;
-                pSM.ladderSizeStateMachine.OnRocketJump();
-            }
         }
+        else 
+        {
+            PlayerStateMachine.didRocketJump = true;
+        }
+
+       
+
+        if (target != Vector3.zero)
+        {
+            PlayerMovementStateMachine pSM = PlayerStateMachine;
+            pSM.ladderJumpTarget = target;
+            pSM.baseVelocity.y = 0;
+            pSM.foldInputBool = false;
+            //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
+            pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration;
+            //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
+            pSM.ladderSizeStateMachine.OnRocketJump();
+        }
+
     }
 }
