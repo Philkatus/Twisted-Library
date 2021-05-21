@@ -53,7 +53,7 @@ public abstract class State
 
     }
 
-    public virtual void RocketJump() 
+    public virtual void LadderPush()
     {
 
     }
