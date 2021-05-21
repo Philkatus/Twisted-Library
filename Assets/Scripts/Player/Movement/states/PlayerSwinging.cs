@@ -96,8 +96,9 @@ public class PlayerSwinging : PlayerSliding
                 {
                     startLeftHoldTimer = true;
                 }
-                leftHoldTimer = 0;
                 holdingChangeDirection = false;
+                leftHoldTimer = 0;
+                holdingLeftSlideButton = true;
             };
             pSM.slideRightAction.started += context =>
             {
@@ -105,28 +106,43 @@ public class PlayerSwinging : PlayerSliding
                 {
                     startRightHoldTimer = true;
                 }
-                rightHoldTimer = 0;
                 holdingChangeDirection = false;
+                rightHoldTimer = 0;
+                holdingRightSlideButton = true;
             };
             pSM.slideLeftAction.canceled += context =>
             {
-                if (pSM.slidingInput * pSM.adjustedSlideDirection == 1)
-                { SwitchSpeedLevel("left"); }
+                holdingLeftSlideButton = false;
+                startLeftHoldTimer = false;
+                if (pSM.slidingInput * pSM.adjustedSlideDirection == 1 && holdingChangeDirection == false)
+                {
+                    SwitchSpeedLevel("left");
+                }
             };
             pSM.slideRightAction.canceled += context =>
             {
-                if (pSM.slidingInput * pSM.adjustedSlideDirection == -1)
-                { SwitchSpeedLevel("right"); }
+                holdingRightSlideButton = false;
+                startRightHoldTimer = false;
+                if (pSM.slidingInput * pSM.adjustedSlideDirection == -1 && holdingChangeDirection == false)
+                {
+                    SwitchSpeedLevel("right");
+                }
             };
             pSM.slideLeftAction.performed += context =>
             {
                 if (pSM.slidingInput * pSM.adjustedSlideDirection != 1)
-                { SwitchSpeedLevel("left"); }
+                {
+                    SwitchSpeedLevel("left");
+                    holdingChangeDirection = true;
+                }
             };
             pSM.slideRightAction.performed += context =>
             {
                 if (pSM.slidingInput * pSM.adjustedSlideDirection != -1)
-                { SwitchSpeedLevel("right"); }
+                {
+                    SwitchSpeedLevel("right");
+                    holdingChangeDirection = true;
+                }
             };
             if (pSM.startingSlidingInput == 0)
             {
@@ -564,8 +580,6 @@ public class PlayerSwinging : PlayerSliding
         }
         Time.fixedDeltaTime = 0.002f;
 
-
-
         #endregion
     }
 
@@ -574,8 +588,6 @@ public class PlayerSwinging : PlayerSliding
         SetCurrentPlayerVelocity(Pivot.transform.position);
         pSM.bonusVelocity += currentMovement / stats.swingingVelocityFactor;
         swingingFeedback.SetActive(false);
-        pSM.slideLeftAction.canceled += context => SwitchSpeedLevel("left");
-        pSM.slideRightAction.canceled += context => SwitchSpeedLevel("right");
         return base.Finish();
 
     }
@@ -584,10 +596,6 @@ public class PlayerSwinging : PlayerSliding
     {
 
     }
-
-
-
-
 }
 
 

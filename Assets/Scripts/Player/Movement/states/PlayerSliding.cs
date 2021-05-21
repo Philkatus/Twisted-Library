@@ -39,7 +39,8 @@ public class PlayerSliding : State
     protected bool startLeftHoldTimer;
     protected bool startRightHoldTimer;
     protected bool holdingChangeDirection;
-    protected bool holdingSlideButton;
+    protected bool holdingLeftSlideButton;
+    protected bool holdingRightSlideButton;
     protected float leftHoldTimer;
     protected float rightHoldTimer;
 
@@ -310,7 +311,7 @@ public class PlayerSliding : State
                             }
                             else
                             {
-                                
+
                                 pSM.OnFall();
                             }
                         }
@@ -326,7 +327,7 @@ public class PlayerSliding : State
         }
         else
         {
-            if (!holdingSlideButton)
+            if (!holdingRightSlideButton && !holdingLeftSlideButton)
             {
                 SwitchSlidingDirectionWithCameraRotation();
             }
@@ -442,7 +443,10 @@ public class PlayerSliding : State
     {
         if (startLeftHoldTimer)
         {
-            leftHoldTimer += Time.fixedDeltaTime;
+            if (rightHoldTimer == 0)
+            {
+                leftHoldTimer += Time.fixedDeltaTime;
+            }
             if (leftHoldTimer >= stats.timeToSwitchDirection)
             {
                 holdingChangeDirection = true;
@@ -453,7 +457,10 @@ public class PlayerSliding : State
         }
         else if (startRightHoldTimer)
         {
-            rightHoldTimer += Time.fixedDeltaTime;
+            if (leftHoldTimer == 0)
+            {
+                rightHoldTimer += Time.fixedDeltaTime;
+            }
             if (rightHoldTimer >= stats.timeToSwitchDirection)
             {
                 holdingChangeDirection = true;
@@ -482,7 +489,7 @@ public class PlayerSliding : State
         }
 
         float slidingInput = pSM.slidingInput * pSM.adjustedSlideDirection;
-        if (direction == "left" && !holdingChangeDirection)
+        if (direction == "left" && !holdingChangeDirection && !holdingRightSlideButton)
         {
             if (slidingInput == -1 && canAccalerate)
             {
@@ -515,7 +522,7 @@ public class PlayerSliding : State
                 }
             }
         }
-        else if (direction == "right" && !holdingChangeDirection)
+        else if (direction == "right" && !holdingChangeDirection && !holdingLeftSlideButton)
         {
             if (slidingInput == -1)
             {
@@ -551,10 +558,7 @@ public class PlayerSliding : State
         currentSlidingLevelSpeed = stats.speedLevels[currentSlidingLevel];
         canAccalerate = false;
         holdingChangeDirection = false;
-        startLeftHoldTimer = false;
-        startRightHoldTimer = false;
         donethisCallbackAlready = true;
-        holdingSlideButton = false;
     }
 
     void SwitchSlidingDirectionWithCameraRotation()
