@@ -77,6 +77,11 @@ public class PlayerInTheAir : State
 
 
         controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * values.jumpVelocityFactor);
+        if (HeadCollision()) 
+        {
+            pSM.baseVelocity.y -= pSM.baseVelocity.y*.9f*Time.fixedDeltaTime;
+            pSM.bonusVelocity.y -= pSM.bonusVelocity.y * .9f * Time.fixedDeltaTime;
+        }
         // Gravity and falling
 
         //pSM.playerVelocity += direction * Time.deltaTime * pSM.movementAcceleration * pSM.jumpMovementFactor;
@@ -155,8 +160,8 @@ public class PlayerInTheAir : State
                 closestHit = hits[i];
                 closestDistance = distance;
                 target = closestHit.point;
-                Debug.Log(hits[i].normal);
-                Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
+               // Debug.Log(hits[i].normal);
+                //Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
 
             }
         }
@@ -198,5 +203,16 @@ public class PlayerInTheAir : State
             pSM.ladderSizeStateMachine.OnRocketJump();
         }
 
+    }
+
+    bool HeadCollision() 
+    {
+        if (controller.collisionFlags == CollisionFlags.Above) 
+        {
+            return true;
+        }
+
+
+        return false;
     }
 }

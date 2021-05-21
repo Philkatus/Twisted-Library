@@ -61,24 +61,7 @@ public class PlayerSwinging : PlayerSliding
         onWall = false;
         inputGiven = false;
         ropeLength = Vector3.Distance(Pivot.transform.position, pSM.bob.transform.position);
-        switch (railType)
-        {
-            case Rail.RailType.TwoSided:
-                pSM.swingAction.started += context => AccelerationForce();
-                minDecelerationFactor = stats.minSwingingDeceleration;
-                maxDecelerationFactor = stats.maxSwingingDeceleration;
-                accelerationFactor = 1;
-                break;
-            case Rail.RailType.FreeHanging:
-                pSM.swingAction.started += context => AccelerationForce();
-                minDecelerationFactor = stats.minHangingDeceleration;
-                maxDecelerationFactor = stats.maxHangingDeceleration;
-                accelerationFactor = stats.hangingAccelerationFactor;
-                break;
-            case Rail.RailType.OnWall:
-                pSM.swingAction.started += context => RepellingForce();
-                break;
-        }
+
     }
 
 
@@ -207,19 +190,19 @@ public class PlayerSwinging : PlayerSliding
         switch (railType)
         {
             case Rail.RailType.TwoSided:
-                pSM.swingAction.started += context => AccelerationForce();
+                //pSM.swingAction.started += context => AccelerationForce();
                 minDecelerationFactor = stats.minSwingingDeceleration;
                 maxDecelerationFactor = stats.maxSwingingDeceleration;
                 accelerationFactor = 1;
                 break;
             case Rail.RailType.FreeHanging:
-                pSM.swingAction.started += context => AccelerationForce();
+                // pSM.swingAction.started += context => AccelerationForce();
                 minDecelerationFactor = stats.minHangingDeceleration;
                 maxDecelerationFactor = stats.maxHangingDeceleration;
                 accelerationFactor = stats.hangingAccelerationFactor;
                 break;
             case Rail.RailType.OnWall:
-                pSM.swingAction.started += context => RepellingForce();
+                // pSM.swingAction.started += context => RepellingForce();
                 break;
         }
 
@@ -348,6 +331,11 @@ public class PlayerSwinging : PlayerSliding
             swingingFeedback.SetActive(false);
         }
 
+
+        if (pSM.swingInputBool)
+        {
+            AccelerationForce();
+        }
         //Acceleration
         inputForce = Vector3.zero;
         inputTimer += dt;
@@ -418,7 +406,10 @@ public class PlayerSwinging : PlayerSliding
             tensionForce += centripetalForce;
             currentVelocity += tensionDirection * tensionForce * dt;
         }
-
+        if (pSM.swingInputBool)
+        {
+            RepellingForce();
+        }
         //Acceleration
         inputForce = Vector3.zero;
 
@@ -445,12 +436,13 @@ public class PlayerSwinging : PlayerSliding
 
         if (canPress)
         {
-
             inputForce = bobForward * stats.swingingAcceleration * dt * accelerationFactor;
             currentVelocity += inputForce;
             inputGiven = true;
             inputTimer = 0;
-            pSM.snapInputBool = false;
+
+            pSM.swingInputBool = false;
+            // Debug.Log("a Force");
         }
     }
 
@@ -461,7 +453,8 @@ public class PlayerSwinging : PlayerSliding
             onWall = false;
             inputForce = repelDirection * stats.swingingAcceleration * dt * 1.2f;
             currentVelocity += inputForce;
-            pSM.snapInputBool = false;
+            pSM.swingInputBool = false;
+            // Debug.Log("r Force");
         }
     }
 
@@ -588,8 +581,9 @@ public class PlayerSwinging : PlayerSliding
         SetCurrentPlayerVelocity(Pivot.transform.position);
         pSM.bonusVelocity += currentMovement / stats.swingingVelocityFactor;
         swingingFeedback.SetActive(false);
-        return base.Finish();
+        pSM.snapInputBool = false;
 
+        return base.Finish();
     }
     public PlayerSwinging(PlayerMovementStateMachine playerStateMachine)
     : base(playerStateMachine)
