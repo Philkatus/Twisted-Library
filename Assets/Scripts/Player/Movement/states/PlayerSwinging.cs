@@ -90,10 +90,44 @@ public class PlayerSwinging : PlayerSliding
         if (stats.useNewSliding)
         {
             pSM.slidingInput = pSM.startingSlidingInput;
-            pSM.slideLeftAction.started += context => { leftHoldTimer = 0; startLeftHoldTimer = true; holdingChangeDirection = false; };
-            pSM.slideRightAction.started += context => { rightHoldTimer = 0; startRightHoldTimer = true; holdingChangeDirection = false; };
-            pSM.slideLeftAction.canceled += context => SwitchSpeedLevel("left");
-            pSM.slideRightAction.canceled += context => SwitchSpeedLevel("right");
+            pSM.slideLeftAction.started += context =>
+            {
+                if (pSM.slidingInput * pSM.adjustedSlideDirection == 1)
+                {
+                    startLeftHoldTimer = true;
+                }
+                leftHoldTimer = 0;
+                holdingChangeDirection = false;
+            };
+            pSM.slideRightAction.started += context =>
+            {
+                if (pSM.slidingInput * pSM.adjustedSlideDirection == -1)
+                {
+                    startRightHoldTimer = true;
+                }
+                rightHoldTimer = 0;
+                holdingChangeDirection = false;
+            };
+            pSM.slideLeftAction.canceled += context =>
+            {
+                if (pSM.slidingInput * pSM.adjustedSlideDirection == 1)
+                { SwitchSpeedLevel("left"); }
+            };
+            pSM.slideRightAction.canceled += context =>
+            {
+                if (pSM.slidingInput * pSM.adjustedSlideDirection == -1)
+                { SwitchSpeedLevel("right"); }
+            };
+            pSM.slideLeftAction.performed += context =>
+            {
+                if (pSM.slidingInput * pSM.adjustedSlideDirection != 1)
+                { SwitchSpeedLevel("left"); }
+            };
+            pSM.slideRightAction.performed += context =>
+            {
+                if (pSM.slidingInput * pSM.adjustedSlideDirection != -1)
+                { SwitchSpeedLevel("right"); }
+            };
             if (pSM.startingSlidingInput == 0)
             {
                 currentSlidingLevel = 0;
@@ -453,7 +487,7 @@ public class PlayerSwinging : PlayerSliding
 
 
         /*
-         * evtl. für später noch wichtig wenn ich nochmal versuche das ganze velocity base zu machen
+         * evtl. fuer spaeter noch wichtig wenn ich nochmal versuche das ganze velocity base zu machen
         if (railType == Rail.RailType.TwoSided && pSM.playerVelocity.magnitude >= stats.minVelocityToChangeSnapDirection) 
         {
             if (Vector3.Dot(pSM.playerVelocity.normalized, startingNormal) >= 0)
@@ -465,7 +499,8 @@ public class PlayerSwinging : PlayerSliding
                 ladder.transform.forward = startingNormal;
             }
         } 
-        else */if (railType == Rail.RailType.TwoSided && Vector3.Dot(startingPoint - pSM.transform.position, startingNormal) >= 0)
+        else */
+        if (railType == Rail.RailType.TwoSided && Vector3.Dot(startingPoint - pSM.transform.position, startingNormal) >= 0)
         {
             ladder.transform.forward = startingNormal;
         }
