@@ -19,6 +19,7 @@ MonoBehaviour:
   jumpInputTimer: 0.5
   snapInputTimer: 0.5
   foldInputTimer: 0.5
+  swingInputTimer: 0
   slidingCoyoteTime: 0.2
   movementAcceleration: 50
   maximumMovementSpeed: 20
@@ -38,18 +39,19 @@ MonoBehaviour:
   resnappingDistance: 0.5
   minVelocityToChangeSnapDirection: 1
   climbingSpeedOnLadder: 1
-  slidingAcceleration: 50
-  maxSlidingSpeed: 10
+  slidingAcceleration: 500
+  maxSlidingSpeed: 100
   slidingSpeedSizeFactor: 1
   slidingDragPercentage: 3
   ladderDismountSpeed: 1.5
   ladderDismountTimer: 0.2
-  slidingVelocityFactor: 0.01
+  slidingVelocityFactor: 0.001
   preservesVelocityOnSnap: 0
   speedLevels:
-  - 1
-  - 2
-  - 3
+  - 0
+  - 30
+  - 45
+  - 60
   timeToSwitchDirection: 0.2
   accelerationCooldown: 0.3
   useSwinging: 1
