@@ -31,6 +31,8 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("Determines how long the fold input gets saved ")]
     public float foldInputTimer;
 
+    [Tooltip("how long is the time after falling of a ladder where you can still jump")]
+    public float slidingCoyoteTime = 0.2f;
     #endregion
 
     [Space]
@@ -92,6 +94,7 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("die minimale velocity die der spieler haben muss damit sie einfluss auf die snap direction hat")]
     public float minVelocityToChangeSnapDirection = 1;
 
+    
 
     [Tooltip("How fast the player climbs the ladder up and down while sliding.")]
     public float climbingSpeedOnLadder;

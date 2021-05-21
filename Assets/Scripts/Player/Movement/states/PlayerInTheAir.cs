@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PathCreation;
 
 public class PlayerInTheAir : State
 {
@@ -103,6 +104,36 @@ public class PlayerInTheAir : State
     {
         PlayerStateMachine.didRocketJump = false;
         PlayerStateMachine.OnSnap();
+    }
+
+    public override void Jump() 
+    {
+        
+        if (PlayerStateMachine.coyoteTimer < values.slidingCoyoteTime && PlayerStateMachine.closestRail!=null) 
+        {
+            Vector3 pathDirection = PlayerStateMachine.closestRail.pathCreator.path.GetDirectionAtDistance(PlayerStateMachine.currentDistance, EndOfPathInstruction.Stop);
+            if (values.wallJump != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
+            {
+                Vector3 fromWallVector = (Quaternion.AngleAxis(90, Vector3.up) * pathDirection).normalized;
+                fromWallVector = fromWallVector * values.wallJump.z;
+                Vector3 fromWallValued = new Vector3(fromWallVector.x, values.wallJump.y, fromWallVector.z);
+                PlayerStateMachine.playerVelocity += fromWallValued;
+                PlayerStateMachine.baseVelocity.y += values.jumpHeight;
+                PlayerStateMachine.isWallJumping = true;
+            }
+            else
+            {
+                PlayerStateMachine.baseVelocity.y += values.jumpHeight;
+                
+            }
+
+            PlayerStateMachine.coyoteTimer = values.slidingCoyoteTime;
+            PlayerStateMachine.animationControllerisFoldingJumped = false;
+
+        }
+        PlayerStateMachine.jumpInputBool = false;
+
+
     }
 
     public override void RocketJump()

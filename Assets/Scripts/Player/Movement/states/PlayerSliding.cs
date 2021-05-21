@@ -310,6 +310,7 @@ public class PlayerSliding : State
                             }
                             else
                             {
+                                
                                 pSM.OnFall();
                             }
                         }
@@ -421,6 +422,7 @@ public class PlayerSliding : State
                             }
                             else
                             {
+                                pSM.coyoteTimer = 0;
                                 pSM.OnFall();
                             }
                         }
