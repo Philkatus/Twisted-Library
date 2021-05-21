@@ -13,7 +13,7 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("Use the button used for jumping instead of the fold button for the ladder shoot.")]
     public bool useJumpForLadderShoot;
 
-    [Tooltip("Use the button used for jumping instead of the fold button for the ladder shoot.")]
+    [Tooltip("Use the trigger buttons to snap and slide in a specific direction.")]
     public bool useTriggerToSlideWithMomentum;
 
     [Space]

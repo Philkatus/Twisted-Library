@@ -240,6 +240,11 @@ public class PlayerMovementStateMachine : StateMachine
             slideRightAction.started += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = +1; } };
             slideRightAction.canceled += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = 0; } };
             slideLeftAction.canceled += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = 0; } };
+            if (stats.useTriggerToSlideWithMomentum)
+            {
+                slideLeftAction.started += context => SaveInput(1, stats.snapInputTimer);
+                slideRightAction.started += context => SaveInput(1, stats.snapInputTimer);
+            }
             startingSlidingInput = 0;
         }
         else
@@ -247,6 +252,10 @@ public class PlayerMovementStateMachine : StateMachine
             playerControlsMap = actionAsset.FindActionMap("PlayerControls");
             stopSlidingAction = playerControlsMap.FindAction("StopSliding");
             slideAction = playerControlsMap.FindAction("Slide");
+            if (stats.useTriggerToSlideWithMomentum)
+            {
+                slideAction.started += context => SaveInput(1, stats.snapInputTimer);
+            }
         }
         if (GameObject.FindGameObjectWithTag("Canvas"))
         {

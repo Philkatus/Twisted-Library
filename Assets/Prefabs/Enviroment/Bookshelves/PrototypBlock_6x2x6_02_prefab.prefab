@@ -65,7 +65,7 @@ MonoBehaviour:
       - 0
       globalNormalsAngle: 0
       flipNormals: 0
-    vertexPathUpToDate: 1
+    vertexPathUpToDate: 0
     vertexPathMaxAngleError: 0
     vertexPathMinVertexSpacing: 0
     showTransformTool: 1
@@ -100,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 7717679748815782518}
   railType: 1
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!1 &465867143523523350
 GameObject:
   m_ObjectHideFlags: 0
@@ -112,7 +112,6 @@ GameObject:
   - component: {fileID: 2393063419765663290}
   - component: {fileID: 1684566741583359567}
   - component: {fileID: 5387658703820563911}
-  - component: {fileID: 8817369915758656875}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -183,21 +182,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &8817369915758656875
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 465867143523523350}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &872969439646858003
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,7 +227,6 @@ GameObject:
   - component: {fileID: 1921532863962688195}
   - component: {fileID: 2883163328156641757}
   - component: {fileID: 4318738330954031661}
-  - component: {fileID: 7412429126994310621}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -314,21 +297,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7412429126994310621
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1762751017456522195}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &1920638251392522530
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,7 +411,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 3057981308594086889}
   railType: 0
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!1 &2375729324289135397
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,7 +512,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 6966746830633265031}
   railType: 1
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!1 &2658641211570786990
 GameObject:
   m_ObjectHideFlags: 0
@@ -645,7 +613,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 5939473480712205864}
   railType: 2
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!1 &2873270551853320524
 GameObject:
   m_ObjectHideFlags: 0
@@ -760,7 +728,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 4727013508750875755}
   railType: 0
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!1 &3997762992861584257
 GameObject:
   m_ObjectHideFlags: 0
@@ -772,7 +740,6 @@ GameObject:
   - component: {fileID: 4150437363999706803}
   - component: {fileID: 8820154688238040563}
   - component: {fileID: 4470109870372974210}
-  - component: {fileID: 2433480398724348812}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -843,21 +810,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2433480398724348812
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3997762992861584257}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &4368519739018706987
 GameObject:
   m_ObjectHideFlags: 0
@@ -869,7 +821,6 @@ GameObject:
   - component: {fileID: 3395034720486659207}
   - component: {fileID: 1074556250072592793}
   - component: {fileID: 1958566354244963318}
-  - component: {fileID: 2875617848129325075}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -940,21 +891,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2875617848129325075
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4368519739018706987}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &4748125681699290500
 GameObject:
   m_ObjectHideFlags: 0
@@ -966,7 +902,6 @@ GameObject:
   - component: {fileID: 4353434392127718921}
   - component: {fileID: 499277621081000453}
   - component: {fileID: 8453960253510235258}
-  - component: {fileID: 7379244752654364723}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -1037,21 +972,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7379244752654364723
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4748125681699290500}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &5054186725398084501
 GameObject:
   m_ObjectHideFlags: 0
@@ -1443,7 +1363,6 @@ GameObject:
   - component: {fileID: 3243090749495709587}
   - component: {fileID: 6747767663186049013}
   - component: {fileID: 2062167972535647823}
-  - component: {fileID: 650918757913174159}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -1514,21 +1433,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &650918757913174159
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6999665348672983803}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &7260191018984794732
 GameObject:
   m_ObjectHideFlags: 0
@@ -1630,7 +1534,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 4001916436330342364}
   railType: 0
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!65 &6406986315682530909
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1744,7 +1648,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 8625803118411642856}
   railType: 1
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!1 &7985180345362292332
 GameObject:
   m_ObjectHideFlags: 0
@@ -1756,7 +1660,6 @@ GameObject:
   - component: {fileID: 741128551423428859}
   - component: {fileID: 5670104998151919280}
   - component: {fileID: 876963745547956495}
-  - component: {fileID: 7743255762958352453}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -1827,21 +1730,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7743255762958352453
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7985180345362292332}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &8759127015068743476
 GameObject:
   m_ObjectHideFlags: 0
@@ -1942,7 +1830,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 1370015275654767417}
   railType: 1
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!1 &8871714067359633356
 GameObject:
   m_ObjectHideFlags: 0
@@ -1954,7 +1842,6 @@ GameObject:
   - component: {fileID: 8513274786850641684}
   - component: {fileID: 5357956403490404294}
   - component: {fileID: 4229671853436429321}
-  - component: {fileID: 7887705803266361219}
   m_Layer: 6
   m_Name: Visualisation
   m_TagString: Untagged
@@ -2025,18 +1912,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &7887705803266361219
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8871714067359633356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
