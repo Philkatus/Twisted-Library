@@ -63,7 +63,7 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public Vector3 ladderWalkingPosition;
     [HideInInspector] public Vector3 ladderJumpTarget;
 
-    bool[] inputBools = new bool[3];
+    public bool[] inputBools = new bool[4];
     public bool jumpInputBool
     {
         get
@@ -100,6 +100,18 @@ public class PlayerMovementStateMachine : StateMachine
         }
 
     }
+    public bool swingInputBool
+    {
+        get
+        {
+            return inputBools[3];
+        }
+        set
+        {
+            inputBools[3] = value;
+        }
+
+    }
     public float coyoteTimer = 0;
     public Vector3 ladderDirection
     {
@@ -122,7 +134,7 @@ public class PlayerMovementStateMachine : StateMachine
     InputAction moveAction;
     InputAction foldAction;
 
-    Coroutine[] inputTimer = new Coroutine[3];
+    Coroutine[] inputTimer = new Coroutine[4];
     #endregion
 
     private void Start()
@@ -193,6 +205,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     public void SaveInput(int index, float duration)
     {
+       // Debug.Log("saveIput"+index);
         if (inputTimer[index] != null)
         {
             StopCoroutine(inputTimer[index]);
@@ -278,6 +291,7 @@ public class PlayerMovementStateMachine : StateMachine
         jumpAction.performed += context => SaveInput(0, stats.jumpInputTimer);// State.Jump();
         snapAction.performed += context => SaveInput(1, stats.snapInputTimer);   //TryToSnapToShelf();
         foldAction.performed += context => SaveInput(2, stats.foldInputTimer); //ladderSizeStateMachine.OnFold();
+        swingAction.performed += context => SaveInput(3, stats.swingInputTimer);
         //foldAction.performed += context => State.RocketJump();
     }
     #endregion

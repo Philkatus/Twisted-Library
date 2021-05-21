@@ -61,24 +61,7 @@ public class PlayerSwinging : PlayerSliding
         onWall = false;
         inputGiven = false;
         ropeLength = Vector3.Distance(Pivot.transform.position, pSM.bob.transform.position);
-        switch (railType)
-        {
-            case Rail.RailType.TwoSided:
-                pSM.swingAction.started += context => AccelerationForce();
-                minDecelerationFactor = stats.minSwingingDeceleration;
-                maxDecelerationFactor = stats.maxSwingingDeceleration;
-                accelerationFactor = 1;
-                break;
-            case Rail.RailType.FreeHanging:
-                pSM.swingAction.started += context => AccelerationForce();
-                minDecelerationFactor = stats.minHangingDeceleration;
-                maxDecelerationFactor = stats.maxHangingDeceleration;
-                accelerationFactor = stats.hangingAccelerationFactor;
-                break;
-            case Rail.RailType.OnWall:
-                pSM.swingAction.started += context => RepellingForce();
-                break;
-        }
+       
     }
 
 
@@ -157,19 +140,19 @@ public class PlayerSwinging : PlayerSliding
         switch (railType)
         {
             case Rail.RailType.TwoSided:
-                pSM.swingAction.started += context => AccelerationForce();
+                //pSM.swingAction.started += context => AccelerationForce();
                 minDecelerationFactor = stats.minSwingingDeceleration;
                 maxDecelerationFactor = stats.maxSwingingDeceleration;
                 accelerationFactor = 1;
                 break;
             case Rail.RailType.FreeHanging:
-                pSM.swingAction.started += context => AccelerationForce();
+               // pSM.swingAction.started += context => AccelerationForce();
                 minDecelerationFactor = stats.minHangingDeceleration;
                 maxDecelerationFactor = stats.maxHangingDeceleration;
                 accelerationFactor = stats.hangingAccelerationFactor;
                 break;
             case Rail.RailType.OnWall:
-                pSM.swingAction.started += context => RepellingForce();
+               // pSM.swingAction.started += context => RepellingForce();
                 break;
         }
 
@@ -298,6 +281,14 @@ public class PlayerSwinging : PlayerSliding
             swingingFeedback.SetActive(false);
         }
 
+        if (pSM.swingInputBool && railType == Rail.RailType.OnWall) 
+        {
+            RepellingForce();
+        }
+        else if (pSM.swingInputBool)
+        {
+            AccelerationForce();
+        }
         //Acceleration
         inputForce = Vector3.zero;
         inputTimer += dt;
@@ -393,14 +384,15 @@ public class PlayerSwinging : PlayerSliding
     void AccelerationForce()
     {
 
-        if (canPress)
+        if (canPress )
         {
-
             inputForce = bobForward * stats.swingingAcceleration * dt * accelerationFactor;
             currentVelocity += inputForce;
             inputGiven = true;
             inputTimer = 0;
-            pSM.snapInputBool = false;
+           
+            pSM.swingInputBool = false;
+           // Debug.Log("a Force");
         }
     }
 
@@ -411,7 +403,8 @@ public class PlayerSwinging : PlayerSliding
             onWall = false;
             inputForce = repelDirection * stats.swingingAcceleration * dt * 1.2f;
             currentVelocity += inputForce;
-            pSM.snapInputBool = false;
+            pSM.swingInputBool = false;
+            //Debug.Log("r Force");
         }
     }
 
@@ -541,6 +534,8 @@ public class PlayerSwinging : PlayerSliding
         swingingFeedback.SetActive(false);
         pSM.slideLeftAction.canceled += context => SwitchSpeedLevel("left");
         pSM.slideRightAction.canceled += context => SwitchSpeedLevel("right");
+        pSM.snapInputBool = false;
+
         return base.Finish();
 
     }
