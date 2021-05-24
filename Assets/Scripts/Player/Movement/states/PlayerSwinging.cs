@@ -230,6 +230,7 @@ public class PlayerSwinging : PlayerSliding
     public override void Movement()
     {
         base.Movement();
+        
         Swing();
         
         /*
@@ -272,7 +273,7 @@ public class PlayerSwinging : PlayerSliding
         //die Leiter korrekt rotieren
         currentDistance = pSM.currentDistance;
 
-        Vector3 axis = pSM.ladder.right;
+        Vector3 axis = path.GetDirectionAtDistance(pSM.currentDistance);
         float rotateByAngle;
         if (!pSM.useRelativeBobPosition)
         {
@@ -286,10 +287,10 @@ public class PlayerSwinging : PlayerSliding
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
 
 
-
         float rotateByAngle2 = Vector3.SignedAngle(pSM.ladder.right, path.GetDirectionAtDistance(pSM.currentDistance), pSM.ladder.up);
         Debug.Log(rotateByAngle2);
         pSM.ladder.Rotate(0, rotateByAngle2, 0, Space.Self);
+
 
         // The values that otherwise get deleted by the rotation in Update()
         //bobPosition = pSM.bob.transform.position;
@@ -421,7 +422,7 @@ public class PlayerSwinging : PlayerSliding
         if (movingForward && !onWall)
         {
 
-            Vector3 axis = pSM.ladder.right;
+            Vector3 axis = path.GetDirectionAtDistance(pSM.currentDistance);
             float angle = Vector3.SignedAngle(Vector3.down, (bob_p - pivot_p).normalized, axis);
             if (angle <= stats.maxPushAngle)
             {
