@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 18346.734, g: 17801.148, b: 20510.5, a: 1}
+  m_IndirectSpecularColor: {r: 18364.988, g: 17789.953, b: 20401.125, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -493,9 +493,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!23 &520193927
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -636,6 +633,10 @@ PrefabInstance:
       propertyPath: m_SmoothingTime
       value: 0.039
       objectReference: {fileID: 0}
+    - target: {fileID: 5224045388643823046, guid: 358270114d47f44439b550dbcf894a84, type: 3}
+      propertyPath: stats
+      value: 
+      objectReference: {fileID: 11400000, guid: 8159f9278768351478e5bc286d257af9, type: 2}
     - target: {fileID: 5224045388643823046, guid: 358270114d47f44439b550dbcf894a84, type: 3}
       propertyPath: actionAsset
       value: 
@@ -872,9 +873,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!23 &600086789
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1537,7 +1535,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1374819060577105430, guid: 8ea9e30eaf061204394c908107550281, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.016674167
+      value: 0.016674163
       objectReference: {fileID: 0}
     - target: {fileID: 1374819060577105430, guid: 8ea9e30eaf061204394c908107550281, type: 3}
       propertyPath: m_LocalRotation.y
@@ -2079,7 +2077,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 1493211368}
   railType: 0
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!114 &1493211368
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2241,7 +2239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 1681684714}
   railType: 0
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!114 &1681684714
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2892,9 +2890,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &1135690535726149046
 GameObject:
   m_ObjectHideFlags: 0
@@ -3082,7 +3077,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 1693396649265724256}
   railType: 1
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!33 &2253981472310311366
 MeshFilter:
   m_ObjectHideFlags: 10
@@ -3140,7 +3135,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 43908100948323087}
   railType: 1
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!64 &2842684498313308850
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -3265,9 +3260,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!1 &4580953269878565092
 GameObject:
   m_ObjectHideFlags: 0
@@ -3472,9 +3464,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!114 &7170373519625897013
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3489,7 +3478,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 806023029301972734}
   railType: 1
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!1 &7276110975529097153
 GameObject:
   m_ObjectHideFlags: 0
@@ -3646,7 +3635,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 8301929451087916977}
   railType: 1
-  maxSwingingAngle: 0
+  stopSlidingAtTheEnd: 0
 --- !u!33 &8599040736038707911
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -3667,9 +3656,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a737fa80033ef214a975222f8178e20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  g: {fileID: 0}
-  material: {fileID: 0}
-  changeToThisMaterial: {fileID: 2100000, guid: e114638e861226d46a1bfb7990777781, type: 2}
 --- !u!23 &9031334015618832400
 MeshRenderer:
   m_ObjectHideFlags: 0
