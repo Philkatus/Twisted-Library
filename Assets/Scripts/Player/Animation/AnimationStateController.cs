@@ -447,7 +447,7 @@ public class AnimationStateController : MonoBehaviour
 
             audioManager.StopSound("Sliding");
             slideAudioPlaying = false;
-        }
+        }     
     }
 
     void Swinging()
@@ -487,7 +487,7 @@ public class AnimationStateController : MonoBehaviour
         }
         else
         {
-            animator.SetBool("isSlidingLadder", false);
+            animator.SetBool("isSwingingLadder", false);
             //rigBuilder.enabled = true;
             armRig.weight = 1;
 
@@ -502,7 +502,7 @@ public class AnimationStateController : MonoBehaviour
 
             audioManager.StopSound("Sliding");
             slideAudioPlaying = false;
-        }
+        }        
     }
 
     void DismountingTop()
