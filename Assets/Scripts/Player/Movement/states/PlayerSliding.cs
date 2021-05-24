@@ -197,6 +197,8 @@ public class PlayerSliding : State
         }
         else
         {
+            pSM.bonusVelocity += stats.fallingMomentumPercentage * pSM.playerVelocity;
+
             if (stats.wallJump != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
             {
                 Vector3 fromWallVector = (Quaternion.AngleAxis(90, Vector3.up) * pathDirection).normalized;
@@ -210,7 +212,6 @@ public class PlayerSliding : State
             {
                 PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
             }
-
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = false;
         }
@@ -311,7 +312,7 @@ public class PlayerSliding : State
                             }
                             else
                             {
-
+                                pSM.bonusVelocity += stats.fallingMomentumPercentage * pSM.playerVelocity;
                                 pSM.OnFall();
                             }
                         }
@@ -424,6 +425,7 @@ public class PlayerSliding : State
                             else
                             {
                                 pSM.coyoteTimer = 0;
+                                pSM.bonusVelocity += stats.fallingMomentumPercentage * pSM.playerVelocity;
                                 pSM.OnFall();
                             }
                         }
