@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 [RequireComponent(typeof(AudioSource))]
-public class SoundManager : MonoBehaviour
+public class FootstepSoundManager : MonoBehaviour
 {
     #region Variables
 

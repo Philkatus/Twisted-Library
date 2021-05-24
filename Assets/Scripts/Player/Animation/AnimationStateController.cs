@@ -11,7 +11,7 @@ public class AnimationStateController : MonoBehaviour
     public PlayerMovementStateMachine movementScript;
     public LadderSizeStateMachine ladderScript;
     public CharacterController controller;
-    public SoundManager soundManager;
+    public FootstepSoundManager soundManager;
     public AudioManager audioManager;
     public Animator animator;
     public FootIK footIKScript;
@@ -20,6 +20,10 @@ public class AnimationStateController : MonoBehaviour
     float turnAmount;
     float forwardAmount;
     Vector3 move;
+    [Tooltip("Walk>>Run blend is determined by velocity.normalized etc, changing PlayerVariable stats e.g." +
+        " drag or speed can change these normalized values and therefore change the blend. " +
+        "This variable can be used to manually fix this. Dirty, but works for now ")]
+    public float antiDrag = 1.6f;
 
     [Header("Use IK")]
     public bool useFeetIK = false;
@@ -81,7 +85,7 @@ public class AnimationStateController : MonoBehaviour
     {
         animator = GetComponent<Animator>();
         footIKScript = GetComponent<FootIK>();
-        soundManager = GetComponent<SoundManager>();
+        soundManager = GetComponent<FootstepSoundManager>();
         footIKScript.enabled = false;
         audioManager = FindObjectOfType<AudioManager>();
         //movementScript = GetComponent<PlayerMovementStateMachine>();
@@ -160,7 +164,7 @@ public class AnimationStateController : MonoBehaviour
         move = movementScript.playerVelocity;
         if (move.magnitude > 1f) move.Normalize();
         move = transform.InverseTransformDirection(move);
-        forwardAmount = move.z;
+        forwardAmount = move.z * antiDrag;
         turnAmount = Mathf.Atan2(move.x, move.z);
 
         animator.SetFloat("Forward", forwardAmount, 0.1f, Time.deltaTime);
