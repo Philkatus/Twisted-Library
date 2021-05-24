@@ -231,7 +231,20 @@ public class PlayerSwinging : PlayerSliding
     {
         base.Movement();
         
+        Vector3 pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
+        float rotateByAngle2 = Vector3.SignedAngle(pSM.ladder.right, pathDirection, Vector3.up);
+        Debug.DrawRay(pathCreator.path.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop),pSM.ladder.right*3,Color.green);
+        Debug.DrawRay(pathCreator.path.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop), pathDirection*3, Color.gray);
+        Debug.Log(rotateByAngle2);
+        Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle2, Vector3.up);
+        pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
+        
         Swing();
+        
+        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
+        rotateByAngle2 = Vector3.SignedAngle(pSM.ladder.right, pathDirection, pSM.ladder.up);
+        targetRotation = Quaternion.AngleAxis(rotateByAngle2, Vector3.up);
+        pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
         
         /*
         float rotateByAngle = (Vector3.SignedAngle(pSM.ladder.forward,-path.GetNormalAtDistance(currentDistance),pSM.ladder.up));
@@ -241,7 +254,7 @@ public class PlayerSwinging : PlayerSliding
         Vector3 railDirection = path.GetNormalAtDistance(currentDistance);
         pSM.ladder.transform.forward = -railDirection;
         */
-       
+
     }
 
     public override void Swing()
@@ -395,7 +408,7 @@ public class PlayerSwinging : PlayerSliding
             if (angle <= stats.maxPushAngle)
             {
                 onWall = true;
-                return GetPointOnLine(pivot_p, pivot_p + wallDirection * 100, ropeLength);
+                return GetPointOnLine(Vector3.zero, wallDirection * 100, ropeLength);
             }
         }
 
