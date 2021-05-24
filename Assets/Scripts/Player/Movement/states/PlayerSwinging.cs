@@ -230,22 +230,10 @@ public class PlayerSwinging : PlayerSliding
     public override void Movement()
     {
         base.Movement();
-        
-        Vector3 pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
-        float rotateByAngle2 = Vector3.SignedAngle(pSM.ladder.right, pathDirection, Vector3.up);
-        Debug.DrawRay(pathCreator.path.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop),pSM.ladder.right*3,Color.green);
-        Debug.DrawRay(pathCreator.path.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop), pathDirection*3, Color.gray);
-        Debug.Log(rotateByAngle2);
-        Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle2, Vector3.up);
-        pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
-        
+        RotateAorundY();
         Swing();
-        
-        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
-        rotateByAngle2 = Vector3.SignedAngle(pSM.ladder.right, pathDirection, pSM.ladder.up);
-        targetRotation = Quaternion.AngleAxis(rotateByAngle2, Vector3.up);
-        pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
-        
+        RotateAorundY();
+
         /*
         float rotateByAngle = (Vector3.SignedAngle(pSM.ladder.forward,-path.GetNormalAtDistance(currentDistance),pSM.ladder.up));
         //Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, pSM.ladder.up);
@@ -256,6 +244,8 @@ public class PlayerSwinging : PlayerSliding
         */
 
     }
+
+   
 
     public override void Swing()
     {
@@ -375,7 +365,6 @@ public class PlayerSwinging : PlayerSliding
 
         return GetPointOnLine(Vector3.zero, bobPosition + movementDelta, ropeLength);
     }
-
     Vector3 RepelUpdate()
     {
         // Get normal at current position
@@ -501,6 +490,14 @@ public class PlayerSwinging : PlayerSliding
 
 
     }
+    private void RotateAorundY()
+    {
+        Vector3 pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
+        float rotateByAngle2 = Vector3.SignedAngle(pSM.ladder.right, pathDirection * pSM.snapdirection, Vector3.up);
+        //Debug.Log(rotateByAngle2);
+        Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle2, Vector3.up);
+        pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
+    }
 
     void SnappingOrientation()
     {
@@ -525,27 +522,31 @@ public class PlayerSwinging : PlayerSliding
         Vector3 startingNormal = path.GetNormalAtDistance(currentDistance);
 
 
-        /*
-         * evtl. fuer spaeter noch wichtig wenn ich nochmal versuche das ganze velocity base zu machen
+        
+          //evtl. fuer spaeter noch wichtig wenn ich nochmal versuche das ganze velocity base zu machen
         if (railType == Rail.RailType.TwoSided && pSM.playerVelocity.magnitude >= stats.minVelocityToChangeSnapDirection) 
         {
-            if (Vector3.Dot(pSM.playerVelocity.normalized, startingNormal) >= 0)
+            Debug.Log("i snapped through velocity");
+            if (Vector3.Dot(pSM.playerVelocity.normalized, startingNormal) < 0)
             {
                 ladder.transform.forward = -startingNormal;
+                pSM.snapdirection = 1;
             }
             else 
             {
                 ladder.transform.forward = startingNormal;
+                pSM.snapdirection = -1;
             }
         } 
-        else */
-        if (railType == Rail.RailType.TwoSided && Vector3.Dot(startingPoint - pSM.transform.position, startingNormal) >= 0)
+        else if (railType == Rail.RailType.TwoSided && Vector3.Dot(startingPoint - pSM.transform.position, startingNormal) >= 0)
         {
             ladder.transform.forward = startingNormal;
+            pSM.snapdirection = -1;
         }
         else
         {
             ladder.transform.forward = -startingNormal;
+            pSM.snapdirection = 1;
         }
 
         pSM.currentDistance = currentDistance;
@@ -556,25 +557,27 @@ public class PlayerSwinging : PlayerSliding
         //Ladder Rotation
         Vector3 axis = pSM.ladder.right;
         float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, pSM.transform.position - startingPoint, axis));
-        if (rotateByAngle < 0)
+        if (railType != Rail.RailType.TwoSided)
         {
-            if (rotateByAngle < -90)
+            if (rotateByAngle < 0)
             {
-                rotateByAngle = 150;
+                if (rotateByAngle < -90)
+                {
+                    rotateByAngle = 150;
+                }
+                else
+                    rotateByAngle = 0;
             }
             else
-                rotateByAngle = 0;
+            {
+                rotateByAngle = Mathf.Clamp(rotateByAngle, 0, 150);
+            }
+            if (rotateByAngle < 120)
+            {
+                currentVelocity += pSM.resultingVelocity(pSM.playerVelocity, pSM.bob.transform.forward);
+                currentVelocity = Vector3.ClampMagnitude(currentVelocity, stats.maxSwingSpeed);
+            }
         }
-        else
-        {
-            rotateByAngle = Mathf.Clamp(rotateByAngle, 0, 150);
-        }
-        if (rotateByAngle < 120)
-        {
-            currentVelocity += pSM.resultingVelocity(pSM.playerVelocity, pSM.bob.transform.forward);
-            currentVelocity = Vector3.ClampMagnitude(currentVelocity, stats.maxSwingSpeed);
-        }
-
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
 
