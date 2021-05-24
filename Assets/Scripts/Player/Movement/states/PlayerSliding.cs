@@ -34,6 +34,8 @@ public class PlayerSliding : State
     protected float speed;
     protected float pathLength;
     protected float currentSlidingLevelSpeed;
+    protected float leftHoldTimer;
+    protected float rightHoldTimer;
     protected int currentSlidingLevel;
     protected bool stopping;
     protected bool startLeftHoldTimer;
@@ -41,8 +43,8 @@ public class PlayerSliding : State
     protected bool holdingChangeDirection;
     protected bool holdingLeftSlideButton;
     protected bool holdingRightSlideButton;
-    protected float leftHoldTimer;
-    protected float rightHoldTimer;
+    protected bool shouldRetainSwingVelocity=true;
+  
 
 
     #endregion
@@ -177,6 +179,7 @@ public class PlayerSliding : State
             //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
             // Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
             //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) );
+            shouldRetainSwingVelocity = false;
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = true;
         }
@@ -192,6 +195,7 @@ public class PlayerSliding : State
             //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
             //Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
             //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) );
+            shouldRetainSwingVelocity = false;
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = true;
         }
@@ -212,6 +216,7 @@ public class PlayerSliding : State
             {
                 PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
             }
+            shouldRetainSwingVelocity = true;
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = false;
         }

@@ -612,7 +612,10 @@ public class PlayerSwinging : PlayerSliding
     public override IEnumerator Finish()
     {
         SetCurrentPlayerVelocity(Pivot.transform.position);
-        pSM.bonusVelocity += currentMovement * stats.swingingVelocityFactor;
+        if (shouldRetainSwingVelocity)
+        {
+            pSM.bonusVelocity += currentMovement * stats.swingingVelocityFactor;
+        }
         swingingFeedback.SetActive(false);
         pSM.snapInputBool = false;
 
