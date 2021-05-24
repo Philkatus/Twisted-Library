@@ -30,7 +30,13 @@ public class PlayerSwinging : PlayerSliding
             return PlayerStateMachine.bob.transform.position;
         }
     }
-    private Vector3 bobForward;
+    private Vector3 bobForward 
+    {
+        get 
+        {
+            return pSM.bob.transform.forward;
+        }
+    }
 
     private float tensionForce = 0f;
     private float gravityForce = 0f;
@@ -192,7 +198,7 @@ public class PlayerSwinging : PlayerSliding
         currentVelocity = Vector3.zero;
 
         //bobPosition = pSM.bob.transform.position;
-        bobForward = pSM.bob.transform.forward;
+        //bobForward = pSM.bob.transform.forward;
 
         currentStatePosition = bobPosition;
         previousStatePosition = bobPosition;
@@ -223,16 +229,18 @@ public class PlayerSwinging : PlayerSliding
 
     public override void Movement()
     {
-        Swing();
         base.Movement();
+        Swing();
+        
         /*
         float rotateByAngle = (Vector3.SignedAngle(pSM.ladder.forward,-path.GetNormalAtDistance(currentDistance),pSM.ladder.up));
-        Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, pSM.ladder.up);
-        pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
-        pSM.ladder.Rotate(pSM.ladder.up, rotateByAngle);
+        //Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, pSM.ladder.up);
+        //pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
+        //pSM.ladder.Rotate(pSM.ladder.up, rotateByAngle); 
         Vector3 railDirection = path.GetNormalAtDistance(currentDistance);
         pSM.ladder.transform.forward = -railDirection;
         */
+       
     }
 
     public override void Swing()
@@ -279,11 +287,13 @@ public class PlayerSwinging : PlayerSliding
 
 
 
-
+        float rotateByAngle2 = Vector3.SignedAngle(pSM.ladder.right, path.GetDirectionAtDistance(pSM.currentDistance), pSM.ladder.up);
+        Debug.Log(rotateByAngle2);
+        pSM.ladder.Rotate(0, rotateByAngle2, 0, Space.Self);
 
         // The values that otherwise get deleted by the rotation in Update()
         //bobPosition = pSM.bob.transform.position;
-        bobForward = pSM.bob.transform.forward;
+        //bobForward = pSM.bob.transform.forward;
 
         //rotate the ladder, so that its not stuck in the wall, this is a shitty fix, but otherwise wed have to rewrite A LOT
         /*
