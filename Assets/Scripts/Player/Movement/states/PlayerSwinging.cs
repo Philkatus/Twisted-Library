@@ -18,16 +18,12 @@ public class PlayerSwinging : PlayerSliding
 
     private Vector3 gravityDirection;
     private Vector3 tensionDirection;
-    private Vector3 bobPosition 
+    private Vector3 bobPosition
     {
-        get 
+        get
         {
-            if (PlayerStateMachine.useRelativeBobPosition) 
-            {
-                return PlayerStateMachine.bob.transform.position-
-                    PlayerStateMachine.ladder.transform.position;
-            }
-            return PlayerStateMachine.bob.transform.position;
+            return PlayerStateMachine.bob.transform.position -
+                PlayerStateMachine.ladder.transform.position;
         }
     }
     private Vector3 bobForward 
@@ -74,9 +70,13 @@ public class PlayerSwinging : PlayerSliding
     {
         base.ReInitialize();
         pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLength;
+        Rail.RailType oldRailType = railType;
         railType = closestRail.railType;
-        onWall = false;
-        inputGiven = false;
+        if (railType != oldRailType)
+        {
+            onWall = false;
+            inputGiven = false;
+        }
         ropeLength = Vector3.Distance(Pivot.transform.position, pSM.bob.transform.position);
 
     }
@@ -273,37 +273,12 @@ public class PlayerSwinging : PlayerSliding
         //die Leiter korrekt rotieren
         currentDistance = pSM.currentDistance;
 
-        Vector3 axis = path.GetDirectionAtDistance(pSM.currentDistance);
-        float rotateByAngle;
-        if (!pSM.useRelativeBobPosition)
-        {
-            rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition - pSM.ladder.transform.position, axis));
-        }
-        else 
-        {
-            rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition, axis));
-        }
+        Vector3 axis = pSM.ladder.right;
+        float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition, axis));
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
 
 
-        float rotateByAngle2 = Vector3.SignedAngle(pSM.ladder.right, path.GetDirectionAtDistance(pSM.currentDistance), pSM.ladder.up);
-        Debug.Log(rotateByAngle2);
-        pSM.ladder.Rotate(0, rotateByAngle2, 0, Space.Self);
-
-
-        // The values that otherwise get deleted by the rotation in Update()
-        //bobPosition = pSM.bob.transform.position;
-        //bobForward = pSM.bob.transform.forward;
-
-        //rotate the ladder, so that its not stuck in the wall, this is a shitty fix, but otherwise wed have to rewrite A LOT
-        /*
-        if (onWall)
-        {
-            Vector3 localVector = ladder.transform.localEulerAngles;
-            ladder.transform.localEulerAngles = new Vector3(0, localVector.y, localVector.z);
-        }
-        */
     }
 
     Vector3 PendulumUpdate()
@@ -313,20 +288,12 @@ public class PlayerSwinging : PlayerSliding
         gravityDirection = Physics.gravity.normalized;
         currentVelocity += gravityDirection * gravityForce * dt;
 
+
         Vector3 pivot_p = Pivot.transform.position;
         Vector3 bob_p = bobPosition;
-        float inclinationAngle;
-        //The tension force
-        if (!pSM.useRelativeBobPosition)
-        {
-            tensionDirection = (pivot_p - bob_p).normalized;
-            inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
-        }
-        else
-        {
-            tensionDirection = (pivot_p - pSM.bob.transform.position).normalized;
-            inclinationAngle = Vector3.Angle(bob_p, gravityDirection);
-        }
+
+        tensionDirection = (-bob_p).normalized;
+        float inclinationAngle = Vector3.Angle(bob_p, gravityDirection);
 
 
         tensionForce = gravityForce * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
@@ -334,15 +301,8 @@ public class PlayerSwinging : PlayerSliding
         tensionForce += centripetalForce;
 
         // if relative height > 0 -> remap tension force to get smaller
-        float relativeHeight;
-        if (!pSM.useRelativeBobPosition)
-        {
-            relativeHeight = (bob_p - pivot_p).normalized.y;
-        }
-        else 
-        {
-            relativeHeight = (bob_p).normalized.y;
-        }
+        float relativeHeight = (bob_p).normalized.y;
+
         if (relativeHeight > 0)
         { // 0 - 1 -> 0.9f - 0.1f 
             tensionForce *= (relativeHeight / 1) * (0.1f - 0.9f) + 0.9f;
@@ -375,7 +335,6 @@ public class PlayerSwinging : PlayerSliding
             swingingFeedback.SetActive(false);
         }
 
-
         if (pSM.swingInputBool)
         {
             AccelerationForce();
@@ -400,14 +359,8 @@ public class PlayerSwinging : PlayerSliding
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
         movementDelta += playerVelocity * dt;
-        if (!pSM.useRelativeBobPosition)
-        {
-            return GetPointOnLine(pivot_p, bobPosition + movementDelta, ropeLength);
-        }
-        else 
-        {
-            return GetPointOnLine(Vector3.zero, bobPosition + movementDelta, ropeLength);
-        }
+
+        return GetPointOnLine(Vector3.zero, bobPosition + movementDelta, ropeLength);
     }
 
     Vector3 RepelUpdate()
@@ -418,24 +371,38 @@ public class PlayerSwinging : PlayerSliding
         Vector3 bob_p = bobPosition;
         bool movingForward = Vector3.Dot(currentMovement.normalized, bobForward) >= .93f;
 
+        //Calculate the wallDirection
+        float distance = path.GetClosestDistanceAlongPath(pSM.transform.position);
+        Vector3 right = pivot_p + pSM.ladder.right.normalized;
+        Vector3 forward = pivot_p + path.GetNormalAtDistance(distance);
+        
+        Plane wallDirectionPlane = new Plane(pivot_p, right, forward);
+
+        Debug.DrawLine(pivot_p, right, Color.black, dt);
+        Debug.DrawLine(right, forward, Color.black, dt);
+        Debug.DrawLine(pivot_p, forward, Color.black, dt);
+        Debug.DrawRay(pivot_p, -wallDirectionPlane.normal, Color.red, dt);
+        
+        Vector3 wallDirection = -wallDirectionPlane.normal.normalized;
+
         //Check if OnWall
         if (movingForward && !onWall)
         {
-
             Vector3 axis = path.GetDirectionAtDistance(pSM.currentDistance);
-            float angle = Vector3.SignedAngle(Vector3.down, (bob_p - pivot_p).normalized, axis);
+
+            float angle = Vector3.SignedAngle(wallDirection, (bob_p).normalized, axis);
+
             if (angle <= stats.maxPushAngle)
             {
                 onWall = true;
-
-                return GetPointOnLine(pivot_p, pivot_p + Vector3.down * 100, ropeLength);
+                return GetPointOnLine(pivot_p, pivot_p + wallDirection * 100, ropeLength);
             }
         }
 
         if (onWall)
         {
             currentVelocity = Vector3.zero;
-            bob_p = pivot_p + Vector3.down * 100;
+            bob_p = wallDirection * ropeLength;
             SetCurrentPlayerVelocity(pivot_p);
         }
         else
@@ -445,10 +412,9 @@ public class PlayerSwinging : PlayerSliding
             gravityDirection = Physics.gravity.normalized;
             currentVelocity += gravityDirection * gravityForce * dt;
 
-            tensionDirection = (pivot_p - bob_p).normalized;
+            tensionDirection = (-bob_p).normalized;
+            float inclinationAngle = Vector3.Angle(bob_p, gravityDirection);
 
-            // Winkel zwischen Gravity Direction & Vektor -> Bob
-            float inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
 
             //Gravitystaerke * Cos(inclinationAngle)
             tensionForce = mass * stats.swingingGravity * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
@@ -457,12 +423,13 @@ public class PlayerSwinging : PlayerSliding
             tensionForce += centripetalForce;
             currentVelocity += tensionDirection * tensionForce * dt;
         }
+
+        //Acceleration
+        inputForce = Vector3.zero;
         if (pSM.swingInputBool)
         {
             RepellingForce();
         }
-        //Acceleration
-        inputForce = Vector3.zero;
 
         // set max speed
         currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
@@ -474,14 +441,8 @@ public class PlayerSwinging : PlayerSliding
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
         movementDelta += playerVelocity * dt;
-        if (!pSM.useRelativeBobPosition)
-        {
-            return GetPointOnLine(pivot_p, bob_p + movementDelta, ropeLength);
-        }
-        else
-        {
-            return GetPointOnLine(Vector3.zero, bob_p + movementDelta, ropeLength);
-        }
+        return GetPointOnLine(Vector3.zero, bob_p + movementDelta, ropeLength);
+
     }
 
     Vector3 GetPointOnLine(Vector3 start, Vector3 end, float distanceFromStart)
@@ -500,7 +461,6 @@ public class PlayerSwinging : PlayerSliding
             inputTimer = 0;
 
             pSM.swingInputBool = false;
-            // Debug.Log("a Force");
         }
     }
 
@@ -512,7 +472,6 @@ public class PlayerSwinging : PlayerSliding
             inputForce = repelDirection * stats.swingingAcceleration * dt * 1.2f;
             currentVelocity += inputForce;
             pSM.swingInputBool = false;
-            // Debug.Log("r Force");
         }
     }
 

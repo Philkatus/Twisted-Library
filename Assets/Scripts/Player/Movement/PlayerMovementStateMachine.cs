@@ -113,8 +113,6 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
 
-    public bool useRelativeBobPosition;
-
     public float coyoteTimer = 0;
     public Vector3 ladderDirection
     {
