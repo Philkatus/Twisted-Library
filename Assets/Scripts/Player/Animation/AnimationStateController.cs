@@ -23,7 +23,7 @@ public class AnimationStateController : MonoBehaviour
     [Tooltip("Walk>>Run blend is determined by velocity.normalized etc, changing PlayerVariable stats e.g." +
         " drag or speed can change these normalized values and therefore change the blend. " +
         "This variable can be used to manually fix this. Dirty, but works for now ")]
-    public float antiDrag = 1.6f;
+    public float antiDrag = 1.65f;
 
     [Header("Use IK")]
     public bool useFeetIK = false;
