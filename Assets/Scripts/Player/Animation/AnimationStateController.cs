@@ -58,7 +58,7 @@ public class AnimationStateController : MonoBehaviour
     public Rig armRig;
     RigBuilder rigBuilder;
 
-   
+
     [Header("Adjusting Head Aim Rig")]
     public Transform headAimTarget;
     [Tooltip("1 means target is right in front of PC, -1 behind. Number specifies the limit to wich the head can turn. Suggestion about -0.65")]
@@ -86,7 +86,7 @@ public class AnimationStateController : MonoBehaviour
         audioManager = FindObjectOfType<AudioManager>();
         //movementScript = GetComponent<PlayerMovementStateMachine>();
         //controller = GetComponent<CharacterController>();
-       
+
         VelocityHash = Animator.StringToHash("Velocity");
         SideInputHash = Animator.StringToHash("SideInput");
         ForwardInputHash = Animator.StringToHash("ForwardInput");
@@ -108,12 +108,12 @@ public class AnimationStateController : MonoBehaviour
         //ignoring the y velocity
         velocity = new Vector2(movementScript.playerVelocity.x, movementScript.playerVelocity.z).magnitude;
         animator.SetFloat(VelocityHash, velocity);
-       
+
         foldJump = movementScript.animationControllerisFoldingJumped;
         wallJump = movementScript.isWallJumping;
         animator.SetBool("isFoldjumping", foldJump);
         animator.SetBool("isWalljumping", wallJump);
-        if(animator.GetBool("isFoldjumping") == true)
+        if (animator.GetBool("isFoldjumping") == true)
         {
             movementScript.animationControllerisFoldingJumped = false;
         }
@@ -129,7 +129,7 @@ public class AnimationStateController : MonoBehaviour
 
 
 
-        if(animator.GetBool("isJumping") == true)
+        if (animator.GetBool("isJumping") == true)
         {
             jumpingTimer += Time.deltaTime;
             if (jumpingTimer > 0.1f)
@@ -150,7 +150,7 @@ public class AnimationStateController : MonoBehaviour
         MovementParameters();
         RocketJump();
 
-        if(useFeetIK && footIKScript != null)
+        if (useFeetIK && footIKScript != null)
         {
             CheckIK();
         }
@@ -169,7 +169,7 @@ public class AnimationStateController : MonoBehaviour
 
     void CheckIK()
     {
-        if(movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding || movementScript.playerState == PlayerMovementStateMachine.PlayerState.inTheAir)
+        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding || movementScript.playerState == PlayerMovementStateMachine.PlayerState.inTheAir)
         {
             footIKScript.enabled = false;
         }
@@ -236,7 +236,7 @@ public class AnimationStateController : MonoBehaviour
             {
                 audioManager.Play("FoldLadder");
                 foldAudioPlaying = true;
-            }  
+            }
         }
         else
         {
@@ -247,10 +247,10 @@ public class AnimationStateController : MonoBehaviour
 
     void FallImpact()
     {
-        if(airTimer >= 0.1f)
+        if (airTimer >= 0.1f)
         {
             canLand = true;
-             
+
         }
         /*
         if (airTimer >= timeForRoll)
@@ -259,17 +259,17 @@ public class AnimationStateController : MonoBehaviour
             canLand = false;
         }
         */
-        if(airTimer >= timeForHardLanding)
+        if (airTimer >= timeForHardLanding)
         {
             canHardLand = true;
             canLand = false;
             canRoll = false;
         }
-        if(canLand && controller.isGrounded)
+        if (canLand && controller.isGrounded)
         {
             canLand = false;
             audioManager.Play("LandingAfterJump");
-            if(lastAirTime >= timeForLanding)
+            if (lastAirTime >= timeForLanding)
             {
                 animator.SetBool("isLanding", true);
             }
@@ -344,7 +344,7 @@ public class AnimationStateController : MonoBehaviour
                 animator.SetBool("FallDelay", true);
             }
         }
-        else if(controller.isGrounded)
+        else if (controller.isGrounded)
         {
             animator.SetBool("FallDelay", false);
             fallTimer = 0;
@@ -363,7 +363,7 @@ public class AnimationStateController : MonoBehaviour
     {
         animator.SetBool("isJumping", true);
         animator.SetBool("isClimbingLadder", false);
-        rigBuilder.enabled = true;        
+        rigBuilder.enabled = true;
 
 
         //Audio
@@ -372,24 +372,24 @@ public class AnimationStateController : MonoBehaviour
 
     void RocketJump()
     {
-        if (movementScript.didRocketJump && !isRocketJumping)
+        if (movementScript.didLadderPush && !isRocketJumping)
         {
             animator.SetBool("isRocketJumping", true);
-            isRocketJumping = true;         
+            isRocketJumping = true;
         }
         if (isRocketJumping)
         {
             rocketJumpTimer += Time.deltaTime;
         }
 
-        if(rocketJumpTimer >= 0.2)
+        if (rocketJumpTimer >= 0.2)
         {
             animator.SetBool("isRocketJumping", false);
             rocketJumpTimer = 0;
 
         }
 
-        if(!movementScript.didRocketJump)
+        if (!movementScript.didLadderPush)
         {
             animator.SetBool("isRocketJumping", false);
             isRocketJumping = false;
@@ -409,7 +409,7 @@ public class AnimationStateController : MonoBehaviour
                 audioManager.Play("Sliding");
                 slideAudioPlaying = true;
             }
-            if(movementScript.slidingInput == 0 && slideAudioPlaying)
+            if (movementScript.slidingInput == 0 && slideAudioPlaying)
             {
                 audioManager.StopSound("Sliding");
                 slideAudioPlaying = false;
@@ -435,8 +435,8 @@ public class AnimationStateController : MonoBehaviour
             animator.SetBool("isClimbingLadder", false);
             //rigBuilder.enabled = true;
             armRig.weight = 1;
-            
-            
+
+
 
             //Audio
             if (attachAudioPlaying)
@@ -452,7 +452,7 @@ public class AnimationStateController : MonoBehaviour
 
     void Swinging()
     {
-        if(movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging)
+        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
             animator.SetBool("isSwingingLadder", true);
             armRig.weight = 0;
