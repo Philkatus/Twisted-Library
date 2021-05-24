@@ -388,14 +388,14 @@ public class PlayerSwinging : PlayerSliding
         float distance = path.GetClosestDistanceAlongPath(pSM.transform.position);
         Vector3 right = pivot_p + pSM.ladder.right.normalized;
         Vector3 forward = pivot_p + path.GetNormalAtDistance(distance);
-        
+
         Plane wallDirectionPlane = new Plane(pivot_p, right, forward);
 
         Debug.DrawLine(pivot_p, right, Color.black, dt);
         Debug.DrawLine(right, forward, Color.black, dt);
         Debug.DrawLine(pivot_p, forward, Color.black, dt);
         Debug.DrawRay(pivot_p, -wallDirectionPlane.normal, Color.red, dt);
-        
+
         Vector3 wallDirection = -wallDirectionPlane.normal.normalized;
 
         //Check if OnWall
@@ -609,7 +609,7 @@ public class PlayerSwinging : PlayerSliding
     public override IEnumerator Finish()
     {
         SetCurrentPlayerVelocity(Pivot.transform.position);
-        pSM.bonusVelocity += currentMovement / stats.swingingVelocityFactor;
+        pSM.bonusVelocity += currentMovement * stats.swingingVelocityFactor;
         swingingFeedback.SetActive(false);
         pSM.snapInputBool = false;
 
