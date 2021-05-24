@@ -1831,7 +1831,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 3c7258485d1f72e4f8fdb48c4a1140df, type: 3}
   - {fileID: 8300000, guid: 92f09c7ac509d1143bbb1e3f5452c257, type: 3}
   - {fileID: 8300000, guid: 4ce545021b6ba6846a4f8191aff72ee1, type: 3}
-  exhale: {fileID: 0}
+  exhale: {fileID: 8300000, guid: 9483260dfb48566448f11f347783e890, type: 3}
   audioVolume: 1.5
   footstepLFX: {fileID: 0}
   footstepRFX: {fileID: 0}
@@ -1854,6 +1854,7 @@ MonoBehaviour:
   audioManager: {fileID: 0}
   animator: {fileID: 5224045387318095670}
   footIKScript: {fileID: 0}
+  antiDrag: 1.65
   useFeetIK: 0
   timeForLanding: 1
   timeForRoll: 3
@@ -7085,7 +7086,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66b908167a2d2e740ab9a0e8f072d46d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  valuesAsset: {fileID: 11400000, guid: a1089ecf71fde2c47bdd640506578ad6, type: 2}
+  stats: {fileID: 0}
   actionAsset: {fileID: -944628639613478452, guid: a85d48f6f70d5c14290a563cf2478205, type: 3}
   playerState: 0
   ladderState: 0
@@ -7095,10 +7096,10 @@ MonoBehaviour:
   forwardInput: 0
   swingingInput: 0
   slidingInput: 0
-  adjustedSlideDirection: 0
   startingSlidingInput: 0
+  adjustedSlideDirection: 0
   dismounting: 0
-  isRocketJumping: 0
+  didRocketJump: 0
   baseVelocity: {x: 0, y: 0, z: 0}
   bonusVelocity: {x: 0, y: 0, z: 0}
   railCheckLadderPosition: {x: 0, y: 0, z: 0}
@@ -7134,22 +7135,6 @@ MonoBehaviour:
     m_Processors: 
     m_Interactions: 
     m_SingletonActionBindings: []
-  slideHoldLeftAction:
-    m_Name: 
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
-  slideHoldRightAction:
-    m_Name: 
-    m_Type: 0
-    m_ExpectedControlType: 
-    m_Id: 
-    m_Processors: 
-    m_Interactions: 
-    m_SingletonActionBindings: []
   swingAction:
     m_Name: 
     m_Type: 0
@@ -7177,7 +7162,8 @@ MonoBehaviour:
   ladderWalkingRotation: {x: 0, y: 0, z: 0, w: 0}
   ladderWalkingPosition: {x: 0, y: 0, z: 0}
   ladderJumpTarget: {x: 0, y: 0, z: 0}
-  inputBools: 000000
+  useRelativeBobPosition: 0
+  coyoteTimer: 0
   myParent: {fileID: 0}
 --- !u!1 &7511473034649444846
 GameObject:
