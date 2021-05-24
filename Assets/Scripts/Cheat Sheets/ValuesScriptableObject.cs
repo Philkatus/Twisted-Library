@@ -122,6 +122,8 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("The percentage of velocity the player has when falling at the end of a rail that gets added as bonus velocity. 1 = 100%")]
     public float fallingMomentumPercentage;
+    [Tooltip("The offset between the ladder and the player, so that the position on the ladder is right.")]
+    public float playerOffsetFromLadder;
 
     [Space]
     [Header("New Sliding")]

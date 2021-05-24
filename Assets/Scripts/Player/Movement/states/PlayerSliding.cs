@@ -234,8 +234,8 @@ public class PlayerSliding : State
                 {
                     pSM.HeightOnLadder += pSM.forwardInput * speed * Time.fixedDeltaTime;
                     pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
-                    pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder; //pos on ladder
-                    pSM.transform.localPosition = new Vector3(pSM.transform.localPosition.x, pSM.transform.localPosition.y, -0.7f);
+                    pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder + ladder.transform.forward * -stats.playerOffsetFromLadder; //pos on ladder
+                    //pSM.transform.localPosition = new Vector3(pSM.transform.localPosition.x, pSM.transform.localPosition.y, -0.7f);
                 }
 
                 #region Move horizontally.
@@ -346,7 +346,7 @@ public class PlayerSliding : State
                 {
                     pSM.HeightOnLadder += pSM.forwardInput * speed * Time.fixedDeltaTime;
                     pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
-                    pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder; //pos on ladder
+                    pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder + ladder.transform.forward * -stats.playerOffsetFromLadder; //pos on ladder
                 }
 
                 #region Move horizontally.
