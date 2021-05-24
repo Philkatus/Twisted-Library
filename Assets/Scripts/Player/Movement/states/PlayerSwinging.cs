@@ -18,7 +18,18 @@ public class PlayerSwinging : PlayerSliding
 
     private Vector3 gravityDirection;
     private Vector3 tensionDirection;
-    private Vector3 bobPosition;
+    private Vector3 bobPosition 
+    {
+        get 
+        {
+            if (PlayerStateMachine.useRelativeBobPosition) 
+            {
+                return PlayerStateMachine.bob.transform.position-
+                    PlayerStateMachine.ladder.transform.position;
+            }
+            return PlayerStateMachine.bob.transform.position;
+        }
+    }
     private Vector3 bobForward;
 
     private float tensionForce = 0f;
@@ -163,7 +174,7 @@ public class PlayerSwinging : PlayerSliding
         Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
         ladderSizeState = pSM.ladderSizeStateMachine;
-        pSM.bob = Pivot.transform.GetChild(1).gameObject;
+        //pSM.bob = Pivot.transform.GetChild(1).gameObject;
         pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLengthBig;
 
         ladderParent = ladderSizeState.ladderParent.gameObject;
@@ -179,13 +190,12 @@ public class PlayerSwinging : PlayerSliding
 
 
         currentVelocity = Vector3.zero;
-        currentStatePosition = pSM.bob.transform.position;
 
-        bobPosition = pSM.bob.transform.position;
+        //bobPosition = pSM.bob.transform.position;
         bobForward = pSM.bob.transform.forward;
 
-        currentStatePosition = pSM.bob.transform.position;
-        previousStatePosition = pSM.bob.transform.position;
+        currentStatePosition = bobPosition;
+        previousStatePosition = bobPosition;
 
         switch (railType)
         {
@@ -255,8 +265,15 @@ public class PlayerSwinging : PlayerSliding
         currentDistance = pSM.currentDistance;
 
         Vector3 axis = pSM.ladder.right;
-        float rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition - pSM.ladder.transform.position, axis));
-
+        float rotateByAngle;
+        if (!pSM.useRelativeBobPosition)
+        {
+            rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition - pSM.ladder.transform.position, axis));
+        }
+        else 
+        {
+            rotateByAngle = (Vector3.SignedAngle(-pSM.ladderDirection, newPosition, axis));
+        }
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
         pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
 
@@ -265,7 +282,7 @@ public class PlayerSwinging : PlayerSliding
 
 
         // The values that otherwise get deleted by the rotation in Update()
-        bobPosition = pSM.bob.transform.position;
+        //bobPosition = pSM.bob.transform.position;
         bobForward = pSM.bob.transform.forward;
 
         //rotate the ladder, so that its not stuck in the wall, this is a shitty fix, but otherwise wed have to rewrite A LOT
@@ -287,18 +304,34 @@ public class PlayerSwinging : PlayerSliding
 
         Vector3 pivot_p = Pivot.transform.position;
         Vector3 bob_p = bobPosition;
-
+        float inclinationAngle;
         //The tension force
-        tensionDirection = (pivot_p - bob_p).normalized;
-        float inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
+        if (!pSM.useRelativeBobPosition)
+        {
+            tensionDirection = (pivot_p - bob_p).normalized;
+            inclinationAngle = Vector3.Angle(bob_p - pivot_p, gravityDirection);
+        }
+        else
+        {
+            tensionDirection = (pivot_p - pSM.bob.transform.position).normalized;
+            inclinationAngle = Vector3.Angle(bob_p, gravityDirection);
+        }
+
 
         tensionForce = gravityForce * Mathf.Cos(Mathf.Deg2Rad * inclinationAngle);
         float centripetalForce = mass * Mathf.Pow(playerVelocity.magnitude, 2) / ropeLength;
         tensionForce += centripetalForce;
 
         // if relative height > 0 -> remap tension force to get smaller
-
-        float relativeHeight = (bob_p - pivot_p).normalized.y;
+        float relativeHeight;
+        if (!pSM.useRelativeBobPosition)
+        {
+            relativeHeight = (bob_p - pivot_p).normalized.y;
+        }
+        else 
+        {
+            relativeHeight = (bob_p).normalized.y;
+        }
         if (relativeHeight > 0)
         { // 0 - 1 -> 0.9f - 0.1f 
             tensionForce *= (relativeHeight / 1) * (0.1f - 0.9f) + 0.9f;
@@ -356,7 +389,14 @@ public class PlayerSwinging : PlayerSliding
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
         movementDelta += playerVelocity * dt;
-        return GetPointOnLine(pivot_p, bobPosition + movementDelta, ropeLength);
+        if (!pSM.useRelativeBobPosition)
+        {
+            return GetPointOnLine(pivot_p, bobPosition + movementDelta, ropeLength);
+        }
+        else 
+        {
+            return GetPointOnLine(Vector3.zero, bobPosition + movementDelta, ropeLength);
+        }
     }
 
     Vector3 RepelUpdate()
@@ -384,7 +424,7 @@ public class PlayerSwinging : PlayerSliding
         if (onWall)
         {
             currentVelocity = Vector3.zero;
-            bobPosition = pivot_p + Vector3.down * 100;
+            bob_p = pivot_p + Vector3.down * 100;
             SetCurrentPlayerVelocity(pivot_p);
         }
         else
@@ -423,7 +463,14 @@ public class PlayerSwinging : PlayerSliding
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
         movementDelta += playerVelocity * dt;
-        return GetPointOnLine(pivot_p, bobPosition + movementDelta, ropeLength);
+        if (!pSM.useRelativeBobPosition)
+        {
+            return GetPointOnLine(pivot_p, bob_p + movementDelta, ropeLength);
+        }
+        else
+        {
+            return GetPointOnLine(Vector3.zero, bob_p + movementDelta, ropeLength);
+        }
     }
 
     Vector3 GetPointOnLine(Vector3 start, Vector3 end, float distanceFromStart)
