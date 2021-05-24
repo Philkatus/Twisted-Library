@@ -97,8 +97,6 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("die minimale velocity die der spieler haben muss damit sie einfluss auf die snap direction hat")]
     public float minVelocityToChangeSnapDirection = 1;
 
-    
-
     [Tooltip("How fast the player climbs the ladder up and down while sliding.")]
     public float climbingSpeedOnLadder;
 
@@ -121,6 +119,9 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("If true the player preserves their velocity on snap.")]
     public bool preservesVelocityOnSnap = false;
+
+    [Tooltip("The percentage of velocity the player has when falling at the end of a rail that gets added as bonus velocity. 1 = 100%")]
+    public float fallingMomentumPercentage;
 
     [Space]
     [Header("New Sliding")]

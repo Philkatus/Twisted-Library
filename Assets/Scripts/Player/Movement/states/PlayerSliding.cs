@@ -210,7 +210,7 @@ public class PlayerSliding : State
             {
                 PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
             }
-
+            pSM.bonusVelocity += stats.fallingMomentumPercentage * pSM.playerVelocity;
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = false;
         }
@@ -311,7 +311,7 @@ public class PlayerSliding : State
                             }
                             else
                             {
-
+                                pSM.bonusVelocity += stats.fallingMomentumPercentage * pSM.playerVelocity;
                                 pSM.OnFall();
                             }
                         }
@@ -424,6 +424,7 @@ public class PlayerSliding : State
                             else
                             {
                                 pSM.coyoteTimer = 0;
+                                pSM.bonusVelocity += stats.fallingMomentumPercentage * pSM.playerVelocity;
                                 pSM.OnFall();
                             }
                         }
