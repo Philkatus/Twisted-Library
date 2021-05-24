@@ -401,7 +401,7 @@ public class PlayerSwinging : PlayerSliding
         //Check if OnWall
         if (movingForward && !onWall)
         {
-            Vector3 axis = path.GetDirectionAtDistance(pSM.currentDistance);
+            Vector3 axis = pSM.ladder.right;
 
             float angle = Vector3.SignedAngle(wallDirection, (bob_p).normalized, axis);
 

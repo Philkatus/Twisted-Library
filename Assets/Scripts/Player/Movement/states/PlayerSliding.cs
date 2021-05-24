@@ -140,7 +140,7 @@ public class PlayerSliding : State
         Vector3 startingPoint = Vector3.zero;
         if (closestRail != null)
         {
-            startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
+            startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.ladder.transform.position);
         }
         else
         {
