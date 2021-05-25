@@ -70,8 +70,9 @@ public class TimerChallenge : MonoBehaviour
 
             foreach (GameObject box in boxesToGet)
             {
-                box.GetComponent<MeshRenderer>().enabled = true;
-                box.GetComponent<MeshRenderer>().material = unactive;
+                box.SetActive(true);
+                box.GetComponent<MeshRenderer>().enabled = false;
+                //box.GetComponent<MeshRenderer>().material = unactive;
             }
 
             player.GetComponentInChildren<CharacterController>().enabled = false;
@@ -107,8 +108,9 @@ public class TimerChallenge : MonoBehaviour
 
             foreach (GameObject box in boxesToGet)
             {
-                box.GetComponent<MeshRenderer>().enabled = true;
-                box.GetComponent<MeshRenderer>().material = unactive;
+                box.SetActive(true);
+                box.GetComponent<MeshRenderer>().enabled = false;
+                //box.GetComponent<MeshRenderer>().material = unactive;
             }
         }
 
@@ -123,8 +125,9 @@ public class TimerChallenge : MonoBehaviour
 
             foreach (GameObject box in boxesToGet)
             {
-                box.GetComponent<MeshRenderer>().enabled = true;
-                box.GetComponent<MeshRenderer>().material = unactive;
+                box.SetActive(true);
+                box.GetComponent<MeshRenderer>().enabled = false;
+                //box.GetComponent<MeshRenderer>().material = unactive;
             }
 
             player.GetComponentInChildren<CharacterController>().enabled = false;
@@ -140,7 +143,7 @@ public class TimerChallenge : MonoBehaviour
 
         foreach (GameObject box in boxesToGet)
         {
-            if (!box.GetComponent<MeshRenderer>().enabled)
+            if (!box.activeSelf)
             {
                 nbrOfBoxesCollected++;
             }
@@ -164,7 +167,7 @@ public class TimerChallenge : MonoBehaviour
         {
             foreach(GameObject box in boxesToGet)
             {
-                box.GetComponent<MeshRenderer>().material = active;
+                box.GetComponent<MeshRenderer>().enabled = true;
             }
         }
     }
@@ -175,7 +178,7 @@ public class TimerChallenge : MonoBehaviour
         {
             foreach (GameObject box in boxesToGet)
             {
-                box.GetComponent<MeshRenderer>().material = unactive;
+                box.GetComponent<MeshRenderer>().enabled = false;
             }
         }
     }
