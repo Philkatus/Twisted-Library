@@ -136,14 +136,15 @@ public class PlayerInTheAir : State
 
     public override void LadderPush()
     {
-        
         float sphereRadius = .2f;
         float maxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig - sphereRadius;
         float acceleration = stats.rocketJumpAcceleration;
+
         Vector3 origin = PlayerStateMachine.transform.position;
         LayerMask mask = LayerMask.GetMask("Environment");
         List<RaycastHit> hits = new List<RaycastHit>();
         Ray ray = new Ray(origin, Vector3.down);
+
         //hits.AddRange( Physics.SphereCastAll(ray, MaxHeight, 1, mask));
         if (!PlayerStateMachine.didLadderPush)
         {
