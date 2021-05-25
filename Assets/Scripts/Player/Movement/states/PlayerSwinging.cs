@@ -158,7 +158,7 @@ public class PlayerSwinging : PlayerSliding
 
                 float tempSpeed = 100;
                 int closestSpeedLevel = 1;
-                for (int i = 1; i < stats.speedLevels.Count; i++)
+                for (int i = 2; i < stats.speedLevels.Count; i++)
                 {
                     float newTempSpeed = Mathf.Abs(stats.speedLevels[i] - resultingSpeed);
                     if (tempSpeed > stats.speedLevels[i])
@@ -462,7 +462,7 @@ public class PlayerSwinging : PlayerSliding
         {
             inputForce = bobForward * stats.swingingAcceleration * dt * accelerationFactor;
             currentVelocity += inputForce;
-           
+
             inputGiven = true;
             inputTimer = 0;
 
@@ -622,7 +622,7 @@ public class PlayerSwinging : PlayerSliding
             pSM.bonusVelocity += (currentMovement + Vector3.up * 1.1f).normalized * (currentMovement.magnitude * stats.swingingVelocityFactor);
             pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
         }
-        else 
+        else
         {
             pSM.baseVelocity.y = 0;
         }
