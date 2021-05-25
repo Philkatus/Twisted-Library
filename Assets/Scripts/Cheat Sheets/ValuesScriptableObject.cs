@@ -103,7 +103,7 @@ public class ValuesScriptableObject : ScriptableObject
     public float climbingSpeedOnLadder;
 
     [Tooltip("The factor that determines how much the height on the ladder changes the velocity of the rail katapult jum")]
-    [Range(.1f,1)] public float heightOnLadderKatapulFactor = .2f;
+    [Range(0f,1)] public float heightOnLadderKatapulFactor = .2f;
 
     [Tooltip("How fast the player accelerates to maximum sliding speed.")]
     public float slidingAcceleration;
