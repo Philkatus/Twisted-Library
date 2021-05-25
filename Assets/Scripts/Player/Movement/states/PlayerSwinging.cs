@@ -317,7 +317,6 @@ public class PlayerSwinging : PlayerSliding
         Vector3 currentNormal = -path.GetNormalAtDistance(currentDistance);
         Plane forward = new Plane(currentNormal, pivot_p);
 
-
         if (inputGiven && !forward.GetSide(pSM.bob.transform.position))
         {
             inputGiven = false;
