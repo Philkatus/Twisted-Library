@@ -616,6 +616,10 @@ public class PlayerSwinging : PlayerSliding
         {
             pSM.bonusVelocity += currentMovement * stats.swingingVelocityFactor;
         }
+        else 
+        {
+            pSM.baseVelocity.y = 0;
+        }
         swingingFeedback.SetActive(false);
         pSM.snapInputBool = false;
 
