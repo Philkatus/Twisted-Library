@@ -69,7 +69,7 @@ public class PlayerSwinging : PlayerSliding
     public override void ReInitialize()
     {
         base.ReInitialize();
-        pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLength;
+        pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLengthBig;
         Rail.RailType oldRailType = railType;
         railType = closestRail.railType;
         if (railType != oldRailType)
@@ -462,6 +462,7 @@ public class PlayerSwinging : PlayerSliding
         {
             inputForce = bobForward * stats.swingingAcceleration * dt * accelerationFactor;
             currentVelocity += inputForce;
+           
             inputGiven = true;
             inputTimer = 0;
 
@@ -476,6 +477,7 @@ public class PlayerSwinging : PlayerSliding
             onWall = false;
             inputForce = repelDirection * stats.swingingAcceleration * dt * 1.2f;
             currentVelocity += inputForce;
+            Debug.Log(inputForce);
             pSM.swingInputBool = false;
         }
     }
