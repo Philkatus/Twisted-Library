@@ -124,9 +124,7 @@ public class AnimationStateController : MonoBehaviour
 
 
 
-        float sideInput = movementScript.sideWaysInput;
         float forwardInput = movementScript.forwardInput;
-        animator.SetFloat(SideInputHash, sideInput);
         animator.SetFloat(ForwardInputHash, forwardInput);
         float slideInput = movementScript.slidingInput;
         animator.SetFloat(SlideInputHash, slideInput);
@@ -144,7 +142,7 @@ public class AnimationStateController : MonoBehaviour
         }
 
         GroundedCheck();
-        Sliding();
+        //Sliding();
         Swinging();
         Falling();
         HeadAim();
@@ -197,6 +195,14 @@ public class AnimationStateController : MonoBehaviour
         else if (Vector3.Dot(toTarget, transform.forward) > headRotationValue && headRig.weight < 1f)
         {
             headRig.weight += Time.deltaTime * 3;
+        }
+    }
+
+    void LadderFold()
+    {
+        if(movementScript.ladderState == PlayerMovementStateMachine.LadderState.LadderFold)
+        {
+            //do smol ladder stuff e.g. climb in different pose
         }
     }
 
@@ -400,6 +406,8 @@ public class AnimationStateController : MonoBehaviour
         }
     }
 
+    //Sliding state disabled since it caused problems and isnt actually used any more
+    /*
     void Sliding()
     {
         if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding)
@@ -453,6 +461,7 @@ public class AnimationStateController : MonoBehaviour
             slideAudioPlaying = false;
         }     
     }
+    */
 
     void Swinging()
     {
@@ -460,7 +469,7 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isSwingingLadder", true);
             armRig.weight = 0;
-            /*
+            
             //Slide Audio
             if (movementScript.slidingInput != 0 && !slideAudioPlaying)
             {
@@ -472,7 +481,7 @@ public class AnimationStateController : MonoBehaviour
                 audioManager.StopSound("Sliding");
                 slideAudioPlaying = false;
             }
-            */
+            
             //Fall Audio
             if (fallAudioPlaying)
             {
@@ -480,14 +489,14 @@ public class AnimationStateController : MonoBehaviour
                 fallAudioPlaying = false;
             }
 
-            /*
+            
             //Attach Audio
             if (!attachAudioPlaying)
             {
                 audioManager.Play("AttachLadder");
                 attachAudioPlaying = true;
             }
-            */
+            
         }
         else
         {
