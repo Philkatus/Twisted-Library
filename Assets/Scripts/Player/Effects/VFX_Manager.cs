@@ -15,7 +15,6 @@ public class VFX_Manager : MonoBehaviour
     {
         offset = transform.position - player.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
-        projector = this.GetComponent<DecalProjector>();
         Cloud.SetActive(false);
     }
     void Update()
