@@ -26,9 +26,9 @@ public class PlayerSwinging : PlayerSliding
                 PlayerStateMachine.ladder.transform.position;
         }
     }
-    private Vector3 bobForward 
+    private Vector3 bobForward
     {
-        get 
+        get
         {
             return pSM.bob.transform.forward;
         }
@@ -245,7 +245,7 @@ public class PlayerSwinging : PlayerSliding
 
     }
 
-   
+
 
     public override void Swing()
     {
@@ -315,7 +315,10 @@ public class PlayerSwinging : PlayerSliding
 
         // Check for Direction Change
         Vector3 currentNormal = -path.GetNormalAtDistance(currentDistance);
-        if (inputGiven && !new Plane(currentNormal, pivot_p).GetSide(bobPosition))
+        Plane forward = new Plane(currentNormal, pivot_p);
+
+
+        if (inputGiven && !forward.GetSide(pSM.bob.transform.position))
         {
             inputGiven = false;
         }
@@ -331,7 +334,6 @@ public class PlayerSwinging : PlayerSliding
             canPress = true;
             swingingFeedback.SetActive(true);
         }
-
         else
         {
             canPress = false;
@@ -380,10 +382,12 @@ public class PlayerSwinging : PlayerSliding
 
         Plane wallDirectionPlane = new Plane(pivot_p, right, forward);
 
+        /*
         Debug.DrawLine(pivot_p, right, Color.black, dt);
         Debug.DrawLine(right, forward, Color.black, dt);
         Debug.DrawLine(pivot_p, forward, Color.black, dt);
         Debug.DrawRay(pivot_p, -wallDirectionPlane.normal, Color.red, dt);
+        */
 
         Vector3 wallDirection = -wallDirectionPlane.normal.normalized;
 
@@ -522,9 +526,9 @@ public class PlayerSwinging : PlayerSliding
         Vector3 startingNormal = path.GetNormalAtDistance(currentDistance);
 
 
-        
-          //evtl. fuer spaeter noch wichtig wenn ich nochmal versuche das ganze velocity base zu machen
-        if (railType == Rail.RailType.TwoSided && pSM.playerVelocity.magnitude >= stats.minVelocityToChangeSnapDirection) 
+
+        //evtl. fuer spaeter noch wichtig wenn ich nochmal versuche das ganze velocity base zu machen
+        if (railType == Rail.RailType.TwoSided && pSM.playerVelocity.magnitude >= stats.minVelocityToChangeSnapDirection)
         {
             Debug.Log("i snapped through velocity");
             if (Vector3.Dot(pSM.playerVelocity.normalized, startingNormal) < 0)
@@ -532,12 +536,12 @@ public class PlayerSwinging : PlayerSliding
                 ladder.transform.forward = -startingNormal;
                 pSM.snapdirection = 1;
             }
-            else 
+            else
             {
                 ladder.transform.forward = startingNormal;
                 pSM.snapdirection = -1;
             }
-        } 
+        }
         else if (railType == Rail.RailType.TwoSided && Vector3.Dot(startingPoint - pSM.transform.position, startingNormal) >= 0)
         {
             ladder.transform.forward = startingNormal;
