@@ -591,7 +591,7 @@ public class PlayerSwinging : PlayerSliding
         pSM.HeightOnLadder = -1;
         controller.transform.parent = ladder.transform;
         //pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
-        pSM.transform.localPosition = new Vector3(0, -ladderSizeState.ladderLength, -.4f);
+        pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder + ladder.transform.forward * -stats.playerOffsetFromLadder;
         controller.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
         #endregion
