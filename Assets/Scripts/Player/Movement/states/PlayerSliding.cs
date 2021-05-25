@@ -176,7 +176,7 @@ public class PlayerSliding : State
             //PlayerStateMachine.ClampPlayerVelocity(PlayerStateMachine.baseVelocity, Vector3.up, stats.maxJumpingSpeed);
             //PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed);
 
-            PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier);
+            PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.reversedFoldJumpMulitplier);
             //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
             // Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
             //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) );
