@@ -26,9 +26,9 @@ public class PlayerSwinging : PlayerSliding
                 PlayerStateMachine.ladder.transform.position;
         }
     }
-    private Vector3 bobForward 
+    private Vector3 bobForward
     {
-        get 
+        get
         {
             return pSM.bob.transform.forward;
         }
@@ -245,7 +245,7 @@ public class PlayerSwinging : PlayerSliding
 
     }
 
-   
+
 
     public override void Swing()
     {
@@ -522,9 +522,9 @@ public class PlayerSwinging : PlayerSliding
         Vector3 startingNormal = path.GetNormalAtDistance(currentDistance);
 
 
-        
-          //evtl. fuer spaeter noch wichtig wenn ich nochmal versuche das ganze velocity base zu machen
-        if (railType == Rail.RailType.TwoSided && pSM.playerVelocity.magnitude >= stats.minVelocityToChangeSnapDirection) 
+
+        //evtl. fuer spaeter noch wichtig wenn ich nochmal versuche das ganze velocity base zu machen
+        if (railType == Rail.RailType.TwoSided && pSM.playerVelocity.magnitude >= stats.minVelocityToChangeSnapDirection)
         {
             Debug.Log("i snapped through velocity");
             if (Vector3.Dot(pSM.playerVelocity.normalized, startingNormal) < 0)
@@ -532,12 +532,12 @@ public class PlayerSwinging : PlayerSliding
                 ladder.transform.forward = -startingNormal;
                 pSM.snapdirection = 1;
             }
-            else 
+            else
             {
                 ladder.transform.forward = startingNormal;
                 pSM.snapdirection = -1;
             }
-        } 
+        }
         else if (railType == Rail.RailType.TwoSided && Vector3.Dot(startingPoint - pSM.transform.position, startingNormal) >= 0)
         {
             ladder.transform.forward = startingNormal;
@@ -615,6 +615,7 @@ public class PlayerSwinging : PlayerSliding
         if (shouldRetainSwingVelocity)
         {
             pSM.bonusVelocity += currentMovement * stats.swingingVelocityFactor;
+            pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
         }
         swingingFeedback.SetActive(false);
         pSM.snapInputBool = false;
