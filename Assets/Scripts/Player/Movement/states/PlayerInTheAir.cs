@@ -6,7 +6,7 @@ using PathCreation;
 public class PlayerInTheAir : State
 {
     CharacterController controller;
-    ValuesScriptableObject values;
+    ValuesScriptableObject stats;
 
     float wallJumpingTime;
     bool didSkewLadderPushThisState;
@@ -26,7 +26,7 @@ public class PlayerInTheAir : State
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
 
-        values = PlayerStateMachine.stats;
+        stats = PlayerStateMachine.stats;
         controller = PlayerStateMachine.controller;
         wallJumpingTime = 0;
     }
@@ -51,7 +51,7 @@ public class PlayerInTheAir : State
         {
             controller.transform.forward = direction;
         }
-        pSM.baseVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration * values.airMovementFactor;
+        pSM.baseVelocity += direction * Time.fixedDeltaTime * stats.movementAcceleration * stats.airMovementFactor;
 
         //when wall jump occured, set the isWallJumping to false after 1 sec
         wallJumpingTime += Time.fixedDeltaTime;
@@ -71,13 +71,13 @@ public class PlayerInTheAir : State
             pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
         */
-        pSM.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
-        float ClampedVelocityY = Mathf.Clamp(pSM.baseVelocity.y, -values.maxFallingSpeed, values.maxJumpingSpeed);
-        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, values.maximumMovementSpeed);
+        pSM.baseVelocity.y -= stats.gravity * Time.fixedDeltaTime;
+        float ClampedVelocityY = Mathf.Clamp(pSM.baseVelocity.y, -stats.maxFallingSpeed, stats.maxJumpingSpeed);
+        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
         pSM.baseVelocity.y = ClampedVelocityY;
 
 
-        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * values.jumpVelocityFactor);
+        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * stats.jumpVelocityFactor);
         if (HeadCollision())
         {
             pSM.baseVelocity.y -= pSM.baseVelocity.y * .9f * Time.fixedDeltaTime;
@@ -109,24 +109,24 @@ public class PlayerInTheAir : State
     public override void Jump()
     {
 
-        if (PlayerStateMachine.coyoteTimer < values.slidingCoyoteTime && PlayerStateMachine.closestRail != null)
+        if (PlayerStateMachine.coyoteTimer < stats.slidingCoyoteTime && PlayerStateMachine.closestRail != null)
         {
             Vector3 pathDirection = PlayerStateMachine.closestRail.pathCreator.path.GetDirectionAtDistance(PlayerStateMachine.currentDistance, EndOfPathInstruction.Stop);
-            if (values.wallJump != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
+            if (stats.wallJump != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
             {
                 Vector3 fromWallVector = (Quaternion.AngleAxis(90, Vector3.up) * pathDirection).normalized;
-                fromWallVector = fromWallVector * values.wallJump.z;
-                Vector3 fromWallValued = new Vector3(fromWallVector.x, values.wallJump.y, fromWallVector.z);
+                fromWallVector = fromWallVector * stats.wallJump.z;
+                Vector3 fromWallValued = new Vector3(fromWallVector.x, stats.wallJump.y, fromWallVector.z);
                 PlayerStateMachine.playerVelocity += fromWallValued;
-                PlayerStateMachine.baseVelocity.y += values.jumpHeight;
+                PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
                 PlayerStateMachine.isWallJumping = true;
             }
             else
             {
-                PlayerStateMachine.baseVelocity.y += values.jumpHeight;
+                PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
             }
 
-            PlayerStateMachine.coyoteTimer = values.slidingCoyoteTime;
+            PlayerStateMachine.coyoteTimer = stats.slidingCoyoteTime;
             PlayerStateMachine.animationControllerisFoldingJumped = false;
         }
         PlayerStateMachine.jumpInputBool = false;
@@ -138,7 +138,7 @@ public class PlayerInTheAir : State
     {
         float sphereRadius = .2f;
         float maxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig - sphereRadius;
-        float acceleration = values.rocketJumpAcceleration;
+        float acceleration = stats.rocketJumpAcceleration;
         Vector3 origin = PlayerStateMachine.transform.position;
         LayerMask mask = LayerMask.GetMask("Environment");
         List<RaycastHit> hits = new List<RaycastHit>();

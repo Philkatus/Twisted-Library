@@ -43,8 +43,8 @@ public class PlayerSliding : State
     protected bool holdingChangeDirection;
     protected bool holdingLeftSlideButton;
     protected bool holdingRightSlideButton;
-    protected bool shouldRetainSwingVelocity=true;
-  
+    protected bool shouldRetainSwingVelocity = true;
+
 
 
     #endregion
@@ -174,7 +174,7 @@ public class PlayerSliding : State
             //PlayerStateMachine.baseVelocity += direction * 2.5f * ladderSizeState.foldJumpMultiplier;
             //PlayerStateMachine.ClampPlayerVelocity(PlayerStateMachine.baseVelocity, Vector3.up, stats.maxJumpingSpeed);
             //PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed);
-            
+
             PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier);
             //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
             // Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
@@ -192,7 +192,7 @@ public class PlayerSliding : State
             //PlayerStateMachine.baseVelocity += direction * 2.5f * ladderSizeState.foldJumpMultiplier;
             //PlayerStateMachine.ClampPlayerVelocity(PlayerStateMachine.baseVelocity, Vector3.up, stats.maxJumpingSpeed);
             //PlayerStateMachine.bonusVelocity = direction *( 2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed);
-            
+
             PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier);
             //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
             //Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
@@ -272,10 +272,10 @@ public class PlayerSliding : State
 
                     pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
 
-                    
-                    
+
+
                     // Debug.Log(pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * values.slidingVelocityFactor + " " + values.slidingVelocityFactor);
-                    
+
                 }
                 else
                 {
@@ -354,7 +354,7 @@ public class PlayerSliding : State
                     pSM.HeightOnLadder += pSM.forwardInput * speed * Time.fixedDeltaTime;
                     pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
                     //pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder + ladder.transform.forward * -stats.playerOffsetFromLadder; //pos on ladder
-                    pSM.transform.localPosition = new Vector3(0, ladderSizeState.ladderLength * pSM.HeightOnLadder,-0.38f);
+                    pSM.transform.localPosition = new Vector3(0, ladderSizeState.ladderLength * pSM.HeightOnLadder, -0.38f);
                 }
 
                 #region Move horizontally.
@@ -385,7 +385,7 @@ public class PlayerSliding : State
                     pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * stats.slidingVelocityFactor;
 
                     pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
-                    
+
                 }
                 else
                 {
@@ -399,16 +399,21 @@ public class PlayerSliding : State
                 {
 
                     Vector3 endOfShelfDirection = new Vector3();
-                    if (pSM.currentDistance <= 0) //arriving at start of path
+                    if (pSM.closestRail != null)
                     {
-                        endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0))
-                                            - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints)); //start - ende
+                        if (pSM.currentDistance <= 0) //arriving at start of path
+                        {
+                            endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0))
+                                                - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints)); //start - ende
+                        }
+                        else if (pSM.currentDistance >= pathLength) //arriving at end of path
+                        {
+                            endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints))
+                                                - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0)); //ende - start
+                        }
                     }
-                    else if (pSM.currentDistance >= pathLength) //arriving at end of path
-                    {
-                        endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints))
-                                            - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0)); //ende - start
-                    }
+                    else
+                        Debug.Log("There is something bad happening here lmao");
 
                     Plane railPlane = new Plane(endOfShelfDirection.normalized, Vector3.zero);
 
