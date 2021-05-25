@@ -1,20 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.HighDefinition;
 
 public class VFX_Manager : MonoBehaviour
 {
     [SerializeField] GameObject Cloud;
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] GameObject player;
+    [SerializeField] DecalProjector projector;
+    PlayerMovementStateMachine pSM;
+    
+    Vector3 offset;
+    private void Start()
     {
+        offset = transform.position - player.transform.position;
+        pSM = player.GetComponent<PlayerMovementStateMachine>();
+        projector = this.GetComponent<DecalProjector>();
         Cloud.SetActive(false);
     }
-
-    // Update is called once per frame
     void Update()
     {
-        
+        transform.position = player.transform.position + offset;
+        if (pSM.playerState == PlayerMovementStateMachine.PlayerState.inTheAir || pSM.playerState == PlayerMovementStateMachine.PlayerState.walking)
+        {
+            projector.enabled = true;
+        }
+        else
+        {
+            projector.enabled = false;
+        }
     }
 
     void PlayParticleEffect(GameObject particleGameObject)
@@ -23,8 +37,9 @@ public class VFX_Manager : MonoBehaviour
         particleGameObject.GetComponent<ParticleSystem>().Play();
     }
 
-    public void OnStageChangedWalking()
+    public void OnStateChangedWalking()
     {
+        Debug.Log("Land");
         PlayParticleEffect(Cloud);
     }
     //Instantiate all Effects

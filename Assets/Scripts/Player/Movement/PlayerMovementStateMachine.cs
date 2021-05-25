@@ -53,6 +53,7 @@ public class PlayerMovementStateMachine : StateMachine
     public CharacterController controller;
     public AnimationStateController animController;
     public GameObject bob;
+    public VFX_Manager effects;
     [HideInInspector] public InputAction slideAction;
     [HideInInspector] public InputAction slideLeftAction;
     [HideInInspector] public InputAction slideRightAction;
@@ -495,6 +496,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLand()
     {
         SetState(new PlayerWalking(this));
+        effects.OnStateChangedWalking();
         playerState = PlayerState.walking;
         HeightOnLadder = -1;
     }
