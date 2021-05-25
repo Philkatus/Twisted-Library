@@ -174,7 +174,7 @@ public class PlayerSliding : State
             //PlayerStateMachine.baseVelocity += direction * 2.5f * ladderSizeState.foldJumpMultiplier;
             //PlayerStateMachine.ClampPlayerVelocity(PlayerStateMachine.baseVelocity, Vector3.up, stats.maxJumpingSpeed);
             //PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed);
-
+           
             PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier);
             //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
             // Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
@@ -191,6 +191,7 @@ public class PlayerSliding : State
             //PlayerStateMachine.baseVelocity += direction * 2.5f * ladderSizeState.foldJumpMultiplier;
             //PlayerStateMachine.ClampPlayerVelocity(PlayerStateMachine.baseVelocity, Vector3.up, stats.maxJumpingSpeed);
             //PlayerStateMachine.bonusVelocity = direction *( 2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed);
+            
             PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier);
             //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
             //Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
@@ -351,7 +352,8 @@ public class PlayerSliding : State
                 {
                     pSM.HeightOnLadder += pSM.forwardInput * speed * Time.fixedDeltaTime;
                     pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
-                    pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder + ladder.transform.forward * -stats.playerOffsetFromLadder; //pos on ladder
+                    //pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder + ladder.transform.forward * -stats.playerOffsetFromLadder; //pos on ladder
+                    pSM.transform.localPosition = new Vector3(0, ladderSizeState.ladderLength * pSM.HeightOnLadder,-0.38f);
                 }
 
                 #region Move horizontally.
