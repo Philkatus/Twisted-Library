@@ -595,7 +595,7 @@ public class PlayerSwinging : PlayerSliding
         pSM.HeightOnLadder = -1;
         controller.transform.parent = ladder.transform;
         //pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
-        pSM.transform.localPosition = new Vector3(0, -ladderSizeState.ladderLength, -.4f);
+        pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder + ladder.transform.forward * -stats.playerOffsetFromLadder;
         controller.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
         #endregion
@@ -619,6 +619,7 @@ public class PlayerSwinging : PlayerSliding
         if (shouldRetainSwingVelocity)
         {
             pSM.bonusVelocity += currentMovement * stats.swingingVelocityFactor;
+            pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
         }
         swingingFeedback.SetActive(false);
         pSM.snapInputBool = false;

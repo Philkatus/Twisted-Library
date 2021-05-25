@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 public class PlayerWalking : State
 {
     CharacterController controller;
-    ValuesScriptableObject values;
+    ValuesScriptableObject stats;
     float coyoteTime = 0.1f;
     float coyoteTimer = 0;
 
@@ -25,7 +25,7 @@ public class PlayerWalking : State
         PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
         PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
 
-        values = PlayerStateMachine.stats;
+        stats = PlayerStateMachine.stats;
     }
 
     public override void Movement()
@@ -48,17 +48,17 @@ public class PlayerWalking : State
             controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
         }
 
-        pSM.baseVelocity += direction * Time.fixedDeltaTime * values.movementAcceleration;
+        pSM.baseVelocity += direction * Time.fixedDeltaTime * stats.movementAcceleration;
         #region apply drag when no input is applied
         if (pSM.forwardInput == 0)
         {
-            Vector3 currentDragForward = values.movementDrag * pSM.resultingVelocity(pSM.baseVelocity, directionForward);
+            Vector3 currentDragForward = stats.movementDrag * pSM.resultingVelocity(pSM.baseVelocity, directionForward);
             pSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
 
         }
         if (pSM.sideWaysInput == 0)
         {
-            Vector3 currentDragSideways = values.movementDrag * pSM.resultingVelocity(pSM.baseVelocity, directionRight);
+            Vector3 currentDragSideways = stats.movementDrag * pSM.resultingVelocity(pSM.baseVelocity, directionRight);
             pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
         #endregion
@@ -81,11 +81,11 @@ public class PlayerWalking : State
         */
 
 
-        PlayerStateMachine.baseVelocity.y -= values.gravity * Time.fixedDeltaTime;
-        pSM.baseVelocity = pSM.ClampPlayerVelocity(pSM.baseVelocity, Vector3.down, values.maxFallingSpeed);
-        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, values.maximumMovementSpeed);
-        pSM.looseBonusVelocityPercentage(values.walkingBonusVelocityDrag);
-        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * values.movementVelocityFactor);
+        PlayerStateMachine.baseVelocity.y -= stats.gravity * Time.fixedDeltaTime;
+        pSM.baseVelocity = pSM.ClampPlayerVelocity(pSM.baseVelocity, Vector3.down, stats.maxFallingSpeed);
+        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
+        pSM.looseBonusVelocityPercentage(stats.walkingBonusVelocityDrag);
+        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * stats.movementVelocityFactor);
 
         if (isGroundedWithCoyoteTime())
         {
@@ -108,7 +108,7 @@ public class PlayerWalking : State
 
     public override void Jump()
     {
-        PlayerStateMachine.baseVelocity.y = values.jumpHeight;
+        PlayerStateMachine.baseVelocity.y = stats.jumpHeight;
         PlayerStateMachine.jumpInputBool = false;
         PlayerStateMachine.OnFall();
     }
