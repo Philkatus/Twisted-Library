@@ -62,6 +62,7 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
     [HideInInspector] public Vector3 ladderJumpTarget;
+    [HideInInspector] public int snapdirection = 1;
 
     bool[] inputBools = new bool[4];
     public bool jumpInputBool

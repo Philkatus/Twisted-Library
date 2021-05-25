@@ -34,6 +34,8 @@ public class PlayerSliding : State
     protected float speed;
     protected float pathLength;
     protected float currentSlidingLevelSpeed;
+    protected float leftHoldTimer;
+    protected float rightHoldTimer;
     protected int currentSlidingLevel;
     protected bool stopping;
     protected bool startLeftHoldTimer;
@@ -41,8 +43,8 @@ public class PlayerSliding : State
     protected bool holdingChangeDirection;
     protected bool holdingLeftSlideButton;
     protected bool holdingRightSlideButton;
-    protected float leftHoldTimer;
-    protected float rightHoldTimer;
+    protected bool shouldRetainSwingVelocity=true;
+  
 
 
     #endregion
@@ -140,7 +142,7 @@ public class PlayerSliding : State
         Vector3 startingPoint = Vector3.zero;
         if (closestRail != null)
         {
-            startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
+            startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.ladder.transform.position);
         }
         else
         {
@@ -177,6 +179,7 @@ public class PlayerSliding : State
             //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
             // Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
             //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) );
+            shouldRetainSwingVelocity = false;
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = true;
         }
@@ -192,6 +195,7 @@ public class PlayerSliding : State
             //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
             //Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
             //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) );
+            shouldRetainSwingVelocity = false;
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = true;
         }
@@ -212,6 +216,7 @@ public class PlayerSliding : State
             {
                 PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
             }
+            shouldRetainSwingVelocity = true;
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = false;
         }
@@ -265,14 +270,10 @@ public class PlayerSliding : State
 
                     pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
 
-                    /*
-                    float rotateByAngle2 = Vector3.SignedAngle(pSM.ladder.forward, -path.GetNormalAtDistance(pSM.currentDistance), pSM.ladder.up);
-                    Debug.Log(rotateByAngle2);
-
-                    Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle2, pSM.ladder.up);
-                    pSM.ladder.rotation = targetRotation * pSM.ladder.rotation;
+                    
+                    
                     // Debug.Log(pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * values.slidingVelocityFactor + " " + values.slidingVelocityFactor);
-                    */
+                    
                 }
                 else
                 {
@@ -381,6 +382,7 @@ public class PlayerSliding : State
                     pSM.currentDistance += pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * stats.slidingVelocityFactor;
 
                     pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
+                    
                 }
                 else
                 {
