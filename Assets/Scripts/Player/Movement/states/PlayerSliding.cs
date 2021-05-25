@@ -231,6 +231,7 @@ public class PlayerSliding : State
     {
         if (!stats.useNewSliding)
         {
+            
             if (pSM.slidingInput == 0)
             {
                 SwitchSlidingDirectionWithCameraRotation();
@@ -243,7 +244,11 @@ public class PlayerSliding : State
                 {
                     pSM.HeightOnLadder += pSM.forwardInput * speed * Time.fixedDeltaTime;
                     pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
-                    pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder + ladder.transform.forward * -stats.playerOffsetFromLadder; //pos on ladder
+                    
+                    // set player position on ladder
+                    pSM.transform.position = ladder.transform.position + 
+                        pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder + 
+                        ladder.transform.forward * -stats.playerOffsetFromLadder; //pos on ladder
                     //pSM.transform.localPosition = new Vector3(pSM.transform.localPosition.x, pSM.transform.localPosition.y, -0.7f);
                 }
 
@@ -284,7 +289,6 @@ public class PlayerSliding : State
                     pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, 0);
                 }
                 #endregion
-
                 #region end of Path
                 //End Of Path, continue sliding with ReSnap or Fall from Path
                 if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
