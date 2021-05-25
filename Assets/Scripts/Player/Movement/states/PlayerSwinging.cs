@@ -617,7 +617,7 @@ public class PlayerSwinging : PlayerSliding
         SetCurrentPlayerVelocity(Pivot.transform.position);
         if (shouldRetainSwingVelocity)
         {
-            pSM.bonusVelocity += Vector3.up * 1.5f;
+            pSM.bonusVelocity += Vector3.up * 1.1f;
             pSM.bonusVelocity += currentMovement * stats.swingingVelocityFactor;
             pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
         }
