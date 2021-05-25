@@ -317,7 +317,6 @@ public class PlayerSwinging : PlayerSliding
         Vector3 currentNormal = -path.GetNormalAtDistance(currentDistance);
         Plane forward = new Plane(currentNormal, pivot_p);
 
-
         if (inputGiven && !forward.GetSide(pSM.bob.transform.position))
         {
             inputGiven = false;
@@ -618,8 +617,13 @@ public class PlayerSwinging : PlayerSliding
         SetCurrentPlayerVelocity(Pivot.transform.position);
         if (shouldRetainSwingVelocity)
         {
+            pSM.bonusVelocity += Vector3.up * 1.5f;
             pSM.bonusVelocity += currentMovement * stats.swingingVelocityFactor;
             pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
+        }
+        else 
+        {
+            pSM.baseVelocity.y = 0;
         }
         swingingFeedback.SetActive(false);
         pSM.snapInputBool = false;

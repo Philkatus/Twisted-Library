@@ -17,6 +17,8 @@ public class TimerChallenge : MonoBehaviour
     public Text UITimer, UICollectedInfo, prefabText;
 
     public Material unactive, active;
+    public bool enablesSomething;
+    public Animator animator;
 
     [SerializeField] private Transform player, respawnPoint;
     public InputActionAsset actionAsset;
@@ -86,6 +88,12 @@ public class TimerChallenge : MonoBehaviour
             isCompleted = true;
             this.transform.parent.gameObject.SetActive(false);
             Debug.Log("Win");
+
+            if(enablesSomething)
+            {
+                animator.enabled = true;
+            }
+
         }
 
         //STOP
@@ -143,8 +151,11 @@ public class TimerChallenge : MonoBehaviour
 
     public void UpdateUI()
     {
-        UITimer.text = time.ToString();
-        UICollectedInfo.text = nbrOfBoxesCollected.ToString() + "/" + boxesToGet.Count.ToString() + " boxes";
+        if(isChallengeActive)
+        {
+            UITimer.text = time.ToString();
+            UICollectedInfo.text = nbrOfBoxesCollected.ToString() + "/" + boxesToGet.Count.ToString() + " boxes";
+        }
     }
 
     private void OnTriggerEnter(Collider other)
