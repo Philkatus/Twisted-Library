@@ -26,7 +26,7 @@ public class PlayerMovementStateMachine : StateMachine
     public float startingSlidingInput;
     public int adjustedSlideDirection;
     public bool dismounting;
-    public bool didRocketJump;
+    public bool didLadderPush;
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
@@ -62,6 +62,7 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
     [HideInInspector] public Vector3 ladderJumpTarget;
+    [HideInInspector] public int snapdirection = 1;
 
     bool[] inputBools = new bool[4];
     public bool jumpInputBool
@@ -112,6 +113,7 @@ public class PlayerMovementStateMachine : StateMachine
         }
 
     }
+
     public float coyoteTimer = 0;
     public Vector3 ladderDirection
     {
@@ -205,7 +207,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     public void SaveInput(int index, float duration)
     {
-       // Debug.Log("saveIput"+index);
+        // Debug.Log("saveIput"+index);
         if (inputTimer[index] != null)
         {
             StopCoroutine(inputTimer[index]);
@@ -219,7 +221,6 @@ public class PlayerMovementStateMachine : StateMachine
         {
             if (stats.useJumpForLadderShoot)
             {
-               
                 State.LadderPush();
             }
             State.Jump();
@@ -347,13 +348,13 @@ public class PlayerMovementStateMachine : StateMachine
                 {
                     Debug.DrawLine(railCheckLadderPosition, snappingPoint, Color.blue);
                     RaycastHit hit;
-                    if (!Physics.Linecast(railCheckLadderPosition, snappingPoint,out hit,mask,QueryTriggerInteraction.Ignore))
+                    if (!Physics.Linecast(railCheckLadderPosition, snappingPoint, out hit, mask, QueryTriggerInteraction.Ignore))
                     {
-                        
+
                         closestRail = possibleRails[i];
                         closestDistance = distance;
                     }
-                    if (hit.point != new RaycastHit().point && Vector3.Distance(snappingPoint, hit.point) <= .1f) 
+                    if (hit.point != new RaycastHit().point && Vector3.Distance(snappingPoint, hit.point) <= .1f)
                     {
 
                         closestRail = possibleRails[i];
@@ -396,7 +397,7 @@ public class PlayerMovementStateMachine : StateMachine
             Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
 
             float closestDistance = stats.resnappingDistance;
-            Rail nextClosestShelf = null;
+            Rail nextClosestRail = null;
 
             for (int i = 0; i < possibleRails.Count; i++)
             {
@@ -412,14 +413,14 @@ public class PlayerMovementStateMachine : StateMachine
                     if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .99f)
                     {
                         closestDistance = distance;
-                        nextClosestShelf = possibleRails[i];
+                        nextClosestRail = possibleRails[i];
                     }
                 }
             }
 
-            if (nextClosestShelf != null)
+            if (nextClosestRail != null)
             {
-                closestRail = nextClosestShelf;
+                closestRail = nextClosestRail;
                 return true;
             }
             else

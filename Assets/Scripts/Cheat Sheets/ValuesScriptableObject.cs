@@ -92,15 +92,18 @@ public class ValuesScriptableObject : ScriptableObject
     [Header("Sliding")]
     [Tooltip("The maximum distance between ladder and rail to snap to the rails.")]
     public float snappingDistance = 10;
+
+
     [Tooltip("The maximum distance between ladder and rail to snap to the next rail while sliding.")]
     public float resnappingDistance = .5f;
     [Tooltip("die minimale velocity die der spieler haben muss damit sie einfluss auf die snap direction hat")]
     public float minVelocityToChangeSnapDirection = 1;
 
-    
-
     [Tooltip("How fast the player climbs the ladder up and down while sliding.")]
     public float climbingSpeedOnLadder;
+
+    [Tooltip("The factor that determines how much the height on the ladder changes the velocity of the rail katapult jum")]
+    [Range(0f,1)] public float heightOnLadderKatapulFactor = .2f;
 
     [Tooltip("How fast the player accelerates to maximum sliding speed.")]
     public float slidingAcceleration;
@@ -121,6 +124,11 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("If true the player preserves their velocity on snap.")]
     public bool preservesVelocityOnSnap = false;
+
+    [Tooltip("The percentage of velocity the player has when falling at the end of a rail that gets added as bonus velocity. 1 = 100%")]
+    public float fallingMomentumPercentage;
+    [Tooltip("The offset between the ladder and the player, so that the position on the ladder is right.")]
+    public float playerOffsetFromLadder;
 
     [Space]
     [Header("New Sliding")]
@@ -167,7 +175,7 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("How fast the player decelerates while swinging without giving an input.")]
     public float swingingGravity;
 
-    [Tooltip("The factor to convert velocity into swinging speed.")]
+    [Tooltip("The factor to convert swinging velocity into in the air speed after jumping.")]
     public float swingingVelocityFactor = 1;
     #endregion
 }

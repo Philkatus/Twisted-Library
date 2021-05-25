@@ -39,6 +39,7 @@ MonoBehaviour:
   resnappingDistance: 0.5
   minVelocityToChangeSnapDirection: 1
   climbingSpeedOnLadder: 1
+  heightOnLadderKatapulFactor: 0.2
   slidingAcceleration: 500
   maxSlidingSpeed: 100
   slidingSpeedSizeFactor: 1
@@ -47,12 +48,14 @@ MonoBehaviour:
   ladderDismountTimer: 0.2
   slidingVelocityFactor: 0.001
   preservesVelocityOnSnap: 0
+  fallingMomentumPercentage: 0
+  playerOffsetFromLadder: 0
   speedLevels:
   - 0
   - 30
   - 45
   - 60
-  timeToSwitchDirection: 0.2
+  timeToSwitchDirection: 0.7
   accelerationCooldown: 0.3
   useSwinging: 1
   swingingAcceleration: 2000
@@ -61,7 +64,7 @@ MonoBehaviour:
   minHangingDeceleration: 0.001
   maxHangingDeceleration: 0.0405
   hangingAccelerationFactor: 0.7
-  maxPushAngle: -0.75
+  maxPushAngle: 0.1
   maxSwingSpeed: 45
   swingingGravity: 70
-  swingingVelocityFactor: 1.6
+  swingingVelocityFactor: 0.8

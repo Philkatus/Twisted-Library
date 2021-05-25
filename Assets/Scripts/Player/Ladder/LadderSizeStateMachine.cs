@@ -10,6 +10,7 @@ public class LadderSizeStateMachine : StateMachine
     public float ladderLengthSmall;
     public float foldSpeed;
     public float foldJumpMultiplier;
+    public float reversedFoldJumpMulitplier;
     public float extraFoldJumpTimer;
 
     [Header("For reference")]
@@ -84,13 +85,13 @@ public class LadderSizeStateMachine : StateMachine
         }
     }
 
-    public void OnSnap() 
+    public void OnSnap()
     {
         SetState(new LadderUnfold(this));
         playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderUnfold;
     }
 
-    public void OnRocketJump() 
+    public void OnLadderPush()
     {
         SetState(new LadderRocketJump(this));
         playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderRocketJump;
