@@ -11,7 +11,7 @@ public class TimerChallengeBox : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player") && isMyChallengeActive)
         {
-            this.GetComponent<MeshRenderer>().enabled = false;
+            this.gameObject.SetActive(false);
         }
     }
 }

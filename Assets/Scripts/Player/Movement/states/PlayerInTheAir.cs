@@ -143,27 +143,27 @@ public class PlayerInTheAir : State
         Vector3 origin = PlayerStateMachine.transform.position;
         LayerMask mask = LayerMask.GetMask("Environment");
         List<RaycastHit> hits = new List<RaycastHit>();
-        Ray ray = new Ray(origin, Vector3.down);
 
-        //hits.AddRange( Physics.SphereCastAll(ray, MaxHeight, 1, mask));
         if (!PlayerStateMachine.didLadderPush)
         {
-            hits.AddRange(Physics.SphereCastAll(origin, 0.00001f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
+            hits.AddRange(Physics.SphereCastAll(origin, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
         }
         float closestDistance = Mathf.Infinity;
         RaycastHit closestHit;
         Vector3 target = Vector3.zero;
-
         for (int i = 0; i < hits.Count; i++)
         {
             float distance = hits[i].distance;
-            if (distance < closestDistance && Vector3.Dot(hits[i].normal, Vector3.up) >= .93f)
+            if (distance < closestDistance && 
+                Vector3.Dot(hits[i].normal, Vector3.up) >= .9f && 
+                hits[i].point != Vector3.zero)
             {
                 closestHit = hits[i];
                 closestDistance = distance;
                 target = closestHit.point;
+
                 // Debug.Log(hits[i].normal);
-                //Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
+                // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
             }
         }
         if (target == Vector3.zero)
