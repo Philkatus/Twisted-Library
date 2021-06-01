@@ -9,7 +9,7 @@ public class RailTrigger : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("player") && other.GetComponent<PlayerMovementStateMachine>().playerState==PlayerMovementStateMachine.PlayerState.swinging) 
+        if (other.CompareTag("Player") && other.GetComponent<PlayerMovementStateMachine>().playerState==PlayerMovementStateMachine.PlayerState.swinging) 
         {
             onTriggerSwing.Invoke();
         }
