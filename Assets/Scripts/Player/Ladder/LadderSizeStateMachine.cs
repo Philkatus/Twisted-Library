@@ -43,7 +43,7 @@ public class LadderSizeStateMachine : StateMachine
     ///</summary>
     public void OnGrow()
     {
-        if (State.GetType() != new LadderBig(this).GetType())
+        if (State  is LadderBig)
         {
             SetState(new LadderBig(this));
             playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderBig;
