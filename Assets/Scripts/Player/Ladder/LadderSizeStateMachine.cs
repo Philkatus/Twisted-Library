@@ -43,7 +43,7 @@ public class LadderSizeStateMachine : StateMachine
     ///</summary>
     public void OnGrow()
     {
-        if (State.GetType() != new LadderBig(this).GetType())
+        if (!(State  is LadderBig))
         {
             SetState(new LadderBig(this));
             playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderBig;
@@ -56,7 +56,7 @@ public class LadderSizeStateMachine : StateMachine
     ///</summary>
     public void OnShrink()
     {
-        if (State.GetType() != new LadderSmall(this).GetType())
+        if (!(State is LadderSmall))
         {
             SetState(new LadderSmall(this));
             playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderSmall;
@@ -69,15 +69,15 @@ public class LadderSizeStateMachine : StateMachine
     ///</summary>
     public void OnFold()
     {
-        if (playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.sliding || playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.swinging)
+        if (playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
             playerStateMachine.foldInputBool = false;
-            if (State.GetType() != new LadderFold(this).GetType())
+            if (!(State is LadderFold))
             {
                 SetState(new LadderFold(this));
                 playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderFold;
             }
-            else if (State.GetType() != new LadderUnfold(this).GetType())
+            else if (!(State is LadderUnfold))
             {
                 SetState(new LadderUnfold(this));
                 playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderUnfold;

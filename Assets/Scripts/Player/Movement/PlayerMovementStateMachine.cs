@@ -28,6 +28,9 @@ public class PlayerMovementStateMachine : StateMachine
     public bool dismounting;
     public bool didLadderPush;
 
+    public bool isWallJumping;
+    public bool animationControllerisFoldingJumped;
+
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
     public Vector3 playerVelocity
@@ -43,9 +46,6 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
     public Vector3 railCheckLadderPosition;
-
-    public bool isWallJumping;
-    public bool animationControllerisFoldingJumped;
 
     public Rail closestRail;
     public Transform ladder;
@@ -63,8 +63,17 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
     [HideInInspector] public Vector3 ladderJumpTarget;
+    [HideInInspector]
+    public Vector3 ladderDirection
+    {
+        get
+        {
+            return ladderSizeStateMachine.ladderParent.right;
+        }
+    }
     [HideInInspector] public int snapdirection = 1;
 
+    #region inputBools
     bool[] inputBools = new bool[4];
     public bool jumpInputBool
     {
@@ -114,18 +123,12 @@ public class PlayerMovementStateMachine : StateMachine
         }
 
     }
-
-    public float coyoteTimer = 0;
-    public Vector3 ladderDirection
-    {
-        get
-        {
-            return ladderSizeStateMachine.ladderParent.right;
-        }
-    }
-    [HideInInspector] public Transform myParent;
     #endregion
 
+    public float coyoteTimer = 0;
+
+    [HideInInspector] public Transform myParent;
+    #endregion
     #region Private
     float railCheckTimer;
     Vector3 lastVisualizationPoint;
@@ -147,12 +150,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Start()
     {
-        myParent = transform.parent;
-        railAllocator = RailSearchManager.instance;
-        ladderWalkingPosition = ladder.localPosition;
-        ladderWalkingRotation = ladder.localRotation;
-        snapVisualisation = myParent.transform.GetChild(3).GetChild(1).gameObject;
-        coyoteTimer = stats.slidingCoyoteTime;
+        InitializeVariables();
         SetState(new PlayerWalking(this));
         GetControlls();
     }
@@ -160,6 +158,32 @@ public class PlayerMovementStateMachine : StateMachine
     private void Update()
     {
         coyoteTimer += Time.deltaTime;
+        UpdateRailTimer();
+        CheckForInputBools();
+
+    }
+
+
+
+    private void FixedUpdate()
+    {
+        GetInput();
+        looseBonusVelocity(stats.bonusVelocityDrag);
+        State.Movement();
+        Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
+        Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
+    }
+    private void InitializeVariables()
+    {
+        myParent = transform.parent;
+        railAllocator = RailSearchManager.instance;
+        ladderWalkingPosition = ladder.localPosition;
+        ladderWalkingRotation = ladder.localRotation;
+        snapVisualisation = myParent.transform.GetChild(3).GetChild(1).gameObject;
+        coyoteTimer = stats.slidingCoyoteTime;
+    }
+    private void UpdateRailTimer()
+    {
         railCheckTimer += Time.deltaTime;
         if (railCheckTimer >= 0.1f)
         {
@@ -174,19 +198,7 @@ public class PlayerMovementStateMachine : StateMachine
             }
             railCheckTimer = 0;
         }
-        CheckForInputBools();
-
     }
-
-    private void FixedUpdate()
-    {
-        GetInput();
-        looseBonusVelocity(stats.bonusVelocityDrag);
-        State.Movement();
-        Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
-        Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
-    }
-
     public void TryToSnapToShelf()
     {
         if (CheckForRail())
@@ -194,19 +206,14 @@ public class PlayerMovementStateMachine : StateMachine
             State.Snap();
         }
     }
+ 
 
-
-    #region utility
     #region Input/Controlls
     public void GetInput()
     {
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
         swingingInput = swingAction.ReadValue<float>();
-        if (!stats.useNewSliding)
-        {
-            slidingInput = slideAction.ReadValue<float>() * adjustedSlideDirection;
-        }
     }
 
     public void SaveInput(int index, float duration)
@@ -253,32 +260,20 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void GetControlls()
     {
-        if (stats.useNewSliding)
-        {
             playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
             slideLeftAction = playerControlsMap.FindAction("SlideLeft");
             slideRightAction = playerControlsMap.FindAction("SlideRight");
-            slideLeftAction.started += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = -1; } };
-            slideRightAction.started += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = +1; } };
-            slideRightAction.canceled += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = 0; } };
-            slideLeftAction.canceled += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = 0; } };
+            slideLeftAction.started += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = -1; } };
+            slideRightAction.started += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = +1; } };
+            slideRightAction.canceled += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = 0; } };
+            slideLeftAction.canceled += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = 0; } };
             if (stats.useTriggerToSlideWithMomentum)
             {
                 slideLeftAction.started += context => SaveInput(1, stats.snapInputTimer);
                 slideRightAction.started += context => SaveInput(1, stats.snapInputTimer);
             }
             startingSlidingInput = 0;
-        }
-        else
-        {
-            playerControlsMap = actionAsset.FindActionMap("PlayerControls");
-            stopSlidingAction = playerControlsMap.FindAction("StopSliding");
-            slideAction = playerControlsMap.FindAction("Slide");
-            if (stats.useTriggerToSlideWithMomentum)
-            {
-                slideAction.started += context => SaveInput(1, stats.snapInputTimer);
-            }
-        }
+        
         if (GameObject.FindGameObjectWithTag("Canvas"))
         {
             playerControlsMap.Disable();
@@ -300,6 +295,7 @@ public class PlayerMovementStateMachine : StateMachine
         //foldAction.performed += context => State.RocketJump();
     }
     #endregion
+    #region utility
     public void looseBonusVelocity(float dragAmount)
     {
         bonusVelocity -= bonusVelocity.normalized * dragAmount * Time.fixedDeltaTime;
@@ -308,7 +304,7 @@ public class PlayerMovementStateMachine : StateMachine
             bonusVelocity = Vector3.zero;
         }
     }
-    public void looseBonusVelocityPercentage(float dragAmount)
+    public void loseBonusVelocityPercentage(float dragAmount)
     {
         dragAmount = (100 - dragAmount) / 100;
         bonusVelocity *= dragAmount * Time.fixedDeltaTime;
@@ -322,10 +318,6 @@ public class PlayerMovementStateMachine : StateMachine
         if (playerState == PlayerState.walking)
         {
             railCheckLadderPosition = controller.transform.position;
-        }
-        else if (playerState == PlayerState.sliding)
-        {
-            railCheckLadderPosition = ladder.transform.position;
         }
         else if (playerState == PlayerState.inTheAir)
         {
@@ -434,64 +426,8 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
 
-    /// <summary>
-    /// Calculates the resulting signed magnitude alongside the targetdirection after a change of direction.
-    /// </summary>
-    /// <param name="currentVelocity">the Velocity to change </param>
-    /// <param name="targetDirection">The normalized direction you want to change to</param>
-    /// <returns></returns>
-    public float resultingSpeed(Vector3 currentVelocity, Vector3 targetDirection)
-    {
-        float resultingSpeed = currentVelocity.x * targetDirection.x + currentVelocity.y * targetDirection.y + currentVelocity.z * targetDirection.z;
 
-        return resultingSpeed;
-    }
-
-    /// <summary>
-    /// calculates the resulting velocity through a change in direction
-    /// </summary>
-    /// <param name="currentVelocity"> the Velocity to change </param>
-    /// <param name="targetDirection"> the normalized direction you want to change to</param>
-    /// <returns></returns>
-    public Vector3 resultingVelocity(Vector3 currentVelocity, Vector3 targetDirection)
-    {
-        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
-
-        return targetDirection * resultingSpeed;
-    }
-
-    /// <summary>
-    /// calculates the resulting clamped velocity through a change in direction
-    /// </summary>
-    /// <param name="currentVelocity"> the Velocity to change </param>
-    /// <param name="targetDirection"> the normalized direction you want to change to</param>
-    /// <param name="maximumSpeed"> the maximum speed the return value gets clamped to</param>
-    /// <returns></returns>
-    public Vector3 resultingClampedVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed)
-    {
-        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
-        resultingSpeed = Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
-
-        return targetDirection * resultingSpeed;
-    }
-
-    /// <summary>
-    /// takes the Player Velocity and puts a clamp on one direction of it
-    /// </summary>
-    /// <param name="currentVelocity"> the Velocity to change </param>
-    /// <param name="targetDirection"> The direction to clamp </param>
-    /// <param name="maximumSpeed"> the maximumspeed that the return Vector should have in the target direction </param>
-    /// <returns></returns>
-    public Vector3 ClampPlayerVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed)
-    {
-        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
-        Vector3 clampedVelocity = targetDirection * Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
-        currentVelocity -= this.resultingVelocity(currentVelocity, targetDirection);
-        currentVelocity += clampedVelocity;
-        return currentVelocity;
-    }
     #endregion
-
     #region functions to change states
     ///<summary>
     /// Gets called when the player lands on the floor.
@@ -532,16 +468,8 @@ public class PlayerMovementStateMachine : StateMachine
         ladderSizeStateMachine.OnGrow();
         snapInputBool = false;
 
-        if (stats.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
-        {
-            SetState(new PlayerSwinging(this));
-            playerState = PlayerState.swinging;
-        }
-        else
-        {
-            SetState(new PlayerSliding(this));
-            playerState = PlayerState.sliding;
-        }
+        SetState(new PlayerSwinging(this));
+        playerState = PlayerState.swinging;
     }
 
     ///<summary>
@@ -549,16 +477,9 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnResnap()
     {
-        if (stats.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
-        {
-            SetState(this.State);
-            playerState = PlayerState.swinging;
-        }
-        else
-        {
-            SetState(this.State);
-            playerState = PlayerState.sliding;
-        }
+
+        SetState(this.State);
+        playerState = PlayerState.swinging;
     }
 
     ///<summary>
@@ -572,7 +493,6 @@ public class PlayerMovementStateMachine : StateMachine
         HeightOnLadder = -1;
     }
     #endregion
-
     #region VFX
     IEnumerator ChangeSnapVisualisationPoint()
     {
@@ -614,7 +534,6 @@ public class PlayerMovementStateMachine : StateMachine
     {
         walking,
         inTheAir,
-        sliding,
         swinging
     };
 
