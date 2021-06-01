@@ -140,6 +140,11 @@ public class PlayerMovementStateMachine : StateMachine
     Coroutine[] inputTimer = new Coroutine[4];
     #endregion
 
+    void Awake()
+    {
+        ObjectManager.instance.pSM = this;
+    }
+
     private void Start()
     {
         myParent = transform.parent;
@@ -151,8 +156,6 @@ public class PlayerMovementStateMachine : StateMachine
         SetState(new PlayerWalking(this));
         GetControlls();
     }
-
-
 
     private void Update()
     {
