@@ -349,11 +349,15 @@ public class PlayerSwinging : State
         }
 
         //Check if input can be given and give feedback accordingly
+        Vector3 pivotVectorDown = pivot_p + Vector3.down;
+        Vector3 pivotVectorBob = pivot_p + bobPosition;
+        float resultingAngle = Vector3.SignedAngle(pivotVectorDown, pivotVectorBob, ladder.right);
         if (Vector3.Dot(currentMovement.normalized, bobForward) >= .93f
            && currentVelocity.magnitude < stats.maxSwingSpeed
            && !inputGiven
            && inputTimer > nextSwingingTime
-           || currentVelocity.magnitude <= minSwingSpeed)
+           || currentVelocity.magnitude <= minSwingSpeed 
+           && Mathf.Abs(resultingAngle) < 25)
         {
             canPress = true;
             swingingFeedback.SetActive(true);
