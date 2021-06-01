@@ -63,7 +63,8 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
     [HideInInspector] public Vector3 ladderJumpTarget;
-    [HideInInspector] public Vector3 ladderDirection
+    [HideInInspector]
+    public Vector3 ladderDirection
     {
         get
         {
@@ -125,7 +126,7 @@ public class PlayerMovementStateMachine : StateMachine
     #endregion
 
     public float coyoteTimer = 0;
-   
+
     [HideInInspector] public Transform myParent;
     #endregion
 
@@ -150,7 +151,7 @@ public class PlayerMovementStateMachine : StateMachine
         GetControlls();
     }
 
-   
+
 
     private void Update()
     {
@@ -160,7 +161,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
 
-   
+
 
     private void FixedUpdate()
     {
@@ -211,10 +212,6 @@ public class PlayerMovementStateMachine : StateMachine
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
         swingingInput = swingAction.ReadValue<float>();
-        if (!stats.useNewSliding)
-        {
-            slidingInput = slideAction.ReadValue<float>() * adjustedSlideDirection;
-        }
     }
 
     public void SaveInput(int index, float duration)
@@ -261,32 +258,20 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void GetControlls()
     {
-        if (stats.useNewSliding)
-        {
             playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
             slideLeftAction = playerControlsMap.FindAction("SlideLeft");
             slideRightAction = playerControlsMap.FindAction("SlideRight");
-            slideLeftAction.started += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = -1; } };
-            slideRightAction.started += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = +1; } };
-            slideRightAction.canceled += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = 0; } };
-            slideLeftAction.canceled += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = 0; } };
+            slideLeftAction.started += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = -1; } };
+            slideRightAction.started += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = +1; } };
+            slideRightAction.canceled += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = 0; } };
+            slideLeftAction.canceled += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = 0; } };
             if (stats.useTriggerToSlideWithMomentum)
             {
                 slideLeftAction.started += context => SaveInput(1, stats.snapInputTimer);
                 slideRightAction.started += context => SaveInput(1, stats.snapInputTimer);
             }
             startingSlidingInput = 0;
-        }
-        else
-        {
-            playerControlsMap = actionAsset.FindActionMap("PlayerControls");
-            stopSlidingAction = playerControlsMap.FindAction("StopSliding");
-            slideAction = playerControlsMap.FindAction("Slide");
-            if (stats.useTriggerToSlideWithMomentum)
-            {
-                slideAction.started += context => SaveInput(1, stats.snapInputTimer);
-            }
-        }
+        
         if (GameObject.FindGameObjectWithTag("Canvas"))
         {
             playerControlsMap.Disable();
@@ -331,10 +316,6 @@ public class PlayerMovementStateMachine : StateMachine
         if (playerState == PlayerState.walking)
         {
             railCheckLadderPosition = controller.transform.position;
-        }
-        else if (playerState == PlayerState.sliding)
-        {
-            railCheckLadderPosition = ladder.transform.position;
         }
         else if (playerState == PlayerState.inTheAir)
         {
@@ -443,7 +424,7 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
 
-   
+
     #endregion
     #region functions to change states
     ///<summary>
@@ -485,16 +466,8 @@ public class PlayerMovementStateMachine : StateMachine
         ladderSizeStateMachine.OnGrow();
         snapInputBool = false;
 
-        if (stats.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
-        {
-            SetState(new PlayerSwinging(this));
-            playerState = PlayerState.swinging;
-        }
-        else
-        {
-            SetState(new PlayerSliding(this));
-            playerState = PlayerState.sliding;
-        }
+        SetState(new PlayerSwinging(this));
+        playerState = PlayerState.swinging;
     }
 
     ///<summary>
@@ -502,16 +475,9 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnResnap()
     {
-        if (stats.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
-        {
-            SetState(this.State);
-            playerState = PlayerState.swinging;
-        }
-        else
-        {
-            SetState(this.State);
-            playerState = PlayerState.sliding;
-        }
+
+        SetState(this.State);
+        playerState = PlayerState.swinging;
     }
 
     ///<summary>
@@ -566,7 +532,6 @@ public class PlayerMovementStateMachine : StateMachine
     {
         walking,
         inTheAir,
-        sliding,
         swinging
     };
 
