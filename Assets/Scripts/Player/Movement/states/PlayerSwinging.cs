@@ -52,7 +52,6 @@ public class PlayerSwinging : State
     Rail.RailType railType;
 
     GameObject Pivot,
-        swingingFeedback,
         ladderParent;
 
     #endregion
@@ -226,7 +225,6 @@ public class PlayerSwinging : State
         pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLengthBig;
 
         ladderParent = ladderSizeState.ladderParent.gameObject;
-        swingingFeedback = ladderParent.transform.GetChild(5).gameObject;
 
 
         onWall = false;
@@ -360,12 +358,12 @@ public class PlayerSwinging : State
            && Mathf.Abs(resultingAngle) < 25)
         {
             canPress = true;
-            swingingFeedback.SetActive(true);
+            pSM.effects.canSwing = true;
         }
         else
         {
             canPress = false;
-            swingingFeedback.SetActive(false);
+            pSM.effects.canSwing = false;
         }
         #endregion
         #region Acceleration & Deceleration
@@ -1018,7 +1016,6 @@ public class PlayerSwinging : State
         {
             pSM.baseVelocity.y = 0;
         }
-        swingingFeedback.SetActive(false);
         pSM.snapInputBool = false;
         pSM.startingSlidingInput = 0;
         #endregion
