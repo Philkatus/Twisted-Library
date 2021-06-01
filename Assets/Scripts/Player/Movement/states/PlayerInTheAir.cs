@@ -63,6 +63,7 @@ public class PlayerInTheAir : State
         controller.Move(PSM.playerVelocity * Time.fixedDeltaTime * stats.jumpVelocityFactor);
         if (HeadCollision())
         {
+            Debug.LogError("Bonk");
             PSM.baseVelocity.y -= PSM.baseVelocity.y * .9f * Time.fixedDeltaTime;
             PSM.bonusVelocity.y = PSM.bonusVelocity.y * .9f * Time.fixedDeltaTime;
         }
