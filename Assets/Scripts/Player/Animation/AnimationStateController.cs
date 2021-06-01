@@ -171,7 +171,8 @@ public class AnimationStateController : MonoBehaviour
 
     void CheckIK()
     {
-        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding || movementScript.playerState == PlayerMovementStateMachine.PlayerState.inTheAir)
+        // Im sorry if i fucked this up? - Maria
+        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging || movementScript.playerState == PlayerMovementStateMachine.PlayerState.inTheAir)
         {
             footIKScript.enabled = false;
         }
@@ -238,7 +239,7 @@ public class AnimationStateController : MonoBehaviour
     void ladderStateChange()
     {
         //animations for retracting and extending ladder
-        if (ladderScript.isFoldingUp && movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding)
+        if (ladderScript.isFoldingUp && movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
             animator.SetBool("isFoldingUp", true);
             //Audio
