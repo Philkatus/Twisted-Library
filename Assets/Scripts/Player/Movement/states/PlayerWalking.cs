@@ -6,9 +6,12 @@ using UnityEngine.InputSystem;
 public class PlayerWalking : State
 {
     CharacterController controller;
+    PlayerMovementStateMachine pSM;
+    Transform ladder;
     ValuesScriptableObject stats;
-    float coyoteTime = 0.1f;
-    float coyoteTimer = 0;
+    float coyoteTime = 0.1f,
+        coyoteTimer = 0,
+        speedDeadzone = 0.1f;
 
     public PlayerWalking(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
@@ -17,44 +20,40 @@ public class PlayerWalking : State
 
     public override void Initialize()
     {
-        controller = PlayerStateMachine.controller;
+        pSM = PlayerStateMachine;
+        ladder = pSM.ladder;
+        controller = pSM.controller;
+
         controller.transform.SetParent(PlayerStateMachine.myParent);
-        PlayerStateMachine.ladder.transform.localScale = new Vector3(1, 1, 1);
+        ladder.transform.localScale = new Vector3(1, 1, 1);
         controller.transform.localScale = new Vector3(1, 1, 1);
-        PlayerStateMachine.ladder.transform.SetParent(PlayerStateMachine.animController.spine);
-        PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
-        PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
+        ladder.transform.SetParent(PlayerStateMachine.animController.spine);
+        ladder.localPosition = pSM.ladderWalkingPosition;
+        ladder.localRotation = pSM.ladderWalkingRotation;
 
         stats = PlayerStateMachine.stats;
     }
 
     public override void Movement()
     {
+        //  Forward aus der Kamera bekommen
         Transform cam = Camera.main.transform;
-        PlayerMovementStateMachine pSM = PlayerStateMachine;
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
-        Vector3 direction = directionForward * pSM.forwardInput + directionRight * pSM.sideWaysInput;
 
-        /* Philips snapping
-        if(pSM.slidingInput!=0 || pSM.swingingInput !=0)
-        {
-            pSM.TryToSnapToShelf();
-        }
-        */
+        Vector3 direction = directionForward * pSM.forwardInput + directionRight * pSM.sideWaysInput;
 
         if (direction != Vector3.zero)
         {
             controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
         }
-
         pSM.baseVelocity += direction * Time.fixedDeltaTime * stats.movementAcceleration;
-        #region apply drag when no input is applied
+
+        #region Drag When No Input
         if (pSM.forwardInput == 0)
         {
             Vector3 currentDragForward = stats.movementDrag * ExtensionMethods.resultingVelocity(pSM.baseVelocity, directionForward);
             pSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
-
         }
         if (pSM.sideWaysInput == 0)
         {
@@ -63,28 +62,23 @@ public class PlayerWalking : State
         }
         #endregion
 
-        #region rounding the play velocity down if close to 0
-        if (pSM.baseVelocity.x >= -.1f && pSM.baseVelocity.x <= .1f)
+        #region Speed Deadzone
+
+        if (pSM.baseVelocity.x >= -speedDeadzone && pSM.baseVelocity.x <= speedDeadzone)
         {
             pSM.baseVelocity.x = 0;
         }
-        if (pSM.baseVelocity.z >= -.1f && pSM.baseVelocity.z <= .1f)
+        if (pSM.baseVelocity.z >= -speedDeadzone && pSM.baseVelocity.z <= speedDeadzone)
         {
             pSM.baseVelocity.z = 0;
         }
 
         #endregion
-        /*
-        float currentDrag = pSM.movementDrag + pSM.playerVelocity.magnitude * .999f;
-        pSM.playerVelocity.x = pSM.playerVelocity.normalized.x * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
-        pSM.playerVelocity.z = pSM.playerVelocity.normalized.z * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
-        */
 
-
-        PlayerStateMachine.baseVelocity.y -= stats.gravity * Time.fixedDeltaTime;
+        pSM.baseVelocity.y -= stats.gravity * Time.fixedDeltaTime;
         pSM.baseVelocity = ExtensionMethods.ClampPlayerVelocity(pSM.baseVelocity, Vector3.down, stats.maxFallingSpeed);
         pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
-        pSM.looseBonusVelocityPercentage(stats.walkingBonusVelocityDrag);
+        pSM.loseBonusVelocityPercentage(stats.walkingBonusVelocityDrag);
         controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * stats.movementVelocityFactor);
 
         if (isGroundedWithCoyoteTime())

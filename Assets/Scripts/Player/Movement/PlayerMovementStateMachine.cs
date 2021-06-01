@@ -129,7 +129,6 @@ public class PlayerMovementStateMachine : StateMachine
 
     [HideInInspector] public Transform myParent;
     #endregion
-
     #region Private
     float railCheckTimer;
     Vector3 lastVisualizationPoint;
@@ -303,7 +302,7 @@ public class PlayerMovementStateMachine : StateMachine
             bonusVelocity = Vector3.zero;
         }
     }
-    public void looseBonusVelocityPercentage(float dragAmount)
+    public void loseBonusVelocityPercentage(float dragAmount)
     {
         dragAmount = (100 - dragAmount) / 100;
         bonusVelocity *= dragAmount * Time.fixedDeltaTime;
