@@ -40,11 +40,11 @@ public class VFX_Manager : MonoBehaviour
     }
     #endregion
     #region PRIVATE
-    [SerializeField] GameObject player, swingingFeedback, snappingFeedback;
+    [SerializeField] GameObject player, swingingFeedback;
 
     PlayerMovementStateMachine pSM;
     DecalProjector projector;
-    GameObject cloud;
+    GameObject cloud, snappingFeedback;
     Vector3 offset;
     #endregion
     private void Start()

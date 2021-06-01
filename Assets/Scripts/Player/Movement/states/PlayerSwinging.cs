@@ -9,7 +9,9 @@ public class PlayerSwinging : State
 
     bool onWall,
         canPress,
-        inputGiven;
+        inputGiven,
+        inWallLimits,
+        firstRound = true;
 
     float dt = 0.01f,
         accumulator = 0f,
@@ -22,7 +24,8 @@ public class PlayerSwinging : State
         maxDecelerationFactor,
         inputTimer,
         tensionForce = 0f,
-        gravityForce = 0f;
+        gravityForce = 0f,
+        wallLimitsAngle = 10;
 
     Vector3 repelDirection,
         currentStatePosition,
@@ -400,7 +403,8 @@ public class PlayerSwinging : State
         repelDirection = -bobForward;
         Vector3 pivot_p = Pivot.transform.position;
         Vector3 bob_p = bobPosition;
-        bool movingForward = Vector3.Dot(currentMovement.normalized, bobForward) >= .93f;
+        float forwardCheck = Vector3.Dot(currentMovement.normalized, bobForward);
+        bool movingForward = forwardCheck >= .93f;
 
         //Calculate the wallDirection
         float distance = path.GetClosestDistanceAlongPath(pSM.transform.position);
@@ -411,11 +415,20 @@ public class PlayerSwinging : State
         Vector3 wallDirection = -wallDirectionPlane.normal.normalized;
         #endregion
         #region If On Wall
+
+        Vector3 axis = pSM.ladder.right;
+        float angle = Vector3.SignedAngle(wallDirection, bob_p.normalized, axis);
+        if (Mathf.Abs(angle) <= wallLimitsAngle)
+        {
+            inWallLimits = true;
+        }
+        else
+        {
+            inWallLimits = false;
+        }
+
         if (movingForward && !onWall)
         {
-            Vector3 axis = pSM.ladder.right;
-
-            float angle = Vector3.SignedAngle(wallDirection, (bob_p).normalized, axis);
 
             if (angle <= stats.maxPushAngle)
             {
@@ -448,12 +461,18 @@ public class PlayerSwinging : State
             currentVelocity += tensionDirection * tensionForce * dt;
         }
         #endregion
+
         #region Acceleration & Final Calculations
         inputForce = Vector3.zero;
         if (pSM.swingInputBool)
         {
-            RepellingForce();
+            pSM.swingInputBool = false;
+            if (!firstRound)
+                RepellingForce();
+            else
+                firstRound = false;
         }
+
         // set max speed
         currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
 
@@ -482,14 +501,12 @@ public class PlayerSwinging : State
 
             inputGiven = true;
             inputTimer = 0;
-
-            pSM.swingInputBool = false;
         }
     }
 
     void RepellingForce()
     {
-        if (onWall)
+        if (inWallLimits)
         {
             onWall = false;
             inputForce = repelDirection * stats.swingingAcceleration * dt * 1.2f;
