@@ -69,7 +69,6 @@ public class PlayerSwinging : PlayerSliding
             inputGiven = false;
         }
         ropeLength = Vector3.Distance(Pivot.transform.position, pSM.bob.transform.position);
-
     }
 
 
@@ -77,95 +76,88 @@ public class PlayerSwinging : PlayerSliding
     {
         SnappingOrientation();
 
-        // Input Callbacks
-        if (stats.useNewSliding)
+        #region Input Callbacks Sliding
+        pSM.slidingInput = pSM.startingSlidingInput;
+        pSM.slideLeftAction.started += context =>
         {
-            pSM.slidingInput = pSM.startingSlidingInput;
-            pSM.slideLeftAction.started += context =>
+            if (pSM.slidingInput * pSM.adjustedSlideDirection == 1)
             {
-                if (pSM.slidingInput * pSM.adjustedSlideDirection == 1)
-                {
-                    startLeftHoldTimer = true;
-                }
-                holdingChangeDirection = false;
-                leftHoldTimer = 0;
-                holdingLeftSlideButton = true;
-            };
-            pSM.slideRightAction.started += context =>
-            {
-                if (pSM.slidingInput * pSM.adjustedSlideDirection == -1)
-                {
-                    startRightHoldTimer = true;
-                }
-                holdingChangeDirection = false;
-                rightHoldTimer = 0;
-                holdingRightSlideButton = true;
-            };
-            pSM.slideLeftAction.canceled += context =>
-            {
-                holdingLeftSlideButton = false;
-                startLeftHoldTimer = false;
-                if (pSM.slidingInput * pSM.adjustedSlideDirection == 1 && holdingChangeDirection == false)
-                {
-                    SwitchSpeedLevel("left");
-                }
-            };
-            pSM.slideRightAction.canceled += context =>
-            {
-                holdingRightSlideButton = false;
-                startRightHoldTimer = false;
-                if (pSM.slidingInput * pSM.adjustedSlideDirection == -1 && holdingChangeDirection == false)
-                {
-                    SwitchSpeedLevel("right");
-                }
-            };
-            pSM.slideLeftAction.performed += context =>
-            {
-                if (pSM.slidingInput * pSM.adjustedSlideDirection != 1)
-                {
-                    SwitchSpeedLevel("left");
-                    holdingChangeDirection = true;
-                }
-            };
-            pSM.slideRightAction.performed += context =>
-            {
-                if (pSM.slidingInput * pSM.adjustedSlideDirection != -1)
-                {
-                    SwitchSpeedLevel("right");
-                    holdingChangeDirection = true;
-                }
-            };
-            if (pSM.startingSlidingInput == 0)
-            {
-                currentSlidingLevel = 0;
-                currentSlidingLevelSpeed = 0;
+                startLeftHoldTimer = true;
             }
-            else
+            holdingChangeDirection = false;
+            leftHoldTimer = 0;
+            holdingLeftSlideButton = true;
+        };
+        pSM.slideRightAction.started += context =>
+        {
+            if (pSM.slidingInput * pSM.adjustedSlideDirection == -1)
             {
+                startRightHoldTimer = true;
+            }
+            holdingChangeDirection = false;
+            rightHoldTimer = 0;
+            holdingRightSlideButton = true;
+        };
+        pSM.slideLeftAction.canceled += context =>
+        {
+            holdingLeftSlideButton = false;
+            startLeftHoldTimer = false;
+            if (pSM.slidingInput * pSM.adjustedSlideDirection == 1 && holdingChangeDirection == false)
+            {
+                SwitchSpeedLevel("left");
+            }
+        };
+        pSM.slideRightAction.canceled += context =>
+        {
+            holdingRightSlideButton = false;
+            startRightHoldTimer = false;
+            if (pSM.slidingInput * pSM.adjustedSlideDirection == -1 && holdingChangeDirection == false)
+            {
+                SwitchSpeedLevel("right");
+            }
+        };
+        pSM.slideLeftAction.performed += context =>
+        {
+            if (pSM.slidingInput * pSM.adjustedSlideDirection != 1)
+            {
+                SwitchSpeedLevel("left");
                 holdingChangeDirection = true;
-                float resultingSpeed = pSM.playerVelocity.magnitude;
-
-                float tempSpeed = 100;
-                int closestSpeedLevel = 1;
-                for (int i = 2; i < stats.speedLevels.Count; i++)
-                {
-                    float newTempSpeed = Mathf.Abs(stats.speedLevels[i] - resultingSpeed);
-                    if (tempSpeed > stats.speedLevels[i])
-                    {
-                        tempSpeed = newTempSpeed;
-                        closestSpeedLevel = i;
-                    }
-                }
-                currentSlidingLevel = closestSpeedLevel;
-                currentSlidingLevelSpeed = stats.speedLevels[currentSlidingLevel];
             }
+        };
+        pSM.slideRightAction.performed += context =>
+        {
+            if (pSM.slidingInput * pSM.adjustedSlideDirection != -1)
+            {
+                SwitchSpeedLevel("right");
+                holdingChangeDirection = true;
+            }
+        };
+        if (pSM.startingSlidingInput == 0)
+        {
+            currentSlidingLevel = 0;
+            currentSlidingLevelSpeed = 0;
         }
         else
         {
-            pSM.stopSlidingAction.started += context => stopping = true;
-            pSM.stopSlidingAction.canceled += context => stopping = false;
-        }
+            holdingChangeDirection = true;
+            float resultingSpeed = pSM.playerVelocity.magnitude;
 
+            float tempSpeed = 100;
+            int closestSpeedLevel = 1;
+            for (int i = 2; i < stats.speedLevels.Count; i++)
+            {
+                float newTempSpeed = Mathf.Abs(stats.speedLevels[i] - resultingSpeed);
+                if (tempSpeed > stats.speedLevels[i])
+                {
+                    tempSpeed = newTempSpeed;
+                    closestSpeedLevel = i;
+                }
+            }
+            currentSlidingLevel = closestSpeedLevel;
+            currentSlidingLevelSpeed = stats.speedLevels[currentSlidingLevel];
+        }
+        #endregion
+        #region Set Variables Swinging
         Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
         ladderSizeState = pSM.ladderSizeStateMachine;
@@ -202,6 +194,7 @@ public class PlayerSwinging : PlayerSliding
             case Rail.RailType.OnWall:
                 break;
         }
+        #endregion
 
         pSM.playerVelocity = Vector3.zero;
         pSM.baseVelocity = Vector3.zero;
@@ -215,8 +208,6 @@ public class PlayerSwinging : PlayerSliding
         Swing();
         RotateAorundY();
     }
-
-
 
     public override void Swing()
     {
@@ -310,7 +301,7 @@ public class PlayerSwinging : PlayerSliding
             swingingFeedback.SetActive(false);
         }
         #endregion
-        #region Acceleration
+        #region Acceleration & Deceleration
         if (pSM.swingInputBool)
         {
             AccelerationForce();
@@ -320,13 +311,12 @@ public class PlayerSwinging : PlayerSliding
 
         // set max speed
         currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
-        #endregion
-        #region Deceleration
+        
         // the higher the velocity, the higher the deceleration Factor
         float DecelerationFactor = (currentVelocity.magnitude) / (stats.maxSwingSpeed) * (maxDecelerationFactor - minDecelerationFactor) + minDecelerationFactor;
         currentVelocity = currentVelocity.normalized * (currentVelocity.magnitude * (1 - DecelerationFactor));
         #endregion
-        #region FinalCalculation
+        #region Final Calculations
         // Get only the forward/backward force
         playerVelocity = bobForward * ExtensionMethods.resultingSpeed(currentVelocity, bobForward);
         SetCurrentPlayerVelocity(Pivot.transform.position);
@@ -355,7 +345,7 @@ public class PlayerSwinging : PlayerSliding
         Plane wallDirectionPlane = new Plane(pivot_p, right, forward);
         Vector3 wallDirection = -wallDirectionPlane.normal.normalized;
         #endregion
-        #region Check If On Wall
+        #region If On Wall
         if (movingForward && !onWall)
         {
             Vector3 axis = pSM.ladder.right;
@@ -368,8 +358,6 @@ public class PlayerSwinging : PlayerSliding
                 return GetPointOnLine(Vector3.zero, wallDirection * 100, ropeLength);
             }
         }
-        #endregion
-        #region On Wall
         if (onWall)
         {
             currentVelocity = Vector3.zero;
@@ -395,7 +383,7 @@ public class PlayerSwinging : PlayerSliding
             currentVelocity += tensionDirection * tensionForce * dt;
         }
         #endregion
-        #region Acceleration
+        #region Acceleration & Final Calculations
         inputForce = Vector3.zero;
         if (pSM.swingInputBool)
         {
@@ -403,8 +391,7 @@ public class PlayerSwinging : PlayerSliding
         }
         // set max speed
         currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
-        #endregion
-        #region Final Calculations
+
         // Get only the forward/backward force
         playerVelocity = bobForward * ExtensionMethods.resultingSpeed(bobForward, currentVelocity);
         SetCurrentPlayerVelocity(Pivot.transform.position);
