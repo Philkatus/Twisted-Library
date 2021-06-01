@@ -37,4 +37,65 @@ public static class ExtensionMethods
     }
 
 
+    /// <summary>
+    /// Calculates the resulting signed magnitude alongside the targetdirection after a change of direction.
+    /// </summary>
+    /// <param name="currentVelocity">the Velocity to change </param>
+    /// <param name="targetDirection">The normalized direction you want to change to</param>
+    /// <returns></returns>
+    public static float resultingSpeed(Vector3 currentVelocity, Vector3 targetDirection)
+    {
+        float resultingSpeed = currentVelocity.x * targetDirection.x + currentVelocity.y * targetDirection.y + currentVelocity.z * targetDirection.z;
+
+        return resultingSpeed;
+    }
+
+    /// <summary>
+    /// calculates the resulting velocity through a change in direction
+    /// </summary>
+    /// <param name="currentVelocity"> the Velocity to change </param>
+    /// <param name="targetDirection"> the normalized direction you want to change to</param>
+    /// <returns></returns>
+    public static Vector3 resultingVelocity(Vector3 currentVelocity, Vector3 targetDirection)
+    {
+        float resultingSpeed = ExtensionMethods.resultingSpeed(currentVelocity, targetDirection);
+
+        return targetDirection * resultingSpeed;
+    }
+
+    /// <summary>
+    /// calculates the resulting clamped velocity through a change in direction
+    /// </summary>
+    /// <param name="currentVelocity"> the Velocity to change </param>
+    /// <param name="targetDirection"> the normalized direction you want to change to</param>
+    /// <param name="maximumSpeed"> the maximum speed the return value gets clamped to</param>
+    /// <returns></returns>
+    public static Vector3 resultingClampedVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed)
+    {
+        float resultingSpeed = ExtensionMethods.resultingSpeed(currentVelocity, targetDirection);
+        resultingSpeed = Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
+
+        return targetDirection * resultingSpeed;
+    }
+
+    /// <summary>
+    /// takes the Player Velocity and puts a clamp on one direction of it
+    /// </summary>
+    /// <param name="currentVelocity"> the Velocity to change </param>
+    /// <param name="targetDirection"> The direction to clamp </param>
+    /// <param name="maximumSpeed"> the maximumspeed that the return Vector should have in the target direction </param>
+    /// <returns></returns>
+    public static Vector3 ClampPlayerVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed)
+    {
+        float resultingSpeed = ExtensionMethods.resultingSpeed(currentVelocity, targetDirection);
+        Vector3 clampedVelocity = targetDirection * Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
+        currentVelocity -= ExtensionMethods.resultingVelocity(currentVelocity, targetDirection);
+        currentVelocity += clampedVelocity;
+        return currentVelocity;
+    }
+
+
+
+
+
 }
