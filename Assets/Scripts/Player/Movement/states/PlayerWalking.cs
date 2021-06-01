@@ -78,7 +78,7 @@ public class PlayerWalking : State
         pSM.baseVelocity.y -= stats.gravity * Time.fixedDeltaTime;
         pSM.baseVelocity = ExtensionMethods.ClampPlayerVelocity(pSM.baseVelocity, Vector3.down, stats.maxFallingSpeed);
         pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
-        pSM.loseBonusVelocityPercentage(stats.walkingBonusVelocityDrag);
+        pSM.LoseBonusVelocityPercentage(stats.walkingBonusVelocityDrag);
         controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * stats.movementVelocityFactor);
 
         if (isGroundedWithCoyoteTime())

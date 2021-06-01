@@ -58,10 +58,10 @@ public class PlayerSwinging : State
     #endregion
     #region PRIVATE SLIDING
     float dismountTimer, accelerateTimer;
-    bool dismountedHalfways, 
-        canAccalerate, 
+    bool dismountedHalfways,
+        canAccalerate,
         donethisCallbackAlready;
-    Vector3 dismountStartPos, 
+    Vector3 dismountStartPos,
         pathDirection;
 
     VertexPath path;
@@ -73,8 +73,8 @@ public class PlayerSwinging : State
     CharacterController controller;
     Transform ladder;
 
-    float currentDistance, 
-        speed, 
+    float currentDistance,
+        speed,
         pathLength,
         currentSlidingLevelSpeed,
         leftHoldTimer,
@@ -374,7 +374,7 @@ public class PlayerSwinging : State
 
         // set max speed
         currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
-        
+
         // the higher the velocity, the higher the deceleration Factor
         float DecelerationFactor = (currentVelocity.magnitude) / (stats.maxSwingSpeed) * (maxDecelerationFactor - minDecelerationFactor) + minDecelerationFactor;
         currentVelocity = currentVelocity.normalized * (currentVelocity.magnitude * (1 - DecelerationFactor));
@@ -612,16 +612,14 @@ public class PlayerSwinging : State
 
         if (!stats.preservesVelocityOnSnap)
         {
-
             pSM.baseVelocity = ExtensionMethods.resultingClampedVelocity(pSM.baseVelocity, ladder.transform.forward, stats.maxSwingSpeed);
             pSM.bonusVelocity = ExtensionMethods.resultingVelocity(pSM.bonusVelocity, ladder.transform.forward);
-
         }
         Time.fixedDeltaTime = 0.002f;
 
         #endregion
     }
-#endregion
+    #endregion
     #region SLIDING Functions
     void SlidingMovement()
     {

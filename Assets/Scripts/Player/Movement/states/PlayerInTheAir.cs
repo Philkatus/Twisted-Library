@@ -23,7 +23,6 @@ public class PlayerInTheAir : State
 
     public override void Movement()
     {
-        
         Transform cam = Camera.main.transform;
         PlayerMovementStateMachine pSM = PlayerStateMachine;
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
@@ -42,13 +41,12 @@ public class PlayerInTheAir : State
         {
             pSM.isWallJumping = false;
         }
-       
+
         pSM.baseVelocity.y -= stats.gravity * Time.fixedDeltaTime;
         float ClampedVelocityY = Mathf.Clamp(pSM.baseVelocity.y, -stats.maxFallingSpeed, stats.maxJumpingSpeedUp);
         pSM.baseVelocity.y = 0;
         pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maxJumpingSpeedForward);
         pSM.baseVelocity.y = ClampedVelocityY;
-
 
         controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * stats.jumpVelocityFactor);
         if (HeadCollision())
@@ -56,7 +54,7 @@ public class PlayerInTheAir : State
             pSM.baseVelocity.y -= pSM.baseVelocity.y * .9f * Time.fixedDeltaTime;
             pSM.bonusVelocity.y -= pSM.bonusVelocity.y * .9f * Time.fixedDeltaTime;
         }
-     
+
         if (controller.isGrounded)
         {
             PlayerStateMachine.didLadderPush = false;
@@ -72,7 +70,6 @@ public class PlayerInTheAir : State
 
     public override void Jump()
     {
-
         if (PlayerStateMachine.coyoteTimer < stats.slidingCoyoteTime && PlayerStateMachine.closestRail != null)
         {
             Vector3 pathDirection = PlayerStateMachine.closestRail.pathCreator.path.GetDirectionAtDistance(PlayerStateMachine.currentDistance, EndOfPathInstruction.Stop);
@@ -116,8 +113,8 @@ public class PlayerInTheAir : State
         for (int i = 0; i < hits.Count; i++)
         {
             float distance = hits[i].distance;
-            if (distance < closestDistance && 
-                Vector3.Dot(hits[i].normal, Vector3.up) >= .9f && 
+            if (distance < closestDistance &&
+                Vector3.Dot(hits[i].normal, Vector3.up) >= .9f &&
                 hits[i].point != Vector3.zero)
             {
                 closestHit = hits[i];
