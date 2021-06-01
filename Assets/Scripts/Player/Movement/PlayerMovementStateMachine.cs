@@ -145,7 +145,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Start()
     {
-        InitializeReferences();
+        InitializeVariables();
         SetState(new PlayerWalking(this));
         GetControlls();
     }
@@ -170,16 +170,7 @@ public class PlayerMovementStateMachine : StateMachine
         Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
         Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
     }
-
-    public void TryToSnapToShelf()
-    {
-        if (CheckForRail())
-        {
-            State.Snap();
-        }
-    }
-
-    private void InitializeReferences()
+    private void InitializeVariables()
     {
         myParent = transform.parent;
         railAllocator = RailSearchManager.instance;
@@ -205,8 +196,15 @@ public class PlayerMovementStateMachine : StateMachine
             railCheckTimer = 0;
         }
     }
+    public void TryToSnapToShelf()
+    {
+        if (CheckForRail())
+        {
+            State.Snap();
+        }
+    }
+ 
 
-    #region utility
     #region Input/Controlls
     public void GetInput()
     {
@@ -310,6 +308,7 @@ public class PlayerMovementStateMachine : StateMachine
         //foldAction.performed += context => State.RocketJump();
     }
     #endregion
+    #region utility
     public void looseBonusVelocity(float dragAmount)
     {
         bonusVelocity -= bonusVelocity.normalized * dragAmount * Time.fixedDeltaTime;
@@ -446,7 +445,6 @@ public class PlayerMovementStateMachine : StateMachine
 
    
     #endregion
-
     #region functions to change states
     ///<summary>
     /// Gets called when the player lands on the floor.
@@ -527,7 +525,6 @@ public class PlayerMovementStateMachine : StateMachine
         HeightOnLadder = -1;
     }
     #endregion
-
     #region VFX
     IEnumerator ChangeSnapVisualisationPoint()
     {
