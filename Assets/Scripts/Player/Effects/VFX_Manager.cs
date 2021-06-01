@@ -5,17 +5,26 @@ using UnityEngine.Rendering.HighDefinition;
 
 public class VFX_Manager : MonoBehaviour
 {
-    [SerializeField] GameObject Cloud;
+    [SerializeField] GameObject effectParent;
     [SerializeField] GameObject player;
-    [SerializeField] DecalProjector projector;
+    [SerializeField] GameObject swingingFeedback;
+
     PlayerMovementStateMachine pSM;
-    
+    DecalProjector projector;
+    GameObject snappingFeedback;
+    GameObject cloud;
     Vector3 offset;
     private void Start()
     {
+
+        // Set all Effects
+        cloud = effectParent.transform.GetChild(2).gameObject;
+        snappingFeedback = effectParent.transform.GetChild(1).gameObject;
+        projector = effectParent.transform.GetChild(0).GetComponent<DecalProjector>();
+
         offset = transform.position - player.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
-        Cloud.SetActive(false);
+        cloud.SetActive(false);
     }
     void Update()
     {
@@ -35,12 +44,32 @@ public class VFX_Manager : MonoBehaviour
         particleGameObject.SetActive(true);
         particleGameObject.GetComponent<ParticleSystem>().Play();
     }
+    void DisableParticleEffect(GameObject particleGameObject)
+    {
+        particleGameObject.GetComponent<ParticleSystem>().Stop();
+        particleGameObject.SetActive(false);
+    }
 
+    public void PlaceSwingingFeedback()
+    {
+
+    }
+    public void MoveSnappingFeedback()
+    {
+
+    }
+    #region OnStateChanged
     public void OnStateChangedWalking()
     {
-        Debug.Log("Land");
-        PlayParticleEffect(Cloud);
+        PlayParticleEffect(cloud);
     }
-    //Instantiate all Effects
-    //Set Effects on State-Changes
+    public void OnStateChangedInAir()
+    {
+        
+    }
+    public void OnStateChangedSwinging()
+    {
+        
+    }
+    #endregion
 }
