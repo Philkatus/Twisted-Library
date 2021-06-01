@@ -6,6 +6,7 @@ using PathCreation;
 
 public class VFX_Manager : MonoBehaviour
 {
+    #region GET/SET
     Rail CurrentRail;
     public Rail currentRail
     {
@@ -24,13 +25,28 @@ public class VFX_Manager : MonoBehaviour
 
         }
     }
-
+    bool CanSwing = true;
+    public bool canSwing
+    {
+        get { return CanSwing; }
+        set
+        {
+            CanSwing = value;
+            if (value && !swingingFeedback.activeInHierarchy)
+                swingingFeedback.SetActive(true);
+            else if (!value && swingingFeedback.activeInHierarchy)
+                swingingFeedback.SetActive(false);
+        }
+    }
+    #endregion
+    #region PRIVATE
     [SerializeField] GameObject player, swingingFeedback, snappingFeedback;
 
     PlayerMovementStateMachine pSM;
     DecalProjector projector;
     GameObject cloud;
     Vector3 offset;
+    #endregion
     private void Start()
     {
 
@@ -66,6 +82,7 @@ public class VFX_Manager : MonoBehaviour
     #region OnStateChanged
     public void OnStateChangedWalking(bool land)
     {
+        DisableParticleEffect(swingingFeedback);
         PlayParticleEffect(snappingFeedback);
         projector.gameObject.SetActive(true);
         if (land)
@@ -76,11 +93,13 @@ public class VFX_Manager : MonoBehaviour
     }
     public void OnStateChangedInAir()
     {
+        DisableParticleEffect(swingingFeedback);
         PlayParticleEffect(snappingFeedback);
         projector.gameObject.SetActive(true);
     }
     public void OnStateChangedSwinging()
     {
+        PlayParticleEffect(swingingFeedback);
         DisableParticleEffect(snappingFeedback);
         projector.gameObject.SetActive(false);
     }
