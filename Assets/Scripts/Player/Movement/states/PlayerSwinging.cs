@@ -356,7 +356,7 @@ public class PlayerSwinging : State
            && currentVelocity.magnitude < stats.maxSwingSpeed
            && !inputGiven
            && inputTimer > nextSwingingTime
-           || currentVelocity.magnitude <= minSwingSpeed 
+           || currentVelocity.magnitude <= minSwingSpeed
            && Mathf.Abs(resultingAngle) < 25)
         {
             canPress = true;
@@ -1020,6 +1020,7 @@ public class PlayerSwinging : State
         }
         swingingFeedback.SetActive(false);
         pSM.snapInputBool = false;
+        pSM.startingSlidingInput = 0;
         #endregion
         #region Finish Sliding
         pSM.closestRail = null;
