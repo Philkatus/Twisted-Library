@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class LadderFold : State
 {
-    #region INHERITED
-    PlayerMovementStateMachine pSM;
-    #endregion
-
+    ValuesScriptableObject stats;
     bool isLerpGoing;
     float time = 0;
 
@@ -18,8 +15,8 @@ public class LadderFold : State
 
     public override void Initialize()
     {
-        pSM = LadderSizeStateMachine.playerStateMachine;
-        time = ExtensionMethods.Remap(LadderSizeStateMachine.ladderLength, LadderSizeStateMachine.ladderLengthSmall, LadderSizeStateMachine.ladderLengthBig, LadderSizeStateMachine.foldSpeed,0);
+        stats = PSM.stats;
+        time = ExtensionMethods.Remap(LadderSizeStateMachine.ladderLength, stats.ladderLengthSmall, stats.ladderLengthBig, stats.foldingTime, 0);
         isLerpGoing = true;
         LadderSizeStateMachine.isFoldingUp = true;
     }
@@ -28,18 +25,18 @@ public class LadderFold : State
     {
         time += Time.deltaTime;
 
-        if(isLerpGoing)
+        if (isLerpGoing)
         {
-            LadderSizeStateMachine.ladderLength = Mathf.Lerp(LadderSizeStateMachine.ladderLengthBig, LadderSizeStateMachine.ladderLengthSmall, time / LadderSizeStateMachine.foldSpeed);
+            LadderSizeStateMachine.ladderLength = Mathf.Lerp(stats.ladderLengthBig, stats.ladderLengthSmall, time / stats.foldingTime);
             LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
 
-            if (time >= LadderSizeStateMachine.foldSpeed)
+            if (time >= stats.foldingTime)
             {
-                isLerpGoing = false; 
+                isLerpGoing = false;
             }
         }
 
-        if(time >= LadderSizeStateMachine.foldSpeed + LadderSizeStateMachine.extraFoldJumpTimer)
+        if (time >= stats.foldingTime + stats.extraFoldingTime)
         {
             LadderSizeStateMachine.isFoldingUp = false;
         }

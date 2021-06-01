@@ -58,18 +58,14 @@ public class PlayerInTheAir : State
         {
             PSM.isWallJumping = false;
         }
-
-        PSM.baseVelocity.y -= stats.gravity * Time.fixedDeltaTime;
-        float ClampedVelocityY = Mathf.Clamp(PSM.baseVelocity.y, -stats.maxFallingSpeed, stats.maxJumpingSpeedUp);
-        PSM.baseVelocity.y = 0;
-        PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.maxJumpingSpeedForward);
-        PSM.baseVelocity.y = ClampedVelocityY;
+        GravityAndClamp();
 
         controller.Move(PSM.playerVelocity * Time.fixedDeltaTime * stats.jumpVelocityFactor);
         if (HeadCollision())
         {
+            Debug.LogError("Bonk");
             PSM.baseVelocity.y -= PSM.baseVelocity.y * .9f * Time.fixedDeltaTime;
-            PSM.bonusVelocity.y -= PSM.bonusVelocity.y * .9f * Time.fixedDeltaTime;
+            PSM.bonusVelocity.y = PSM.bonusVelocity.y * .9f * Time.fixedDeltaTime;
         }
 
         if (controller.isGrounded)
@@ -78,6 +74,26 @@ public class PlayerInTheAir : State
             PSM.OnLand();
         }
     }
+
+    void GravityAndClamp()
+    {
+
+        PSM.bonusVelocity.y -= stats.gravity * Time.fixedDeltaTime;
+        if (PSM.bonusVelocity.y <= 0)
+        {
+            PSM.baseVelocity.y += PSM.bonusVelocity.y;
+            PSM.bonusVelocity.y = 0;
+        }
+
+        float ClampedVelocityY = Mathf.Clamp(PSM.baseVelocity.y, -stats.maxFallingSpeed, stats.maxJumpingSpeedUp);
+        PSM.baseVelocity.y = 0;
+        PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.maxJumpingSpeedForward);
+        PSM.baseVelocity.y = ClampedVelocityY;
+    }
+
+
+
+
 
     public override void Snap()
     {
@@ -113,7 +129,7 @@ public class PlayerInTheAir : State
     public override void LadderPush()
     {
         float sphereRadius = .2f;
-        float maxHeight = PSM.ladderSizeStateMachine.ladderLengthBig - sphereRadius;
+        float maxHeight = stats.ladderLengthBig - sphereRadius;
         float acceleration = stats.rocketJumpAcceleration;
 
         Vector3 origin = PSM.transform.position;
