@@ -20,18 +20,18 @@ public class PlayerWalking : State
 
     public override void Initialize()
     {
-        pSM = PlayerStateMachine;
+        pSM = PSM;
         ladder = pSM.ladder;
         controller = pSM.controller;
 
-        controller.transform.SetParent(PlayerStateMachine.myParent);
+        controller.transform.SetParent(PSM.myParent);
         ladder.transform.localScale = new Vector3(1, 1, 1);
         controller.transform.localScale = new Vector3(1, 1, 1);
-        ladder.transform.SetParent(PlayerStateMachine.animController.spine);
+        ladder.transform.SetParent(PSM.animController.spine);
         ladder.localPosition = pSM.ladderWalkingPosition;
         ladder.localRotation = pSM.ladderWalkingRotation;
 
-        stats = PlayerStateMachine.stats;
+        stats = PSM.stats;
     }
 
     public override void Movement()
@@ -102,14 +102,15 @@ public class PlayerWalking : State
 
     public override void Jump()
     {
-        PlayerStateMachine.baseVelocity.y = stats.jumpHeight;
-        PlayerStateMachine.jumpInputBool = false;
-        PlayerStateMachine.OnFall();
+        PSM.baseVelocity.y = stats.jumpHeight;
+        PSM.jumpInputBool = false;
+        PSM.OnFall();
     }
 
     public override void Snap()
     {
-        PlayerStateMachine.OnSnap();
+        PSM.OnSnap();
 
     }
+
 }
