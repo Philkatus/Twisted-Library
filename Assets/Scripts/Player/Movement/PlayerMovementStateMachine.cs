@@ -131,9 +131,6 @@ public class PlayerMovementStateMachine : StateMachine
     #endregion
     #region Private
     float railCheckTimer;
-    Vector3 lastVisualizationPoint;
-
-    GameObject snapVisualisation;
     RailSearchManager railAllocator;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
@@ -178,7 +175,6 @@ public class PlayerMovementStateMachine : StateMachine
         railAllocator = RailSearchManager.instance;
         ladderWalkingPosition = ladder.localPosition;
         ladderWalkingRotation = ladder.localRotation;
-        snapVisualisation = myParent.transform.GetChild(3).GetChild(1).gameObject;
         coyoteTimer = stats.slidingCoyoteTime;
     }
 
@@ -188,14 +184,6 @@ public class PlayerMovementStateMachine : StateMachine
         if (railCheckTimer >= 0.1f)
         {
             CheckForRail();
-            if (playerState != PlayerState.swinging)
-            {
-                StartCoroutine(ChangeSnapVisualisationPoint());
-            }
-            else
-            {
-                snapVisualisation.SetActive(false);
-            }
             railCheckTimer = 0;
         }
     }
@@ -356,7 +344,6 @@ public class PlayerMovementStateMachine : StateMachine
 
                 if (distance < closestDistance)
                 {
-                    Debug.DrawLine(railCheckLadderPosition, snappingPoint, Color.blue);
                     RaycastHit hit;
                     if (!Physics.Linecast(railCheckLadderPosition, snappingPoint, out hit, mask, QueryTriggerInteraction.Ignore))
                     {
@@ -376,6 +363,10 @@ public class PlayerMovementStateMachine : StateMachine
             {
                 closestRail = null;
             }
+
+            //VFX-Snapping
+            effects.currentRail = closestRail;
+
             if (closestRail != null)
             {
                 return true;
@@ -448,7 +439,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLand()
     {
         SetState(new PlayerWalking(this));
-        effects.OnStateChangedWalking();
+        effects.OnStateChangedWalking(true);
         playerState = PlayerState.walking;
         HeightOnLadder = -1;
     }
@@ -459,6 +450,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLadderTop()
     {
         SetState(new PlayerWalking(this));
+        effects.OnStateChangedWalking(false);
         playerState = PlayerState.walking;
         ladderSizeStateMachine.OnShrink();
     }
@@ -469,6 +461,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLadderBottom()
     {
         SetState(new PlayerInTheAir(this));
+        effects.OnStateChangedInAir();
         playerState = PlayerState.inTheAir;
         ladderSizeStateMachine.OnShrink();
     }
@@ -480,7 +473,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         ladderSizeStateMachine.OnGrow();
         snapInputBool = false;
-
+        effects.OnStateChangedSwinging();
         SetState(new PlayerSwinging(this));
         playerState = PlayerState.swinging;
     }
@@ -491,6 +484,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnResnap()
     {
         SetState(this.State);
+        effects.OnStateChangedSwinging();
         playerState = PlayerState.swinging;
     }
 
@@ -500,45 +494,10 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnFall()
     {
         SetState(new PlayerInTheAir(this));
+        effects.OnStateChangedInAir();
         playerState = PlayerState.inTheAir;
         ladderSizeStateMachine.OnShrink();
         HeightOnLadder = -1;
-    }
-    #endregion
-    #region VFX
-    IEnumerator ChangeSnapVisualisationPoint()
-    {
-        float timer = 0;
-        float t = 0;
-        Vector3 nextPosition;
-
-        if (closestRail != null && playerState != PlayerState.swinging)
-        {
-            nextPosition = closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
-            snapVisualisation.SetActive(true);
-        }
-        else
-        {
-            nextPosition = Vector3.zero;
-            snapVisualisation.SetActive(false);
-        }
-
-        while (timer < 0.1f)
-        {
-            timer += Time.deltaTime;
-            t = timer / 0.1f;
-            t = Mathf.Clamp(t, 0, 1);
-            if (closestRail != null)
-            {
-                snapVisualisation.SetActive(true);
-                snapVisualisation.transform.position = Vector3.Lerp(lastVisualizationPoint, nextPosition, t);
-            }
-
-            yield return new WaitForEndOfFrame();
-        }
-
-        lastVisualizationPoint = nextPosition;
-        yield return true;
     }
     #endregion
 
