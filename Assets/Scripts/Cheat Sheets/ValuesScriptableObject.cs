@@ -65,7 +65,10 @@ public class ValuesScriptableObject : ScriptableObject
     public float jumpHeight;
 
     [Tooltip("To put a clamp on the upwards velocity")]
-    public float maxJumpingSpeed = 15;
+    public float maxJumpingSpeedUp = 15;
+
+    [Tooltip("To put a clamp on the fowards and sidewards velocity")]
+    public float maxJumpingSpeedForward = 10;
 
     [Tooltip("How fast the player accelerates with the rocketJump.")]
     public float rocketJumpAcceleration;

@@ -18,34 +18,17 @@ public class PlayerInTheAir : State
 
     public override void Initialize()
     {
-        controller = PlayerStateMachine.controller;
-        controller.transform.SetParent(PlayerStateMachine.myParent);
-        PlayerStateMachine.ladder.transform.localScale = new Vector3(1, 1, 1);
-        controller.transform.localScale = new Vector3(1, 1, 1);
-        PlayerStateMachine.ladder.transform.SetParent(PlayerStateMachine.animController.spine);
-        PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
-        PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
-
-        stats = PlayerStateMachine.stats;
-        controller = PlayerStateMachine.controller;
-        wallJumpingTime = 0;
+        InitializeVariables();
     }
 
     public override void Movement()
     {
-        // Air Movement
+        
         Transform cam = Camera.main.transform;
         PlayerMovementStateMachine pSM = PlayerStateMachine;
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
         Vector3 direction = directionForward * pSM.forwardInput + directionRight * pSM.sideWaysInput;
-
-        /* Philips snapping
-        if (pSM.slidingInput != 0 || pSM.swingingInput != 0)
-        {
-            pSM.TryToSnapToShelf();
-        }
-        */
 
         if (direction != Vector3.zero)
         {
@@ -59,21 +42,11 @@ public class PlayerInTheAir : State
         {
             pSM.isWallJumping = false;
         }
-        /*
-        if (pSM.forwardInput <= 0.1f && pSM.forwardInput >= -.1f && !pSM.isWallJumping)
-        {
-            Vector3 currentDragForward = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionForward) / values.airMovementFactor;
-            pSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
-        }
-        if (pSM.sideWaysInput <= 0.1f && pSM.sideWaysInput >= -.1f && !pSM.isWallJumping)
-        {
-            Vector3 currentDragSideways = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionRight) / values.airMovementFactor;
-            pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
-        }
-        */
+       
         pSM.baseVelocity.y -= stats.gravity * Time.fixedDeltaTime;
-        float ClampedVelocityY = Mathf.Clamp(pSM.baseVelocity.y, -stats.maxFallingSpeed, stats.maxJumpingSpeed);
-        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
+        float ClampedVelocityY = Mathf.Clamp(pSM.baseVelocity.y, -stats.maxFallingSpeed, stats.maxJumpingSpeedUp);
+        pSM.baseVelocity.y = 0;
+        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maxJumpingSpeedForward);
         pSM.baseVelocity.y = ClampedVelocityY;
 
 
@@ -83,16 +56,7 @@ public class PlayerInTheAir : State
             pSM.baseVelocity.y -= pSM.baseVelocity.y * .9f * Time.fixedDeltaTime;
             pSM.bonusVelocity.y -= pSM.bonusVelocity.y * .9f * Time.fixedDeltaTime;
         }
-        // Gravity and falling
-
-        //pSM.playerVelocity += direction * Time.deltaTime * pSM.movementAcceleration * pSM.jumpMovementFactor;
-        /*
-        float currentDrag = pSM.movementDrag + pSM.playerVelocity.magnitude * .999f;
-        pSM.playerVelocity.x = pSM.playerVelocity.normalized.x * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
-        pSM.playerVelocity.z = pSM.playerVelocity.normalized.z * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
-        */
-        //controller.Move(pSM.playerVelocity * Time.deltaTime);
-
+     
         if (controller.isGrounded)
         {
             PlayerStateMachine.didLadderPush = false;
@@ -130,8 +94,6 @@ public class PlayerInTheAir : State
             PlayerStateMachine.animationControllerisFoldingJumped = false;
         }
         PlayerStateMachine.jumpInputBool = false;
-
-
     }
 
     public override void LadderPush()
@@ -143,7 +105,7 @@ public class PlayerInTheAir : State
         Vector3 origin = PlayerStateMachine.transform.position;
         LayerMask mask = LayerMask.GetMask("Environment");
         List<RaycastHit> hits = new List<RaycastHit>();
-
+        #region CastDown
         if (!PlayerStateMachine.didLadderPush)
         {
             hits.AddRange(Physics.SphereCastAll(origin, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
@@ -166,6 +128,9 @@ public class PlayerInTheAir : State
                 // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
             }
         }
+        #endregion
+        #region SideWaysCast
+
         if (target == Vector3.zero)
         {
             hits = new List<RaycastHit>();
@@ -191,7 +156,7 @@ public class PlayerInTheAir : State
         {
             PlayerStateMachine.didLadderPush = true;
         }
-
+        #endregion
         if (target != Vector3.zero)
         {
             PlayerMovementStateMachine pSM = PlayerStateMachine;
@@ -204,7 +169,20 @@ public class PlayerInTheAir : State
             pSM.ladderSizeStateMachine.OnLadderPush();
         }
     }
+    private void InitializeVariables()
+    {
+        controller = PlayerStateMachine.controller;
+        controller.transform.SetParent(PlayerStateMachine.myParent);
+        PlayerStateMachine.ladder.transform.localScale = new Vector3(1, 1, 1);
+        controller.transform.localScale = new Vector3(1, 1, 1);
+        PlayerStateMachine.ladder.transform.SetParent(PlayerStateMachine.animController.spine);
+        PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
+        PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
 
+        stats = PlayerStateMachine.stats;
+        controller = PlayerStateMachine.controller;
+        wallJumpingTime = 0;
+    }
     bool HeadCollision()
     {
         if (controller.collisionFlags == CollisionFlags.Above)
