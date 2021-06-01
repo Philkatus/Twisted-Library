@@ -4,12 +4,7 @@ using PathCreation;
 
 public class PlayerSliding : State
 {
-    #region INHERITED
-
-
-    #endregion
-
-    #region PRIVATE
+    /*#region PRIVATE, SLIDING
     float dismountTimer;
     float accelerateTimer;
     bool dismountedHalfways;
@@ -17,11 +12,8 @@ public class PlayerSliding : State
     bool donethisCallbackAlready;
     Vector3 dismountStartPos;
     Vector3 pathDirection;
-
     #endregion
-
-
-    #region PROTECTED
+    #region PROTECTED, SLIDING
     protected VertexPath path;
     protected Rail closestRail;
     protected ValuesScriptableObject stats;
@@ -44,89 +36,11 @@ public class PlayerSliding : State
     protected bool holdingLeftSlideButton;
     protected bool holdingRightSlideButton;
     protected bool shouldRetainSwingVelocity = true;
-
-
-
-    #endregion
-    public override void Initialize()
-    {
-        // Done in PlayerSwinging
-
-        /*
-        pSM = PlayerStateMachine;
-        stats = pSM.stats;
-
-        ladderSizeState = pSM.ladderSizeStateMachine;
-        speed = stats.climbingSpeedOnLadder;
-        closestRail = pSM.closestRail;
-        controller = pSM.controller;
-        ladder = pSM.ladder;
-        pathCreator = closestRail.pathCreator;
-        path = pathCreator.path;
-        //pSM.HeightOnLadder = -1;
-
-        // Place the ladder on the path.
-        Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(pSM.transform.position);
-
-        currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
-        ladder.transform.position = startingPoint;
-        ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
-
-        pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
-        pSM.currentDistance = currentDistance;
-
-        // Place the character on ladder.
-        ladder.transform.SetParent(pSM.myParent);
-        Vector3 targetPosition = startingPoint - pSM.ladderDirection * ladderSizeState.ladderLength;
-        targetPosition.y = Mathf.Clamp(controller.transform.position.y, targetPosition.y, startingPoint.y);
-        pSM.HeightOnLadder = -(startingPoint - targetPosition).magnitude / ladderSizeState.ladderLength;
-        pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
-        pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
-        controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
-        controller.transform.SetParent(ladder.transform);
-        pSM.ladderSizeStateMachine.OnGrow();
-
-        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
-        if (stats.preservesVelocityOnSnap)
-        {
-            pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, stats.maxSlidingSpeed);
-        }
-        else
-        {
-            pSM.playerVelocity = pSM.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, 0);
-        }
-
-        pSM.stopSlidingAction.started += context => stopping = true;
-        pSM.stopSlidingAction.canceled += context => stopping = false;
-        Debug.LogError("fffd");
-        if (stats.useNewSliding)
-        {
-            pSM.slidingInput = pSM.startingSlidingInput;
-            pSM.slideLeftAction.performed += context => SwitchSpeedLevel("left");
-            pSM.slideRightAction.performed += context => SwitchSpeedLevel("right");
-            pSM.slideHoldLeftAction.performed += context => currentSlidingLevel = 1;
-            pSM.slideHoldRightAction.performed += context => currentSlidingLevel = 1;
-            Debug.LogError(pSM.startingSlidingInput);
-            Debug.LogError("pSM.startingSlidingInput");
-            if (pSM.startingSlidingInput == 0)
-            {
-                currentSlidingLevel = 0;
-                currentSlidingLevelSpeed = 0;
-                Debug.LogError("zes");
-            }
-            else
-            {
-                currentSlidingLevel = 1;
-                currentSlidingLevelSpeed = stats.speedLevels[currentSlidingLevel];
-            }
-        }
-
-        Time.fixedDeltaTime = 0.002f;*/
-    }
+    #endregion*/
 
     public override void ReInitialize()
     {
-        // Assign variables.
+        /*// Assign variables.
         pSM = PlayerStateMachine;
         stats = pSM.stats;
 
@@ -152,34 +66,24 @@ public class PlayerSliding : State
         currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
         ladder.transform.position = startingPoint;
 
-        //ladder.transform.forward = -path.GetNormalAtDistance(currentDistance);
-
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
-        pSM.currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
+        pSM.currentDistance = path.GetClosestDistanceAlongPath(startingPoint);*/
     }
 
-    public override IEnumerator Finish()
+    /*public override IEnumerator Finish()
     {
         pSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
         yield break;
-    }
+    }*/
 
-    public override void Jump()
+    /*public override void Jump()
     {
         if (ladderSizeState.isUnFolding)
         {
             float offSet = .5f;
-            //PlayerStateMachine.baseVelocity.y += Mathf.Clamp((pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y), 0, 1f) * ladderSizeState.foldJumpMultiplier;
             Vector3 direction = (-pSM.ladderDirection + Vector3.up * offSet).normalized; ;
-            //PlayerStateMachine.baseVelocity += direction * 2.5f * ladderSizeState.foldJumpMultiplier;
-            //PlayerStateMachine.ClampPlayerVelocity(PlayerStateMachine.baseVelocity, Vector3.up, stats.maxJumpingSpeed);
-            //PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed);
-
             PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.reversedFoldJumpMulitplier);
-            //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
-            // Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
-            //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) );
             shouldRetainSwingVelocity = false;
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = true;
@@ -189,16 +93,8 @@ public class PlayerSliding : State
         {
             float offSet = .5f;
             float heightOnLadderRemapped = (-pSM.HeightOnLadder * stats.heightOnLadderKatapulFactor + 1 - stats.heightOnLadderKatapulFactor);
-            //PlayerStateMachine.baseVelocity.y += Mathf.Clamp((pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y), 0, 1f) * ladderSizeState.foldJumpMultiplier;
             Vector3 direction = (pSM.ladderDirection + Vector3.up * offSet).normalized;
-            //PlayerStateMachine.baseVelocity += direction * 2.5f * ladderSizeState.foldJumpMultiplier;
-            //PlayerStateMachine.ClampPlayerVelocity(PlayerStateMachine.baseVelocity, Vector3.up, stats.maxJumpingSpeed);
-            //PlayerStateMachine.bonusVelocity = direction *( 2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed);
-            //PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier) - direction * pSM.HeightOnLadder * 2.5f;
-            PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier) * heightOnLadderRemapped;           
-            //Debug.Log("fold jump: " + direction * 2.5f * ladderSizeState.foldJumpMultiplier);
-            //Debug.Log("fold jump bonus" + (2.5f * ladderSizeState.foldJumpMultiplier - stats.maxJumpingSpeed));
-            //Debug.Log("fold jump : " + (pSM.transform.position.y - ladderSizeState.startFoldingUpPos.y) );
+            PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier) * heightOnLadderRemapped;
             shouldRetainSwingVelocity = false;
             PlayerStateMachine.OnFall();
             pSM.animationControllerisFoldingJumped = true;
@@ -225,235 +121,124 @@ public class PlayerSliding : State
             pSM.animationControllerisFoldingJumped = false;
         }
         PlayerStateMachine.jumpInputBool = false;
-    }
+    }*/
 
-    public override void Movement()
+    /*public override void Movement()
     {
-        if (!stats.useNewSliding)
+
+        if (!holdingRightSlideButton && !holdingLeftSlideButton)
         {
-            
-            if (pSM.slidingInput == 0)
+            SwitchSlidingDirectionWithCameraRotation();
+        }
+        CustomHoldInput();
+        donethisCallbackAlready = false;
+        accelerateTimer += Time.fixedDeltaTime;
+        if (accelerateTimer >= stats.accelerationCooldown)
+        {
+            canAccalerate = true;
+        }
+
+        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
+        if (!pSM.dismounting)
+        {
+            // Go up and down.
+            if (!CheckForCollisionCharacter(pSM.forwardInput * pSM.ladderDirection))
             {
-                SwitchSlidingDirectionWithCameraRotation();
+                pSM.HeightOnLadder += pSM.forwardInput * speed * Time.fixedDeltaTime;
+                pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
+                pSM.transform.localPosition = new Vector3(0, ladderSizeState.ladderLength * pSM.HeightOnLadder, -0.38f);
             }
-            pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
-            if (!pSM.dismounting)
+
+            #region Move horizontally.
+            pathDirection = path.GetDirectionAtDistance(currentDistance);
+
+            // Get sideways input, no input if both buttons held down.
+            if (pSM.slideAction.triggered && pSM.slideAction.ReadValue<float>() == 0)
             {
-                // Go up and down.
-                if (!CheckForCollisionCharacter(pSM.forwardInput * pSM.ladderDirection))
+                pSM.playerVelocity -= ExtensionMethods.resultingVelocity(pSM.playerVelocity, pathDirection);
+
+            }
+
+            //playervelocity increased with input
+            float slidingAcceleration = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, stats.slidingAcceleration * stats.slidingSpeedSizeFactor, stats.slidingAcceleration);
+            pSM.playerVelocity += pSM.slidingInput * pathDirection * Time.fixedDeltaTime * slidingAcceleration;
+
+            //drag calculation
+            float resultingSpeed = ExtensionMethods.resultingSpeed(pSM.playerVelocity, pathDirection);
+
+            //speed Clamp (dependant on ladder size)
+            float maxSlidingSpeed = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, stats.maxSlidingSpeed * stats.slidingSpeedSizeFactor, stats.maxSlidingSpeed);
+            pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * stats.slidingDragPercentage / 100, --maxSlidingSpeed, maxSlidingSpeed);
+
+            //moving the object
+            if (!CheckForCollisionCharacter(pSM.playerVelocity) && !stopping && !CheckForCollisionLadder(pSM.playerVelocity))
+            {
+                pSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, currentSlidingLevelSpeed * -pSM.slidingInput);
+                pSM.currentDistance += ExtensionMethods.resultingSpeed(pSM.playerVelocity, pathDirection) * stats.slidingVelocityFactor;
+
+                pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
+
+            }
+            else
+            {
+                pSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, 0);
+            }
+            #endregion
+
+            #region end of Path
+            //End Of Path, continue sliding with ReSnap or Fall from Path
+            if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
+            {
+
+                Vector3 endOfShelfDirection = new Vector3();
+                if (pSM.closestRail != null)
                 {
-                    pSM.HeightOnLadder += pSM.forwardInput * speed * Time.fixedDeltaTime;
-                    pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
-                    
-                    // set player position on ladder
-                    pSM.transform.position = ladder.transform.position + 
-                        pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder + 
-                        ladder.transform.forward * -stats.playerOffsetFromLadder; //pos on ladder
-                    //pSM.transform.localPosition = new Vector3(pSM.transform.localPosition.x, pSM.transform.localPosition.y, -0.7f);
-                }
-
-                #region Move horizontally.
-                pathDirection = path.GetDirectionAtDistance(currentDistance);
-
-                // Get sideways input, no input if both buttons held down.
-                if (pSM.slideAction.triggered && pSM.slideAction.ReadValue<float>() == 0)
-                {
-                    pSM.playerVelocity -= ExtensionMethods.resultingVelocity(pSM.playerVelocity, pathDirection);
-                }
-
-                //playervelocity increased with input
-                float slidingAcceleration = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, stats.slidingAcceleration * stats.slidingSpeedSizeFactor, stats.slidingAcceleration);
-                pSM.playerVelocity += pSM.slidingInput * pathDirection * Time.fixedDeltaTime * slidingAcceleration;
-
-                //drag calculation
-                float resultingSpeed = ExtensionMethods.resultingSpeed(pSM.playerVelocity, pathDirection);
-
-                //speed Drag (dependant on ladder size)
-                float maxSlidingSpeed = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, stats.maxSlidingSpeed * stats.slidingSpeedSizeFactor, stats.maxSlidingSpeed);
-                pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * stats.slidingDragPercentage / 100, -maxSlidingSpeed, maxSlidingSpeed);
-
-                //moving the object
-                if (!CheckForCollisionCharacter(pSM.playerVelocity) && !stopping && !CheckForCollisionLadder(pSM.playerVelocity))
-                {
-                    pSM.currentDistance += ExtensionMethods.resultingSpeed(pSM.playerVelocity, pathDirection) * stats.slidingVelocityFactor;
-
-                    pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
-
-
-
-                    // Debug.Log(pSM.resultingSpeed(pSM.playerVelocity, pathDirection) * values.slidingVelocityFactor + " " + values.slidingVelocityFactor);
-
-                }
-                else
-                {
-                    pSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, 0);
-                }
-                #endregion
-                #region end of Path
-                //End Of Path, continue sliding with ReSnap or Fall from Path
-                if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
-                {
-                    Vector3 endOfRailDirection = new Vector3();
                     if (pSM.currentDistance <= 0) //arriving at start of path
                     {
-                        endOfRailDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0))
+                        endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0))
                                             - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints)); //start - ende
                     }
                     else if (pSM.currentDistance >= pathLength) //arriving at end of path
                     {
-                        endOfRailDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints))
+                        endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints))
                                             - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0)); //ende - start
                     }
+                }
+                else
+                    Debug.Log("There is something bad happening here lmao");
 
-                    Plane railPlane = new Plane(endOfRailDirection.normalized, Vector3.zero);
+                Plane railPlane = new Plane(endOfShelfDirection.normalized, Vector3.zero);
 
-                    if (/* pSM.resultingSpeed( pSM.playerVelocity, pathDirection) >0   )*/railPlane.GetSide(Vector3.zero + pSM.playerVelocity)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
+                if (railPlane.GetSide(Vector3.zero + pSM.playerVelocity)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
+                {
+                    if (pSM.CheckForNextClosestRail(pSM.closestRail))
                     {
-                        if (pSM.CheckForNextClosestRail(pSM.closestRail))
+                        pSM.OnResnap();
+                    }
+                    else
+                    {
+                        if (pSM.closestRail.stopSlidingAtTheEnd)
                         {
-                            pSM.OnResnap();
+                            pSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, 0);
+                            currentSlidingLevel = 0;
+                            currentSlidingLevelSpeed = stats.speedLevels[0];
+                            pSM.slidingInput = 0;
                         }
                         else
                         {
-                            if (pSM.closestRail.stopSlidingAtTheEnd)
-                            {
-                                pSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, 0);
-                            }
-                            else
-                            {
-                                pSM.bonusVelocity += stats.fallingMomentumPercentage * pSM.playerVelocity;
-                                pSM.OnFall();
-                            }
+                            pSM.coyoteTimer = 0;
+                            pSM.bonusVelocity += stats.fallingMomentumPercentage * pSM.playerVelocity;
+                            pSM.OnFall();
                         }
                     }
                 }
-                #endregion
-                CheckIfReadyToDismount();
             }
-            else
-            {
-                Dismount();
-            }
+            #endregion
+            CheckIfReadyToDismount();
         }
         else
         {
-            if (!holdingRightSlideButton && !holdingLeftSlideButton)
-            {
-                SwitchSlidingDirectionWithCameraRotation();
-            }
-            CustomHoldInput();
-            donethisCallbackAlready = false;
-            accelerateTimer += Time.fixedDeltaTime;
-            if (accelerateTimer >= stats.accelerationCooldown)
-            {
-                canAccalerate = true;
-            }
-            // Debug.LogError("speed " + currentSlidingLevelSpeed);
-            // Debug.LogError("level " + currentSlidingLevel);
-
-            pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
-            if (!pSM.dismounting)
-            {
-                // Go up and down.
-                if (!CheckForCollisionCharacter(pSM.forwardInput * pSM.ladderDirection))
-                {
-                    pSM.HeightOnLadder += pSM.forwardInput * speed * Time.fixedDeltaTime;
-                    pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
-                    //pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder + ladder.transform.forward * -stats.playerOffsetFromLadder; //pos on ladder
-                    pSM.transform.localPosition = new Vector3(0, ladderSizeState.ladderLength * pSM.HeightOnLadder, -0.38f);
-                }
-
-                #region Move horizontally.
-                pathDirection = path.GetDirectionAtDistance(currentDistance);
-
-                // Get sideways input, no input if both buttons held down.
-                if (pSM.slideAction.triggered && pSM.slideAction.ReadValue<float>() == 0)
-                {
-                    pSM.playerVelocity -= ExtensionMethods.resultingVelocity(pSM.playerVelocity, pathDirection);
-
-                }
-
-                //playervelocity increased with input
-                float slidingAcceleration = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, stats.slidingAcceleration * stats.slidingSpeedSizeFactor, stats.slidingAcceleration);
-                pSM.playerVelocity += pSM.slidingInput * pathDirection * Time.fixedDeltaTime * slidingAcceleration;
-
-                //drag calculation
-                float resultingSpeed = ExtensionMethods.resultingSpeed(pSM.playerVelocity, pathDirection);
-
-                //speed Clamp (dependant on ladder size)
-                float maxSlidingSpeed = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, stats.maxSlidingSpeed * stats.slidingSpeedSizeFactor, stats.maxSlidingSpeed);
-                pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * stats.slidingDragPercentage / 100, --maxSlidingSpeed, maxSlidingSpeed);
-
-                //moving the object
-                if (!CheckForCollisionCharacter(pSM.playerVelocity) && !stopping && !CheckForCollisionLadder(pSM.playerVelocity))
-                {
-                    pSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, currentSlidingLevelSpeed * -pSM.slidingInput);
-                    pSM.currentDistance += ExtensionMethods.resultingSpeed(pSM.playerVelocity, pathDirection) * stats.slidingVelocityFactor;
-
-                    pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
-
-                }
-                else
-                {
-                    pSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, 0);
-                }
-                #endregion
-
-                #region end of Path
-                //End Of Path, continue sliding with ReSnap or Fall from Path
-                if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
-                {
-
-                    Vector3 endOfShelfDirection = new Vector3();
-                    if (pSM.closestRail != null)
-                    {
-                        if (pSM.currentDistance <= 0) //arriving at start of path
-                        {
-                            endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0))
-                                                - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints)); //start - ende
-                        }
-                        else if (pSM.currentDistance >= pathLength) //arriving at end of path
-                        {
-                            endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints))
-                                                - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0)); //ende - start
-                        }
-                    }
-                    else
-                        Debug.Log("There is something bad happening here lmao");
-
-                    Plane railPlane = new Plane(endOfShelfDirection.normalized, Vector3.zero);
-
-                    if (/* pSM.resultingSpeed( pSM.playerVelocity, pathDirection) >0   )*/railPlane.GetSide(Vector3.zero + pSM.playerVelocity)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
-                    {
-                        if (pSM.CheckForNextClosestRail(pSM.closestRail))
-                        {
-                            pSM.OnResnap();
-                        }
-                        else
-                        {
-                            if (pSM.closestRail.stopSlidingAtTheEnd)
-                            {
-                                pSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, 0);
-                                currentSlidingLevel = 0;
-                                currentSlidingLevelSpeed = stats.speedLevels[0];
-                                pSM.slidingInput = 0;
-                            }
-                            else
-                            {
-                                pSM.coyoteTimer = 0;
-                                pSM.bonusVelocity += stats.fallingMomentumPercentage * pSM.playerVelocity;
-                                pSM.OnFall();
-                            }
-                        }
-                    }
-                }
-                #endregion
-                CheckIfReadyToDismount();
-            }
-            else
-            {
-                Dismount();
-            }
+            Dismount();
         }
     }
 
@@ -641,13 +426,6 @@ public class PlayerSliding : State
         }
         else if (pSM.HeightOnLadder == -1 && pSM.forwardInput < 0)
         {
-            // dismountTimer += Time.fixedDeltaTime;
-            // if (dismountTimer >= stats.ladderDismountTimer)
-            // {
-            //     dismountTimer = 0;
-            //     controller.transform.forward = -pathCreator.path.GetNormalAtDistance(currentDistance);
-            //     PlayerStateMachine.OnLadderBottom();
-            // }
         }
         else if (dismountTimer != 0)
         {
@@ -680,7 +458,7 @@ public class PlayerSliding : State
             pSM.dismounting = false;
             pSM.OnLadderTop();
         }
-    }
+    }*/
 
     public PlayerSliding(PlayerMovementStateMachine playerStateMachine)
         : base(playerStateMachine)
