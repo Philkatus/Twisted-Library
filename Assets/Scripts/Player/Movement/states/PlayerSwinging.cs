@@ -266,9 +266,9 @@ public class PlayerSwinging : State
     public override void Movement()
     {
         SlidingMovement();
-        RotateAorundY();
+        RotateAroundY();
         Swing();
-        RotateAorundY();
+        RotateAroundY();
     }
 
     #region SWINGING Functions
@@ -507,7 +507,7 @@ public class PlayerSwinging : State
         currentMovement = playerVelocity.normalized * Mathf.Clamp(playerVelocity.magnitude, 0, maxJumpSpeed);
     }
 
-    private void RotateAorundY()
+    private void RotateAroundY()
     {
         Vector3 pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
         float rotateByAngle2 = Vector3.SignedAngle(pSM.ladder.right, pathDirection * pSM.snapdirection, Vector3.up);
