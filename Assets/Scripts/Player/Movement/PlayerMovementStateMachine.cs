@@ -163,7 +163,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void FixedUpdate()
     {
         GetInput();
-        LooseBonusVelocity(stats.bonusVelocityDrag,Vector3.up);
+        //LooseBonusVelocity(stats.bonusVelocityDrag,Vector3.up);
         State.Movement();
         Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
         Debug.DrawRay(transform.position, bonusVelocity, Color.blue);

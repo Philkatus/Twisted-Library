@@ -12,11 +12,13 @@ public abstract class State
     public State(PlayerMovementStateMachine playerStateMachine)
     {
         PSM = playerStateMachine;
+        LadderSizeStateMachine = playerStateMachine.ladderSizeStateMachine;
     }
 
     public State(LadderSizeStateMachine ladderSizeStateMachine)
     {
         LadderSizeStateMachine = ladderSizeStateMachine;
+        PSM = ladderSizeStateMachine.playerStateMachine;
     }
 
     public virtual void Initialize()
