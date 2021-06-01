@@ -152,7 +152,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         InitializeVariables();
         SetState(new PlayerWalking(this));
-        GetControlls();
+        GetControls();
     }
 
     private void Update()
@@ -166,7 +166,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void FixedUpdate()
     {
         GetInput();
-        looseBonusVelocity(stats.bonusVelocityDrag);
+        LooseBonusVelocity(stats.bonusVelocityDrag);
         State.Movement();
         Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
         Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
@@ -257,7 +257,7 @@ public class PlayerMovementStateMachine : StateMachine
         inputBools[index] = false;
     }
 
-    private void GetControlls()
+    private void GetControls()
     {
         playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
         slideLeftAction = playerControlsMap.FindAction("SlideLeft");
@@ -287,15 +287,14 @@ public class PlayerMovementStateMachine : StateMachine
         swingAction = playerControlsMap.FindAction("Swing");
         foldAction = playerControlsMap.FindAction("Fold");
 
-        jumpAction.performed += context => SaveInput(0, stats.jumpInputTimer);// State.Jump();
-        snapAction.performed += context => SaveInput(1, stats.snapInputTimer);   //TryToSnapToShelf();
-        foldAction.performed += context => SaveInput(2, stats.foldInputTimer); //ladderSizeStateMachine.OnFold();
+        jumpAction.performed += context => SaveInput(0, stats.jumpInputTimer);
+        snapAction.performed += context => SaveInput(1, stats.snapInputTimer);
+        foldAction.performed += context => SaveInput(2, stats.foldInputTimer);
         swingAction.performed += context => SaveInput(3, stats.swingInputTimer);
-        //foldAction.performed += context => State.RocketJump();
     }
     #endregion
     #region utility
-    public void looseBonusVelocity(float dragAmount)
+    public void LooseBonusVelocity(float dragAmount)
     {
         bonusVelocity -= bonusVelocity.normalized * dragAmount * Time.fixedDeltaTime;
         if (bonusVelocity.magnitude <= dragAmount * Time.fixedDeltaTime)
@@ -303,7 +302,7 @@ public class PlayerMovementStateMachine : StateMachine
             bonusVelocity = Vector3.zero;
         }
     }
-    public void loseBonusVelocityPercentage(float dragAmount)
+    public void LoseBonusVelocityPercentage(float dragAmount)
     {
         dragAmount = (100 - dragAmount) / 100;
         bonusVelocity *= dragAmount * Time.fixedDeltaTime;

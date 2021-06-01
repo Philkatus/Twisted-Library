@@ -23,13 +23,12 @@ public class PlayerInTheAir : State
         PSM.baseVelocity.y = 0;
         Vector3 startBaseVelocity = PSM.baseVelocity;
         PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.maxJumpingSpeedForward);
-        PSM.bonusVelocity += startBaseVelocity- PSM.baseVelocity;
+        PSM.bonusVelocity += startBaseVelocity - PSM.baseVelocity;
         PSM.baseVelocity.y = y;
     }
 
     public override void Movement()
     {
-        
         Transform cam = Camera.main.transform;
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
@@ -59,13 +58,12 @@ public class PlayerInTheAir : State
         {
             PSM.isWallJumping = false;
         }
-       
+
         PSM.baseVelocity.y -= stats.gravity * Time.fixedDeltaTime;
         float ClampedVelocityY = Mathf.Clamp(PSM.baseVelocity.y, -stats.maxFallingSpeed, stats.maxJumpingSpeedUp);
         PSM.baseVelocity.y = 0;
         PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.maxJumpingSpeedForward);
         PSM.baseVelocity.y = ClampedVelocityY;
-
 
         controller.Move(PSM.playerVelocity * Time.fixedDeltaTime * stats.jumpVelocityFactor);
         if (HeadCollision())
@@ -73,7 +71,7 @@ public class PlayerInTheAir : State
             PSM.baseVelocity.y -= PSM.baseVelocity.y * .9f * Time.fixedDeltaTime;
             PSM.bonusVelocity.y -= PSM.bonusVelocity.y * .9f * Time.fixedDeltaTime;
         }
-     
+
         if (controller.isGrounded)
         {
             base.PSM.didLadderPush = false;
@@ -89,7 +87,6 @@ public class PlayerInTheAir : State
 
     public override void Jump()
     {
-
         if (PSM.coyoteTimer < stats.slidingCoyoteTime && PSM.closestRail != null)
         {
             Vector3 pathDirection = PSM.closestRail.pathCreator.path.GetDirectionAtDistance(PSM.currentDistance, EndOfPathInstruction.Stop);
@@ -133,8 +130,8 @@ public class PlayerInTheAir : State
         for (int i = 0; i < hits.Count; i++)
         {
             float distance = hits[i].distance;
-            if (distance < closestDistance && 
-                Vector3.Dot(hits[i].normal, Vector3.up) >= .9f && 
+            if (distance < closestDistance &&
+                Vector3.Dot(hits[i].normal, Vector3.up) >= .9f &&
                 hits[i].point != Vector3.zero)
             {
                 closestHit = hits[i];
@@ -196,7 +193,7 @@ public class PlayerInTheAir : State
         PSM.ladder.localPosition = PSM.ladderWalkingPosition;
         PSM.ladder.localRotation = PSM.ladderWalkingRotation;
         stats = PSM.stats;
-      
+
         controller = PSM.controller;
         wallJumpingTime = 0;
     }
