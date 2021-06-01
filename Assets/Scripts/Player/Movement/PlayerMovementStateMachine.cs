@@ -166,7 +166,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void FixedUpdate()
     {
         GetInput();
-        LooseBonusVelocity(stats.bonusVelocityDrag);
+        LooseBonusVelocity(stats.bonusVelocityDrag,Vector3.up);
         State.Movement();
         Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
         Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
@@ -302,12 +302,28 @@ public class PlayerMovementStateMachine : StateMachine
             bonusVelocity = Vector3.zero;
         }
     }
+    public void LooseBonusVelocity(float dragAmount,Vector3 axis)
+    {
+        bonusVelocity -= axis.normalized * dragAmount * Time.fixedDeltaTime;
+        if (bonusVelocity.magnitude <= dragAmount * Time.fixedDeltaTime)
+        {
+            bonusVelocity = Vector3.zero;
+        }
+    }
     public void LoseBonusVelocityPercentage(float dragAmount)
     {
         dragAmount = (100 - dragAmount) / 100;
         bonusVelocity *= dragAmount * Time.fixedDeltaTime;
     }
 
+    public void LoseBonusVelocityPercentage(float dragAmount,Vector3 axis)
+    {
+        dragAmount = (100 - dragAmount) / 100;
+        Vector3 resultingVelocity = ExtensionMethods.resultingVelocity(bonusVelocity, axis);
+        bonusVelocity -= resultingVelocity;
+        resultingVelocity *= dragAmount * Time.fixedDeltaTime;
+        bonusVelocity += resultingVelocity;
+    }
     ///<summary>
     /// A function to determine the closest rail to the player. Returns false if none are in range.
     ///</summary>
