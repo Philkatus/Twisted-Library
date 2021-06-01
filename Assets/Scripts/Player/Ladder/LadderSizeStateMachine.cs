@@ -5,26 +5,12 @@ using UnityEngine;
 public class LadderSizeStateMachine : StateMachine
 {
     #region public
-    [Header("Changeable")]
-    public float ladderLengthBig;
-    public float ladderLengthSmall;
-    public float foldSpeed;
-    public float foldJumpMultiplier;
-    public float reversedFoldJumpMulitplier;
-    public float extraFoldJumpTimer;
-
     [Header("For reference")]
     public float ladderLength;
     public bool isFoldingUp;
     public bool isUnFolding = false;
-    public Vector3 startFoldingUpPos;
     public PlayerMovementStateMachine playerStateMachine;
     public Transform ladderParent;
-
-    #endregion
-
-    #region private
-
     #endregion
 
     private void Start()
@@ -43,11 +29,10 @@ public class LadderSizeStateMachine : StateMachine
     ///</summary>
     public void OnGrow()
     {
-        if (!(State  is LadderBig))
+        if (!(State is LadderBig))
         {
             SetState(new LadderBig(this));
             playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderBig;
-
         }
     }
 

@@ -59,7 +59,7 @@ public class PlayerInTheAir : State
             PSM.isWallJumping = false;
         }
         GravityAndClamp();
-       
+
         controller.Move(PSM.playerVelocity * Time.fixedDeltaTime * stats.jumpVelocityFactor);
         if (HeadCollision())
         {
@@ -74,11 +74,11 @@ public class PlayerInTheAir : State
         }
     }
 
-    void GravityAndClamp() 
+    void GravityAndClamp()
     {
 
         PSM.bonusVelocity.y -= stats.gravity * Time.fixedDeltaTime;
-        if (PSM.bonusVelocity.y <= 0) 
+        if (PSM.bonusVelocity.y <= 0)
         {
             PSM.baseVelocity.y += PSM.bonusVelocity.y;
             PSM.bonusVelocity.y = 0;
@@ -128,7 +128,7 @@ public class PlayerInTheAir : State
     public override void LadderPush()
     {
         float sphereRadius = .2f;
-        float maxHeight = PSM.ladderSizeStateMachine.ladderLengthBig - sphereRadius;
+        float maxHeight = stats.ladderLengthBig - sphereRadius;
         float acceleration = stats.rocketJumpAcceleration;
 
         Vector3 origin = PSM.transform.position;

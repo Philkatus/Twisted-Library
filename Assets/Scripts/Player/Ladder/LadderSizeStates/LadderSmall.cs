@@ -11,8 +11,8 @@ public class LadderSmall : State
 
     public override void Initialize()
     {
-        LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLengthSmall, 1, 1);
-        LadderSizeStateMachine.ladderLength = LadderSizeStateMachine.ladderLengthSmall;
+        LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(PSM.stats.ladderLengthSmall, 1, 1);
+        LadderSizeStateMachine.ladderLength = PSM.stats.ladderLengthSmall;
     }
 
     public override IEnumerator ChangeLadderSize()

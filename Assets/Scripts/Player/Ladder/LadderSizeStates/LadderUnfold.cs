@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class LadderUnfold : State
 {
-    #region INHERITED
-    PlayerMovementStateMachine pSM;
-    #endregion
-
+    ValuesScriptableObject stats;
     bool isLerpGoing;
     float time = 0;
 
@@ -18,10 +15,10 @@ public class LadderUnfold : State
 
     public override void Initialize()
     {
-        pSM = PSM;
-        time = ExtensionMethods.Remap(LadderSizeStateMachine.ladderLength,LadderSizeStateMachine.ladderLengthSmall,LadderSizeStateMachine.ladderLengthBig,0, LadderSizeStateMachine.foldSpeed);
+        stats = PSM.stats;
+        time = ExtensionMethods.Remap(LadderSizeStateMachine.ladderLength, stats.ladderLengthSmall, stats.ladderLengthBig, 0, stats.foldingTime);
         isLerpGoing = true;
-        if (time==0)
+        if (time == 0)
         {
             LadderSizeStateMachine.isUnFolding = true;
         }
@@ -32,22 +29,22 @@ public class LadderUnfold : State
         if (isLerpGoing)
         {
             time += Time.deltaTime;
-            LadderSizeStateMachine.ladderLength = Mathf.Lerp(LadderSizeStateMachine.ladderLengthSmall, LadderSizeStateMachine.ladderLengthBig, time / LadderSizeStateMachine.foldSpeed);
+            LadderSizeStateMachine.ladderLength = Mathf.Lerp(stats.ladderLengthSmall, stats.ladderLengthBig, time / stats.foldingTime);
             LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
 
-            if (time >= LadderSizeStateMachine.foldSpeed)
+            if (time >= stats.foldingTime)
             {
                 isLerpGoing = false;
-                LadderSizeStateMachine.ladderLength = LadderSizeStateMachine.ladderLengthBig;
+                LadderSizeStateMachine.ladderLength = stats.ladderLengthBig;
                 LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
             }
         }
-        if (time >= LadderSizeStateMachine.foldSpeed + LadderSizeStateMachine.extraFoldJumpTimer)
+        if (time >= stats.foldingTime + stats.extraFoldingTime)
         {
             LadderSizeStateMachine.isUnFolding = false;
         }
 
-        
+
     }
 
 

@@ -120,7 +120,7 @@ public class PlayerSwinging : State
         pSM.currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
         #endregion
         #region ReInitialize Swinging
-        pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLengthBig;
+        pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * stats.ladderLengthBig;
         Rail.RailType oldRailType = railType;
         railType = closestRail.railType;
         if (railType != oldRailType)
@@ -222,7 +222,7 @@ public class PlayerSwinging : State
         Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
         ladderSizeState = pSM.ladderSizeStateMachine;
-        pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * ladderSizeState.ladderLengthBig;
+        pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * stats.ladderLengthBig;
 
         ladderParent = ladderSizeState.ladderParent.gameObject;
 
@@ -660,14 +660,14 @@ public class PlayerSwinging : State
             }
 
             //playervelocity increased with input
-            float slidingAcceleration = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, stats.slidingAcceleration * stats.slidingSpeedSizeFactor, stats.slidingAcceleration);
+            float slidingAcceleration = ExtensionMethods.Remap(ladderSizeState.ladderLength, stats.ladderLengthSmall, stats.ladderLengthBig, stats.slidingAcceleration * stats.slidingSpeedSizeFactor, stats.slidingAcceleration);
             pSM.playerVelocity += pSM.slidingInput * pathDirection * Time.fixedDeltaTime * slidingAcceleration;
 
             //drag calculation
             float resultingSpeed = ExtensionMethods.resultingSpeed(pSM.playerVelocity, pathDirection);
 
             //speed Clamp (dependant on ladder size)
-            float maxSlidingSpeed = ExtensionMethods.Remap(ladderSizeState.ladderLength, ladderSizeState.ladderLengthSmall, ladderSizeState.ladderLengthBig, stats.maxSlidingSpeed * stats.slidingSpeedSizeFactor, stats.maxSlidingSpeed);
+            float maxSlidingSpeed = ExtensionMethods.Remap(ladderSizeState.ladderLength, stats.ladderLengthSmall, stats.ladderLengthBig, stats.maxSlidingSpeed * stats.slidingSpeedSizeFactor, stats.maxSlidingSpeed);
             pSM.playerVelocity -= pathDirection * Mathf.Clamp(resultingSpeed * stats.slidingDragPercentage / 100, --maxSlidingSpeed, maxSlidingSpeed);
 
             //moving the object
@@ -677,7 +677,6 @@ public class PlayerSwinging : State
                 pSM.currentDistance += ExtensionMethods.resultingSpeed(pSM.playerVelocity, pathDirection) * stats.slidingVelocityFactor;
 
                 pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
-
             }
             else
             {
