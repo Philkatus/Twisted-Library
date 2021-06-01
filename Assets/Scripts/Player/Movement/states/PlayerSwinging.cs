@@ -37,8 +37,8 @@ public class PlayerSwinging : State
     {
         get
         {
-            return PlayerStateMachine.bob.transform.position -
-                PlayerStateMachine.ladder.transform.position;
+            return PSM.bob.transform.position -
+                PSM.ladder.transform.position;
         }
     }
     private Vector3 bobForward
@@ -92,7 +92,7 @@ public class PlayerSwinging : State
     {
         #region ReInitialize Sliding
         // Assign variables.
-        pSM = PlayerStateMachine;
+        pSM = PSM;
         stats = pSM.stats;
 
         ladderSizeState = pSM.ladderSizeStateMachine;
@@ -349,11 +349,15 @@ public class PlayerSwinging : State
         }
 
         //Check if input can be given and give feedback accordingly
+        Vector3 pivotVectorDown = pivot_p + Vector3.down;
+        Vector3 pivotVectorBob = pivot_p + bobPosition;
+        float resultingAngle = Vector3.SignedAngle(pivotVectorDown, pivotVectorBob, ladder.right);
         if (Vector3.Dot(currentMovement.normalized, bobForward) >= .93f
            && currentVelocity.magnitude < stats.maxSwingSpeed
            && !inputGiven
            && inputTimer > nextSwingingTime
-           || currentVelocity.magnitude <= minSwingSpeed)
+           || currentVelocity.magnitude <= minSwingSpeed 
+           && Mathf.Abs(resultingAngle) < 25)
         {
             canPress = true;
             swingingFeedback.SetActive(true);
@@ -518,7 +522,7 @@ public class PlayerSwinging : State
     void SnappingOrientation()
     {
         #region  Variable assignment
-        pSM = PlayerStateMachine;
+        pSM = PSM;
         stats = pSM.stats;
 
         ladderSizeState = pSM.ladderSizeStateMachine;
@@ -745,9 +749,9 @@ public class PlayerSwinging : State
         {
             float offSet = .5f;
             Vector3 direction = (-pSM.ladderDirection + Vector3.up * offSet).normalized; ;
-            PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.reversedFoldJumpMulitplier);
+            PSM.bonusVelocity = direction * (2.5f * ladderSizeState.reversedFoldJumpMulitplier);
             shouldRetainSwingVelocity = false;
-            PlayerStateMachine.OnFall();
+            PSM.OnFall();
             pSM.animationControllerisFoldingJumped = true;
         }
 
@@ -756,9 +760,9 @@ public class PlayerSwinging : State
             float offSet = .5f;
             float heightOnLadderRemapped = (-pSM.HeightOnLadder * stats.heightOnLadderKatapulFactor + 1 - stats.heightOnLadderKatapulFactor);
             Vector3 direction = (pSM.ladderDirection + Vector3.up * offSet).normalized;
-            PlayerStateMachine.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier) * heightOnLadderRemapped;
+            PSM.bonusVelocity = direction * (2.5f * ladderSizeState.foldJumpMultiplier) * heightOnLadderRemapped;
             shouldRetainSwingVelocity = false;
-            PlayerStateMachine.OnFall();
+            PSM.OnFall();
             pSM.animationControllerisFoldingJumped = true;
         }
         else
@@ -770,19 +774,19 @@ public class PlayerSwinging : State
                 Vector3 fromWallVector = (Quaternion.AngleAxis(90, Vector3.up) * pathDirection).normalized;
                 fromWallVector = fromWallVector * stats.wallJump.z;
                 Vector3 fromWallValued = new Vector3(fromWallVector.x, stats.wallJump.y, fromWallVector.z);
-                PlayerStateMachine.playerVelocity += fromWallValued;
-                PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
-                PlayerStateMachine.isWallJumping = true;
+                PSM.playerVelocity += fromWallValued;
+                PSM.baseVelocity.y += stats.jumpHeight;
+                PSM.isWallJumping = true;
             }
             else
             {
-                PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
+                PSM.baseVelocity.y += stats.jumpHeight;
             }
             shouldRetainSwingVelocity = true;
-            PlayerStateMachine.OnFall();
+            PSM.OnFall();
             pSM.animationControllerisFoldingJumped = false;
         }
-        PlayerStateMachine.jumpInputBool = false;
+        PSM.jumpInputBool = false;
     }
     void CustomHoldInput()
     {

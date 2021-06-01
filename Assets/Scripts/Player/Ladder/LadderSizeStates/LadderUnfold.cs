@@ -18,7 +18,7 @@ public class LadderUnfold : State
 
     public override void Initialize()
     {
-        pSM = PlayerStateMachine;
+        pSM = PSM;
         time = ExtensionMethods.Remap(LadderSizeStateMachine.ladderLength,LadderSizeStateMachine.ladderLengthSmall,LadderSizeStateMachine.ladderLengthBig,0, LadderSizeStateMachine.foldSpeed);
         isLerpGoing = true;
         if (time==0)
