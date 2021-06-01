@@ -349,15 +349,6 @@ public class PlayerMovementStateMachine : StateMachine
             }
 
             //VFX-Snapping
-            Vector3 nextPosition;
-            if (closestRail != null)
-            {
-                nextPosition = closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
-            }
-            else
-            {
-                nextPosition = Vector3.zero;
-            }
             effects.currentRail = closestRail;
 
             if (closestRail != null)
