@@ -28,6 +28,9 @@ public class PlayerMovementStateMachine : StateMachine
     public bool dismounting;
     public bool didLadderPush;
 
+    public bool isWallJumping;
+    public bool animationControllerisFoldingJumped;
+
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
     public Vector3 playerVelocity
@@ -43,9 +46,6 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
     public Vector3 railCheckLadderPosition;
-
-    public bool isWallJumping;
-    public bool animationControllerisFoldingJumped;
 
     public Rail closestRail;
     public Transform ladder;
@@ -63,8 +63,16 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
     [HideInInspector] public Vector3 ladderJumpTarget;
+    [HideInInspector] public Vector3 ladderDirection
+    {
+        get
+        {
+            return ladderSizeStateMachine.ladderParent.right;
+        }
+    }
     [HideInInspector] public int snapdirection = 1;
 
+    #region inputBools
     bool[] inputBools = new bool[4];
     public bool jumpInputBool
     {
@@ -114,15 +122,10 @@ public class PlayerMovementStateMachine : StateMachine
         }
 
     }
+    #endregion
 
     public float coyoteTimer = 0;
-    public Vector3 ladderDirection
-    {
-        get
-        {
-            return ladderSizeStateMachine.ladderParent.right;
-        }
-    }
+   
     [HideInInspector] public Transform myParent;
     #endregion
 
@@ -142,38 +145,22 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void Start()
     {
-        myParent = transform.parent;
-        railAllocator = RailSearchManager.instance;
-        ladderWalkingPosition = ladder.localPosition;
-        ladderWalkingRotation = ladder.localRotation;
-        snapVisualisation = myParent.transform.GetChild(3).GetChild(1).gameObject;
-        coyoteTimer = stats.slidingCoyoteTime;
+        InitializeReferences();
         SetState(new PlayerWalking(this));
         GetControlls();
     }
 
-
+   
 
     private void Update()
     {
         coyoteTimer += Time.deltaTime;
-        railCheckTimer += Time.deltaTime;
-        if (railCheckTimer >= 0.1f)
-        {
-            CheckForRail();
-            if (playerState != PlayerState.swinging)
-            {
-                StartCoroutine(ChangeSnapVisualisationPoint());
-            }
-            else
-            {
-                snapVisualisation.SetActive(false);
-            }
-            railCheckTimer = 0;
-        }
+        UpdateRailTimer();
         CheckForInputBools();
 
     }
+
+   
 
     private void FixedUpdate()
     {
@@ -192,6 +179,32 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
 
+    private void InitializeReferences()
+    {
+        myParent = transform.parent;
+        railAllocator = RailSearchManager.instance;
+        ladderWalkingPosition = ladder.localPosition;
+        ladderWalkingRotation = ladder.localRotation;
+        snapVisualisation = myParent.transform.GetChild(3).GetChild(1).gameObject;
+        coyoteTimer = stats.slidingCoyoteTime;
+    }
+    private void UpdateRailTimer()
+    {
+        railCheckTimer += Time.deltaTime;
+        if (railCheckTimer >= 0.1f)
+        {
+            CheckForRail();
+            if (playerState != PlayerState.swinging)
+            {
+                StartCoroutine(ChangeSnapVisualisationPoint());
+            }
+            else
+            {
+                snapVisualisation.SetActive(false);
+            }
+            railCheckTimer = 0;
+        }
+    }
 
     #region utility
     #region Input/Controlls
@@ -431,62 +444,7 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
 
-    /// <summary>
-    /// Calculates the resulting signed magnitude alongside the targetdirection after a change of direction.
-    /// </summary>
-    /// <param name="currentVelocity">the Velocity to change </param>
-    /// <param name="targetDirection">The normalized direction you want to change to</param>
-    /// <returns></returns>
-    public float resultingSpeed(Vector3 currentVelocity, Vector3 targetDirection)
-    {
-        float resultingSpeed = currentVelocity.x * targetDirection.x + currentVelocity.y * targetDirection.y + currentVelocity.z * targetDirection.z;
-
-        return resultingSpeed;
-    }
-
-    /// <summary>
-    /// calculates the resulting velocity through a change in direction
-    /// </summary>
-    /// <param name="currentVelocity"> the Velocity to change </param>
-    /// <param name="targetDirection"> the normalized direction you want to change to</param>
-    /// <returns></returns>
-    public Vector3 resultingVelocity(Vector3 currentVelocity, Vector3 targetDirection)
-    {
-        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
-
-        return targetDirection * resultingSpeed;
-    }
-
-    /// <summary>
-    /// calculates the resulting clamped velocity through a change in direction
-    /// </summary>
-    /// <param name="currentVelocity"> the Velocity to change </param>
-    /// <param name="targetDirection"> the normalized direction you want to change to</param>
-    /// <param name="maximumSpeed"> the maximum speed the return value gets clamped to</param>
-    /// <returns></returns>
-    public Vector3 resultingClampedVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed)
-    {
-        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
-        resultingSpeed = Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
-
-        return targetDirection * resultingSpeed;
-    }
-
-    /// <summary>
-    /// takes the Player Velocity and puts a clamp on one direction of it
-    /// </summary>
-    /// <param name="currentVelocity"> the Velocity to change </param>
-    /// <param name="targetDirection"> The direction to clamp </param>
-    /// <param name="maximumSpeed"> the maximumspeed that the return Vector should have in the target direction </param>
-    /// <returns></returns>
-    public Vector3 ClampPlayerVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed)
-    {
-        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
-        Vector3 clampedVelocity = targetDirection * Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
-        currentVelocity -= this.resultingVelocity(currentVelocity, targetDirection);
-        currentVelocity += clampedVelocity;
-        return currentVelocity;
-    }
+   
     #endregion
 
     #region functions to change states

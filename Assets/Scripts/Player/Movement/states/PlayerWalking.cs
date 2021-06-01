@@ -52,13 +52,13 @@ public class PlayerWalking : State
         #region apply drag when no input is applied
         if (pSM.forwardInput == 0)
         {
-            Vector3 currentDragForward = stats.movementDrag * pSM.resultingVelocity(pSM.baseVelocity, directionForward);
+            Vector3 currentDragForward = stats.movementDrag * ExtensionMethods.resultingVelocity(pSM.baseVelocity, directionForward);
             pSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
 
         }
         if (pSM.sideWaysInput == 0)
         {
-            Vector3 currentDragSideways = stats.movementDrag * pSM.resultingVelocity(pSM.baseVelocity, directionRight);
+            Vector3 currentDragSideways = stats.movementDrag * ExtensionMethods.resultingVelocity(pSM.baseVelocity, directionRight);
             pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
         #endregion
@@ -82,7 +82,7 @@ public class PlayerWalking : State
 
 
         PlayerStateMachine.baseVelocity.y -= stats.gravity * Time.fixedDeltaTime;
-        pSM.baseVelocity = pSM.ClampPlayerVelocity(pSM.baseVelocity, Vector3.down, stats.maxFallingSpeed);
+        pSM.baseVelocity = ExtensionMethods.ClampPlayerVelocity(pSM.baseVelocity, Vector3.down, stats.maxFallingSpeed);
         pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
         pSM.looseBonusVelocityPercentage(stats.walkingBonusVelocityDrag);
         controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * stats.movementVelocityFactor);
