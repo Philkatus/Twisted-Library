@@ -328,7 +328,7 @@ public class PlayerSwinging : PlayerSliding
         #endregion
         #region FinalCalculation
         // Get only the forward/backward force
-        playerVelocity = bobForward * pSM.resultingSpeed(currentVelocity, bobForward);
+        playerVelocity = bobForward * ExtensionMethods.resultingSpeed(currentVelocity, bobForward);
         SetCurrentPlayerVelocity(Pivot.transform.position);
 
         // Get the movement delta
@@ -406,7 +406,7 @@ public class PlayerSwinging : PlayerSliding
         #endregion
         #region Final Calculations
         // Get only the forward/backward force
-        playerVelocity = bobForward * pSM.resultingSpeed(bobForward, currentVelocity);
+        playerVelocity = bobForward * ExtensionMethods.resultingSpeed(bobForward, currentVelocity);
         SetCurrentPlayerVelocity(Pivot.transform.position);
 
         // Get the movement delta
@@ -539,7 +539,7 @@ public class PlayerSwinging : PlayerSliding
             }
             if (rotateByAngle < 120)
             {
-                currentVelocity += pSM.resultingVelocity(pSM.playerVelocity, pSM.bob.transform.forward);
+                currentVelocity += ExtensionMethods.resultingVelocity(pSM.playerVelocity, pSM.bob.transform.forward);
                 currentVelocity = Vector3.ClampMagnitude(currentVelocity, stats.maxSwingSpeed);
             }
         }
@@ -563,8 +563,8 @@ public class PlayerSwinging : PlayerSliding
         if (!stats.preservesVelocityOnSnap)
         {
 
-            pSM.baseVelocity = pSM.resultingClampedVelocity(pSM.baseVelocity, ladder.transform.forward, stats.maxSwingSpeed);
-            pSM.bonusVelocity = pSM.resultingVelocity(pSM.bonusVelocity, ladder.transform.forward);
+            pSM.baseVelocity = ExtensionMethods.resultingClampedVelocity(pSM.baseVelocity, ladder.transform.forward, stats.maxSwingSpeed);
+            pSM.bonusVelocity = ExtensionMethods.resultingVelocity(pSM.bonusVelocity, ladder.transform.forward);
 
         }
         Time.fixedDeltaTime = 0.002f;
