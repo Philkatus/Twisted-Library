@@ -163,8 +163,6 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
 
-
-
     private void FixedUpdate()
     {
         GetInput();
@@ -173,6 +171,7 @@ public class PlayerMovementStateMachine : StateMachine
         Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
         Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
     }
+
     private void InitializeVariables()
     {
         myParent = transform.parent;
@@ -182,6 +181,7 @@ public class PlayerMovementStateMachine : StateMachine
         snapVisualisation = myParent.transform.GetChild(3).GetChild(1).gameObject;
         coyoteTimer = stats.slidingCoyoteTime;
     }
+
     private void UpdateRailTimer()
     {
         railCheckTimer += Time.deltaTime;
@@ -199,6 +199,7 @@ public class PlayerMovementStateMachine : StateMachine
             railCheckTimer = 0;
         }
     }
+
     public void TryToSnapToShelf()
     {
         if (CheckForRail())
@@ -206,7 +207,6 @@ public class PlayerMovementStateMachine : StateMachine
             State.Snap();
         }
     }
- 
 
     #region Input/Controlls
     public void GetInput()
@@ -250,7 +250,6 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
 
-
     IEnumerator InputTimer(int index, float duration)
     {
         inputBools[index] = true;
@@ -260,20 +259,20 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void GetControlls()
     {
-            playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
-            slideLeftAction = playerControlsMap.FindAction("SlideLeft");
-            slideRightAction = playerControlsMap.FindAction("SlideRight");
-            slideLeftAction.started += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = -1; } };
-            slideRightAction.started += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = +1; } };
-            slideRightAction.canceled += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = 0; } };
-            slideLeftAction.canceled += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = 0; } };
-            if (stats.useTriggerToSlideWithMomentum)
-            {
-                slideLeftAction.started += context => SaveInput(1, stats.snapInputTimer);
-                slideRightAction.started += context => SaveInput(1, stats.snapInputTimer);
-            }
-            startingSlidingInput = 0;
-        
+        playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
+        slideLeftAction = playerControlsMap.FindAction("SlideLeft");
+        slideRightAction = playerControlsMap.FindAction("SlideRight");
+        slideLeftAction.started += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = -1; } };
+        slideRightAction.started += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = +1; } };
+        slideRightAction.canceled += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = 0; } };
+        slideLeftAction.canceled += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = 0; } };
+        if (stats.useTriggerToSlideWithMomentum)
+        {
+            slideLeftAction.started += context => SaveInput(1, stats.snapInputTimer);
+            slideRightAction.started += context => SaveInput(1, stats.snapInputTimer);
+        }
+        startingSlidingInput = 0;
+
         if (GameObject.FindGameObjectWithTag("Canvas"))
         {
             playerControlsMap.Disable();
@@ -426,7 +425,6 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
 
-
     #endregion
     #region functions to change states
     ///<summary>
@@ -477,7 +475,6 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnResnap()
     {
-
         SetState(this.State);
         playerState = PlayerState.swinging;
     }
