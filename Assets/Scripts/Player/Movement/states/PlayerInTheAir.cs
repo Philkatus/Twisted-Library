@@ -39,6 +39,18 @@ public class PlayerInTheAir : State
         {
             controller.transform.forward = direction;
         }
+        #region Drag When No Input
+        if (PSM.forwardInput == 0)
+        {
+            Vector3 currentDragForward = stats.jumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionForward);
+            PSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
+        }
+        if (PSM.sideWaysInput == 0)
+        {
+            Vector3 currentDragSideways = stats.jumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
+            PSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
+        }
+        #endregion
         PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.movementAcceleration * stats.airMovementFactor;
 
         //when wall jump occured, set the isWallJumping to false after 1 sec
