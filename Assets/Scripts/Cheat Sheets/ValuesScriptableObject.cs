@@ -176,4 +176,26 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The factor to convert swinging velocity into in the air speed after jumping.")]
     public float swingingVelocityFactor = 1;
     #endregion
+
+    #region ladder
+    [Space]
+    [Header("Ladder")]
+    [Tooltip("The length of the ladder while extended.")]
+    public float ladderLengthBig = 4;
+
+    [Tooltip("The length of the ladder while retracted.")]
+    public float ladderLengthSmall = 1.25f;
+
+    [Tooltip("How long it takes for the ladder to fold.")]
+    public float foldingTime = 0.2f;
+
+    [Tooltip("Additional time after foldingTime until folding ends.")]
+    public float extraFoldingTime = 0.5f;
+
+    [Tooltip("The factor by which the jumping speed is mutliplied when a rail catapult jump is performed.")]
+    public float railCatapultJumpMultiplier = 17;
+
+    [Tooltip("The factor by which the jumping speed is mutliplied when a reversed rail catapult jump is performed.")]
+    public float reversedRailCatapultJumpMultiplier = 17;
+    #endregion
 }
