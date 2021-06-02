@@ -35,7 +35,16 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("How long is the time after falling of a ladder where you can still jump.")]
     public float slidingCoyoteTime = 0.2f;
     #endregion
-
+    [Space]
+    #region Ability bools
+    [Header("Ability bools")]
+    [Tooltip("Is the player able to perform a ladderPush")]
+    public bool canLadderPush = true;
+    [Tooltip("Is the player able to perform a CatapultJump")]
+    public bool canLadderFold = true;
+    [Tooltip("Is the player able to Slide")]
+    public bool canSlide = true;
+    #endregion
     [Space]
     #region movement and walking
     [Header("Movement/Walking")]
@@ -55,7 +64,6 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The factor to convert Velocity into Movementspeed")]
     public float movementVelocityFactor = 1;
     #endregion
-
     [Space]
     #region jumping and air movement
     [Header("Jumping/Air Movement")]
@@ -96,6 +104,13 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("The maximum distance between ladder and rail to snap to the next rail while sliding.")]
     public float resnappingDistance = .5f;
+
+    [Tooltip("The angle from pathDorection to camera.forward which enables a special case where the button used to snap is saved and used to slide forward.")]
+    public float specialCaseAngleForSlidingInput = 20f;
+
+    [Tooltip("When this angle between pathDorection and camera.forward is exceeded, the buttons determining the sliding direction depend on the camera again.")]
+    public float angleToLeaveSpecialCaseSlindingInput = 45f;
+
     [Tooltip("The minumum player velocity needed to influence the snap direction.")]
     public float minVelocityToChangeSnapDirection = 1;
 
@@ -105,12 +120,11 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The factor that determines how much the height on the ladder changes the velocity of the rail catapult jump.")]
     [Range(0f, 1)] public float heightOnLadderKatapulFactor = .2f;
 
-    [Tooltip("How fast the player accelerates to maximum sliding speed.")]
-    public float slidingAcceleration;
-    public float maxSlidingSpeed, slidingSpeedSizeFactor;
+    [Tooltip("How fast the player accelerates to current sliding speed level.")]
+    public float slidingAcceleration = 0.2f;
 
-    [Tooltip("How fast the player comes to a halt while sliding. 50% is almost instantly.")]
-    [Range(0, 50f)] public float slidingDragPercentage;
+    [Tooltip("How fast the player decelarates to lover speed level or comes to a halt while sliding.")]
+    public float slidingDecelaration = 0.2f;
 
     [Space]
     [Tooltip("The (animation) speed for the player coming off the ladder on the top while sliding.")]
@@ -118,9 +132,6 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("How long the player needs to hold the key to dismount the ladder on top or bottom while sliding.")]
     public float ladderDismountTimer;
-
-    [Tooltip("The factor to convert Velocity into sliding speed.")]
-    public float slidingVelocityFactor = 1;
 
     [Tooltip("If true the player preserves their velocity on snap.")]
     public bool preservesVelocityOnSnap = false;
