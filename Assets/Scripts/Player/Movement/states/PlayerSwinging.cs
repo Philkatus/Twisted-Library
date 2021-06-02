@@ -374,6 +374,7 @@ public class PlayerSwinging : State
 
     public override void Movement()
     {
+
         SlidingMovement();
         RotateAroundY();
         Swing();
@@ -715,76 +716,79 @@ public class PlayerSwinging : State
             }
 
             #region Move horizontally.
-            pathDirection = path.GetDirectionAtDistance(currentDistance);
-            Vector3 slidingDirection = pathDirection * pSM.slidingInput;
-
-            if (!CheckForCollisionCharacter(slidingDirection) && !CheckForCollisionLadder(slidingDirection))
+            if (stats.canSlide)
             {
-                // TO DO: lerp acceleration!
+                pathDirection = path.GetDirectionAtDistance(currentDistance);
+                Vector3 slidingDirection = pathDirection * pSM.slidingInput;
 
-                // if (currentSlidingSpeed != currentSlidingLevelSpeed)
-                // {
-                //     float t = currentSlidingSpeed > currentSlidingLevelSpeed ? stats.slidingDecelaration : stats.slidingAcceleration;
-                //     float a = currentSlidingSpeed > currentSlidingLevelSpeed ? stats.speedLevels[currentSlidingLevel + 1] : stats.speedLevels[currentSlidingLevel - 1];
-                //     currentSlidingSpeed = Mathf.Lerp(a, currentSlidingLevelSpeed, t);
-                // }
-                currentSlidingSpeed = currentSlidingLevelSpeed;
-            }
-            else
-            {
-                currentSlidingSpeed = 0;
-                currentSlidingLevel = 0;
-                currentSlidingLevelSpeed = stats.speedLevels[0];
-            }
-            Debug.LogError(currentSlidingSpeed);
-
-            pSM.currentDistance += currentSlidingSpeed * pSM.slidingInput * Time.fixedDeltaTime;
-            pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
-            #endregion
-
-            #region end of Path
-            //End Of Path, continue sliding with ReSnap or Fall from Path
-            if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
-            {
-                Vector3 endOfShelfDirection = new Vector3();
-                if (pSM.closestRail != null)
+                if (!CheckForCollisionCharacter(slidingDirection) && !CheckForCollisionLadder(slidingDirection))
                 {
-                    if (pSM.currentDistance <= 0) //arriving at start of path
-                    {
-                        endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0))
-                                            - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints)); //start - ende
-                    }
-                    else if (pSM.currentDistance >= pathLength) //arriving at end of path
-                    {
-                        endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints))
-                                            - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0)); //ende - start
-                    }
+                    // TO DO: lerp acceleration!
+
+                    // if (currentSlidingSpeed != currentSlidingLevelSpeed)
+                    // {
+                    //     float t = currentSlidingSpeed > currentSlidingLevelSpeed ? stats.slidingDecelaration : stats.slidingAcceleration;
+                    //     float a = currentSlidingSpeed > currentSlidingLevelSpeed ? stats.speedLevels[currentSlidingLevel + 1] : stats.speedLevels[currentSlidingLevel - 1];
+                    //     currentSlidingSpeed = Mathf.Lerp(a, currentSlidingLevelSpeed, t);
+                    // }
+                    currentSlidingSpeed = currentSlidingLevelSpeed;
                 }
                 else
-                    Debug.Log("There is something bad happening here lmao");
-
-                Plane railPlane = new Plane(endOfShelfDirection.normalized, Vector3.zero);
-
-                if (railPlane.GetSide(Vector3.zero + slidingDirection * currentSlidingSpeed)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
                 {
-                    if (pSM.CheckForNextClosestRail(pSM.closestRail))
+                    currentSlidingSpeed = 0;
+                    currentSlidingLevel = 0;
+                    currentSlidingLevelSpeed = stats.speedLevels[0];
+                }
+                Debug.LogError(currentSlidingSpeed);
+
+                pSM.currentDistance += currentSlidingSpeed * pSM.slidingInput * Time.fixedDeltaTime;
+                pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
+                #endregion
+
+                #region end of Path
+                //End Of Path, continue sliding with ReSnap or Fall from Path
+                if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
+                {
+                    Vector3 endOfShelfDirection = new Vector3();
+                    if (pSM.closestRail != null)
                     {
-                        pSM.OnResnap();
+                        if (pSM.currentDistance <= 0) //arriving at start of path
+                        {
+                            endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0))
+                                                - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints)); //start - ende
+                        }
+                        else if (pSM.currentDistance >= pathLength) //arriving at end of path
+                        {
+                            endOfShelfDirection = pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(pathCreator.bezierPath.NumAnchorPoints))
+                                                - pSM.closestRail.transform.TransformPoint(pathCreator.bezierPath.GetPoint(0)); //ende - start
+                        }
                     }
                     else
+                        Debug.Log("There is something bad happening here lmao");
+
+                    Plane railPlane = new Plane(endOfShelfDirection.normalized, Vector3.zero);
+
+                    if (railPlane.GetSide(Vector3.zero + slidingDirection * currentSlidingSpeed)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
                     {
-                        if (pSM.closestRail.stopSlidingAtTheEnd)
+                        if (pSM.CheckForNextClosestRail(pSM.closestRail))
                         {
-                            pSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, 0);
-                            currentSlidingLevel = 0;
-                            currentSlidingLevelSpeed = stats.speedLevels[0];
-                            pSM.slidingInput = 0;
+                            pSM.OnResnap();
                         }
                         else
                         {
-                            pSM.coyoteTimer = 0;
-                            pSM.bonusVelocity += stats.fallingMomentumPercentage * pSM.playerVelocity;
-                            pSM.OnFall();
+                            if (pSM.closestRail.stopSlidingAtTheEnd)
+                            {
+                                pSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(pSM.playerVelocity, pathDirection, 0);
+                                currentSlidingLevel = 0;
+                                currentSlidingLevelSpeed = stats.speedLevels[0];
+                                pSM.slidingInput = 0;
+                            }
+                            else
+                            {
+                                pSM.coyoteTimer = 0;
+                                pSM.bonusVelocity += stats.fallingMomentumPercentage * pSM.playerVelocity;
+                                pSM.OnFall();
+                            }
                         }
                     }
                 }
