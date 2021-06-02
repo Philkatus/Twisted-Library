@@ -54,7 +54,6 @@ public class PlayerMovementStateMachine : StateMachine
     public AnimationStateController animController;
     public GameObject bob;
     public VFX_Manager effects;
-    [HideInInspector] public InputAction slideAction;
     [HideInInspector] public InputAction slideLeftAction;
     [HideInInspector] public InputAction slideRightAction;
     [HideInInspector] public InputAction swingAction;
@@ -290,7 +289,7 @@ public class PlayerMovementStateMachine : StateMachine
             bonusVelocity = Vector3.zero;
         }
     }
-    public void LooseBonusVelocity(float dragAmount,Vector3 axis)
+    public void LooseBonusVelocity(float dragAmount, Vector3 axis)
     {
         bonusVelocity -= axis.normalized * dragAmount * Time.fixedDeltaTime;
         if (bonusVelocity.magnitude <= dragAmount * Time.fixedDeltaTime)
@@ -304,7 +303,7 @@ public class PlayerMovementStateMachine : StateMachine
         bonusVelocity *= dragAmount * Time.fixedDeltaTime;
     }
 
-    public void LoseBonusVelocityPercentage(float dragAmount,Vector3 axis)
+    public void LoseBonusVelocityPercentage(float dragAmount, Vector3 axis)
     {
         dragAmount = (100 - dragAmount) / 100;
         Vector3 resultingVelocity = ExtensionMethods.resultingVelocity(bonusVelocity, axis);
