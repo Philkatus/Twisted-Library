@@ -7,9 +7,6 @@ public class ValuesScriptableObject : ScriptableObject
     #region general
     [Header("Enable Features")]
     [Space]
-    [Tooltip("Temporary bool which enables the new sliding code.")]
-    public bool useNewSliding;
-
     [Tooltip("Use the button used for jumping instead of the fold button for the ladder shoot.")]
     public bool useJumpForLadderShoot;
 
@@ -20,21 +17,22 @@ public class ValuesScriptableObject : ScriptableObject
     [Header("General")]
     [Tooltip("How fast the bonusvelocity is lost again")]
     public float bonusVelocityDrag;
+
     [Space]
     [Header("Input Coyote Timer")]
-    [Tooltip("Determines how long the jump input gets saved ")]
+    [Tooltip("Determines how long the jump input gets saved.")]
     public float jumpInputTimer;
 
-    [Tooltip("Determines how long the snap input gets saved ")]
+    [Tooltip("Determines how long the snap input gets saved.")]
     public float snapInputTimer;
 
-    [Tooltip("Determines how long the fold input gets saved ")]
+    [Tooltip("Determines how long the fold input gets saved.")]
     public float foldInputTimer;
 
-    [Tooltip("Determines how long the swing input gets saved ")]
+    [Tooltip("Determines how long the swing input gets saved.")]
     public float swingInputTimer;
 
-    [Tooltip("how long is the time after falling of a ladder where you can still jump")]
+    [Tooltip("How long is the time after falling of a ladder where you can still jump.")]
     public float slidingCoyoteTime = 0.2f;
     #endregion
 
@@ -56,8 +54,8 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("The factor to convert Velocity into Movementspeed")]
     public float movementVelocityFactor = 1;
-
     #endregion
+
     [Space]
     #region jumping and air movement
     [Header("Jumping/Air Movement")]
@@ -65,7 +63,10 @@ public class ValuesScriptableObject : ScriptableObject
     public float jumpHeight;
 
     [Tooltip("To put a clamp on the upwards velocity")]
-    public float maxJumpingSpeed = 15;
+    public float maxJumpingSpeedUp = 15;
+
+    [Tooltip("To put a clamp on the fowards and sidewards velocity")]
+    public float maxJumpingSpeedForward = 10;
 
     [Tooltip("How fast the player accelerates with the rocketJump.")]
     public float rocketJumpAcceleration;
@@ -93,17 +94,16 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The maximum distance between ladder and rail to snap to the rails.")]
     public float snappingDistance = 10;
 
-
     [Tooltip("The maximum distance between ladder and rail to snap to the next rail while sliding.")]
     public float resnappingDistance = .5f;
-    [Tooltip("die minimale velocity die der spieler haben muss damit sie einfluss auf die snap direction hat")]
+    [Tooltip("The minumum player velocity needed to influence the snap direction.")]
     public float minVelocityToChangeSnapDirection = 1;
 
     [Tooltip("How fast the player climbs the ladder up and down while sliding.")]
     public float climbingSpeedOnLadder;
 
-    [Tooltip("The factor that determines how much the height on the ladder changes the velocity of the rail katapult jum")]
-    [Range(0f,1)] public float heightOnLadderKatapulFactor = .2f;
+    [Tooltip("The factor that determines how much the height on the ladder changes the velocity of the rail catapult jump.")]
+    [Range(0f, 1)] public float heightOnLadderKatapulFactor = .2f;
 
     [Tooltip("How fast the player accelerates to maximum sliding speed.")]
     public float slidingAcceleration;
@@ -127,11 +127,9 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("The percentage of velocity the player has when falling at the end of a rail that gets added as bonus velocity. 1 = 100%")]
     public float fallingMomentumPercentage;
+
     [Tooltip("The offset between the ladder and the player, so that the position on the ladder is right.")]
     public float playerOffsetFromLadder;
-
-    [Space]
-    [Header("New Sliding")]
 
     [Tooltip("The sliding speed for each speed level.")]
     public List<float> speedLevels;
@@ -146,19 +144,19 @@ public class ValuesScriptableObject : ScriptableObject
     [Space]
     #region swinging
     [Header("Swinging")]
-    [Tooltip("If true the charackter uses swinging instead of sliding.")]
-    public bool useSwinging;
 
     [Tooltip("How fast the player accelerates while swinging.")]
     public float swingingAcceleration;
 
     [Tooltip("How fast the player decelerates while swinging with reverse input. Minimum deceleration.")]
     public float minSwingingDeceleration;
+
     [Tooltip("How fast the player decelerates while swinging with reverse input. Maximum deceleration.")]
     public float maxSwingingDeceleration;
 
     [Tooltip("How fast the player decelerates while hanging from the rail. Minimum deceleration.")]
     public float minHangingDeceleration;
+
     [Tooltip("How fast the player decelerates while hanging from the rail. Maximum deceleration.")]
     public float maxHangingDeceleration;
 
@@ -177,5 +175,27 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("The factor to convert swinging velocity into in the air speed after jumping.")]
     public float swingingVelocityFactor = 1;
+    #endregion
+
+    #region ladder
+    [Space]
+    [Header("Ladder")]
+    [Tooltip("The length of the ladder while extended.")]
+    public float ladderLengthBig = 4;
+
+    [Tooltip("The length of the ladder while retracted.")]
+    public float ladderLengthSmall = 1.25f;
+
+    [Tooltip("How long it takes for the ladder to fold.")]
+    public float foldingTime = 0.2f;
+
+    [Tooltip("Additional time after foldingTime until folding ends.")]
+    public float extraFoldingTime = 0.5f;
+
+    [Tooltip("The factor by which the jumping speed is mutliplied when a rail catapult jump is performed.")]
+    public float railCatapultJumpMultiplier = 17;
+
+    [Tooltip("The factor by which the jumping speed is mutliplied when a reversed rail catapult jump is performed.")]
+    public float reversedRailCatapultJumpMultiplier = 17;
     #endregion
 }

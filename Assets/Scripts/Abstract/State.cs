@@ -4,19 +4,21 @@ using UnityEngine;
 
 public abstract class State
 {
-    protected PlayerMovementStateMachine PlayerStateMachine;
+    protected PlayerMovementStateMachine PSM;
     protected LadderSizeStateMachine LadderSizeStateMachine;
     protected Vector3 clamp;
 
 
     public State(PlayerMovementStateMachine playerStateMachine)
     {
-        PlayerStateMachine = playerStateMachine;
+        PSM = playerStateMachine;
+        LadderSizeStateMachine = playerStateMachine.ladderSizeStateMachine;
     }
 
     public State(LadderSizeStateMachine ladderSizeStateMachine)
     {
         LadderSizeStateMachine = ladderSizeStateMachine;
+        PSM = ladderSizeStateMachine.playerStateMachine;
     }
 
     public virtual void Initialize()

@@ -7041,7 +7041,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.8
-  m_Radius: 0.5
+  m_Radius: 0.38
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -7087,11 +7087,11 @@ MonoBehaviour:
   adjustedSlideDirection: 0
   dismounting: 0
   didLadderPush: 0
+  isWallJumping: 0
+  animationControllerisFoldingJumped: 0
   baseVelocity: {x: 0, y: 0, z: 0}
   bonusVelocity: {x: 0, y: 0, z: 0}
   railCheckLadderPosition: {x: 0, y: 0, z: 0}
-  isWallJumping: 0
-  animationControllerisFoldingJumped: 0
   closestRail: {fileID: 0}
   ladder: {fileID: 7511473034649444847}
   ladderSizeStateMachine: {fileID: 1529433670212845975}
@@ -7927,9 +7927,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24014b4d20f73074ca49baaa544bb360, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Cloud: {fileID: 3242846198118298042}
   player: {fileID: 7511473034388439085}
-  projector: {fileID: 3516743775578058811}
+  swingingFeedback: {fileID: 560386624884092755}
+  snappingFeedback: {fileID: 0}
 --- !u!1 &8815332780693950900
 GameObject:
   m_ObjectHideFlags: 0
@@ -9367,11 +9367,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8df16c0bab93bf4481224c9c9203dbe, type: 3}
---- !u!1 &3242846198118298042 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9174123229778434112, guid: a8df16c0bab93bf4481224c9c9203dbe, type: 3}
-  m_PrefabInstance: {fileID: 5931785066698729978}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3242846198118298041 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9174123229778434115, guid: a8df16c0bab93bf4481224c9c9203dbe, type: 3}
@@ -9515,5 +9510,10 @@ PrefabInstance:
 --- !u!4 &560386624884092752 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9174123229778434115, guid: 02c17a4c153213f40b77b58170df9bfe, type: 3}
+  m_PrefabInstance: {fileID: 8689674393217070867}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &560386624884092755 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9174123229778434112, guid: 02c17a4c153213f40b77b58170df9bfe, type: 3}
   m_PrefabInstance: {fileID: 8689674393217070867}
   m_PrefabAsset: {fileID: 0}
