@@ -6,6 +6,7 @@ public class ObjectManager : MonoBehaviour
 {
     public static ObjectManager instance;
     public PlayerMovementStateMachine pSM;
+    float test;
 
     private void Awake()
     {
