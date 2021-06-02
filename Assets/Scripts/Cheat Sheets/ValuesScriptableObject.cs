@@ -35,7 +35,16 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("How long is the time after falling of a ladder where you can still jump.")]
     public float slidingCoyoteTime = 0.2f;
     #endregion
-
+    [Space]
+    #region Ability bools
+    [Header("Ability bools")]
+    [Tooltip("Is the player able to perform a ladderPush")]
+    public bool canLadderPush = true;
+    [Tooltip("Is the player able to perform a CatapultJump")]
+    public bool canLadderFold = true;
+    [Tooltip("Is the player able to Slide")]
+    public bool canSlide = true;
+    #endregion
     [Space]
     #region movement and walking
     [Header("Movement/Walking")]
@@ -55,7 +64,6 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The factor to convert Velocity into Movementspeed")]
     public float movementVelocityFactor = 1;
     #endregion
-
     [Space]
     #region jumping and air movement
     [Header("Jumping/Air Movement")]

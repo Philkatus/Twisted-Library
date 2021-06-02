@@ -228,7 +228,7 @@ public class PlayerMovementStateMachine : StateMachine
         {
             TryToSnapToShelf();
         }
-        if (foldInputBool)
+        if (foldInputBool&&stats.canLadderFold)
         {
             if (!stats.useJumpForLadderShoot)
             {
@@ -302,6 +302,10 @@ public class PlayerMovementStateMachine : StateMachine
     {
         dragAmount = (100 - dragAmount) / 100;
         bonusVelocity *= dragAmount * Time.fixedDeltaTime;
+        if (bonusVelocity.magnitude <= Time.fixedDeltaTime)
+        {
+            bonusVelocity = Vector3.zero;
+        }
     }
 
     public void LoseBonusVelocityPercentage(float dragAmount,Vector3 axis)
@@ -310,6 +314,10 @@ public class PlayerMovementStateMachine : StateMachine
         Vector3 resultingVelocity = ExtensionMethods.resultingVelocity(bonusVelocity, axis);
         bonusVelocity -= resultingVelocity;
         resultingVelocity *= dragAmount * Time.fixedDeltaTime;
+        if (resultingVelocity.magnitude <= Time.fixedDeltaTime)
+        {
+            resultingVelocity = Vector3.zero;
+        }
         bonusVelocity += resultingVelocity;
     }
     ///<summary>

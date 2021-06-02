@@ -43,11 +43,15 @@ public class PlayerInTheAir : State
         {
             Vector3 currentDragForward = stats.jumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionForward);
             PSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
+            currentDragForward = stats.bonusVelocityDrag * ExtensionMethods.resultingVelocity(PSM.bonusVelocity, directionForward);
+            PSM.bonusVelocity -= currentDragForward * Time.fixedDeltaTime;
         }
         if (PSM.sideWaysInput == 0)
         {
-            Vector3 currentDragSideways = stats.jumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
-            PSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
+            Vector3 currentDragSideway = stats.jumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
+            PSM.baseVelocity -= currentDragSideway * Time.fixedDeltaTime;
+            currentDragSideway = stats.bonusVelocityDrag * ExtensionMethods.resultingVelocity(PSM.bonusVelocity, directionRight);
+            PSM.bonusVelocity -= currentDragSideway * Time.fixedDeltaTime;
         }
         #endregion
         PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.movementAcceleration * stats.airMovementFactor;
@@ -63,7 +67,7 @@ public class PlayerInTheAir : State
         controller.Move(PSM.playerVelocity * Time.fixedDeltaTime * stats.jumpVelocityFactor);
         if (HeadCollision())
         {
-            Debug.LogError("Bonk");
+            //Debug.LogError("Bonk");
             PSM.baseVelocity.y -= PSM.baseVelocity.y * .9f * Time.fixedDeltaTime;
             PSM.bonusVelocity.y = PSM.bonusVelocity.y * .9f * Time.fixedDeltaTime;
         }
@@ -128,75 +132,78 @@ public class PlayerInTheAir : State
 
     public override void LadderPush()
     {
-        float sphereRadius = .2f;
-        float maxHeight = stats.ladderLengthBig - sphereRadius;
-        float acceleration = stats.rocketJumpAcceleration;
+        if (stats.canLadderPush)
+        {
+            float sphereRadius = .2f;
+            float maxHeight = stats.ladderLengthBig - sphereRadius;
+            float acceleration = stats.rocketJumpAcceleration;
 
-        Vector3 origin = PSM.transform.position;
-        LayerMask mask = LayerMask.GetMask("Environment");
-        List<RaycastHit> hits = new List<RaycastHit>();
-        #region CastDown
-        if (!PSM.didLadderPush)
-        {
-            hits.AddRange(Physics.SphereCastAll(origin, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
-        }
-        float closestDistance = Mathf.Infinity;
-        RaycastHit closestHit;
-        Vector3 target = Vector3.zero;
-        for (int i = 0; i < hits.Count; i++)
-        {
-            float distance = hits[i].distance;
-            if (distance < closestDistance &&
-                Vector3.Dot(hits[i].normal, Vector3.up) >= .9f &&
-                hits[i].point != Vector3.zero)
+            Vector3 origin = PSM.transform.position;
+            LayerMask mask = LayerMask.GetMask("Environment");
+            List<RaycastHit> hits = new List<RaycastHit>();
+            #region CastDown
+            if (!PSM.didLadderPush)
             {
-                closestHit = hits[i];
-                closestDistance = distance;
-                target = closestHit.point;
-
-                // Debug.Log(hits[i].normal);
-                // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
+                hits.AddRange(Physics.SphereCastAll(origin, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
             }
-        }
-        #endregion
-        #region SideWaysCast
-
-        if (target == Vector3.zero)
-        {
-            hits = new List<RaycastHit>();
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.forward, maxHeight, mask, QueryTriggerInteraction.Ignore));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.back, maxHeight, mask, QueryTriggerInteraction.Ignore));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.right, maxHeight, mask, QueryTriggerInteraction.Ignore));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.left, maxHeight, mask, QueryTriggerInteraction.Ignore));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
+            float closestDistance = Mathf.Infinity;
+            RaycastHit closestHit;
+            Vector3 target = Vector3.zero;
             for (int i = 0; i < hits.Count; i++)
             {
                 float distance = hits[i].distance;
-                if (distance < closestDistance && !didSkewLadderPushThisState) // && !PlayerStateMachine.didLadderPushInThisState)// && Vector3.Dot(hits[i].normal, Vector3.up) <= .93f)
+                if (distance < closestDistance &&
+                    Vector3.Dot(hits[i].normal, Vector3.up) >= .9f &&
+                    hits[i].point != Vector3.zero)
                 {
                     closestHit = hits[i];
                     closestDistance = distance;
                     target = closestHit.point;
-                    didSkewLadderPushThisState = true;
-                    // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point, Color.red, 2);
+
+                    // Debug.Log(hits[i].normal);
+                    // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
                 }
             }
-        }
-        else
-        {
-            PSM.didLadderPush = true;
-        }
-        #endregion
-        if (target != Vector3.zero)
-        {
-            PlayerMovementStateMachine pSM = PSM;
-            pSM.ladderJumpTarget = target;
-            pSM.baseVelocity.y = 0;
-            pSM.foldInputBool = false;
-            //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
-            pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration;
-            //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
-            pSM.ladderSizeStateMachine.OnLadderPush();
+            #endregion
+            #region SideWaysCast
+
+            if (target == Vector3.zero)
+            {
+                hits = new List<RaycastHit>();
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.forward, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.back, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.right, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.left, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                for (int i = 0; i < hits.Count; i++)
+                {
+                    float distance = hits[i].distance;
+                    if (distance < closestDistance && !didSkewLadderPushThisState) // && !PlayerStateMachine.didLadderPushInThisState)// && Vector3.Dot(hits[i].normal, Vector3.up) <= .93f)
+                    {
+                        closestHit = hits[i];
+                        closestDistance = distance;
+                        target = closestHit.point;
+                        didSkewLadderPushThisState = true;
+                        // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point, Color.red, 2);
+                    }
+                }
+            }
+            else
+            {
+                PSM.didLadderPush = true;
+            }
+            #endregion
+            if (target != Vector3.zero)
+            {
+                PlayerMovementStateMachine pSM = PSM;
+                pSM.ladderJumpTarget = target;
+                pSM.baseVelocity.y = 0;
+                pSM.foldInputBool = false;
+                //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
+                pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration;
+                //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
+                pSM.ladderSizeStateMachine.OnLadderPush();
+            }
         }
     }
     private void InitializeVariables()
