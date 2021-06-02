@@ -96,6 +96,13 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("The maximum distance between ladder and rail to snap to the next rail while sliding.")]
     public float resnappingDistance = .5f;
+
+    [Tooltip("The angle from pathDorection to camera.forward which enables a special case where the button used to snap is saved and used to slide forward.")]
+    public float specialCaseAngleForSlidingInput = 20f;
+
+    [Tooltip("When this angle between pathDorection and camera.forward is exceeded, the buttons determining the sliding direction depend on the camera again.")]
+    public float angleToLeaveSpecialCaseSlindingInput = 45f;
+
     [Tooltip("The minumum player velocity needed to influence the snap direction.")]
     public float minVelocityToChangeSnapDirection = 1;
 

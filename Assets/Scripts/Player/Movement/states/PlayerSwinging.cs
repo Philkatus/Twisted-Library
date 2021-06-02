@@ -140,6 +140,12 @@ public class PlayerSwinging : State
     {
         SnappingOrientation();
 
+        #region Case of Camera pointing along pathDirection
+        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
+        float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
+        //Debug.LogError(angle);
+        #endregion
+
         #region Input Callbacks Sliding
         pSM.slidingInput = pSM.startingSlidingInput;
         pSM.slideLeftAction.started += context =>
@@ -556,8 +562,6 @@ public class PlayerSwinging : State
         ladder.transform.position = startingPoint;
         Vector3 startingNormal = path.GetNormalAtDistance(currentDistance);
 
-
-
         //evtl. fuer spaeter noch wichtig wenn ich nochmal versuche das ganze velocity base zu machen
         if (railType == Rail.RailType.TwoSided && pSM.playerVelocity.magnitude >= stats.minVelocityToChangeSnapDirection)
         {
@@ -619,7 +623,6 @@ public class PlayerSwinging : State
         pSM.ladderSizeStateMachine.ladderLength = Vector3.Distance(pSM.transform.position, startingPoint);
         pSM.ladderSizeStateMachine.OnSnap();
 
-
         #endregion
         #region PlayerPlacement
         pSM.HeightOnLadder = -1;
@@ -642,7 +645,6 @@ public class PlayerSwinging : State
     #region SLIDING Functions
     void SlidingMovement()
     {
-
         if (!holdingRightSlideButton && !holdingLeftSlideButton)
         {
             SwitchSlidingDirectionWithCameraRotation();
