@@ -46,9 +46,15 @@ public class Marble_Shader : MonoBehaviour
         if (distance >= objectLengths[track])
         {
             localDistance = 1;
-            currentTrackIndex++;
+            if (currentTrackIndex < tracks.Length - 2)
+                currentTrackIndex++;
+            else
+                ResetRail();
         }
 
         assigendMaterials[track].SetFloat("Float_BallDistance", localDistance);
+    }
+    private void ResetRail()
+    {
     }
 }
