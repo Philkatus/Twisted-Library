@@ -120,12 +120,6 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The factor that determines how much the height on the ladder changes the velocity of the rail catapult jump.")]
     [Range(0f, 1)] public float heightOnLadderKatapulFactor = .2f;
 
-    [Tooltip("How fast the player accelerates to current sliding speed level.")]
-    public float slidingAcceleration = 0.2f;
-
-    [Tooltip("How fast the player decelarates to lover speed level or comes to a halt while sliding.")]
-    public float slidingDecelaration = 0.2f;
-
     [Space]
     [Tooltip("The (animation) speed for the player coming off the ladder on the top while sliding.")]
     public float ladderDismountSpeed;
@@ -144,6 +138,12 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("The sliding speed for each speed level.")]
     public List<float> speedLevels;
+
+    [Tooltip("How fast the player accelerates to current sliding speed level.")]
+    public float slidingTimeToAccelerate = 0.7f;
+
+    [Tooltip("How fast the player decelarates to lower speed level or comes to a halt while sliding.")]
+    public float slidingTimeToDecelerate = 0.2f;
 
     [Tooltip("The time needed for the player to slow down and start sliding in the opposite direction.")]
     public float timeToSwitchDirection;
