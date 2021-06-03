@@ -7041,7 +7041,7 @@ CharacterController:
   m_Enabled: 1
   serializedVersion: 2
   m_Height: 1.8
-  m_Radius: 0.38
+  m_Radius: 0.35
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
@@ -7231,16 +7231,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 254830678a8340a4aa5252a9d9bbd6c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ladderLengthBig: 4
-  ladderLengthSmall: 1.25
-  foldSpeed: 0.2
-  foldJumpMultiplier: 16
-  reversedFoldJumpMulitplier: 17
-  extraFoldJumpTimer: 0.5
   ladderLength: 0
   isFoldingUp: 0
   isUnFolding: 0
-  startFoldingUpPos: {x: 0, y: 0, z: 0}
   playerStateMachine: {fileID: 5224045388643823046}
   ladderParent: {fileID: 3407637921710111903}
 --- !u!1 &7754077919433205827
@@ -7929,7 +7922,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 7511473034388439085}
   swingingFeedback: {fileID: 560386624884092755}
-  snappingFeedback: {fileID: 0}
 --- !u!1 &8815332780693950900
 GameObject:
   m_ObjectHideFlags: 0

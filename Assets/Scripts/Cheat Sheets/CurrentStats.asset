@@ -14,21 +14,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useJumpForLadderShoot: 1
   useTriggerToSlideWithMomentum: 1
-  bonusVelocityDrag: 22
+  bonusVelocityDrag: 0.1
   jumpInputTimer: 0.5
   snapInputTimer: 0.5
   foldInputTimer: 0.5
   swingInputTimer: 0
   slidingCoyoteTime: 0.2
+  canLadderPush: 1
+  canLadderFold: 1
+  canSlide: 1
   movementAcceleration: 50
   maximumMovementSpeed: 20
   movementDrag: 15
-  walkingBonusVelocityDrag: 0.1
+  walkingBonusVelocityDrag: 0.01
   movementVelocityFactor: 1
   jumpHeight: 20
   maxJumpingSpeedUp: 20
   maxJumpingSpeedForward: 8
-  rocketJumpAcceleration: 30
+  rocketJumpAcceleration: 20
   wallJump: {x: 0, y: 12, z: 6}
   airMovementFactor: 0.5
   jumpingDrag: 2
@@ -37,24 +40,23 @@ MonoBehaviour:
   jumpVelocityFactor: 1
   snappingDistance: 5
   resnappingDistance: 0.5
+  specialCaseAngleForSlidingInput: 20
+  angleToLeaveSpecialCaseSlindingInput: 45
   minVelocityToChangeSnapDirection: 1
   climbingSpeedOnLadder: 1
   heightOnLadderKatapulFactor: 0.2
   slidingAcceleration: 500
-  maxSlidingSpeed: 100
-  slidingSpeedSizeFactor: 1
-  slidingDragPercentage: 3
+  slidingDecelaration: 0.2
   ladderDismountSpeed: 1.5
   ladderDismountTimer: 0.2
-  slidingVelocityFactor: 0.001
   preservesVelocityOnSnap: 0
   fallingMomentumPercentage: 0
   playerOffsetFromLadder: 0
   speedLevels:
   - 0
   - 8
-  - 30
-  - 50
+  - 20
+  - 40
   timeToSwitchDirection: 0.4
   accelerationCooldown: 0.3
   swingingAcceleration: 2000
@@ -71,5 +73,5 @@ MonoBehaviour:
   ladderLengthSmall: 1.25
   foldingTime: 0.2
   extraFoldingTime: 0.5
-  railCatapultJumpMultiplier: 17
-  reversedRailCatapultJumpMultiplier: 17
+  railCatapultJumpMultiplier: 15
+  reversedRailCatapultJumpMultiplier: 15
