@@ -739,7 +739,7 @@ public class PlayerSwinging : State
                     currentSlidingLevel = 0;
                     currentSlidingLevelSpeed = stats.speedLevels[0];
                 }
-                Debug.LogError(currentSlidingSpeed);
+                //Debug.LogError(currentSlidingSpeed);
 
                 pSM.currentDistance += currentSlidingSpeed * pSM.slidingInput * Time.fixedDeltaTime;
                 pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
@@ -786,7 +786,7 @@ public class PlayerSwinging : State
                             else
                             {
                                 pSM.coyoteTimer = 0;
-                                pSM.bonusVelocity += stats.fallingMomentumPercentage * pSM.playerVelocity;
+                                pSM.bonusVelocity += stats.fallingMomentumPercentage * currentSlidingLevelSpeed*pathDirection*pSM.slidingInput;
                                 pSM.OnFall();
                             }
                         }
@@ -1038,8 +1038,13 @@ public class PlayerSwinging : State
         #region Finish Sliding
         pSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
-        yield break;
         #endregion
+        pSM.baseVelocity *= stats.swingingVelocityFactor;
+        pSM.bonusVelocity *= stats.swingingVelocityFactor;
+
+
+
+        yield break;
     }
     public PlayerSwinging(PlayerMovementStateMachine playerStateMachine)
     : base(playerStateMachine)

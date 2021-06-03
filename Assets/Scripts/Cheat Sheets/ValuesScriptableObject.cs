@@ -213,6 +213,9 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("How fast the player decelarates to lover speed level or comes to a halt while sliding.")]
     public float slidingDecelaration = 0.2f;
 
+    [Tooltip("A Factor to multiplay the playerVelocity with while sliding without changing its speed")]
+    public float slidingVelocityFactor = 1;
+
     [Space]
     [Tooltip("The (animation) speed for the player coming off the ladder on the top while sliding.")]
     public float ladderDismountSpeed;
