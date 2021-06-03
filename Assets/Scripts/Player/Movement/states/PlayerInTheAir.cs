@@ -19,10 +19,10 @@ public class PlayerInTheAir : State
     public override void Initialize()
     {
         InitializeVariables();
-        float y = Mathf.Clamp(PSM.baseVelocity.y, -stats.maxFallingSpeed, stats.maxJumpingSpeedUp);
+        float y = Mathf.Clamp(PSM.baseVelocity.y, -stats.MaxFallingSpeed, stats.MaxJumpingSpeedUp);
         PSM.baseVelocity.y = 0;
         Vector3 startBaseVelocity = PSM.baseVelocity;
-        PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.maxJumpingSpeedForward);
+        PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaxJumpingSpeedForward);
         PSM.bonusVelocity += startBaseVelocity - PSM.baseVelocity;
         PSM.baseVelocity.y = y;
     }
@@ -41,20 +41,20 @@ public class PlayerInTheAir : State
         #region Drag When No Input
         if (PSM.forwardInput == 0)
         {
-            Vector3 currentDragForward = stats.jumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionForward);
+            Vector3 currentDragForward = stats.JumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionForward);
             PSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
             currentDragForward = stats.bonusVelocityDrag * ExtensionMethods.resultingVelocity(PSM.bonusVelocity, directionForward);
             PSM.bonusVelocity -= currentDragForward * Time.fixedDeltaTime;
         }
         if (PSM.sideWaysInput == 0)
         {
-            Vector3 currentDragSideway = stats.jumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
+            Vector3 currentDragSideway = stats.JumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
             PSM.baseVelocity -= currentDragSideway * Time.fixedDeltaTime;
             currentDragSideway = stats.bonusVelocityDrag * ExtensionMethods.resultingVelocity(PSM.bonusVelocity, directionRight);
             PSM.bonusVelocity -= currentDragSideway * Time.fixedDeltaTime;
         }
         #endregion
-        PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.movementAcceleration * stats.airMovementFactor;
+        PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.AirMovementAcceleration;
 
         //when wall jump occured, set the isWallJumping to false after 1 sec
         wallJumpingTime += Time.fixedDeltaTime;
@@ -64,7 +64,7 @@ public class PlayerInTheAir : State
         }
         GravityAndClamp();
 
-        controller.Move(PSM.playerVelocity * Time.fixedDeltaTime * stats.jumpVelocityFactor);
+        controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.AirVelocityFactor);
         if (HeadCollision())
         {
             //Debug.LogError("Bonk");
@@ -82,16 +82,16 @@ public class PlayerInTheAir : State
     void GravityAndClamp()
     {
 
-        PSM.bonusVelocity.y -= stats.gravity * Time.fixedDeltaTime;
+        PSM.bonusVelocity.y -= stats.Gravity * Time.fixedDeltaTime;
         if (PSM.bonusVelocity.y <= 0)
         {
             PSM.baseVelocity.y += PSM.bonusVelocity.y;
             PSM.bonusVelocity.y = 0;
         }
 
-        float ClampedVelocityY = Mathf.Clamp(PSM.baseVelocity.y, -stats.maxFallingSpeed, stats.maxJumpingSpeedUp);
+        float ClampedVelocityY = Mathf.Clamp(PSM.baseVelocity.y, -stats.MaxFallingSpeed, stats.MaxJumpingSpeedUp);
         PSM.baseVelocity.y = 0;
-        PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.maxJumpingSpeedForward);
+        PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaxJumpingSpeedForward);
         PSM.baseVelocity.y = ClampedVelocityY;
     }
 
@@ -116,12 +116,12 @@ public class PlayerInTheAir : State
                 fromWallVector = fromWallVector * stats.wallJump.z;
                 Vector3 fromWallValued = new Vector3(fromWallVector.x, stats.wallJump.y, fromWallVector.z);
                 PSM.playerVelocity += fromWallValued;
-                PSM.baseVelocity.y += stats.jumpHeight;
+                PSM.baseVelocity.y += stats.JumpHeight;
                 PSM.isWallJumping = true;
             }
             else
             {
-                PSM.baseVelocity.y += stats.jumpHeight;
+                PSM.baseVelocity.y += stats.JumpHeight;
             }
 
             PSM.coyoteTimer = stats.slidingCoyoteTime;
@@ -136,7 +136,7 @@ public class PlayerInTheAir : State
         {
             float sphereRadius = .2f;
             float maxHeight = stats.ladderLengthBig - sphereRadius;
-            float acceleration = stats.rocketJumpAcceleration;
+            float acceleration = stats.LadderPushAcceleration;
 
             Vector3 origin = PSM.transform.position;
             LayerMask mask = LayerMask.GetMask("Environment");

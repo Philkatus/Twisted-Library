@@ -50,16 +50,45 @@ public class ValuesScriptableObject : ScriptableObject
     [Header("Movement/Walking")]
     [Tooltip("How fast the player accelerates to maximum speed while walking.")]
     public float movementAcceleration;
+    public float MovementAcceleration 
+    {
+        get 
+        {
+            return movementAcceleration * movementVelocityFactor;
+        }
+    }
 
     [Tooltip("How fast the player can move while walking and in the air at max.")]
     public float maximumMovementSpeed;
 
+    public float MaximumMovementSpeed
+    {
+        get
+        {
+            return maximumMovementSpeed * movementVelocityFactor;
+        }
+    }
+
     [Tooltip("How much drag is applied when there is no input while walking.")]
     public float movementDrag;
+    public float MovementDrag
+    {
+        get
+        {
+            return movementDrag * movementVelocityFactor;
+        }
+    }
 
     [Tooltip("How much percentag drag to the bonusvelocity is applied while walking.")]
     [Range(0, 100)]
     public float walkingBonusVelocityDrag = 50;
+    public float WalkingBonusVelocityDrag
+    {
+        get
+        {
+            return walkingBonusVelocityDrag * movementVelocityFactor;
+        }
+    }
 
     [Tooltip("The factor to convert Velocity into Movementspeed")]
     public float movementVelocityFactor = 1;
@@ -69,31 +98,89 @@ public class ValuesScriptableObject : ScriptableObject
     [Header("Jumping/Air Movement")]
     [Tooltip("How high the player jumps.")]
     public float jumpHeight;
+    public float JumpHeight 
+    {
+        get 
+        {
+            return jumpHeight * AirVelocityFactor;
+        }
+    }
+
 
     [Tooltip("To put a clamp on the upwards velocity")]
-    public float maxJumpingSpeedUp = 15;
+    public float maxJumpingSpeed = 15;
+    public float MaxJumpingSpeedUp
+    {
+        get
+        {
+            return maxJumpingSpeed * AirVelocityFactor;
+        }
+    }
 
     [Tooltip("To put a clamp on the fowards and sidewards velocity")]
-    public float maxJumpingSpeedForward = 10;
+    public float maxJumpingSpeedForward;
+    public float MaxJumpingSpeedForward
+    {
+        get
+        {
+            return maxJumpingSpeedForward * AirVelocityFactor;
+        }
+    }
 
     [Tooltip("How fast the player accelerates with the rocketJump.")]
-    public float rocketJumpAcceleration;
+    public float ladderPushAcceleration;
+    public float LadderPushAcceleration
+    {
+        get
+        {
+            return ladderPushAcceleration * AirVelocityFactor;
+        }
+    }
 
     [Tooltip("Direction of the jump when facing the wall.")]
     public Vector3 wallJump;
 
     [Tooltip("Limits the movement speed for the air movement.")]
-    [Range(.1f, 1)] public float airMovementFactor;
-    public float jumpingDrag;
+    public float airMovementAcceleration;
+    public float AirMovementAcceleration
+    {
+        get
+        {
+            return airMovementAcceleration * AirVelocityFactor;
+        }
+    }
 
+    [Tooltip("How much drag in the air is applied while no input is given")]
+    public float jumpingDrag;
+    public float JumpingDrag
+    {
+        get
+        {
+            return jumpingDrag * AirVelocityFactor;
+        }
+    }
     [Tooltip("...is working against me.")]
     public float gravity;
+    public float Gravity
+    {
+        get
+        {
+            return gravity * AirVelocityFactor;
+        }
+    }
 
     [Tooltip("even gravity has its limits.")]
-    public float maxFallingSpeed = 40;
+    public float maxFallingSpeed;
+    public float MaxFallingSpeed
+    {
+        get
+        {
+            return maxFallingSpeed * AirVelocityFactor;
+        }
+    }
 
     [Tooltip("The factor to convert Velocity into air-Movementspeed")]
-    public float jumpVelocityFactor = 1;
+    public float AirVelocityFactor = 1;
 
     #endregion
     [Space]

@@ -627,7 +627,7 @@ public class PlayerSwinging : State
     void SetCurrentPlayerVelocity(Vector3 pivot_p)
     {
         // Set currentMovement Force
-        float maxJumpSpeed = stats.maximumMovementSpeed * stats.jumpingDrag;
+        float maxJumpSpeed = stats.MaximumMovementSpeed * stats.JumpingDrag;
         float playerHeightOnLadder = (pivot_p - pSM.transform.position).magnitude;
 
         playerHeightOnLadder = ExtensionMethods.Remap(playerHeightOnLadder, 0, ropeLength, 0.1f, 1);
@@ -676,12 +676,12 @@ public class PlayerSwinging : State
                 fromWallVector = fromWallVector * stats.wallJump.z;
                 Vector3 fromWallValued = new Vector3(fromWallVector.x, stats.wallJump.y, fromWallVector.z);
                 PSM.playerVelocity += fromWallValued;
-                PSM.baseVelocity.y += stats.jumpHeight;
+                PSM.baseVelocity.y += stats.JumpHeight;
                 PSM.isWallJumping = true;
             }
             else
             {
-                PSM.baseVelocity.y += stats.jumpHeight;
+                PSM.baseVelocity.y += stats.JumpHeight;
             }
             shouldRetainSwingVelocity = true;
             PSM.OnFall();
@@ -1026,7 +1026,7 @@ public class PlayerSwinging : State
         if (shouldRetainSwingVelocity)
         {
             pSM.bonusVelocity += (currentMovement + Vector3.up * 1.1f).normalized * (currentMovement.magnitude * stats.swingingVelocityFactor);
-            pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
+            pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.MaximumMovementSpeed);
         }
         else
         {
