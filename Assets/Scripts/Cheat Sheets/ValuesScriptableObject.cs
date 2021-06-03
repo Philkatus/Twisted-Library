@@ -290,8 +290,24 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("The factor by which the jumping speed is mutliplied when a rail catapult jump is performed.")]
     public float railCatapultJumpMultiplier = 17;
+    public float RailCatapultJumpMultiplier 
+    {
+        get 
+        {
+            return railCatapultJumpMultiplier * AirVelocityFactor;
+        }
+
+    }
 
     [Tooltip("The factor by which the jumping speed is mutliplied when a reversed rail catapult jump is performed.")]
-    public float reversedRailCatapultJumpMultiplier = 17;
+    public float reversedRailCatapultJumpMultiplier;
+    public float ReversedRailCatapultJumpMultiplier
+    {
+        get
+        {
+            return reversedRailCatapultJumpMultiplier * AirVelocityFactor;
+        }
+
+    }
     #endregion
 }
