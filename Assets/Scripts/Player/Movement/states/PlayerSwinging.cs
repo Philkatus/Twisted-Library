@@ -1076,7 +1076,7 @@ public class PlayerSwinging : State
         SetCurrentPlayerVelocity(Pivot.transform.position);
         if (shouldRetainSwingVelocity)
         {
-            pSM.bonusVelocity += (currentMovement + Vector3.up * 1.1f).normalized * (currentMovement.magnitude * stats.swingingVelocityFactor);
+            pSM.bonusVelocity += (currentMovement + Vector3.up * 1.1f).normalized * currentMovement.magnitude;
             pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.MaximumMovementSpeed);
         }
         else
@@ -1090,8 +1090,6 @@ public class PlayerSwinging : State
         pSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
         #endregion
-        pSM.baseVelocity *= stats.swingingVelocityFactor;
-        pSM.bonusVelocity *= stats.swingingVelocityFactor;
 
 
 

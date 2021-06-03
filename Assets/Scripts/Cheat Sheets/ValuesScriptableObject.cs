@@ -271,8 +271,6 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("How fast the player decelerates while swinging without giving an input.")]
     public float swingingGravity;
 
-    [Tooltip("The factor to convert swinging velocity into in the air speed after jumping.")]
-    public float swingingVelocityFactor = 1;
     #endregion
 
     #region ladder
