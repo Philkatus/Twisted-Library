@@ -25,19 +25,19 @@ MonoBehaviour:
   canSlide: 1
   movementAcceleration: 50
   maximumMovementSpeed: 20
-  movementDrag: 15
+  movementDrag: 12
   walkingBonusVelocityDrag: 0.01
-  movementVelocityFactor: 1
+  movementVelocityFactor: 2
   jumpHeight: 20
-  maxJumpingSpeedUp: 25
+  maxJumpingSpeed: 25
   maxJumpingSpeedForward: 8
-  rocketJumpAcceleration: 25
+  ladderPushAcceleration: 30
   wallJump: {x: 0, y: 12, z: 6}
-  airMovementFactor: 0.5
+  airMovementAcceleration: 50
   jumpingDrag: 2
   gravity: 60
   maxFallingSpeed: 25
-  jumpVelocityFactor: 1
+  AirVelocityFactor: 2
   snappingDistance: 5
   resnappingDistance: 0.5
   specialCaseAngleForSlidingInput: 20
@@ -45,18 +45,18 @@ MonoBehaviour:
   minVelocityToChangeSnapDirection: 1
   climbingSpeedOnLadder: 1
   heightOnLadderKatapulFactor: 0.2
-  slidingAcceleration: 500
-  slidingDecelaration: 0.2
   ladderDismountSpeed: 1.5
   ladderDismountTimer: 0.2
   preservesVelocityOnSnap: 0
-  fallingMomentumPercentage: 0
+  fallingMomentumPercentage: 1
   playerOffsetFromLadder: 0
   speedLevels:
   - 0
-  - 8
-  - 20
-  - 40
+  - 1
+  - 5
+  - 15
+  slidingTimeToAccelerate: 0.7
+  slidingTimeToDecelerate: 0.2
   timeToSwitchDirection: 0.4
   accelerationCooldown: 0.3
   swingingAcceleration: 2000
@@ -68,10 +68,9 @@ MonoBehaviour:
   maxPushAngle: 0.1
   maxSwingSpeed: 45
   swingingGravity: 70
-  swingingVelocityFactor: 0.8
   ladderLengthBig: 4
   ladderLengthSmall: 1.25
   foldingTime: 0.2
   extraFoldingTime: 0.6
-  railCatapultJumpMultiplier: 17
-  reversedRailCatapultJumpMultiplier: 17
+  railCatapultJumpMultiplier: 15
+  reversedRailCatapultJumpMultiplier: 15
