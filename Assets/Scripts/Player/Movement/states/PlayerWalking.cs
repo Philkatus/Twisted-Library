@@ -39,23 +39,23 @@ public class PlayerWalking : State
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
 
-        Vector3 direction = directionForward * PSM.forwardInput + directionRight * PSM.sideWaysInput;
+        Vector3 direction = (directionForward * PSM.forwardInput + directionRight * PSM.sideWaysInput).normalized;
 
         if (direction != Vector3.zero)
         {
             controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
         }
-        PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.movementAcceleration;
+        PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.MovementAcceleration;
 
         #region Drag When No Input
         if (PSM.forwardInput == 0)
         {
-            Vector3 currentDragForward = stats.movementDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionForward);
+            Vector3 currentDragForward = stats.MovementDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionForward);
             PSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
         }
         if (PSM.sideWaysInput == 0)
         {
-            Vector3 currentDragSideways = stats.movementDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
+            Vector3 currentDragSideways = stats.MovementDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
             PSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
         #endregion
@@ -73,11 +73,14 @@ public class PlayerWalking : State
 
         #endregion
 
-        PSM.baseVelocity.y -= stats.gravity * Time.fixedDeltaTime;
-        PSM.baseVelocity = ExtensionMethods.ClampPlayerVelocity(PSM.baseVelocity, Vector3.down, stats.maxFallingSpeed);
-        PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
-        PSM.LoseBonusVelocityPercentage(stats.walkingBonusVelocityDrag);
-        controller.Move(PSM.playerVelocity * Time.fixedDeltaTime * stats.movementVelocityFactor);
+        PSM.baseVelocity.y -= stats.Gravity * Time.fixedDeltaTime;
+        PSM.baseVelocity = ExtensionMethods.ClampPlayerVelocity(PSM.baseVelocity, Vector3.down, stats.MaxFallingSpeed);
+        float y = PSM.baseVelocity.y;
+        PSM.baseVelocity.y = 0;
+        PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaximumMovementSpeed);
+        PSM.baseVelocity.y = y;
+        PSM.LoseBonusVelocityPercentage(stats.WalkingBonusVelocityDrag);
+        controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.movementVelocityFactor);
 
         if (isGroundedWithCoyoteTime())
         {
@@ -100,7 +103,7 @@ public class PlayerWalking : State
 
     public override void Jump()
     {
-        base.PSM.baseVelocity.y = stats.jumpHeight;
+        base.PSM.baseVelocity.y = stats.JumpHeight;
         base.PSM.jumpInputBool = false;
         base.PSM.OnFall();
     }

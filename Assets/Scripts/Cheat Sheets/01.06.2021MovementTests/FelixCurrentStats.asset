@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f06406a2f87f5a64781d8f07d19cd6c6, type: 3}
+  m_Name: FelixCurrentStats
+  m_EditorClassIdentifier: 
+  useJumpForLadderShoot: 1
+  useTriggerToSlideWithMomentum: 1
+  bonusVelocityDrag: 0.1
+  jumpInputTimer: 0.5
+  snapInputTimer: 0.5
+  foldInputTimer: 0.5
+  swingInputTimer: 0.5
+  slidingCoyoteTime: 0.5
+  canLadderPush: 1
+  canLadderFold: 1
+  canSlide: 1
+  movementAcceleration: 50
+  maximumMovementSpeed: 15
+  movementDrag: 12
+  walkingBonusVelocityDrag: 0.01
+  movementVelocityFactor: 1
+  jumpHeight: 22
+  maxJumpingSpeed: 25
+  maxJumpingSpeedForward: 10
+  ladderPushAcceleration: 30
+  wallJump: {x: 0, y: 40, z: 6}
+  airMovementAcceleration: 50
+  jumpingDrag: 3
+  gravity: 60
+  maxFallingSpeed: 25
+  AirVelocityFactor: 1
+  snappingDistance: 5
+  resnappingDistance: 0.5
+  specialCaseAngleForSlidingInput: 20
+  angleToLeaveSpecialCaseSlindingInput: 45
+  minVelocityToChangeSnapDirection: 1
+  climbingSpeedOnLadder: 1
+  heightOnLadderKatapulFactor: 0.2
+  ladderDismountSpeed: 1.5
+  ladderDismountTimer: 0.2
+  preservesVelocityOnSnap: 0
+  fallingMomentumPercentage: 1
+  playerOffsetFromLadder: 0
+  speedLevels:
+  - 0
+  - 1
+  - 7
+  - 15
+  slidingTimeToAccelerate: 0.7
+  slidingTimeToDecelerate: 0.2
+  timeToSwitchDirection: 0.4
+  accelerationCooldown: 0.3
+  swingingAcceleration: 2000
+  minSwingingDeceleration: 0.0075
+  maxSwingingDeceleration: 0.031
+  minHangingDeceleration: 0.001
+  maxHangingDeceleration: 0.0405
+  hangingAccelerationFactor: 0.7
+  maxPushAngle: 0.1
+  maxSwingSpeed: 45
+  swingingGravity: 70
+  ladderLengthBig: 4
+  ladderLengthSmall: 1.25
+  foldingTime: 0.2
+  extraFoldingTime: 0.6
+  railCatapultJumpMultiplier: 15
+  reversedRailCatapultJumpMultiplier: 15
