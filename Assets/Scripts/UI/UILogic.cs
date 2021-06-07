@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class UILogic : MonoBehaviour
 {
@@ -11,11 +12,22 @@ public class UILogic : MonoBehaviour
     InputActionMap UIControlsMap;
     InputAction escape;
     InputAction escapeUI;
-    public GameObject controls;
+    public GameObject options;
     public GameObject controller;
     public GameObject keyboard;
+
     bool usesNewSliding;
     bool controlsActive = false;
+
+    [SerializeField] Camera startCamera;
+    [SerializeField] Camera playCamera;
+
+    public List<GameObject> uiElements;
+    bool startGotPressed = false;
+    float timer = 0;
+
+    
+
 
     private void Start()
     {
@@ -36,7 +48,45 @@ public class UILogic : MonoBehaviour
         escapeUI = UIControlsMap.FindAction("Escape");
         escapeUI.performed += context => ShowControls();
         playerControlsMap.Disable();
-        UIControlsMap.Enable();
+        UIControlsMap.Enable();        
+    }
+
+    private void Update()
+    {
+        if (startGotPressed)
+        {
+            timer += Time.deltaTime;
+
+            Vector3 designatedPosition = GameObject.Find("PLAY").GetComponent<RectTransform>().position;
+            foreach (GameObject g in uiElements)
+            {
+                if (g.tag != "PLAY")
+                {
+                    g.GetComponent<Image>().CrossFadeAlpha(0,.4f, false);
+                    g.transform.position = Vector3.Lerp(g.transform.position, designatedPosition, .01f);
+
+                    /*if (g.transform.position == designatedPosition)
+                    {
+                        startGotPressed = false;
+                        Debug.Log("AHHHHHHHHHHHH");
+                    }*/
+                }
+                else
+                {
+                    g.transform.localScale = Vector3.Lerp(g.transform.localScale, new Vector3(g.transform.localScale.x * 1.5f, g.transform.localScale.y * 1.5f, g.transform.localScale.z * 1.5f), .01f);
+                    g.GetComponent<Image>().CrossFadeAlpha(0, .6f, false);
+                }
+            }
+            startCamera.transform.position = Vector3.Lerp(startCamera.transform.position, playCamera.transform.position, .01f);
+            startCamera.transform.rotation = Quaternion.Lerp(startCamera.transform.rotation, playCamera.transform.rotation, .01f);
+
+            if(timer >= 3f)
+            {
+                timer = 0;
+                startGotPressed = false;
+                startCamera.enabled = false;
+            }
+        }
     }
 
     void ShowControls()
@@ -49,7 +99,7 @@ public class UILogic : MonoBehaviour
             playerControlsMap.Enable();
             Cursor.lockState = CursorLockMode.Locked;
             playerControlsMap.Enable();
-            controls.SetActive(false);
+            options.SetActive(false);
             controlsActive = false;
         }
         else
@@ -57,23 +107,30 @@ public class UILogic : MonoBehaviour
             UIControlsMap.Enable();
             Cursor.lockState = CursorLockMode.None;
             playerControlsMap.Disable();
-            controls.SetActive(true);
+            options.SetActive(true);
             controlsActive = true;
         }
     }
 
     public void Resume()
     {
-        playerControlsMap.Enable();
+        startGotPressed = true;
+
+        /*playerControlsMap.Enable();
         Cursor.lockState = CursorLockMode.Locked;
         playerControlsMap.Enable();
         controls.SetActive(false);
-        controlsActive = false;
+        controlsActive = false;*/
     }
 
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void Options()
+    {
+        options.SetActive(true);
     }
 
     public void ShowControllerControls()
