@@ -6,9 +6,11 @@ using UnityEngine.InputSystem;
 public class PlayerWalking : State
 {
     CharacterController controller;
+    Transform ladder;
     ValuesScriptableObject stats;
-    float coyoteTime = 0.1f;
-    float coyoteTimer = 0;
+    float coyoteTime = 0.1f,
+        coyoteTimer = 0,
+        speedDeadzone = 0.1f;
 
     public PlayerWalking(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
@@ -17,79 +19,72 @@ public class PlayerWalking : State
 
     public override void Initialize()
     {
-        controller = PlayerStateMachine.controller;
-        controller.transform.SetParent(PlayerStateMachine.myParent);
-        PlayerStateMachine.ladder.transform.localScale = new Vector3(1, 1, 1);
-        controller.transform.localScale = new Vector3(1, 1, 1);
-        PlayerStateMachine.ladder.transform.SetParent(PlayerStateMachine.animController.spine);
-        PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
-        PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
+        ladder = PSM.ladder;
+        controller = PSM.controller;
 
-        stats = PlayerStateMachine.stats;
+        controller.transform.SetParent(base.PSM.myParent);
+        ladder.transform.localScale = new Vector3(1, 1, 1);
+        controller.transform.localScale = new Vector3(1, 1, 1);
+        ladder.transform.SetParent(base.PSM.animController.spine);
+        ladder.localPosition = PSM.ladderWalkingPosition;
+        ladder.localRotation = PSM.ladderWalkingRotation;
+
+        stats = base.PSM.stats;
     }
 
     public override void Movement()
     {
+        //  Forward aus der Kamera bekommen
         Transform cam = Camera.main.transform;
-        PlayerMovementStateMachine pSM = PlayerStateMachine;
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
-        Vector3 direction = directionForward * pSM.forwardInput + directionRight * pSM.sideWaysInput;
 
-        /* Philips snapping
-        if(pSM.slidingInput!=0 || pSM.swingingInput !=0)
-        {
-            pSM.TryToSnapToShelf();
-        }
-        */
+        Vector3 direction = (directionForward * PSM.forwardInput + directionRight * PSM.sideWaysInput).normalized;
 
         if (direction != Vector3.zero)
         {
             controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
         }
+        PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.MovementAcceleration;
 
-        pSM.baseVelocity += direction * Time.fixedDeltaTime * stats.movementAcceleration;
-        #region apply drag when no input is applied
-        if (pSM.forwardInput == 0)
+        #region Drag When No Input
+        if (PSM.forwardInput == 0)
         {
-            Vector3 currentDragForward = stats.movementDrag * pSM.resultingVelocity(pSM.baseVelocity, directionForward);
-            pSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
-
+            Vector3 currentDragForward = stats.MovementDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionForward);
+            PSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
         }
-        if (pSM.sideWaysInput == 0)
+        if (PSM.sideWaysInput == 0)
         {
-            Vector3 currentDragSideways = stats.movementDrag * pSM.resultingVelocity(pSM.baseVelocity, directionRight);
-            pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
+            Vector3 currentDragSideways = stats.MovementDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
+            PSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
         #endregion
 
-        #region rounding the play velocity down if close to 0
-        if (pSM.baseVelocity.x >= -.1f && pSM.baseVelocity.x <= .1f)
+        #region Speed Deadzone
+
+        if (PSM.baseVelocity.x >= -speedDeadzone && PSM.baseVelocity.x <= speedDeadzone)
         {
-            pSM.baseVelocity.x = 0;
+            PSM.baseVelocity.x = 0;
         }
-        if (pSM.baseVelocity.z >= -.1f && pSM.baseVelocity.z <= .1f)
+        if (PSM.baseVelocity.z >= -speedDeadzone && PSM.baseVelocity.z <= speedDeadzone)
         {
-            pSM.baseVelocity.z = 0;
+            PSM.baseVelocity.z = 0;
         }
 
         #endregion
-        /*
-        float currentDrag = pSM.movementDrag + pSM.playerVelocity.magnitude * .999f;
-        pSM.playerVelocity.x = pSM.playerVelocity.normalized.x * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
-        pSM.playerVelocity.z = pSM.playerVelocity.normalized.z * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
-        */
 
-
-        PlayerStateMachine.baseVelocity.y -= stats.gravity * Time.fixedDeltaTime;
-        pSM.baseVelocity = pSM.ClampPlayerVelocity(pSM.baseVelocity, Vector3.down, stats.maxFallingSpeed);
-        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
-        pSM.looseBonusVelocityPercentage(stats.walkingBonusVelocityDrag);
-        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * stats.movementVelocityFactor);
+        PSM.baseVelocity.y -= stats.Gravity * Time.fixedDeltaTime;
+        PSM.baseVelocity = ExtensionMethods.ClampPlayerVelocity(PSM.baseVelocity, Vector3.down, stats.MaxFallingSpeed);
+        float y = PSM.baseVelocity.y;
+        PSM.baseVelocity.y = 0;
+        PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaximumMovementSpeed);
+        PSM.baseVelocity.y = y;
+        PSM.LoseBonusVelocityPercentage(stats.WalkingBonusVelocityDrag);
+        controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.movementVelocityFactor);
 
         if (isGroundedWithCoyoteTime())
         {
-            pSM.OnFall();
+            PSM.OnFall();
         }
     }
 
@@ -108,14 +103,15 @@ public class PlayerWalking : State
 
     public override void Jump()
     {
-        PlayerStateMachine.baseVelocity.y = stats.jumpHeight;
-        PlayerStateMachine.jumpInputBool = false;
-        PlayerStateMachine.OnFall();
+        base.PSM.baseVelocity.y = stats.JumpHeight;
+        base.PSM.jumpInputBool = false;
+        base.PSM.OnFall();
     }
 
     public override void Snap()
     {
-        PlayerStateMachine.OnSnap();
+        base.PSM.OnSnap();
 
     }
+
 }

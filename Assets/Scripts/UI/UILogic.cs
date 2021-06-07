@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 public class UILogic : MonoBehaviour
 {
-    public PlayerMovementStateMachine pSM;
     InputActionAsset iaa;
     InputActionMap playerControlsMap;
     InputActionMap UIControlsMap;
@@ -15,8 +14,6 @@ public class UILogic : MonoBehaviour
     public GameObject options;
     public GameObject controller;
     public GameObject keyboard;
-
-    bool usesNewSliding;
     bool controlsActive = false;
 
     [SerializeField] Camera startCamera;
@@ -31,17 +28,8 @@ public class UILogic : MonoBehaviour
 
     private void Start()
     {
-        iaa = pSM.actionAsset;
-        usesNewSliding = pSM.stats.useNewSliding;
-        Cursor.lockState = CursorLockMode.Locked;
-        if (usesNewSliding)
-        {
-            playerControlsMap = iaa.FindActionMap("PlayerControlsNewSliding");
-        }
-        else
-        {
-            playerControlsMap = iaa.FindActionMap("PlayerControls");
-        }
+        iaa = ObjectManager.instance.pSM.actionAsset;
+        playerControlsMap = iaa.FindActionMap("PlayerControlsNewSliding");
         UIControlsMap = iaa.FindActionMap("UIControls");
         escape = playerControlsMap.FindAction("Escape");
         escape.performed += context => ShowControls();

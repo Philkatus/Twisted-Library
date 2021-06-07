@@ -18,193 +18,208 @@ public class PlayerInTheAir : State
 
     public override void Initialize()
     {
-        controller = PlayerStateMachine.controller;
-        controller.transform.SetParent(PlayerStateMachine.myParent);
-        PlayerStateMachine.ladder.transform.localScale = new Vector3(1, 1, 1);
-        controller.transform.localScale = new Vector3(1, 1, 1);
-        PlayerStateMachine.ladder.transform.SetParent(PlayerStateMachine.animController.spine);
-        PlayerStateMachine.ladder.localPosition = PlayerStateMachine.ladderWalkingPosition;
-        PlayerStateMachine.ladder.localRotation = PlayerStateMachine.ladderWalkingRotation;
-
-        stats = PlayerStateMachine.stats;
-        controller = PlayerStateMachine.controller;
-        wallJumpingTime = 0;
+        InitializeVariables();
+        float y = Mathf.Clamp(PSM.baseVelocity.y, -stats.MaxFallingSpeed, stats.MaxJumpingSpeedUp);
+        PSM.baseVelocity.y = 0;
+        Vector3 startBaseVelocity = PSM.baseVelocity;
+        PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaxJumpingSpeedForward);
+        PSM.bonusVelocity += startBaseVelocity - PSM.baseVelocity;
+        PSM.baseVelocity.y = y;
     }
 
     public override void Movement()
     {
-        // Air Movement
         Transform cam = Camera.main.transform;
-        PlayerMovementStateMachine pSM = PlayerStateMachine;
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
-        Vector3 direction = directionForward * pSM.forwardInput + directionRight * pSM.sideWaysInput;
-
-        /* Philips snapping
-        if (pSM.slidingInput != 0 || pSM.swingingInput != 0)
-        {
-            pSM.TryToSnapToShelf();
-        }
-        */
+        Vector3 direction = directionForward * PSM.forwardInput + directionRight * PSM.sideWaysInput;
 
         if (direction != Vector3.zero)
         {
             controller.transform.forward = direction;
         }
-        pSM.baseVelocity += direction * Time.fixedDeltaTime * stats.movementAcceleration * stats.airMovementFactor;
+        #region Drag When No Input
+        if (PSM.forwardInput == 0)
+        {
+            Vector3 currentDragForward = stats.JumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionForward);
+            PSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
+            currentDragForward = stats.bonusVelocityDrag * ExtensionMethods.resultingVelocity(PSM.bonusVelocity, directionForward);
+            PSM.bonusVelocity -= currentDragForward * Time.fixedDeltaTime;
+        }
+        if (PSM.sideWaysInput == 0)
+        {
+            Vector3 currentDragSideway = stats.JumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
+            PSM.baseVelocity -= currentDragSideway * Time.fixedDeltaTime;
+            currentDragSideway = stats.bonusVelocityDrag * ExtensionMethods.resultingVelocity(PSM.bonusVelocity, directionRight);
+            PSM.bonusVelocity -= currentDragSideway * Time.fixedDeltaTime;
+        }
+        #endregion
+        PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.AirMovementAcceleration;
 
         //when wall jump occured, set the isWallJumping to false after 1 sec
         wallJumpingTime += Time.fixedDeltaTime;
         if (wallJumpingTime >= 1)
         {
-            pSM.isWallJumping = false;
+            PSM.isWallJumping = false;
         }
-        /*
-        if (pSM.forwardInput <= 0.1f && pSM.forwardInput >= -.1f && !pSM.isWallJumping)
-        {
-            Vector3 currentDragForward = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionForward) / values.airMovementFactor;
-            pSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
-        }
-        if (pSM.sideWaysInput <= 0.1f && pSM.sideWaysInput >= -.1f && !pSM.isWallJumping)
-        {
-            Vector3 currentDragSideways = values.jumpingDrag * pSM.resultingVelocity(pSM.playerVelocity, directionRight) / values.airMovementFactor;
-            pSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
-        }
-        */
-        pSM.baseVelocity.y -= stats.gravity * Time.fixedDeltaTime;
-        float ClampedVelocityY = Mathf.Clamp(pSM.baseVelocity.y, -stats.maxFallingSpeed, stats.maxJumpingSpeed);
-        pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.maximumMovementSpeed);
-        pSM.baseVelocity.y = ClampedVelocityY;
+        GravityAndClamp();
 
-
-        controller.Move(pSM.playerVelocity * Time.fixedDeltaTime * stats.jumpVelocityFactor);
+        controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.AirVelocityFactor);
         if (HeadCollision())
         {
-            pSM.baseVelocity.y -= pSM.baseVelocity.y * .9f * Time.fixedDeltaTime;
-            pSM.bonusVelocity.y -= pSM.bonusVelocity.y * .9f * Time.fixedDeltaTime;
+            //Debug.LogError("Bonk");
+            PSM.baseVelocity.y -= PSM.baseVelocity.y * .9f * Time.fixedDeltaTime;
+            PSM.bonusVelocity.y = PSM.bonusVelocity.y * .9f * Time.fixedDeltaTime;
         }
-        // Gravity and falling
-
-        //pSM.playerVelocity += direction * Time.deltaTime * pSM.movementAcceleration * pSM.jumpMovementFactor;
-        /*
-        float currentDrag = pSM.movementDrag + pSM.playerVelocity.magnitude * .999f;
-        pSM.playerVelocity.x = pSM.playerVelocity.normalized.x * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
-        pSM.playerVelocity.z = pSM.playerVelocity.normalized.z * Mathf.Clamp(pSM.playerVelocity.magnitude - currentDrag * Time.deltaTime, 0, pSM.maximumSpeed);
-        */
-        //controller.Move(pSM.playerVelocity * Time.deltaTime);
 
         if (controller.isGrounded)
         {
-            PlayerStateMachine.didLadderPush = false;
-            pSM.OnLand();
+            base.PSM.didLadderPush = false;
+            PSM.OnLand();
         }
     }
 
+    void GravityAndClamp()
+    {
+
+        PSM.bonusVelocity.y -= stats.Gravity * Time.fixedDeltaTime;
+        if (PSM.bonusVelocity.y <= 0)
+        {
+            PSM.baseVelocity.y += PSM.bonusVelocity.y;
+            PSM.bonusVelocity.y = 0;
+        }
+
+        float ClampedVelocityY = Mathf.Clamp(PSM.baseVelocity.y, -stats.MaxFallingSpeed, stats.MaxJumpingSpeedUp);
+        PSM.baseVelocity.y = 0;
+        PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaxJumpingSpeedForward);
+        PSM.baseVelocity.y = ClampedVelocityY;
+    }
+
+
+
+
+
     public override void Snap()
     {
-        PlayerStateMachine.didLadderPush = false;
-        PlayerStateMachine.OnSnap();
+        PSM.didLadderPush = false;
+        PSM.OnSnap();
     }
 
     public override void Jump()
     {
-
-        if (PlayerStateMachine.coyoteTimer < stats.slidingCoyoteTime && PlayerStateMachine.closestRail != null)
+        if (PSM.coyoteTimer < stats.slidingCoyoteTime && PSM.closestRail != null)
         {
-            Vector3 pathDirection = PlayerStateMachine.closestRail.pathCreator.path.GetDirectionAtDistance(PlayerStateMachine.currentDistance, EndOfPathInstruction.Stop);
+            Vector3 pathDirection = PSM.closestRail.pathCreator.path.GetDirectionAtDistance(PSM.currentDistance, EndOfPathInstruction.Stop);
             if (stats.wallJump != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
             {
                 Vector3 fromWallVector = (Quaternion.AngleAxis(90, Vector3.up) * pathDirection).normalized;
                 fromWallVector = fromWallVector * stats.wallJump.z;
                 Vector3 fromWallValued = new Vector3(fromWallVector.x, stats.wallJump.y, fromWallVector.z);
-                PlayerStateMachine.playerVelocity += fromWallValued;
-                PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
-                PlayerStateMachine.isWallJumping = true;
+                PSM.playerVelocity += fromWallValued;
+                PSM.baseVelocity.y += stats.JumpHeight;
+                PSM.isWallJumping = true;
             }
             else
             {
-                PlayerStateMachine.baseVelocity.y += stats.jumpHeight;
+                PSM.baseVelocity.y += stats.JumpHeight;
             }
 
-            PlayerStateMachine.coyoteTimer = stats.slidingCoyoteTime;
-            PlayerStateMachine.animationControllerisFoldingJumped = false;
+            PSM.coyoteTimer = stats.slidingCoyoteTime;
+            PSM.animationControllerisFoldingJumped = false;
         }
-        PlayerStateMachine.jumpInputBool = false;
-
-
+        PSM.jumpInputBool = false;
     }
 
     public override void LadderPush()
     {
-        float sphereRadius = .2f;
-        float maxHeight = PlayerStateMachine.ladderSizeStateMachine.ladderLengthBig - sphereRadius;
-        float acceleration = stats.rocketJumpAcceleration;
-
-        Vector3 origin = PlayerStateMachine.transform.position;
-        LayerMask mask = LayerMask.GetMask("Environment");
-        List<RaycastHit> hits = new List<RaycastHit>();
-
-        if (!PlayerStateMachine.didLadderPush)
+        if (stats.canLadderPush)
         {
-            hits.AddRange(Physics.SphereCastAll(origin, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
-        }
-        float closestDistance = Mathf.Infinity;
-        RaycastHit closestHit;
-        Vector3 target = Vector3.zero;
-        for (int i = 0; i < hits.Count; i++)
-        {
-            float distance = hits[i].distance;
-            if (distance < closestDistance && 
-                Vector3.Dot(hits[i].normal, Vector3.up) >= .9f && 
-                hits[i].point != Vector3.zero)
+            float sphereRadius = .2f;
+            float maxHeight = stats.ladderLengthBig - sphereRadius;
+            float acceleration = stats.LadderPushAcceleration;
+
+            Vector3 origin = PSM.transform.position;
+            LayerMask mask = LayerMask.GetMask("Environment");
+            List<RaycastHit> hits = new List<RaycastHit>();
+            #region CastDown
+            if (!PSM.didLadderPush)
             {
-                closestHit = hits[i];
-                closestDistance = distance;
-                target = closestHit.point;
-
-                // Debug.Log(hits[i].normal);
-                // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
+                hits.AddRange(Physics.SphereCastAll(origin, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
             }
-        }
-        if (target == Vector3.zero)
-        {
-            hits = new List<RaycastHit>();
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.forward, maxHeight, mask, QueryTriggerInteraction.Ignore));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.back, maxHeight, mask, QueryTriggerInteraction.Ignore));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.right, maxHeight, mask, QueryTriggerInteraction.Ignore));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.left, maxHeight, mask, QueryTriggerInteraction.Ignore));
-            hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
+            float closestDistance = Mathf.Infinity;
+            RaycastHit closestHit;
+            Vector3 target = Vector3.zero;
             for (int i = 0; i < hits.Count; i++)
             {
                 float distance = hits[i].distance;
-                if (distance < closestDistance && !didSkewLadderPushThisState) // && !PlayerStateMachine.didLadderPushInThisState)// && Vector3.Dot(hits[i].normal, Vector3.up) <= .93f)
+                if (distance < closestDistance &&
+                    Vector3.Dot(hits[i].normal, Vector3.up) >= .9f &&
+                    hits[i].point != Vector3.zero)
                 {
                     closestHit = hits[i];
                     closestDistance = distance;
                     target = closestHit.point;
-                    didSkewLadderPushThisState = true;
-                    // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point, Color.red, 2);
+
+                    // Debug.Log(hits[i].normal);
+                    // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
                 }
             }
-        }
-        else
-        {
-            PlayerStateMachine.didLadderPush = true;
-        }
+            #endregion
+            #region SideWaysCast
 
-        if (target != Vector3.zero)
-        {
-            PlayerMovementStateMachine pSM = PlayerStateMachine;
-            pSM.ladderJumpTarget = target;
-            pSM.baseVelocity.y = 0;
-            pSM.foldInputBool = false;
-            //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
-            pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration;
-            //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
-            pSM.ladderSizeStateMachine.OnLadderPush();
+            if (target == Vector3.zero)
+            {
+                hits = new List<RaycastHit>();
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.forward, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.back, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.right, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down + Vector3.left, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin, sphereRadius, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                for (int i = 0; i < hits.Count; i++)
+                {
+                    float distance = hits[i].distance;
+                    if (distance < closestDistance && !didSkewLadderPushThisState) // && !PlayerStateMachine.didLadderPushInThisState)// && Vector3.Dot(hits[i].normal, Vector3.up) <= .93f)
+                    {
+                        closestHit = hits[i];
+                        closestDistance = distance;
+                        target = closestHit.point;
+                        didSkewLadderPushThisState = true;
+                        // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point, Color.red, 2);
+                    }
+                }
+            }
+            else
+            {
+                PSM.didLadderPush = true;
+            }
+            #endregion
+            if (target != Vector3.zero)
+            {
+                PlayerMovementStateMachine pSM = PSM;
+                pSM.ladderJumpTarget = target;
+                pSM.baseVelocity.y = 0;
+                pSM.foldInputBool = false;
+                //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
+                pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration;
+                //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
+                pSM.ladderSizeStateMachine.OnLadderPush();
+            }
         }
     }
+    private void InitializeVariables()
+    {
+        controller = PSM.controller;
+        controller.transform.SetParent(PSM.myParent);
+        PSM.ladder.transform.localScale = new Vector3(1, 1, 1);
+        controller.transform.localScale = new Vector3(1, 1, 1);
+        PSM.ladder.transform.SetParent(PSM.animController.spine);
+        PSM.ladder.localPosition = PSM.ladderWalkingPosition;
+        PSM.ladder.localRotation = PSM.ladderWalkingRotation;
+        stats = PSM.stats;
 
+        controller = PSM.controller;
+        wallJumpingTime = 0;
+    }
     bool HeadCollision()
     {
         if (controller.collisionFlags == CollisionFlags.Above)

@@ -51,11 +51,13 @@ public class AnimationStateController : MonoBehaviour
     float jumpingTimer = 0;
     bool foldJump;
     bool wallJump;
-    bool isRocketJumping;
-    float rocketJumpTimer;
+    bool isLadderPushing;
+    float ladderPushTimer;
 
     InputActionMap playerControlsMap;
     InputAction jumpAction;
+
+    ValuesScriptableObject stats;
 
     [Header("Rigs")]
     public Rig headRig;
@@ -101,10 +103,12 @@ public class AnimationStateController : MonoBehaviour
 
         // new Input System
         playerControlsMap = movementScript.actionAsset.FindActionMap("PlayerControls");
+        stats = movementScript.stats;
+
         playerControlsMap.Enable();
         jumpAction = playerControlsMap.FindAction("Jump");
 
-        jumpAction.performed += context => LadderJump();
+        jumpAction.performed += context => Jump();
     }
 
     void Update()
@@ -150,7 +154,7 @@ public class AnimationStateController : MonoBehaviour
         DismountingTop();
         ladderStateChange();
         MovementParameters();
-        RocketJump();
+        LadderPush();
 
         if (useFeetIK && footIKScript != null)
         {
@@ -171,7 +175,8 @@ public class AnimationStateController : MonoBehaviour
 
     void CheckIK()
     {
-        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding || movementScript.playerState == PlayerMovementStateMachine.PlayerState.inTheAir)
+        // Im sorry if i fucked this up? - Maria
+        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging || movementScript.playerState == PlayerMovementStateMachine.PlayerState.inTheAir)
         {
             footIKScript.enabled = false;
         }
@@ -238,7 +243,7 @@ public class AnimationStateController : MonoBehaviour
     void ladderStateChange()
     {
         //animations for retracting and extending ladder
-        if (ladderScript.isFoldingUp && movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding)
+        if (ladderScript.isFoldingUp && movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
             animator.SetBool("isFoldingUp", true);
             //Audio
@@ -317,7 +322,7 @@ public class AnimationStateController : MonoBehaviour
             animator.SetBool("isHardLanding", true);
             canHardLand = false;
             audioManager.Play("LandingAfterFall");
-            playerControlsMap.Disable();
+            
             StartCoroutine(ImpactInput());
         }
         else
@@ -328,6 +333,7 @@ public class AnimationStateController : MonoBehaviour
 
     IEnumerator ImpactInput()
     {
+        playerControlsMap.Disable();
         yield return new WaitForSeconds(1);
         playerControlsMap.Enable();
     }
@@ -369,99 +375,45 @@ public class AnimationStateController : MonoBehaviour
         }
     }
 
-    void LadderJump()
+    void Jump()
     {
-        animator.SetBool("isJumping", true);
-        animator.SetBool("isClimbingLadder", false);
-        rigBuilder.enabled = true;
+        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.walking || movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging)
+        {
+            animator.SetBool("isJumping", true);
+            animator.SetBool("isClimbingLadder", false);
+            rigBuilder.enabled = true;
 
 
-        //Audio
-        audioManager.Play("JumpStart");
+            //Audio
+            audioManager.Play("JumpStart");
+        }
     }
 
-    void RocketJump()
+    void LadderPush()
     {
-        if (movementScript.didLadderPush && !isRocketJumping)
+        if (movementScript.didLadderPush && !isLadderPushing)
         {
             animator.SetBool("isRocketJumping", true);
-            isRocketJumping = true;
+            isLadderPushing = true;
         }
-        if (isRocketJumping)
+        if (isLadderPushing)
         {
-            rocketJumpTimer += Time.deltaTime;
+            ladderPushTimer += Time.deltaTime;
         }
 
-        if (rocketJumpTimer >= 0.2)
+        if (ladderPushTimer >= 0.2)
         {
             animator.SetBool("isRocketJumping", false);
-            rocketJumpTimer = 0;
+            ladderPushTimer = 0;
 
         }
 
         if (!movementScript.didLadderPush)
         {
             animator.SetBool("isRocketJumping", false);
-            isRocketJumping = false;
+            isLadderPushing = false;
         }
     }
-
-    //Sliding state disabled since it caused problems and isnt actually used any more
-    /*
-    void Sliding()
-    {
-        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.sliding)
-        {
-            animator.SetBool("isClimbingLadder", true);
-            armRig.weight = 0;
-
-            //Slide Audio
-            if (movementScript.slidingInput != 0 && !slideAudioPlaying)
-            {
-                audioManager.Play("Sliding");
-                slideAudioPlaying = true;
-            }
-            if (movementScript.slidingInput == 0 && slideAudioPlaying)
-            {
-                audioManager.StopSound("Sliding");
-                slideAudioPlaying = false;
-            }
-
-            //Fall Audio
-            if (fallAudioPlaying)
-            {
-                audioManager.StopSound("Falling");
-                fallAudioPlaying = false;
-            }
-
-
-            //Attach Audio
-            if (!attachAudioPlaying)
-            {
-                audioManager.Play("AttachLadder");
-                attachAudioPlaying = true;
-            }
-        }
-        else
-        {
-            animator.SetBool("isClimbingLadder", false);
-            //rigBuilder.enabled = true;
-            armRig.weight = 1;
-
-
-
-            //Audio
-            if (attachAudioPlaying)
-            {
-                audioManager.StopSound("AttachLadder");
-                attachAudioPlaying = false;
-            }
-
-            audioManager.StopSound("Sliding");
-            slideAudioPlaying = false;
-        }     
-    }
-    */
 
     void Swinging()
     {

@@ -28,6 +28,9 @@ public class PlayerMovementStateMachine : StateMachine
     public bool dismounting;
     public bool didLadderPush;
 
+    public bool isWallJumping;
+    public bool animationControllerisFoldingJumped;
+
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
     public Vector3 playerVelocity
@@ -44,9 +47,6 @@ public class PlayerMovementStateMachine : StateMachine
     }
     public Vector3 railCheckLadderPosition;
 
-    public bool isWallJumping;
-    public bool animationControllerisFoldingJumped;
-
     public Rail closestRail;
     public Transform ladder;
     public LadderSizeStateMachine ladderSizeStateMachine;
@@ -54,7 +54,6 @@ public class PlayerMovementStateMachine : StateMachine
     public AnimationStateController animController;
     public GameObject bob;
     public VFX_Manager effects;
-    [HideInInspector] public InputAction slideAction;
     [HideInInspector] public InputAction slideLeftAction;
     [HideInInspector] public InputAction slideRightAction;
     [HideInInspector] public InputAction swingAction;
@@ -63,8 +62,17 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
     [HideInInspector] public Vector3 ladderJumpTarget;
+    [HideInInspector]
+    public Vector3 ladderDirection
+    {
+        get
+        {
+            return ladderSizeStateMachine.ladderParent.right;
+        }
+    }
     [HideInInspector] public int snapdirection = 1;
 
+    #region inputBools
     bool[] inputBools = new bool[4];
     public bool jumpInputBool
     {
@@ -114,23 +122,14 @@ public class PlayerMovementStateMachine : StateMachine
         }
 
     }
-
-    public float coyoteTimer = 0;
-    public Vector3 ladderDirection
-    {
-        get
-        {
-            return ladderSizeStateMachine.ladderParent.right;
-        }
-    }
-    [HideInInspector] public Transform myParent;
     #endregion
 
+    public float coyoteTimer = 0;
+
+    [HideInInspector] public Transform myParent;
+    #endregion
     #region Private
     float railCheckTimer;
-    Vector3 lastVisualizationPoint;
-
-    GameObject snapVisualisation;
     RailSearchManager railAllocator;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
@@ -140,37 +139,22 @@ public class PlayerMovementStateMachine : StateMachine
     Coroutine[] inputTimer = new Coroutine[4];
     #endregion
 
-    private void Start()
+    void Awake()
     {
-        myParent = transform.parent;
-        railAllocator = RailSearchManager.instance;
-        ladderWalkingPosition = ladder.localPosition;
-        ladderWalkingRotation = ladder.localRotation;
-        snapVisualisation = myParent.transform.GetChild(3).GetChild(1).gameObject;
-        coyoteTimer = stats.slidingCoyoteTime;
-        SetState(new PlayerWalking(this));
-        GetControlls();
+        ObjectManager.instance.pSM = this;
     }
 
-
+    private void Start()
+    {
+        InitializeVariables();
+        SetState(new PlayerWalking(this));
+        GetControls();
+    }
 
     private void Update()
     {
         coyoteTimer += Time.deltaTime;
-        railCheckTimer += Time.deltaTime;
-        if (railCheckTimer >= 0.1f)
-        {
-            CheckForRail();
-            if (playerState != PlayerState.swinging)
-            {
-                StartCoroutine(ChangeSnapVisualisationPoint());
-            }
-            else
-            {
-                snapVisualisation.SetActive(false);
-            }
-            railCheckTimer = 0;
-        }
+        UpdateRailTimer();
         CheckForInputBools();
 
     }
@@ -178,10 +162,29 @@ public class PlayerMovementStateMachine : StateMachine
     private void FixedUpdate()
     {
         GetInput();
-        looseBonusVelocity(stats.bonusVelocityDrag);
+        //LooseBonusVelocity(stats.bonusVelocityDrag,Vector3.up);
         State.Movement();
         Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
         Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
+    }
+
+    private void InitializeVariables()
+    {
+        myParent = transform.parent;
+        railAllocator = RailSearchManager.instance;
+        ladderWalkingPosition = ladder.localPosition;
+        ladderWalkingRotation = ladder.localRotation;
+        coyoteTimer = stats.slidingCoyoteTime;
+    }
+
+    private void UpdateRailTimer()
+    {
+        railCheckTimer += Time.deltaTime;
+        if (railCheckTimer >= 0.1f)
+        {
+            CheckForRail();
+            railCheckTimer = 0;
+        }
     }
 
     public void TryToSnapToShelf()
@@ -192,18 +195,12 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
 
-
-    #region utility
     #region Input/Controlls
     public void GetInput()
     {
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
         swingingInput = swingAction.ReadValue<float>();
-        if (!stats.useNewSliding)
-        {
-            slidingInput = slideAction.ReadValue<float>() * adjustedSlideDirection;
-        }
     }
 
     public void SaveInput(int index, float duration)
@@ -230,7 +227,7 @@ public class PlayerMovementStateMachine : StateMachine
         {
             TryToSnapToShelf();
         }
-        if (foldInputBool)
+        if (foldInputBool&&stats.canLadderFold)
         {
             if (!stats.useJumpForLadderShoot)
             {
@@ -240,7 +237,6 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
 
-
     IEnumerator InputTimer(int index, float duration)
     {
         inputBools[index] = true;
@@ -248,34 +244,22 @@ public class PlayerMovementStateMachine : StateMachine
         inputBools[index] = false;
     }
 
-    private void GetControlls()
+    private void GetControls()
     {
-        if (stats.useNewSliding)
+        playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
+        slideLeftAction = playerControlsMap.FindAction("SlideLeft");
+        slideRightAction = playerControlsMap.FindAction("SlideRight");
+        slideLeftAction.started += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = -1; } };
+        slideRightAction.started += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = +1; } };
+        slideRightAction.canceled += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = 0; } };
+        slideLeftAction.canceled += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = 0; } };
+        if (stats.useTriggerToSlideWithMomentum)
         {
-            playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
-            slideLeftAction = playerControlsMap.FindAction("SlideLeft");
-            slideRightAction = playerControlsMap.FindAction("SlideRight");
-            slideLeftAction.started += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = -1; } };
-            slideRightAction.started += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = +1; } };
-            slideRightAction.canceled += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = 0; } };
-            slideLeftAction.canceled += context => { if (playerState != PlayerState.sliding) { startingSlidingInput = 0; } };
-            if (stats.useTriggerToSlideWithMomentum)
-            {
-                slideLeftAction.started += context => SaveInput(1, stats.snapInputTimer);
-                slideRightAction.started += context => SaveInput(1, stats.snapInputTimer);
-            }
-            startingSlidingInput = 0;
+            slideLeftAction.started += context => SaveInput(1, stats.snapInputTimer);
+            slideRightAction.started += context => SaveInput(1, stats.snapInputTimer);
         }
-        else
-        {
-            playerControlsMap = actionAsset.FindActionMap("PlayerControls");
-            stopSlidingAction = playerControlsMap.FindAction("StopSliding");
-            slideAction = playerControlsMap.FindAction("Slide");
-            if (stats.useTriggerToSlideWithMomentum)
-            {
-                slideAction.started += context => SaveInput(1, stats.snapInputTimer);
-            }
-        }
+        startingSlidingInput = 0;
+
         if (GameObject.FindGameObjectWithTag("Canvas"))
         {
             playerControlsMap.Disable();
@@ -290,14 +274,14 @@ public class PlayerMovementStateMachine : StateMachine
         swingAction = playerControlsMap.FindAction("Swing");
         foldAction = playerControlsMap.FindAction("Fold");
 
-        jumpAction.performed += context => SaveInput(0, stats.jumpInputTimer);// State.Jump();
-        snapAction.performed += context => SaveInput(1, stats.snapInputTimer);   //TryToSnapToShelf();
-        foldAction.performed += context => SaveInput(2, stats.foldInputTimer); //ladderSizeStateMachine.OnFold();
+        jumpAction.performed += context => SaveInput(0, stats.jumpInputTimer);
+        snapAction.performed += context => SaveInput(1, stats.snapInputTimer);
+        foldAction.performed += context => SaveInput(2, stats.foldInputTimer);
         swingAction.performed += context => SaveInput(3, stats.swingInputTimer);
-        //foldAction.performed += context => State.RocketJump();
     }
     #endregion
-    public void looseBonusVelocity(float dragAmount)
+    #region utility
+    public void LooseBonusVelocity(float dragAmount)
     {
         bonusVelocity -= bonusVelocity.normalized * dragAmount * Time.fixedDeltaTime;
         if (bonusVelocity.magnitude <= dragAmount * Time.fixedDeltaTime)
@@ -305,12 +289,36 @@ public class PlayerMovementStateMachine : StateMachine
             bonusVelocity = Vector3.zero;
         }
     }
-    public void looseBonusVelocityPercentage(float dragAmount)
+    public void LooseBonusVelocity(float dragAmount, Vector3 axis)
+    {
+        bonusVelocity -= axis.normalized * dragAmount * Time.fixedDeltaTime;
+        if (bonusVelocity.magnitude <= dragAmount * Time.fixedDeltaTime)
+        {
+            bonusVelocity = Vector3.zero;
+        }
+    }
+    public void LoseBonusVelocityPercentage(float dragAmount)
     {
         dragAmount = (100 - dragAmount) / 100;
         bonusVelocity *= dragAmount * Time.fixedDeltaTime;
+        if (bonusVelocity.magnitude <= Time.fixedDeltaTime)
+        {
+            bonusVelocity = Vector3.zero;
+        }
     }
 
+    public void LoseBonusVelocityPercentage(float dragAmount, Vector3 axis)
+    {
+        dragAmount = (100 - dragAmount) / 100;
+        Vector3 resultingVelocity = ExtensionMethods.resultingVelocity(bonusVelocity, axis);
+        bonusVelocity -= resultingVelocity;
+        resultingVelocity *= dragAmount * Time.fixedDeltaTime;
+        if (resultingVelocity.magnitude <= Time.fixedDeltaTime)
+        {
+            resultingVelocity = Vector3.zero;
+        }
+        bonusVelocity += resultingVelocity;
+    }
     ///<summary>
     /// A function to determine the closest rail to the player. Returns false if none are in range.
     ///</summary>
@@ -319,10 +327,6 @@ public class PlayerMovementStateMachine : StateMachine
         if (playerState == PlayerState.walking)
         {
             railCheckLadderPosition = controller.transform.position;
-        }
-        else if (playerState == PlayerState.sliding)
-        {
-            railCheckLadderPosition = ladder.transform.position;
         }
         else if (playerState == PlayerState.inTheAir)
         {
@@ -347,7 +351,6 @@ public class PlayerMovementStateMachine : StateMachine
 
                 if (distance < closestDistance)
                 {
-                    Debug.DrawLine(railCheckLadderPosition, snappingPoint, Color.blue);
                     RaycastHit hit;
                     if (!Physics.Linecast(railCheckLadderPosition, snappingPoint, out hit, mask, QueryTriggerInteraction.Ignore))
                     {
@@ -367,6 +370,10 @@ public class PlayerMovementStateMachine : StateMachine
             {
                 closestRail = null;
             }
+
+            //VFX-Snapping
+            effects.currentRail = closestRail;
+
             if (closestRail != null)
             {
                 return true;
@@ -431,64 +438,7 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
 
-    /// <summary>
-    /// Calculates the resulting signed magnitude alongside the targetdirection after a change of direction.
-    /// </summary>
-    /// <param name="currentVelocity">the Velocity to change </param>
-    /// <param name="targetDirection">The normalized direction you want to change to</param>
-    /// <returns></returns>
-    public float resultingSpeed(Vector3 currentVelocity, Vector3 targetDirection)
-    {
-        float resultingSpeed = currentVelocity.x * targetDirection.x + currentVelocity.y * targetDirection.y + currentVelocity.z * targetDirection.z;
-
-        return resultingSpeed;
-    }
-
-    /// <summary>
-    /// calculates the resulting velocity through a change in direction
-    /// </summary>
-    /// <param name="currentVelocity"> the Velocity to change </param>
-    /// <param name="targetDirection"> the normalized direction you want to change to</param>
-    /// <returns></returns>
-    public Vector3 resultingVelocity(Vector3 currentVelocity, Vector3 targetDirection)
-    {
-        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
-
-        return targetDirection * resultingSpeed;
-    }
-
-    /// <summary>
-    /// calculates the resulting clamped velocity through a change in direction
-    /// </summary>
-    /// <param name="currentVelocity"> the Velocity to change </param>
-    /// <param name="targetDirection"> the normalized direction you want to change to</param>
-    /// <param name="maximumSpeed"> the maximum speed the return value gets clamped to</param>
-    /// <returns></returns>
-    public Vector3 resultingClampedVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed)
-    {
-        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
-        resultingSpeed = Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
-
-        return targetDirection * resultingSpeed;
-    }
-
-    /// <summary>
-    /// takes the Player Velocity and puts a clamp on one direction of it
-    /// </summary>
-    /// <param name="currentVelocity"> the Velocity to change </param>
-    /// <param name="targetDirection"> The direction to clamp </param>
-    /// <param name="maximumSpeed"> the maximumspeed that the return Vector should have in the target direction </param>
-    /// <returns></returns>
-    public Vector3 ClampPlayerVelocity(Vector3 currentVelocity, Vector3 targetDirection, float maximumSpeed)
-    {
-        float resultingSpeed = this.resultingSpeed(currentVelocity, targetDirection);
-        Vector3 clampedVelocity = targetDirection * Mathf.Clamp(resultingSpeed, -maximumSpeed, maximumSpeed);
-        currentVelocity -= this.resultingVelocity(currentVelocity, targetDirection);
-        currentVelocity += clampedVelocity;
-        return currentVelocity;
-    }
     #endregion
-
     #region functions to change states
     ///<summary>
     /// Gets called when the player lands on the floor.
@@ -496,7 +446,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLand()
     {
         SetState(new PlayerWalking(this));
-        effects.OnStateChangedWalking();
+        effects.OnStateChangedWalking(true);
         playerState = PlayerState.walking;
         HeightOnLadder = -1;
     }
@@ -507,6 +457,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLadderTop()
     {
         SetState(new PlayerWalking(this));
+        effects.OnStateChangedWalking(false);
         playerState = PlayerState.walking;
         ladderSizeStateMachine.OnShrink();
     }
@@ -517,6 +468,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnLadderBottom()
     {
         SetState(new PlayerInTheAir(this));
+        effects.OnStateChangedInAir();
         playerState = PlayerState.inTheAir;
         ladderSizeStateMachine.OnShrink();
     }
@@ -528,17 +480,9 @@ public class PlayerMovementStateMachine : StateMachine
     {
         ladderSizeStateMachine.OnGrow();
         snapInputBool = false;
-
-        if (stats.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
-        {
-            SetState(new PlayerSwinging(this));
-            playerState = PlayerState.swinging;
-        }
-        else
-        {
-            SetState(new PlayerSliding(this));
-            playerState = PlayerState.sliding;
-        }
+        effects.OnStateChangedSwinging();
+        SetState(new PlayerSwinging(this));
+        playerState = PlayerState.swinging;
     }
 
     ///<summary>
@@ -546,16 +490,9 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnResnap()
     {
-        if (stats.useSwinging) // && closestRail.railType != Rail.RailType.OnWall)
-        {
-            SetState(this.State);
-            playerState = PlayerState.swinging;
-        }
-        else
-        {
-            SetState(this.State);
-            playerState = PlayerState.sliding;
-        }
+        SetState(this.State);
+        effects.OnStateChangedSwinging();
+        playerState = PlayerState.swinging;
     }
 
     ///<summary>
@@ -564,46 +501,10 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnFall()
     {
         SetState(new PlayerInTheAir(this));
+        effects.OnStateChangedInAir();
         playerState = PlayerState.inTheAir;
         ladderSizeStateMachine.OnShrink();
         HeightOnLadder = -1;
-    }
-    #endregion
-
-    #region VFX
-    IEnumerator ChangeSnapVisualisationPoint()
-    {
-        float timer = 0;
-        float t = 0;
-        Vector3 nextPosition;
-
-        if (closestRail != null && playerState != PlayerState.swinging)
-        {
-            nextPosition = closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
-            snapVisualisation.SetActive(true);
-        }
-        else
-        {
-            nextPosition = Vector3.zero;
-            snapVisualisation.SetActive(false);
-        }
-
-        while (timer < 0.1f)
-        {
-            timer += Time.deltaTime;
-            t = timer / 0.1f;
-            t = Mathf.Clamp(t, 0, 1);
-            if (closestRail != null)
-            {
-                snapVisualisation.SetActive(true);
-                snapVisualisation.transform.position = Vector3.Lerp(lastVisualizationPoint, nextPosition, t);
-            }
-
-            yield return new WaitForEndOfFrame();
-        }
-
-        lastVisualizationPoint = nextPosition;
-        yield return true;
     }
     #endregion
 
@@ -611,7 +512,6 @@ public class PlayerMovementStateMachine : StateMachine
     {
         walking,
         inTheAir,
-        sliding,
         swinging
     };
 
