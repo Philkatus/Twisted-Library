@@ -154,7 +154,8 @@ public class PlayerSwinging : State
         #endregion
 
         #region Input Callbacks Sliding
-        pSM.slidingInput = pSM.startingSlidingInput;
+        SwitchSlidingDirectionWithCameraRotation();
+        pSM.slidingInput = pSM.startingSlidingInput * pSM.adjustedSlideDirection;
         pSM.slideLeftAction.started += context =>
         {
             if (pSM.slidingInput * pSM.adjustedSlideDirection == 1)
@@ -218,7 +219,6 @@ public class PlayerSwinging : State
         {
             holdingChangeDirection = true;
             float resultingSpeed = pSM.playerVelocity.magnitude;
-
             float tempSpeed = 100;
             int closestSpeedLevel = 1;
             for (int i = 2; i < stats.speedLevels.Count; i++)
@@ -232,6 +232,7 @@ public class PlayerSwinging : State
             }
             currentSlidingLevel = closestSpeedLevel;
             currentSlidingLevelSpeed = stats.speedLevels[currentSlidingLevel];
+            accelerate = true;
         }
         #endregion
         #region Set Variables Swinging
@@ -688,7 +689,7 @@ public class PlayerSwinging : State
             }
             else
             {
-                PSM.baseVelocity.y += stats.JumpHeight;
+                PSM.baseVelocity.y = stats.JumpHeight;
             }
             shouldRetainSwingVelocity = true;
             PSM.OnFall();
@@ -740,7 +741,6 @@ public class PlayerSwinging : State
                     {
                         tDeceleration += Time.deltaTime / stats.slidingTimeToDecelerate;
                         currentSlidingSpeed = Mathf.Lerp(stats.speedLevels[currentSlidingLevel + 1], stats.speedLevels[currentSlidingLevel], tDeceleration);
-                        //currentSlidingSpeed = Mathf.Max(currentSlidingSpeed, currentSlidingLevelSpeed);
                         if (currentSlidingSpeed == currentSlidingLevelSpeed)
                         {
                             decelerate = false;
@@ -751,7 +751,6 @@ public class PlayerSwinging : State
                     {
                         tAcceleration += Time.deltaTime / stats.slidingTimeToAccelerate;
                         currentSlidingSpeed = Mathf.Lerp(stats.speedLevels[currentSlidingLevel - 1], stats.speedLevels[currentSlidingLevel], tAcceleration);
-                        //currentSlidingSpeed = Mathf.Min(currentSlidingSpeed, currentSlidingLevelSpeed);
                         if (currentSlidingSpeed == currentSlidingLevelSpeed)
                         {
                             tAcceleration = 0;
@@ -811,7 +810,7 @@ public class PlayerSwinging : State
                             else
                             {
                                 pSM.coyoteTimer = 0;
-                                pSM.bonusVelocity += stats.fallingMomentumPercentage * currentSlidingLevelSpeed*pathDirection*pSM.slidingInput;
+                                pSM.bonusVelocity += stats.fallingMomentumPercentage * currentSlidingLevelSpeed * pathDirection * pSM.slidingInput;
                                 pSM.OnFall();
                             }
                         }
@@ -825,6 +824,7 @@ public class PlayerSwinging : State
         {
             Dismount();
         }
+
     }
 
     void CustomHoldInput()
@@ -971,6 +971,8 @@ public class PlayerSwinging : State
         canDecelerate = false;
         holdingChangeDirection = false;
         donethisCallbackAlready = true;
+        tAcceleration = 0;
+        tDeceleration = 0;
     }
 
     void SwitchSlidingDirectionWithCameraRotation()
