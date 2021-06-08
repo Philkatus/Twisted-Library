@@ -128,6 +128,7 @@ public class UILogic : MonoBehaviour
                 startCamera.enabled = false;
                 startCanvas.SetActive(false);
                 startcanvasDisabled = true;
+                playerControlsMap.Enable();
             }
         }
     }
@@ -145,8 +146,8 @@ public class UILogic : MonoBehaviour
         }
         else
         {
-            optionGotSelectet = true;          
-        }       
+            optionGotSelectet = true;
+        }
     }
 
     void Transitions()
@@ -157,14 +158,14 @@ public class UILogic : MonoBehaviour
             options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(0, 0, 0), 30f);
             startCanvas.transform.position = Vector3.MoveTowards(startCanvas.transform.position, new Vector3(1253f, 0, 0), 30f);
 
-            if (Vector3.Distance(options.transform.position, new Vector3(0,0,0)) < 0.001f)
+            if (Vector3.Distance(options.transform.position, new Vector3(0, 0, 0)) < 0.001f)
             {
                 startCanvas.SetActive(false);
                 EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("BACK"));
                 optionGotSelectet = false;
             }
         }
-        if(optionGotSelectet && !startCanvas.activeSelf)
+        if (optionGotSelectet && !startCanvas.activeSelf)
         {
             options.SetActive(true);
             options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(0, 0, 0), 30f);
@@ -191,7 +192,7 @@ public class UILogic : MonoBehaviour
         }
         if (optionGotDeselectet && !startCanvas.activeSelf && !startcanvasDisabled)
         {
-            startCanvas.SetActive(true);            
+            startCanvas.SetActive(true);
         }
         if (optionGotDeselectet && startCanvas.activeSelf)
         {
@@ -209,19 +210,19 @@ public class UILogic : MonoBehaviour
                 Debug.Log("PLAY");
                 optionGotDeselectet = false;
             }
-        }        
+        }
     }
 
     public void Back()
     {
-        optionGotDeselectet = true;       
+        optionGotDeselectet = true;
     }
 
     public void AudioSettings()
     {
-        foreach(GameObject g in dummyTexts)
+        foreach (GameObject g in dummyTexts)
         {
-            if(g.name == "Audio")
+            if (g.name == "Audio")
             {
                 g.gameObject.SetActive(true);
             }
