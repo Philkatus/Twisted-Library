@@ -154,7 +154,8 @@ public class PlayerSwinging : State
         #endregion
 
         #region Input Callbacks Sliding
-        pSM.slidingInput = pSM.startingSlidingInput;
+        SwitchSlidingDirectionWithCameraRotation();
+        pSM.slidingInput = pSM.startingSlidingInput * pSM.adjustedSlideDirection;
         pSM.slideLeftAction.started += context =>
         {
             if (pSM.slidingInput * pSM.adjustedSlideDirection == 1)
