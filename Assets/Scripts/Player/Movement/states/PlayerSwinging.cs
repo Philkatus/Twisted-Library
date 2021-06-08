@@ -688,7 +688,7 @@ public class PlayerSwinging : State
             }
             else
             {
-                PSM.baseVelocity.y += stats.JumpHeight;
+                PSM.baseVelocity.y = stats.JumpHeight;
             }
             shouldRetainSwingVelocity = true;
             PSM.OnFall();
