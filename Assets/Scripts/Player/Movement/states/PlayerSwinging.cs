@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using PathCreation;
 
 public class PlayerSwinging : State
@@ -150,66 +151,26 @@ public class PlayerSwinging : State
         #region Case of Camera pointing along pathDirection
         pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
         float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
-        //Debug.LogError(angle);
+        if (angle <= stats.specialCaseAngleForSlidingInput && pSM.startingSlidingInput != 0)
+        {
+            if (pSM.startingSlidingInput == -1)
+            {
+                AssignInputCallbacks(ref pSM.slideLeftAction, ref pSM.slideRightAction);
+            }
+            else
+            {
+                AssignInputCallbacks(ref pSM.slideRightAction, ref pSM.slideLeftAction);
+            }
+        }
+        else
+        {
+            SwitchSlidingDirectionWithCameraRotation();
+            pSM.slidingInput = pSM.startingSlidingInput * pSM.adjustedSlideDirection;
+            AssignInputCallbacks(ref pSM.slideLeftAction, ref pSM.slideRightAction);
+        }
         #endregion
 
         #region Input Callbacks Sliding
-        SwitchSlidingDirectionWithCameraRotation();
-        pSM.slidingInput = pSM.startingSlidingInput * pSM.adjustedSlideDirection;
-        pSM.slideLeftAction.started += context =>
-        {
-            if (pSM.slidingInput * pSM.adjustedSlideDirection == 1)
-            {
-                startLeftHoldTimer = true;
-            }
-            holdingChangeDirection = false;
-            leftHoldTimer = 0;
-            holdingLeftSlideButton = true;
-        };
-        pSM.slideRightAction.started += context =>
-        {
-            if (pSM.slidingInput * pSM.adjustedSlideDirection == -1)
-            {
-                startRightHoldTimer = true;
-            }
-            holdingChangeDirection = false;
-            rightHoldTimer = 0;
-            holdingRightSlideButton = true;
-        };
-        pSM.slideLeftAction.canceled += context =>
-        {
-            holdingLeftSlideButton = false;
-            startLeftHoldTimer = false;
-            if (pSM.slidingInput * pSM.adjustedSlideDirection == 1 && holdingChangeDirection == false)
-            {
-                SwitchSpeedLevel("left");
-            }
-        };
-        pSM.slideRightAction.canceled += context =>
-        {
-            holdingRightSlideButton = false;
-            startRightHoldTimer = false;
-            if (pSM.slidingInput * pSM.adjustedSlideDirection == -1 && holdingChangeDirection == false)
-            {
-                SwitchSpeedLevel("right");
-            }
-        };
-        pSM.slideLeftAction.performed += context =>
-        {
-            if (pSM.slidingInput * pSM.adjustedSlideDirection != 1)
-            {
-                SwitchSpeedLevel("left");
-                holdingChangeDirection = true;
-            }
-        };
-        pSM.slideRightAction.performed += context =>
-        {
-            if (pSM.slidingInput * pSM.adjustedSlideDirection != -1)
-            {
-                SwitchSpeedLevel("right");
-                holdingChangeDirection = true;
-            }
-        };
         if (pSM.startingSlidingInput == 0)
         {
             currentSlidingLevel = 0;
@@ -235,6 +196,7 @@ public class PlayerSwinging : State
             accelerate = true;
         }
         #endregion
+
         #region Set Variables Swinging
         Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
@@ -378,6 +340,64 @@ public class PlayerSwinging : State
         Time.fixedDeltaTime = 0.002f;
 
         #endregion
+    }
+
+    void AssignInputCallbacks(ref InputAction leftTrigger, ref InputAction rightTrigger)
+    {
+        leftTrigger.started += context =>
+                {
+                    if (pSM.slidingInput * pSM.adjustedSlideDirection == 1)
+                    {
+                        startLeftHoldTimer = true;
+                    }
+                    holdingChangeDirection = false;
+                    leftHoldTimer = 0;
+                    holdingLeftSlideButton = true;
+                };
+        rightTrigger.started += context =>
+        {
+            if (pSM.slidingInput * pSM.adjustedSlideDirection == -1)
+            {
+                startRightHoldTimer = true;
+            }
+            holdingChangeDirection = false;
+            rightHoldTimer = 0;
+            holdingRightSlideButton = true;
+        };
+        leftTrigger.canceled += context =>
+        {
+            holdingLeftSlideButton = false;
+            startLeftHoldTimer = false;
+            if (pSM.slidingInput * pSM.adjustedSlideDirection == 1 && holdingChangeDirection == false)
+            {
+                SwitchSpeedLevel("left");
+            }
+        };
+        rightTrigger.canceled += context =>
+        {
+            holdingRightSlideButton = false;
+            startRightHoldTimer = false;
+            if (pSM.slidingInput * pSM.adjustedSlideDirection == -1 && holdingChangeDirection == false)
+            {
+                SwitchSpeedLevel("right");
+            }
+        };
+        leftTrigger.performed += context =>
+        {
+            if (pSM.slidingInput * pSM.adjustedSlideDirection != 1)
+            {
+                SwitchSpeedLevel("left");
+                holdingChangeDirection = true;
+            }
+        };
+        rightTrigger.performed += context =>
+        {
+            if (pSM.slidingInput * pSM.adjustedSlideDirection != -1)
+            {
+                SwitchSpeedLevel("right");
+                holdingChangeDirection = true;
+            }
+        };
     }
 
     public override void Movement()
@@ -701,7 +721,9 @@ public class PlayerSwinging : State
     #region SLIDING Functions
     void SlidingMovement()
     {
-        if (!holdingRightSlideButton && !holdingLeftSlideButton)
+        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
+        float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
+        if (!holdingRightSlideButton && !holdingLeftSlideButton && angle > stats.angleToLeaveSpecialCaseSlindingInput)
         {
             SwitchSlidingDirectionWithCameraRotation();
         }
