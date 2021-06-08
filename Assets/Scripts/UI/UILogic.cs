@@ -206,6 +206,7 @@ public class UILogic : MonoBehaviour
                 }
                 options.SetActive(false);
                 EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("PLAY"));
+                Debug.Log("PLAY");
                 optionGotDeselectet = false;
             }
         }        
