@@ -18,7 +18,7 @@ public class ChallengeComponent : MonoBehaviour
             relatedChallenge = ChallengeManager.instance;
         anim = GetComponent<Animator>();
         //relatedChallenge.challenges[challengeNumber].completedChallengeParts[componentNumber] = false;
-        relatedChallenge.completedChallengeParts[componentNumber] = false;
+        relatedChallenge.completedChallengeParts.Add(false);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -26,7 +26,16 @@ public class ChallengeComponent : MonoBehaviour
         if (other.tag == "Player")
         {
             relatedChallenge.completedChallengeParts[componentNumber] = true;
-            anim.SetTrigger("Start");
+            StartCoroutine(RotateWheel());
+        }
+    }
+
+    IEnumerator RotateWheel()
+    {
+        while (true)
+        {
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y+1, transform.eulerAngles.z);
+            yield return new WaitForEndOfFrame();
         }
     }
 }

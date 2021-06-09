@@ -18,7 +18,8 @@ public class ChallengeManager : MonoBehaviour
     [HideInInspector] public List<bool> completedChallengeParts;
     bool challengeCompleted;
     [SerializeField] GameObject centralObject;
-    [SerializeField] GameObject centralObject;
+    [SerializeField] GameObject wallObject;
+    [SerializeField] GameObject secondWall;
     void Awake()
     {
         instance = this;
@@ -38,11 +39,31 @@ public class ChallengeManager : MonoBehaviour
             if (allTrue)
             {
                 challengeCompleted = true;
-                centralObject.GetComponent<Animator>().SetTrigger("Start");
-                Debug.Log("true;");
+                StartCoroutine(RotateWheel(centralObject));
+                StartCoroutine(MoveWall(wallObject, wallObject.transform.right, 10f));
+                StartCoroutine(MoveWall(secondWall, -secondWall.transform.right, 5f));
             }
         }
 
+    }
+    IEnumerator RotateWheel(GameObject wheel)
+    {
+        while (true)
+        {
+            float angle = 10 * Time.deltaTime;
+            wheel.transform.eulerAngles = new Vector3(wheel.transform.eulerAngles.x, wheel.transform.eulerAngles.y + angle, wheel.transform.eulerAngles.z);
+            yield return new WaitForEndOfFrame();
+        }
+    }
+    IEnumerator MoveWall (GameObject wall, Vector3 direction, float time)
+    {
+        float timer = 0;
+        while (timer < time)
+        {
+            timer += Time.deltaTime;
+            wall.transform.position += direction.normalized;
+            yield return new WaitForEndOfFrame();
+        }
     }
 }
 
