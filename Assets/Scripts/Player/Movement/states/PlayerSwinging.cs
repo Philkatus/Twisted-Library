@@ -710,7 +710,6 @@ public class PlayerSwinging : State
                 fromWallVector = fromWallVector * stats.jumpFromLadderDirection.z;
                 Vector3 fromWallValued = new Vector3(fromWallVector.x, stats.jumpFromLadderDirection.y, fromWallVector.z);
                 pSM.playerVelocity += fromWallValued;
-                pSM.baseVelocity.y += stats.JumpHeight;
                 pSM.isWallJumping = true;
             }
             else
