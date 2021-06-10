@@ -50,9 +50,9 @@ public class ValuesScriptableObject : ScriptableObject
     [Header("Movement/Walking")]
     [Tooltip("How fast the player accelerates to maximum speed while walking.")]
     public float movementAcceleration;
-    public float MovementAcceleration 
+    public float MovementAcceleration
     {
-        get 
+        get
         {
             return movementAcceleration * movementVelocityFactor;
         }
@@ -98,17 +98,16 @@ public class ValuesScriptableObject : ScriptableObject
     [Header("Jumping/Air Movement")]
     [Tooltip("How high the player jumps.")]
     public float jumpHeight;
-    public float JumpHeight 
+    public float JumpHeight
     {
-        get 
+        get
         {
             return jumpHeight * AirVelocityFactor;
         }
     }
 
-
     [Tooltip("To put a clamp on the upwards velocity")]
-    public float maxJumpingSpeed = 15;
+    public float maxJumpingSpeed;
     public float MaxJumpingSpeedUp
     {
         get
@@ -138,7 +137,7 @@ public class ValuesScriptableObject : ScriptableObject
     }
 
     [Tooltip("Direction of the jump when facing the wall.")]
-    public Vector3 wallJump;
+    public Vector3 jumpFromLadderDirection;
 
     [Tooltip("Limits the movement speed for the air movement.")]
     public float airMovementAcceleration;
@@ -290,9 +289,9 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("The factor by which the jumping speed is mutliplied when a rail catapult jump is performed.")]
     public float railCatapultJumpMultiplier = 17;
-    public float RailCatapultJumpMultiplier 
+    public float RailCatapultJumpMultiplier
     {
-        get 
+        get
         {
             return railCatapultJumpMultiplier * AirVelocityFactor;
         }

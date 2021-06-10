@@ -29,16 +29,16 @@ MonoBehaviour:
   walkingBonusVelocityDrag: 0.01
   movementVelocityFactor: 1
   jumpHeight: 20
-  maxJumpingSpeed: 25
+  maxJumpingSpeed: 27
   maxJumpingSpeedForward: 10
   ladderPushAcceleration: 30
-  wallJump: {x: 0, y: 40, z: 10}
+  jumpFromLadderDirection: {x: 0, y: 30, z: 10}
   airMovementAcceleration: 50
   jumpingDrag: 3
   gravity: 60
   maxFallingSpeed: 25
   AirVelocityFactor: 1
-  snappingDistance: 5
+  snappingDistance: 6
   resnappingDistance: 0.5
   specialCaseAngleForSlidingInput: 20
   angleToLeaveSpecialCaseSlindingInput: 45
@@ -52,10 +52,10 @@ MonoBehaviour:
   playerOffsetFromLadder: 0
   speedLevels:
   - 0
-  - 1
+  - 5
   - 12
   - 25
-  slidingTimeToAccelerate: 0.7
+  slidingTimeToAccelerate: 0.1
   slidingTimeToDecelerate: 0.2
   timeToSwitchDirection: 0.4
   accelerationCooldown: 0.3

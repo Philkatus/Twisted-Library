@@ -2,7 +2,7 @@
     "name": "Mai13TriggerPlayerActions_Maria",
     "maps": [
         {
-            "name": "PlayerControls",
+            "name": "PlayerControlsOld",
             "id": "c2523919-157d-426f-875f-5e16f8681c07",
             "actions": [
                 {
@@ -379,7 +379,7 @@
             ]
         },
         {
-            "name": "PlayerControlsNewSliding",
+            "name": "PlayerControlsNewSlidingOld",
             "id": "e3bd51aa-4a70-4cbc-827c-e3c4ac3e6537",
             "actions": [
                 {
@@ -766,6 +766,275 @@
                     "processors": "",
                     "groups": "",
                     "action": "StopChallenge",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
+            "name": "PlayerControls",
+            "id": "f9554ed0-e431-47db-8bf6-f61a5b8d7d68",
+            "actions": [
+                {
+                    "name": "Snap",
+                    "type": "Button",
+                    "id": "aeca698b-1b52-42d3-9242-d1c37c0dd4f2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Movement",
+                    "type": "Value",
+                    "id": "ed0d6bbd-9f34-4f07-aeac-01febce8ec4c",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "518ca735-b71d-47f7-809b-025e9d6d2272",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "SlideLeft",
+                    "type": "Button",
+                    "id": "ed8e679d-4247-4825-a3d0-d0438a5961f3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "SlideRight",
+                    "type": "Button",
+                    "id": "8608b7f6-c4e2-4380-9b10-acf2bdf405c3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Swing",
+                    "type": "Button",
+                    "id": "86da26a0-2585-41a0-b56e-5ac2ba6b6990",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Restart",
+                    "type": "Button",
+                    "id": "2fe8bb53-f3c8-4c44-9c94-c084ed7ae591",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Fold",
+                    "type": "Button",
+                    "id": "246d660d-c659-41b1-b103-02a9220ba92a",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "StopSliding",
+                    "type": "Button",
+                    "id": "4228a960-e7bc-4ac4-8d4b-8c0b44530372",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "Escape",
+                    "type": "Button",
+                    "id": "d1527f95-e0ad-4242-8e29-2f659b6a725c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "StopChallenge",
+                    "type": "Button",
+                    "id": "a8a18042-a59b-4a23-95a4-bbc13a35d006",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "FallFromLadder",
+                    "type": "Button",
+                    "id": "6c80a97b-c67f-4da9-b3e8-29c015a0deab",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "74496a2d-da99-4e72-b38c-39518342eb9a",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "737e2bfd-75b0-4099-9c6f-c876d7296f6c",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "StickDeadzone(min=0.5,max=1)",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3d516199-a2e8-41e8-ac71-cd466b0b53eb",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Snap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "e2d0cf64-d5a9-429f-9972-a9508ee0827d",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Swing",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "eb7e50e5-4ad0-43a3-bd25-153dcac3234e",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Restart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "975dddd0-6148-48ef-8518-e46e6da295e2",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Fold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Button With One Modifier",
+                    "id": "eec266f4-12ba-47c4-bf60-a2cb17392adc",
+                    "path": "ButtonWithOneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StopSliding",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "66eb74f4-41b5-4ba0-98cf-107f2520fe28",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StopSliding",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "button",
+                    "id": "54ab456c-0c3f-4e7d-bd4f-2d19b95ce8a2",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StopSliding",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "7255e707-9ceb-4302-9523-ad9548fe1499",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SlideRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "70850673-b3dd-4118-9ae0-eb48172fd603",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SlideLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "30be67e6-22d2-4ab5-8e5f-08bddf87a4b3",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2b657858-a515-4473-a9ea-4131ca2e481c",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Escape",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "cb123a33-3e0e-4798-a396-c41da0bfe960",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "StopChallenge",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1281c20d-82d1-4713-8461-a252799d5608",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "FallFromLadder",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

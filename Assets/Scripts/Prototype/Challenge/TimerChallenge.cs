@@ -34,7 +34,7 @@ public class TimerChallenge : MonoBehaviour
 
         UpdateUI();
 
-        playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
+        playerControlsMap = actionAsset.FindActionMap("PlayerControls");
         playerControlsMap.Enable();
         stopChallengeAction = playerControlsMap.FindAction("StopChallenge");
         restartButton = playerControlsMap.FindAction("Restart");
@@ -49,12 +49,12 @@ public class TimerChallenge : MonoBehaviour
 
         UpdateUI();
 
-        if(isChallengeActive)
+        if (isChallengeActive)
         {
             time -= Time.deltaTime;
         }
 
-        if(time <= 0)
+        if (time <= 0)
         {
             //lose
             //challengePanel.SetActive(false);
@@ -81,7 +81,7 @@ public class TimerChallenge : MonoBehaviour
             Debug.Log("Lose");
         }
 
-        if(nbrOfBoxesCollected == boxesToGet.Count)
+        if (nbrOfBoxesCollected == boxesToGet.Count)
         {
             //win
             challengePanel.SetActive(false);
@@ -90,7 +90,7 @@ public class TimerChallenge : MonoBehaviour
             this.transform.parent.gameObject.SetActive(false);
             Debug.Log("Win");
 
-            if(enablesSomething)
+            if (enablesSomething)
             {
                 animator.enabled = true;
             }
@@ -98,7 +98,7 @@ public class TimerChallenge : MonoBehaviour
         }
 
         //STOP
-        if(stopChallengeAction.triggered)
+        if (stopChallengeAction.triggered)
         {
             Debug.Log("Stopped");
             challengePanel.SetActive(false);
@@ -115,7 +115,7 @@ public class TimerChallenge : MonoBehaviour
         }
 
         //RESTART
-        if(isChallengeActive && restartButton.triggered)
+        if (isChallengeActive && restartButton.triggered)
         {
             Debug.Log("restart");
             challengePanel.SetActive(false);
@@ -147,14 +147,14 @@ public class TimerChallenge : MonoBehaviour
             {
                 nbrOfBoxesCollected++;
             }
-            
+
             box.GetComponent<TimerChallengeBox>().isMyChallengeActive = isChallengeActive;
         }
     }
 
     public void UpdateUI()
     {
-        if(isChallengeActive)
+        if (isChallengeActive)
         {
             UITimer.text = time.ToString();
             UICollectedInfo.text = nbrOfBoxesCollected.ToString() + "/" + boxesToGet.Count.ToString() + " boxes";
@@ -163,9 +163,9 @@ public class TimerChallenge : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player"))
         {
-            foreach(GameObject box in boxesToGet)
+            foreach (GameObject box in boxesToGet)
             {
                 box.GetComponent<MeshRenderer>().enabled = true;
             }
