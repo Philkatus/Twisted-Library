@@ -12,6 +12,7 @@ public class PlayerSwinging : State
         inputGiven,
         inWallLimits,
         firstRound = true;
+    bool finishWithNormalJump;
 
     float dt = 0.01f,
         accumulator = 0f,
@@ -697,15 +698,26 @@ public class PlayerSwinging : State
         else
         {
             pSM.bonusVelocity += stats.fallingMomentumPercentage * pSM.playerVelocity;
+            if (playerVelocity.x == playerVelocity.z && playerVelocity.z == 0)
+            {
+                finishWithNormalJump = true;
+            }
 
-            if (stats.wallJump != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
+            if (stats.jumpFromLadderDirection != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
             {
                 Vector3 fromWallVector = (Quaternion.AngleAxis(90, Vector3.up) * pathDirection).normalized;
-                fromWallVector = fromWallVector * stats.wallJump.z;
-                Vector3 fromWallValued = new Vector3(fromWallVector.x, stats.wallJump.y, fromWallVector.z);
-                PSM.playerVelocity += fromWallValued;
-                PSM.baseVelocity.y += stats.JumpHeight;
-                PSM.isWallJumping = true;
+                fromWallVector = fromWallVector * stats.jumpFromLadderDirection.z;
+                Vector3 fromWallValued = new Vector3(fromWallVector.x, stats.jumpFromLadderDirection.y, fromWallVector.z);
+                pSM.playerVelocity += fromWallValued;
+                if (finishWithNormalJump)
+                {
+                    pSM.baseVelocity.y += stats.JumpHeightFromLadder;
+                }
+                else
+                {
+                    pSM.baseVelocity.y += stats.JumpHeight;
+                }
+                pSM.isWallJumping = true;
             }
             else
             {
@@ -1098,14 +1110,17 @@ public class PlayerSwinging : State
     {
         #region Finish Swinging
         SetCurrentPlayerVelocity(Pivot.transform.position);
-        if (shouldRetainSwingVelocity)
+        if (!finishWithNormalJump)
         {
-            pSM.bonusVelocity += (currentMovement + Vector3.up * 1.1f).normalized * currentMovement.magnitude;
-            pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.MaximumMovementSpeed);
-        }
-        else
-        {
-            pSM.baseVelocity.y = 0;
+            if (shouldRetainSwingVelocity)
+            {
+                pSM.bonusVelocity += (currentMovement + Vector3.up * 1.1f).normalized * currentMovement.magnitude;
+                pSM.baseVelocity = pSM.baseVelocity.normalized * Mathf.Clamp(pSM.baseVelocity.magnitude, 0, stats.MaximumMovementSpeed);
+            }
+            else
+            {
+                pSM.baseVelocity.y = 0;
+            }
         }
         pSM.snapInputBool = false;
         pSM.startingSlidingInput = 0;

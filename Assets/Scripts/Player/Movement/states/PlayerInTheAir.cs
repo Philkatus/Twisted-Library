@@ -110,11 +110,11 @@ public class PlayerInTheAir : State
         if (PSM.coyoteTimer < stats.slidingCoyoteTime && PSM.closestRail != null)
         {
             Vector3 pathDirection = PSM.closestRail.pathCreator.path.GetDirectionAtDistance(PSM.currentDistance, EndOfPathInstruction.Stop);
-            if (stats.wallJump != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
+            if (stats.jumpFromLadderDirection != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
             {
                 Vector3 fromWallVector = (Quaternion.AngleAxis(90, Vector3.up) * pathDirection).normalized;
-                fromWallVector = fromWallVector * stats.wallJump.z;
-                Vector3 fromWallValued = new Vector3(fromWallVector.x, stats.wallJump.y, fromWallVector.z);
+                fromWallVector = fromWallVector * stats.jumpFromLadderDirection.z;
+                Vector3 fromWallValued = new Vector3(fromWallVector.x, stats.jumpFromLadderDirection.y, fromWallVector.z);
                 PSM.playerVelocity += fromWallValued;
                 PSM.baseVelocity.y += stats.JumpHeight;
                 PSM.isWallJumping = true;
