@@ -37,7 +37,7 @@ public class UILogic : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("PLAY"));
 
         iaa = ObjectManager.instance.pSM.actionAsset;
-        playerControlsMap = iaa.FindActionMap("PlayerControlsNewSliding");
+        playerControlsMap = iaa.FindActionMap("PlayerControls");
         UIControlsMap = iaa.FindActionMap("UIControls");
         escape = playerControlsMap.FindAction("Escape");
         escape.performed += context => ShowControls();

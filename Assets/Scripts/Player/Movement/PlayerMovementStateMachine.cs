@@ -227,7 +227,7 @@ public class PlayerMovementStateMachine : StateMachine
         {
             TryToSnapToShelf();
         }
-        if (foldInputBool&&stats.canLadderFold)
+        if (foldInputBool && stats.canLadderFold)
         {
             if (!stats.useJumpForLadderShoot)
             {
@@ -246,7 +246,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void GetControls()
     {
-        playerControlsMap = actionAsset.FindActionMap("PlayerControlsNewSliding");
+        playerControlsMap = actionAsset.FindActionMap("PlayerControls");
         slideLeftAction = playerControlsMap.FindAction("SlideLeft");
         slideRightAction = playerControlsMap.FindAction("SlideRight");
         slideLeftAction.started += context => { if (playerState != PlayerState.swinging) { startingSlidingInput = -1; } };
