@@ -59,6 +59,7 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public InputAction swingAction;
     [HideInInspector] public InputAction snapAction;
     [HideInInspector] public InputAction stopSlidingAction;
+    [HideInInspector] public InputAction fallFromLadder;
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
     [HideInInspector] public Vector3 ladderJumpTarget;
@@ -273,6 +274,7 @@ public class PlayerMovementStateMachine : StateMachine
         snapAction = playerControlsMap.FindAction("Snap");
         swingAction = playerControlsMap.FindAction("Swing");
         foldAction = playerControlsMap.FindAction("Fold");
+        fallFromLadder = playerControlsMap.FindAction("FallFromLadder");
 
         jumpAction.performed += context => SaveInput(0, stats.jumpInputTimer);
         snapAction.performed += context => SaveInput(1, stats.snapInputTimer);

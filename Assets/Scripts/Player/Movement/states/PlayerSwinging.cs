@@ -58,7 +58,7 @@ public class PlayerSwinging : State
 
     Rail.RailType railType;
 
-    GameObject Pivot,
+    GameObject pivot,
         ladderParent;
     #endregion
 
@@ -140,7 +140,7 @@ public class PlayerSwinging : State
             onWall = false;
             inputGiven = false;
         }
-        ropeLength = Vector3.Distance(Pivot.transform.position, pSM.bob.transform.position);
+        ropeLength = Vector3.Distance(pivot.transform.position, pSM.bob.transform.position);
         #endregion
     }
 
@@ -172,6 +172,7 @@ public class PlayerSwinging : State
         #endregion
 
         #region Input Callbacks Sliding
+        pSM.fallFromLadder.performed += context => FallFromLadder();
         if (pSM.startingSlidingInput == 0)
         {
             currentSlidingLevel = 0;
@@ -199,7 +200,7 @@ public class PlayerSwinging : State
         #endregion
 
         #region Set Variables Swinging
-        Pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
+        pivot = pSM.ladder.gameObject; //ist ein gameObject, weil sich der Pivot ja verschiebt, wenn man slidet
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
         ladderSizeState = pSM.ladderSizeStateMachine;
         pSM.bob.transform.position = pSM.ladder.transform.position + -pSM.ladderDirection * stats.ladderLengthBig;
@@ -212,7 +213,7 @@ public class PlayerSwinging : State
         canPress = true;
 
         // Get the initial rope length from how far away the bob is now
-        ropeLength = Vector3.Distance(Pivot.transform.position, pSM.bob.transform.position);
+        ropeLength = Vector3.Distance(pivot.transform.position, pSM.bob.transform.position);
 
 
         currentVelocity = Vector3.zero;
@@ -458,7 +459,7 @@ public class PlayerSwinging : State
         currentVelocity += gravityDirection * gravityForce * dt;
 
 
-        Vector3 pivot_p = Pivot.transform.position;
+        Vector3 pivot_p = pivot.transform.position;
         Vector3 bob_p = bobPosition;
 
         tensionDirection = (-bob_p).normalized;
@@ -525,7 +526,7 @@ public class PlayerSwinging : State
         #region Final Calculations
         // Get only the forward/backward force
         playerVelocity = bobForward * ExtensionMethods.resultingSpeed(currentVelocity, bobForward);
-        SetCurrentPlayerVelocity(Pivot.transform.position);
+        SetCurrentPlayerVelocity(pivot.transform.position);
 
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
@@ -539,7 +540,7 @@ public class PlayerSwinging : State
         #region SetVariables
         // Get normal at current position
         repelDirection = -bobForward;
-        Vector3 pivot_p = Pivot.transform.position;
+        Vector3 pivot_p = pivot.transform.position;
         Vector3 bob_p = bobPosition;
         float forwardCheck = Vector3.Dot(currentMovement.normalized, bobForward);
         bool movingForward = forwardCheck >= .93f;
@@ -616,7 +617,7 @@ public class PlayerSwinging : State
 
         // Get only the forward/backward force
         playerVelocity = bobForward * ExtensionMethods.resultingSpeed(bobForward, currentVelocity);
-        SetCurrentPlayerVelocity(Pivot.transform.position);
+        SetCurrentPlayerVelocity(pivot.transform.position);
 
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
@@ -727,6 +728,13 @@ public class PlayerSwinging : State
             PSM.OnFall();
             pSM.animationControllerisFoldingJumped = false;
         }
+        PSM.jumpInputBool = false;
+    }
+
+    void FallFromLadder()
+    {
+        PSM.OnFall();
+        pSM.animationControllerisFoldingJumped = false;
         PSM.jumpInputBool = false;
     }
 
@@ -1109,7 +1117,7 @@ public class PlayerSwinging : State
     public override IEnumerator Finish()
     {
         #region Finish Swinging
-        SetCurrentPlayerVelocity(Pivot.transform.position);
+        SetCurrentPlayerVelocity(pivot.transform.position);
         if (!finishWithNormalJump)
         {
             if (shouldRetainSwingVelocity)
@@ -1129,8 +1137,6 @@ public class PlayerSwinging : State
         pSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
         #endregion
-
-
 
         yield break;
     }
