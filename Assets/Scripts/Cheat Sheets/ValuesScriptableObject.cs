@@ -106,16 +106,6 @@ public class ValuesScriptableObject : ScriptableObject
         }
     }
 
-    [Tooltip("How high the player jumps when jumping from ladder after standing still.")]
-    public float jumpHeightFromLadder;
-    public float JumpHeightFromLadder
-    {
-        get
-        {
-            return jumpHeightFromLadder * AirVelocityFactor;
-        }
-    }
-
     [Tooltip("To put a clamp on the upwards velocity")]
     public float maxJumpingSpeed;
     public float MaxJumpingSpeedUp
