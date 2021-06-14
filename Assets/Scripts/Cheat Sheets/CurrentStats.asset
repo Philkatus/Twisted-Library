@@ -18,28 +18,27 @@ MonoBehaviour:
   jumpInputTimer: 0.5
   snapInputTimer: 0.5
   foldInputTimer: 0.5
-  swingInputTimer: 0
+  swingInputTimer: 0.5
   slidingCoyoteTime: 0.2
   canLadderPush: 1
   canLadderFold: 1
   canSlide: 1
   movementAcceleration: 50
   maximumMovementSpeed: 15
-  movementDrag: 20
+  movementDrag: 12
   walkingBonusVelocityDrag: 0.01
-  movementVelocityFactor: 2
+  movementVelocityFactor: 1
   jumpHeight: 20
-  jumpHeightFromLadder: 20
-  maxJumpingSpeed: 50
-  maxJumpingSpeedForward: 8
+  maxJumpingSpeed: 27
+  maxJumpingSpeedForward: 10
   ladderPushAcceleration: 30
-  jumpFromLadderDirection: {x: 0, y: 0, z: 0}
+  jumpFromLadderDirection: {x: 0, y: 30, z: 10}
   airMovementAcceleration: 50
-  jumpingDrag: 2
+  jumpingDrag: 3
   gravity: 60
   maxFallingSpeed: 25
-  AirVelocityFactor: 2
-  snappingDistance: 5
+  AirVelocityFactor: 1
+  snappingDistance: 6
   resnappingDistance: 0.5
   specialCaseAngleForSlidingInput: 20
   angleToLeaveSpecialCaseSlindingInput: 45
@@ -54,9 +53,9 @@ MonoBehaviour:
   speedLevels:
   - 0
   - 5
-  - 20
-  - 40
-  slidingTimeToAccelerate: 0.7
+  - 12
+  - 25
+  slidingTimeToAccelerate: 0.1
   slidingTimeToDecelerate: 0.2
   timeToSwitchDirection: 0.4
   accelerationCooldown: 0.3
@@ -72,6 +71,6 @@ MonoBehaviour:
   ladderLengthBig: 4
   ladderLengthSmall: 1.25
   foldingTime: 0.2
-  extraFoldingTime: 0.5
+  extraFoldingTime: 0.6
   railCatapultJumpMultiplier: 15
   reversedRailCatapultJumpMultiplier: 2
