@@ -142,11 +142,12 @@ public class PlayerMovementStateMachine : StateMachine
 
     void Awake()
     {
-        ObjectManager.instance.pSM = this;
+       
     }
 
     private void Start()
     {
+        ObjectManager.instance.pSM = this;
         InitializeVariables();
         SetState(new PlayerWalking(this));
         GetControls();
