@@ -197,6 +197,12 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("When this angle between pathDorection and camera.forward is exceeded, the buttons determining the sliding direction depend on the camera again.")]
     public float angleToLeaveSpecialCaseSlindingInput = 45f;
 
+    [Tooltip("When this angle between pathDorection and camera.forward is exceeded, the sliding direction will be reversed to match the perspective.")]
+    public float fromAngleForAdjustedSlidingDirection = 45f;
+
+    [Tooltip("When this angle between pathDorection and camera.forward is exceeded, the sliding direction will be normal again.")]
+    public float toAngleForAdjustedSlidingDirection = 135f;
+
     [Tooltip("The minumum player velocity needed to influence the snap direction.")]
     public float minVelocityToChangeSnapDirection = 1;
 
