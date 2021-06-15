@@ -152,15 +152,36 @@ public class PlayerSwinging : State
         #region Case of Camera pointing along pathDirection
         pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
         float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
-        if (angle <= stats.specialCaseAngleForSlidingInput && pSM.startingSlidingInput != 0)
+
+        var camDirection = ExtensionMethods.AngleDirection(Vector3.Cross(pathDirection, Vector3.up), Camera.main.transform.forward, Vector3.up);
+        Debug.Log(angle);
+        if ((angle <= stats.specialCaseAngleForSlidingInput || angle >= 180 - stats.specialCaseAngleForSlidingInput) && pSM.startingSlidingInput != 0)
         {
-            if (pSM.startingSlidingInput == -1)
+            if (camDirection == 1)
             {
-                AssignInputCallbacks(ref pSM.slideLeftAction, ref pSM.slideRightAction);
+                Debug.Log("aaaa");
+
+                if (pSM.startingSlidingInput == 1)
+                {
+                    AssignInputCallbacks(ref pSM.slideLeftAction, ref pSM.slideRightAction);
+                }
+                else
+                {
+                    AssignInputCallbacks(ref pSM.slideRightAction, ref pSM.slideLeftAction);
+                }
             }
-            else
+            else if (camDirection == -1)
             {
-                AssignInputCallbacks(ref pSM.slideRightAction, ref pSM.slideLeftAction);
+                Debug.Log("hdhd");
+
+                if (pSM.startingSlidingInput == -1)
+                {
+                    AssignInputCallbacks(ref pSM.slideLeftAction, ref pSM.slideRightAction);
+                }
+                else
+                {
+                    AssignInputCallbacks(ref pSM.slideRightAction, ref pSM.slideLeftAction);
+                }
             }
         }
         else
@@ -733,9 +754,7 @@ public class PlayerSwinging : State
     #region SLIDING Functions
     void SlidingMovement()
     {
-        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
-        float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
-        if (!holdingRightSlideButton && !holdingLeftSlideButton && angle > stats.angleToLeaveSpecialCaseSlindingInput)
+        if (!holdingRightSlideButton && !holdingLeftSlideButton)
         {
             SwitchSlidingDirectionWithCameraRotation();
         }
@@ -759,7 +778,7 @@ public class PlayerSwinging : State
             if (!CheckForCollisionCharacter(pSM.forwardInput * pSM.ladderDirection))
             {
                 pSM.HeightOnLadder += pSM.forwardInput * speed * Time.fixedDeltaTime;
-                pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -1, 0);
+                pSM.HeightOnLadder = Mathf.Clamp(pSM.HeightOnLadder, -0.75f, 0);
                 pSM.transform.localPosition = new Vector3(0, ladderSizeState.ladderLength * pSM.HeightOnLadder, -0.38f);
             }
 
@@ -852,7 +871,8 @@ public class PlayerSwinging : State
                 }
             }
             #endregion
-            CheckIfReadyToDismount();
+            if (railType != Rail.RailType.TwoSided)
+                CheckIfReadyToDismount();
         }
         else
         {
@@ -1012,13 +1032,14 @@ public class PlayerSwinging : State
     void SwitchSlidingDirectionWithCameraRotation()
     {
         var camDirection = ExtensionMethods.AngleDirection(pathDirection, Camera.main.transform.forward, Vector3.up);
-
-        if (camDirection == -1)
+        float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
+        if (camDirection == -1 || (camDirection == 1 && (angle <= stats.fromAngleForAdjustedSlidingDirection || angle >= stats.toAngleForAdjustedSlidingDirection)))
         {
             pSM.adjustedSlideDirection = 1;
         }
-        if (camDirection == 1)
+        else
         {
+            Debug.Log(angle);
             pSM.adjustedSlideDirection = -1;
         }
     }
