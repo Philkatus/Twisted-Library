@@ -16,6 +16,8 @@ public class AnimationStateController : MonoBehaviour
     public Animator animator;
     public FootIK footIKScript;
 
+    public ParticleSystem ladderPushSmoke;
+
     [Header("Movement Input")]
     float turnAmount;
     float forwardAmount;
@@ -395,6 +397,10 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isRocketJumping", true);
             isLadderPushing = true;
+            if(ladderPushSmoke != null)
+            {
+                //ladderPushSmoke.Play();
+            }
         }
         if (isLadderPushing)
         {
