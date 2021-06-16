@@ -72,6 +72,8 @@ public class PlayerSwinging : State
     bool donethisCallbackAlready;
     bool decelerate;
     bool accelerate;
+    bool needsToLeaveSpecialCaseAngle;
+    string assignedLeftInputAction;
 
     Vector3 dismountStartPos;
     Vector3 pathDirection;
@@ -148,49 +150,6 @@ public class PlayerSwinging : State
     public override void Initialize()
     {
         SnappingOrientation();
-
-        #region Case of Camera pointing along pathDirection
-        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
-        float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
-
-        var camDirection = ExtensionMethods.AngleDirection(Vector3.Cross(pathDirection, Vector3.up), Camera.main.transform.forward, Vector3.up);
-        Debug.Log(angle);
-        if ((angle <= stats.specialCaseAngleForSlidingInput || angle >= 180 - stats.specialCaseAngleForSlidingInput) && pSM.startingSlidingInput != 0)
-        {
-            if (camDirection == 1)
-            {
-                Debug.Log("aaaa");
-
-                if (pSM.startingSlidingInput == 1)
-                {
-                    AssignInputCallbacks(ref pSM.slideLeftAction, ref pSM.slideRightAction);
-                }
-                else
-                {
-                    AssignInputCallbacks(ref pSM.slideRightAction, ref pSM.slideLeftAction);
-                }
-            }
-            else if (camDirection == -1)
-            {
-                Debug.Log("hdhd");
-
-                if (pSM.startingSlidingInput == -1)
-                {
-                    AssignInputCallbacks(ref pSM.slideLeftAction, ref pSM.slideRightAction);
-                }
-                else
-                {
-                    AssignInputCallbacks(ref pSM.slideRightAction, ref pSM.slideLeftAction);
-                }
-            }
-        }
-        else
-        {
-            SwitchSlidingDirectionWithCameraRotation();
-            pSM.slidingInput = pSM.startingSlidingInput * pSM.adjustedSlideDirection;
-            AssignInputCallbacks(ref pSM.slideLeftAction, ref pSM.slideRightAction);
-        }
-        #endregion
 
         #region Input Callbacks Sliding
         pSM.fallFromLadder.performed += context => FallFromLadder();
@@ -365,18 +324,72 @@ public class PlayerSwinging : State
         #endregion
     }
 
-    void AssignInputCallbacks(ref InputAction leftTrigger, ref InputAction rightTrigger)
+    #region Subscribing and unsubscribing to inputActions
+    public override void AssignInputCallbacksDependingOnCase()
+    {
+        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
+        float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
+        var camDirection = ExtensionMethods.AngleDirection(Vector3.Cross(pathDirection, Vector3.up), Camera.main.transform.forward, Vector3.up);
+        if (angle <= stats.specialCaseAngleForSlidingInput && pSM.startingSlidingInput != 0)
+        {
+            needsToLeaveSpecialCaseAngle = true;
+            pSM.slidingInput = 1;
+
+            if (pSM.startingSlidingInput == 1)
+            {
+                assignedLeftInputAction = "right";
+                AssignInputCallbacks(ref pSM.slideRightAction, ref pSM.slideLeftAction);
+            }
+            else
+            {
+                assignedLeftInputAction = "left";
+                AssignInputCallbacks(ref pSM.slideLeftAction, ref pSM.slideRightAction);
+            }
+        }
+        else if (angle >= 180 - stats.specialCaseAngleForSlidingInput && pSM.startingSlidingInput != 0)
+        {
+            needsToLeaveSpecialCaseAngle = true;
+            pSM.slidingInput = -1;
+
+            if (pSM.startingSlidingInput == 1)
+            {
+                assignedLeftInputAction = "right";
+                AssignInputCallbacks(ref pSM.slideRightAction, ref pSM.slideLeftAction);
+            }
+            else
+            {
+                assignedLeftInputAction = "left";
+                AssignInputCallbacks(ref pSM.slideLeftAction, ref pSM.slideRightAction);
+            }
+        }
+        else
+        {
+            SwitchSlidingDirectionWithCameraRotation();
+            pSM.slidingInput = pSM.startingSlidingInput * pSM.adjustedSlideDirection;
+            AssignInputCallbacks(ref pSM.slideLeftAction, ref pSM.slideRightAction);
+            assignedLeftInputAction = "left";
+        }
+    }
+
+    public override void AssignDefaultInputCallbacks()
+    {
+        SwitchSlidingDirectionWithCameraRotation();
+        AssignInputCallbacks(ref pSM.slideLeftAction, ref pSM.slideRightAction);
+        assignedLeftInputAction = "left";
+    }
+
+    public void AssignInputCallbacks(ref InputAction leftTrigger, ref InputAction rightTrigger)
     {
         leftTrigger.started += context =>
-                {
-                    if (pSM.slidingInput * pSM.adjustedSlideDirection == 1)
-                    {
-                        startLeftHoldTimer = true;
-                    }
-                    holdingChangeDirection = false;
-                    leftHoldTimer = 0;
-                    holdingLeftSlideButton = true;
-                };
+        {
+            if (pSM.slidingInput * pSM.adjustedSlideDirection == 1)
+            {
+                startLeftHoldTimer = true;
+            }
+            holdingChangeDirection = false;
+            leftHoldTimer = 0;
+            holdingLeftSlideButton = true;
+        };
         rightTrigger.started += context =>
         {
             if (pSM.slidingInput * pSM.adjustedSlideDirection == -1)
@@ -423,9 +436,81 @@ public class PlayerSwinging : State
         };
     }
 
+    public override void RemoveInputCallbacksDependingOnCase()
+    {
+        if (assignedLeftInputAction == "left")
+        {
+            RemoveInputCallbacks(ref pSM.slideLeftAction, ref pSM.slideRightAction);
+        }
+        else if (assignedLeftInputAction == "right")
+        {
+            RemoveInputCallbacks(ref pSM.slideRightAction, ref pSM.slideLeftAction);
+        }
+    }
+
+    public void RemoveInputCallbacks(ref InputAction leftTrigger, ref InputAction rightTrigger)
+    {
+        leftTrigger.started -= context =>
+        {
+            if (pSM.slidingInput * pSM.adjustedSlideDirection == 1)
+            {
+                startLeftHoldTimer = true;
+            }
+            holdingChangeDirection = false;
+            leftHoldTimer = 0;
+            holdingLeftSlideButton = true;
+        };
+        rightTrigger.started -= context =>
+        {
+            if (pSM.slidingInput * pSM.adjustedSlideDirection == -1)
+            {
+                startRightHoldTimer = true;
+            }
+            holdingChangeDirection = false;
+            rightHoldTimer = 0;
+            holdingRightSlideButton = true;
+        };
+        leftTrigger.canceled -= context =>
+        {
+            holdingLeftSlideButton = false;
+            startLeftHoldTimer = false;
+            if (pSM.slidingInput * pSM.adjustedSlideDirection == 1 && holdingChangeDirection == false)
+            {
+                SwitchSpeedLevel("left");
+            }
+        };
+        rightTrigger.canceled -= context =>
+        {
+            holdingRightSlideButton = false;
+            startRightHoldTimer = false;
+            if (pSM.slidingInput * pSM.adjustedSlideDirection == -1 && holdingChangeDirection == false)
+            {
+                SwitchSpeedLevel("right");
+            }
+        };
+        leftTrigger.performed -= context =>
+        {
+            if (pSM.slidingInput * pSM.adjustedSlideDirection != 1)
+            {
+                SwitchSpeedLevel("left");
+                holdingChangeDirection = true;
+            }
+        };
+        rightTrigger.performed -= context =>
+        {
+            if (pSM.slidingInput * pSM.adjustedSlideDirection != -1)
+            {
+                SwitchSpeedLevel("right");
+                holdingChangeDirection = true;
+            }
+        };
+    }
+
+
+    #endregion
+
     public override void Movement()
     {
-
         SlidingMovement();
         RotateAroundY();
         Swing();
@@ -603,6 +688,7 @@ public class PlayerSwinging : State
             SetCurrentPlayerVelocity(pivot_p);
         }
         #endregion
+
         #region Swinging
         else
         {
@@ -754,6 +840,17 @@ public class PlayerSwinging : State
     #region SLIDING Functions
     void SlidingMovement()
     {
+        if (needsToLeaveSpecialCaseAngle)
+        {
+            pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
+            float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
+            if (angle > stats.angleToLeaveSpecialCaseSlindingInput && angle < 180 - stats.angleToLeaveSpecialCaseSlindingInput)
+            {
+                Debug.Log("end special case!!");
+                needsToLeaveSpecialCaseAngle = false;
+                //pSM.OnLeftSpecialCaseAngle();
+            }
+        }
         if (!holdingRightSlideButton && !holdingLeftSlideButton)
         {
             SwitchSlidingDirectionWithCameraRotation();

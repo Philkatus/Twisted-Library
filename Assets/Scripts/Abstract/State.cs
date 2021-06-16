@@ -1,5 +1,6 @@
 using System.Collections;
 using System;
+using UnityEngine.InputSystem;
 using UnityEngine;
 
 public abstract class State
@@ -23,7 +24,7 @@ public abstract class State
 
     public virtual void Initialize()
     {
-        
+
     }
 
     public virtual void ReInitialize()
@@ -60,6 +61,20 @@ public abstract class State
 
     }
 
+    public virtual void AssignInputCallbacksDependingOnCase()
+    {
+
+    }
+
+    public virtual void RemoveInputCallbacksDependingOnCase()
+    {
+
+    }
+
+    public virtual void AssignDefaultInputCallbacks()
+    {
+
+    }
 
     public virtual IEnumerator ChangeLadderSize()
     {

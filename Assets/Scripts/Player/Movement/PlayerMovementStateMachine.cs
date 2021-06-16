@@ -142,7 +142,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     void Awake()
     {
-       
+
     }
 
     private void Start()
@@ -440,8 +440,8 @@ public class PlayerMovementStateMachine : StateMachine
             }
         }
     }
-
     #endregion
+
     #region functions to change states
     ///<summary>
     /// Gets called when the player lands on the floor.
@@ -459,6 +459,7 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnLadderTop()
     {
+        State.RemoveInputCallbacksDependingOnCase();
         SetState(new PlayerWalking(this));
         effects.OnStateChangedWalking(false);
         playerState = PlayerState.walking;
@@ -486,6 +487,7 @@ public class PlayerMovementStateMachine : StateMachine
         effects.OnStateChangedSwinging();
         SetState(new PlayerSwinging(this));
         playerState = PlayerState.swinging;
+        State.AssignInputCallbacksDependingOnCase();
     }
 
     ///<summary>
@@ -503,11 +505,22 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnFall()
     {
+        State.RemoveInputCallbacksDependingOnCase();
         SetState(new PlayerInTheAir(this));
         effects.OnStateChangedInAir();
         playerState = PlayerState.inTheAir;
         ladderSizeStateMachine.OnShrink();
         HeightOnLadder = -1;
+    }
+
+    ///<summary>
+    /// Gets called when the player leaves the special case angle while sliding.
+    ///</summary>
+    public void OnLeftSpecialCaseAngle()
+    {
+        State.RemoveInputCallbacksDependingOnCase();
+        Debug.Log("end special case!!");
+        State.AssignDefaultInputCallbacks();
     }
     #endregion
 
