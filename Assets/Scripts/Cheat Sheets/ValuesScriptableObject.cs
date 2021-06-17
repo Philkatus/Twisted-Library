@@ -293,6 +293,9 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("Additional time after foldingTime until folding ends.")]
     public float extraFoldingTime = 0.5f;
 
+    [Tooltip("How long it takes for the ladder to Unfold on snap.")]
+    public float onSnapUnFoldingTime = 0.5f;
+
     [Tooltip("The factor by which the jumping speed is mutliplied when a rail catapult jump is performed.")]
     public float railCatapultJumpMultiplier = 17;
     public float RailCatapultJumpMultiplier
