@@ -480,7 +480,7 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnSnap()
     {
-        ladderSizeStateMachine.OnGrow();
+        
         snapInputBool = false;
         effects.OnStateChangedSwinging();
         SetState(new PlayerSwinging(this));

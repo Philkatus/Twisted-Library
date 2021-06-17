@@ -29,10 +29,10 @@ public class LadderUnfold : State
         if (isLerpGoing)
         {
             time += Time.deltaTime;
-            LadderSizeStateMachine.ladderLength = Mathf.Lerp(stats.ladderLengthSmall, stats.ladderLengthBig, time / stats.foldingTime);
+            LadderSizeStateMachine.ladderLength = Mathf.Lerp(stats.ladderLengthSmall, stats.ladderLengthBig, time / stats.onSnapUnFoldingTime);
             LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
 
-            if (time >= stats.foldingTime)
+            if (time >= stats.onSnapUnFoldingTime)
             {
                 isLerpGoing = false;
                 LadderSizeStateMachine.ladderLength = stats.ladderLengthBig;
