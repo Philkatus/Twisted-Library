@@ -9,7 +9,6 @@ public class PlayerInTheAir : State
     ValuesScriptableObject stats;
 
     float wallJumpingTime;
-    bool didSkewLadderPushThisState;
 
     public PlayerInTheAir(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
@@ -182,12 +181,11 @@ public class PlayerInTheAir : State
                 for (int i = 0; i < hits.Count; i++)
                 {
                     float distance = hits[i].distance;
-                    if (distance < closestDistance && !didSkewLadderPushThisState) // && !PlayerStateMachine.didLadderPushInThisState)// && Vector3.Dot(hits[i].normal, Vector3.up) <= .93f)
+                    if (distance < closestDistance) // && !PlayerStateMachine.didLadderPushInThisState)// && Vector3.Dot(hits[i].normal, Vector3.up) <= .93f)
                     {
                         closestHit = hits[i];
                         closestDistance = distance;
                         target = closestHit.point;
-                        didSkewLadderPushThisState = true;
                         // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point, Color.red, 2);
                     }
                 }
@@ -199,14 +197,23 @@ public class PlayerInTheAir : State
             #endregion
             if (target != Vector3.zero)
             {
-                PlayerMovementStateMachine pSM = PSM;
-                pSM.ladderJumpTarget = target;
-                pSM.baseVelocity.y = 0;
-                pSM.foldInputBool = false;
+                #region calculate velocity direction
+                Vector3 directionToWall = (PSM.transform.position - target).normalized;
+                if (Vector3.Angle(directionToWall, Vector3.up)>45&&)
+                {
+
+                }
+                #endregion
+
+
+                
+                PSM.ladderJumpTarget = target;
+                PSM.baseVelocity.y = 0;
+                PSM.foldInputBool = false;
                 //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
-                pSM.bonusVelocity = (pSM.transform.position - target).normalized * acceleration;
+                PSM.bonusVelocity += directionToWall * acceleration;
                 //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
-                pSM.ladderSizeStateMachine.OnLadderPush();
+                PSM.ladderSizeStateMachine.OnLadderPush();
             }
         }
     }
