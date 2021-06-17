@@ -814,7 +814,7 @@ public class PlayerSwinging : State
         }
         else
         {
-            Debug.Log("inverted" + angle);
+            //Debug.Log("inverted" + angle);
             pSM.adjustedSlideDirection = -1;
         }
     }

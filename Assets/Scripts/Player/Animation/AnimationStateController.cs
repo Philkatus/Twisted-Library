@@ -114,7 +114,7 @@ public class AnimationStateController : MonoBehaviour
     {
         //ignoring the y velocity
         velocity = new Vector2(movementScript.playerVelocity.x, movementScript.playerVelocity.z).magnitude;
-        animator.SetFloat(VelocityHash, velocity);
+        //animator.SetFloat(VelocityHash, velocity);
 
         foldJump = movementScript.animationControllerisFoldingJumped;
         wallJump = movementScript.isWallJumping;

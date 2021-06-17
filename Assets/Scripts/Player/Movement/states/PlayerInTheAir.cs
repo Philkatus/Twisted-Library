@@ -152,7 +152,7 @@ public class PlayerInTheAir : State
             {
                 float distance = hits[i].distance;
                 if (distance < closestDistance &&
-                    Vector3.Dot(hits[i].normal, Vector3.up) >= .9f &&
+                    Vector3.Dot(hits[i].normal, Vector3.up) >= .5f &&
                     hits[i].point != Vector3.zero)
                 {
                     closestHit = hits[i];
