@@ -150,6 +150,11 @@ public class UILogic : MonoBehaviour
         }
     }
 
+    public void debugMessage() 
+    {
+        Debug.LogError("options button");
+    }
+
     void Transitions()
     {
         if (optionGotSelectet && startCanvas.activeSelf)

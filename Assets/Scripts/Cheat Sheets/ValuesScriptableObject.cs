@@ -135,6 +135,9 @@ public class ValuesScriptableObject : ScriptableObject
             return ladderPushAcceleration * AirVelocityFactor;
         }
     }
+    [Tooltip("factor to controll how much the current bonus Velocity factors into the end reVelocity" +
+        "higher values mean the curretn velocity doesn't get changed much")]
+    [Range(1,10)] public float ladderPushCurrentVelocityFactor;
 
     [Tooltip("Direction of the jump when facing the wall.")]
     public Vector3 jumpFromLadderDirection;

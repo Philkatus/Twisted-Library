@@ -148,7 +148,7 @@ public class PlayerInTheAir : State
             {
                 float distance = hits[i].distance;
                 if (distance < closestDistance &&
-                    Vector3.Dot(hits[i].normal, Vector3.up) >= .9f &&
+                    Vector3.Dot(hits[i].normal, Vector3.up) >= .5f &&
                     hits[i].point != Vector3.zero)
                 {
                     closestHit = hits[i];
@@ -210,7 +210,7 @@ public class PlayerInTheAir : State
                     PSM.baseVelocity.y = 0;
                     PSM.foldInputBool = false;
                     //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
-                    PSM.bonusVelocity = Mathf.Clamp(ExtensionMethods.resultingSpeed(PSM.bonusVelocity, directionToWall), 0, Mathf.Infinity) * PSM.bonusVelocity.normalized + directionToWall * acceleration;
+                    PSM.bonusVelocity = Mathf.Clamp(ExtensionMethods.resultingSpeed(PSM.bonusVelocity, directionToWall) * stats.ladderPushCurrentVelocityFactor, 0, PSM.bonusVelocity.magnitude) * PSM.bonusVelocity.normalized + directionToWall * acceleration;
 
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
