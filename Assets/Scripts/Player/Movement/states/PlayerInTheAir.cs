@@ -190,30 +190,42 @@ public class PlayerInTheAir : State
                     }
                 }
             }
-            else
-            {
-                PSM.didLadderPush = true;
-            }
+           
             #endregion
             if (target != Vector3.zero)
             {
                 #region calculate velocity direction
                 Vector3 directionToWall = (PSM.transform.position - target).normalized;
-                if (Vector3.Angle(directionToWall, Vector3.up)>45&&)
+                if (Vector3.Angle(directionToWall, Vector3.up) < 45 && !PSM.didLadderPush)
+                {
+                    PSM.didLadderPush = true;
+                    PSM.ladderJumpTarget = target;
+                    PSM.baseVelocity.y = 0;
+                    PSM.foldInputBool = false;
+                    //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
+                    PSM.bonusVelocity += directionToWall * acceleration;
+
+                    //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
+                    PSM.ladderSizeStateMachine.OnLadderPush();
+                }
+                else if (Vector3.Angle(directionToWall, Vector3.up)>45)
                 {
 
+                    PSM.ladderJumpTarget = target;
+                    PSM.baseVelocity.y = 0;
+                    PSM.foldInputBool = false;
+                    //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
+                    PSM.bonusVelocity = Mathf.Clamp(ExtensionMethods.resultingSpeed(PSM.bonusVelocity,directionToWall),0,Mathf.Infinity) * PSM.bonusVelocity.normalized+ directionToWall * acceleration;
+
+                    //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
+                    PSM.ladderSizeStateMachine.OnLadderPush();
                 }
+
+               
                 #endregion
 
 
-                
-                PSM.ladderJumpTarget = target;
-                PSM.baseVelocity.y = 0;
-                PSM.foldInputBool = false;
-                //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
-                PSM.bonusVelocity += directionToWall * acceleration;
-                //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
-                PSM.ladderSizeStateMachine.OnLadderPush();
+
             }
         }
     }
