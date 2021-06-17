@@ -106,10 +106,7 @@ public class AnimationStateController : MonoBehaviour
         // new Input System
         playerControlsMap = movementScript.actionAsset.FindActionMap("PlayerControls");
         stats = movementScript.stats;
-
-        playerControlsMap.Enable();
         jumpAction = playerControlsMap.FindAction("Jump");
-
         jumpAction.performed += context => Jump();
     }
 
@@ -127,15 +124,10 @@ public class AnimationStateController : MonoBehaviour
         {
             movementScript.animationControllerisFoldingJumped = false;
         }
-
-
-
         float forwardInput = movementScript.forwardInput;
         animator.SetFloat(ForwardInputHash, forwardInput);
         float slideInput = movementScript.slidingInput;
         animator.SetFloat(SlideInputHash, slideInput);
-
-
 
         if (animator.GetBool("isJumping") == true)
         {
