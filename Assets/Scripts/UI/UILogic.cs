@@ -93,7 +93,7 @@ public class UILogic : MonoBehaviour
         {
             timer += Time.deltaTime;
 
-            //Vector3 designatedPosition = GameObject.Find("PLAY").GetComponent<RectTransform>().position;
+            
             foreach (GameObject g in uiElements)
             {
                 #region //positionchange
@@ -148,6 +148,11 @@ public class UILogic : MonoBehaviour
         {
             optionGotSelectet = true;
         }
+    }
+
+    public void debugMessage() 
+    {
+        Debug.LogError("options button");
     }
 
     void Transitions()

@@ -1,5 +1,6 @@
 using System.Collections;
 using System;
+using UnityEngine.InputSystem;
 using UnityEngine;
 
 public abstract class State
@@ -23,7 +24,7 @@ public abstract class State
 
     public virtual void Initialize()
     {
-        
+
     }
 
     public virtual void ReInitialize()
@@ -60,6 +61,10 @@ public abstract class State
 
     }
 
+    public virtual void FallFromLadder()
+    {
+
+    }
 
     public virtual IEnumerator ChangeLadderSize()
     {

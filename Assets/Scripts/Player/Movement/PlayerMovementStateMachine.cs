@@ -21,6 +21,8 @@ public class PlayerMovementStateMachine : StateMachine
     public float currentDistance;
     public float sideWaysInput;
     public float forwardInput;
+    public float slideLeftInput;
+    public float slideRightInput;
     public float swingingInput;
     public float slidingInput;
     public float startingSlidingInput;
@@ -58,7 +60,7 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public InputAction slideRightAction;
     [HideInInspector] public InputAction swingAction;
     [HideInInspector] public InputAction snapAction;
-    [HideInInspector] public InputAction stopSlidingAction;
+    [HideInInspector] public InputAction NewAction;
     [HideInInspector] public InputAction fallFromLadder;
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
@@ -140,11 +142,6 @@ public class PlayerMovementStateMachine : StateMachine
     Coroutine[] inputTimer = new Coroutine[4];
     #endregion
 
-    void Awake()
-    {
-       
-    }
-
     private void Start()
     {
         ObjectManager.instance.pSM = this;
@@ -203,6 +200,8 @@ public class PlayerMovementStateMachine : StateMachine
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
         swingingInput = swingAction.ReadValue<float>();
+        slideLeftInput = slideLeftAction.ReadValue<float>();
+        slideRightInput = slideRightAction.ReadValue<float>();
     }
 
     public void SaveInput(int index, float duration)
@@ -276,7 +275,7 @@ public class PlayerMovementStateMachine : StateMachine
         swingAction = playerControlsMap.FindAction("Swing");
         foldAction = playerControlsMap.FindAction("Fold");
         fallFromLadder = playerControlsMap.FindAction("FallFromLadder");
-
+        fallFromLadder.performed += context => State.FallFromLadder();
         jumpAction.performed += context => SaveInput(0, stats.jumpInputTimer);
         snapAction.performed += context => SaveInput(1, stats.snapInputTimer);
         foldAction.performed += context => SaveInput(2, stats.foldInputTimer);
@@ -440,8 +439,8 @@ public class PlayerMovementStateMachine : StateMachine
             }
         }
     }
-
     #endregion
+
     #region functions to change states
     ///<summary>
     /// Gets called when the player lands on the floor.
