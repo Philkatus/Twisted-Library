@@ -220,12 +220,7 @@ public class PlayerInTheAir : State
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
                 }
-
-               
                 #endregion
-
-
-
             }
         }
     }
