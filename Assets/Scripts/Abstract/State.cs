@@ -61,17 +61,7 @@ public abstract class State
 
     }
 
-    public virtual void AssignInputCallbacksDependingOnCase()
-    {
-
-    }
-
-    public virtual void RemoveInputCallbacksDependingOnCase()
-    {
-
-    }
-
-    public virtual void AssignDefaultInputCallbacks()
+    public virtual void FallFromLadder()
     {
 
     }

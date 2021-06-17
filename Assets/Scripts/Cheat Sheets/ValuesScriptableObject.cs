@@ -228,13 +228,13 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The offset between the ladder and the player, so that the position on the ladder is right.")]
     public float playerOffsetFromLadder;
 
-    [Tooltip("The sliding speed for each speed level.")]
-    public List<float> speedLevels;
+    [Tooltip("The sliding speed range is from zero to maxSlidingSpeed.")]
+    public float maxSlidingSpeed;
 
-    [Tooltip("How fast the player accelerates to current sliding speed level.")]
-    public float slidingTimeToAccelerate = 0.7f;
+    [Tooltip("How fast the player accelerates to maxSlidingSpeed while pressing the button completely.")]
+    public float slidingTimeToAccecelerate = 0.7f;
 
-    [Tooltip("How fast the player decelarates to lower speed level or comes to a halt while sliding.")]
+    [Tooltip("How fast the player decelarates to a halt while sliding and pressing the button completely.")]
     public float slidingTimeToDecelerate = 0.2f;
 
     [Tooltip("The time needed for the player to slow down and start sliding in the opposite direction.")]
