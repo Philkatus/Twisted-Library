@@ -264,12 +264,10 @@ public class PlayerMovementStateMachine : StateMachine
         if (GameObject.FindGameObjectWithTag("Canvas"))
         {
             playerControlsMap.Disable();
-            Debug.LogError("found a canvas");
         }
         else
         {
             playerControlsMap.Enable();
-            Debug.LogError("found no canvas");
         }
         jumpAction = playerControlsMap.FindAction("Jump");
         moveAction = playerControlsMap.FindAction("Movement");
