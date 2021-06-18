@@ -726,24 +726,28 @@ public class PlayerSwinging : State
                 if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
                 {
                     Vector3 endOfShelfDirection = new Vector3();
+                    int dir = 0;
                     if (pSM.closestRail != null)
                     {
                         if (pSM.currentDistance <= 0) //arriving at start of path
                         {
-                            endOfShelfDirection = -pathDirection; 
+                            endOfShelfDirection = -pathDirection;
+                            dir = -1;
                         }
                         else if (pSM.currentDistance >= pathLength) //arriving at end of path
                         {
                             endOfShelfDirection = pathDirection; //ende - start
+                            dir = 1;
                         }
                     }
                     else
                         Debug.Log("There is something bad happening here lmao");
-                    Plane railPlane = new Plane(endOfShelfDirection.normalized, Vector3.zero);
-                    if (railPlane.GetSide(Vector3.zero + slidingDirection * currentSlidingSpeed)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
+
+                    if (Vector3.Dot(slidingDirection, endOfShelfDirection) >= 0.9f) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
                     {
                         if (pSM.CheckForNextClosestRail(pSM.closestRail))
                         {
+                            
                             pSM.OnResnap();
                         }
                         else
