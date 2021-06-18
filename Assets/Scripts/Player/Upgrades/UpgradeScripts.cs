@@ -14,17 +14,20 @@ public class UpgradeScripts : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         stats = player.GetComponentInChildren<PlayerMovementStateMachine>().stats;
+        stats.canLadderFold = false;
+        stats.canLadderPush = false;
+        stats.canSlide = false;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Player"))
+        if (other.gameObject.CompareTag("Player"))
         {
-            if(upgrade == Upgrade.canLadderFold)
+            if (upgrade == Upgrade.canLadderFold)
             {
                 stats.canLadderFold = true;
             }
-            else if(upgrade == Upgrade.canLadderPush)
+            else if (upgrade == Upgrade.canLadderPush)
             {
                 stats.canLadderPush = true;
             }
