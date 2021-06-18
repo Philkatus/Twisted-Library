@@ -170,6 +170,8 @@ public class ValuesScriptableObject : ScriptableObject
             return gravity * AirVelocityFactor;
         }
     }
+    [Tooltip("how long do you float at the top before fallign down agai")]
+    public float floatTime =1;
 
     [Tooltip("even gravity has its limits.")]
     public float maxFallingSpeed;

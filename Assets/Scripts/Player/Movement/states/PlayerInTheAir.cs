@@ -9,7 +9,7 @@ public class PlayerInTheAir : State
     ValuesScriptableObject stats;
 
     float wallJumpingTime;
-
+    float floatingTimer;
     public PlayerInTheAir(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
 
@@ -84,8 +84,17 @@ public class PlayerInTheAir : State
         PSM.bonusVelocity.y -= stats.Gravity * Time.fixedDeltaTime;
         if (PSM.bonusVelocity.y <= 0)
         {
-            PSM.baseVelocity.y += PSM.bonusVelocity.y;
-            PSM.bonusVelocity.y = 0;
+            if (PSM.baseVelocity.y >= 0 || floatingTimer >= stats.floatTime)
+            {
+                PSM.baseVelocity.y += PSM.bonusVelocity.y;
+                PSM.bonusVelocity.y = 0;
+            }
+            else 
+            {
+                PSM.bonusVelocity.y = 0;
+                PSM.baseVelocity.y = 0;
+                floatingTimer += Time.deltaTime;
+            }
         }
 
         float ClampedVelocityY = Mathf.Clamp(PSM.baseVelocity.y, -stats.MaxFallingSpeed, stats.MaxJumpingSpeedUp);
@@ -190,6 +199,7 @@ public class PlayerInTheAir : State
             #endregion
             if (target != Vector3.zero)
             {
+                floatingTimer = 0;
                 Vector3 directionToWall = (PSM.transform.position - target).normalized;
                 if (Vector3.Angle(directionToWall, Vector3.up) < 45 && !PSM.didLadderPush)
                 {
@@ -210,7 +220,15 @@ public class PlayerInTheAir : State
                     PSM.baseVelocity.y = 0;
                     PSM.foldInputBool = false;
                     //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
-                    PSM.bonusVelocity = Mathf.Clamp(ExtensionMethods.resultingSpeed(PSM.bonusVelocity, directionToWall) * stats.ladderPushCurrentVelocityFactor, 0, PSM.bonusVelocity.magnitude) * PSM.bonusVelocity.normalized + directionToWall * acceleration;
+                    
+                    Vector3 targetVelocity = Mathf.Clamp(1-Mathf.Abs(Vector3.Dot(PSM.playerVelocity, directionToWall) * stats.ladderPushCurrentVelocityFactor), 0, PSM.playerVelocity.magnitude) * PSM.playerVelocity.normalized + directionToWall * acceleration;
+                    Vector3 targetVelocityXZ = new Vector3(targetVelocity.x, 0, targetVelocity.z);
+                    float y = targetVelocity.normalized.y * Mathf.Clamp(targetVelocity.y, 0, stats.maxJumpingSpeed);
+                    PSM.baseVelocity = targetVelocityXZ.normalized * Mathf.Clamp(targetVelocityXZ.magnitude, 0, stats.maxJumpingSpeedForward);
+                    PSM.baseVelocity.y = y;
+                    targetVelocity -= PSM.baseVelocity;
+                    PSM.bonusVelocity = targetVelocity;
+
 
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
