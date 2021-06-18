@@ -35,6 +35,7 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("How long is the time after falling of a ladder where you can still jump.")]
     public float slidingCoyoteTime = 0.2f;
     #endregion
+
     [Space]
     #region Ability bools
     [Header("Ability bools")]
@@ -93,6 +94,7 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The factor to convert Velocity into Movementspeed")]
     public float movementVelocityFactor = 1;
     #endregion
+
     [Space]
     #region jumping and air movement
     [Header("Jumping/Air Movement")]
@@ -137,7 +139,7 @@ public class ValuesScriptableObject : ScriptableObject
     }
     [Tooltip("factor to controll how much the current bonus Velocity factors into the end reVelocity" +
         "higher values mean the curretn velocity doesn't get changed much")]
-    [Range(1,10)] public float ladderPushCurrentVelocityFactor;
+    [Range(1, 10)] public float ladderPushCurrentVelocityFactor;
 
     [Tooltip("Direction of the jump when facing the wall.")]
     public Vector3 jumpFromLadderDirection;
@@ -151,6 +153,19 @@ public class ValuesScriptableObject : ScriptableObject
             return airMovementAcceleration * AirVelocityFactor;
         }
     }
+
+    [Tooltip("Limits the movement speed for the first few seconds of air movement.")]
+    public float initialAirMovementAcceleration;
+    public float InitialAirMovementAcceleration
+    {
+        get
+        {
+            return initialAirMovementAcceleration * AirVelocityFactor;
+        }
+    }
+
+    [Tooltip("The amount of time the player has better air movement for after going into inTheAir state.")]
+    public float initialAirMovementTime;
 
     [Tooltip("How much drag in the air is applied while no input is given")]
     public float jumpingDrag;

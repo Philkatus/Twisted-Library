@@ -202,7 +202,6 @@ public class PlayerMovementStateMachine : StateMachine
         swingingInput = swingAction.ReadValue<float>();
         if (invertedSliding)
         {
-            Debug.Log("inverted");
             slideLeftInput = slideRightAction.ReadValue<float>();
             slideRightInput = slideLeftAction.ReadValue<float>();
         }
