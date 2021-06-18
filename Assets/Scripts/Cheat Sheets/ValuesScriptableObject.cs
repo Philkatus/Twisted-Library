@@ -13,6 +13,9 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("Use the trigger buttons to snap and slide in a specific direction.")]
     public bool useTriggerToSlideWithMomentum;
 
+    [Tooltip("The sliding buttons make the player slide in the opposite direction, just like Lila likes it <3")]
+    public bool useInvertedSliding;
+
     [Space]
     [Header("General")]
     [Tooltip("How fast the bonusvelocity is lost again")]
@@ -209,18 +212,6 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The maximum distance between ladder and rail to snap to the next rail while sliding.")]
     public float resnappingDistance = .5f;
 
-    [Tooltip("The angle from pathDorection to camera.forward which enables a special case where the button used to snap is saved and used to slide forward.")]
-    public float specialCaseAngleForSlidingInput = 20f;
-
-    [Tooltip("When this angle between pathDorection and camera.forward is exceeded, the buttons determining the sliding direction depend on the camera again.")]
-    public float angleToLeaveSpecialCaseSlindingInput = 45f;
-
-    [Tooltip("When this angle between pathDorection and camera.forward is exceeded, the sliding direction will be reversed to match the perspective.")]
-    public float fromAngleForAdjustedSlidingDirection = 45f;
-
-    [Tooltip("When this angle between pathDorection and camera.forward is exceeded, the sliding direction will be normal again.")]
-    public float toAngleForAdjustedSlidingDirection = 135f;
-
     [Tooltip("The minumum player velocity needed to influence the snap direction.")]
     public float minVelocityToChangeSnapDirection = 1;
 
@@ -250,16 +241,10 @@ public class ValuesScriptableObject : ScriptableObject
     public float maxSlidingSpeed;
 
     [Tooltip("How fast the player accelerates to maxSlidingSpeed while pressing the button completely.")]
-    public float slidingTimeToAccecelerate = 0.7f;
+    public float timeToAccecelerate = 0.7f;
 
     [Tooltip("How fast the player decelarates to a halt while sliding and pressing the button completely.")]
-    public float slidingTimeToDecelerate = 0.2f;
-
-    [Tooltip("The time needed for the player to slow down and start sliding in the opposite direction.")]
-    public float timeToSwitchDirection;
-
-    [Tooltip("The time players need to wait before accelerating again.")]
-    public float accelerationCooldown;
+    public float timeToDecelerate = 0.4f;
 
     #endregion
     [Space]

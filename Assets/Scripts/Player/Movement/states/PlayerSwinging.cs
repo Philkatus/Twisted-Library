@@ -70,10 +70,9 @@ public class PlayerSwinging : State
     float startSlidingSpeedForDeceleration;
     bool dismountedHalfways;
     bool decelerate;
+    bool startedDecelerating;
     bool accelerate;
-    bool leftInputReceived;
-    bool rightInputReceived;
-    bool needsToLeaveSpecialCaseAngle;
+    bool startedAccelerating;
 
     Vector3 dismountStartPos;
     Vector3 pathDirection;
@@ -142,36 +141,8 @@ public class PlayerSwinging : State
         SnappingOrientation();
 
         #region Set Variables Sliding
-        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
-        float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
-        if (angle <= stats.specialCaseAngleForSlidingInput && pSM.startingSlidingInput != 0)
-        {
-            if (pSM.startingSlidingInput == -1)
-            {
-                needsToLeaveSpecialCaseAngle = true;
-                pSM.invertedSliding = true;
-            }
-        }
-        else if (angle >= 180 - stats.specialCaseAngleForSlidingInput && pSM.startingSlidingInput != 0)
-        {
-            if (pSM.startingSlidingInput == 1)
-            {
-                needsToLeaveSpecialCaseAngle = true;
-                pSM.invertedSliding = true;
-            }
-        }
-        pSM.GetInput();
 
-        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
-        SwitchSlidingDirectionWithCameraRotation();
-        if (needsToLeaveSpecialCaseAngle)
-        {
-            pSM.slidingInput = -pSM.startingSlidingInput;
-        }
-        else
-        {
-            pSM.slidingInput = pSM.startingSlidingInput * pSM.adjustedSlideDirection;
-        }
+        pSM.slidingInput = pSM.startingSlidingInput;
         maxSlidingSpeed = stats.maxSlidingSpeed;
         if (pSM.startingSlidingInput == 0)
         {
@@ -660,17 +631,6 @@ public class PlayerSwinging : State
     #region SLIDING Functions
     void SlidingMovement()
     {
-        if (needsToLeaveSpecialCaseAngle)
-        {
-            pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
-            float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
-            if (angle > stats.angleToLeaveSpecialCaseSlindingInput && angle < 180 - stats.angleToLeaveSpecialCaseSlindingInput)
-            {
-                pSM.invertedSliding = false;
-                pSM.GetInput();
-                needsToLeaveSpecialCaseAngle = false;
-            }
-        }
         ChangeSlidingSpeed();
 
         if (!pSM.dismounting)
@@ -689,12 +649,17 @@ public class PlayerSwinging : State
                 pathDirection = path.GetDirectionAtDistance(currentDistance);
                 Vector3 slidingDirection = pathDirection * pSM.slidingInput;
 
-                if (!CheckForCollisionCharacter(slidingDirection) && !CheckForCollisionLadder(slidingDirection) && (pSM.slideLeftInput == 0 || pSM.slideRightInput == 0))
+                if (!CheckForCollisionCharacter(slidingDirection) && !CheckForCollisionLadder(slidingDirection))
                 {
                     var pressureFactor = pSM.slideRightInput != 0 ? pSM.slideRightInput : pSM.slideLeftInput;
                     if (decelerate)
                     {
-                        tDeceleration += Time.deltaTime / (stats.slidingTimeToDecelerate * pressureFactor);
+                        if ((pSM.slideRightInput != 0 && pSM.slideLeftInput != 0))
+                        {
+                            pressureFactor = 1;
+                        }
+
+                        tDeceleration += Time.deltaTime / stats.timeToDecelerate * pressureFactor;
                         currentSlidingSpeed = Mathf.Lerp(startSlidingSpeedForDeceleration, 0, tDeceleration);
                         tAcceleration = 0;
                         if (currentSlidingSpeed == 0)
@@ -703,13 +668,23 @@ public class PlayerSwinging : State
                             tAcceleration = 0;
                             tDeceleration = 0;
                             decelerate = false;
+                            startedDecelerating = false;
+                            startSlidingSpeedForDeceleration = 0;
                         }
                     }
-                    if (accelerate && currentSlidingSpeed != stats.maxSlidingSpeed)
+                    else if (accelerate)
                     {
                         tDeceleration = 0;
-                        tAcceleration += Time.deltaTime / stats.slidingTimeToAccecelerate * pressureFactor;
+                        startSlidingSpeedForDeceleration = 0;
+                        startedDecelerating = false;
+                        var pressureAdjustment = pressureFactor == 1 ? 0f : 0.19f;
+                        tAcceleration += Time.deltaTime / stats.timeToAccecelerate * pressureFactor;
                         currentSlidingSpeed = Mathf.Lerp(0, maxSlidingSpeed, tAcceleration);
+                        if (currentSlidingSpeed == stats.maxSlidingSpeed)
+                        {
+                            tDeceleration = 0;
+                            accelerate = false;
+                        }
                     }
                 }
                 else
@@ -780,75 +755,78 @@ public class PlayerSwinging : State
 
     void ChangeSlidingSpeed()
     {
-        SwitchSlidingDirectionWithCameraRotation();
-        if (!rightInputReceived && pSM.slideRightInput != 0)
-        {
-            rightInputReceived = true;
-        }
-        if (!leftInputReceived && pSM.slideLeftInput != 0)
-        {
-            leftInputReceived = true;
-        }
-        if (pSM.slideRightInput == 0)
-        {
-            rightInputReceived = false;
-        }
-        if (pSM.slideLeftInput == 0)
-        {
-            leftInputReceived = false;
-        }
-        var slidingInput = pSM.slidingInput * pSM.adjustedSlideDirection;
-        if (rightInputReceived && !leftInputReceived)
+        var slidingInput = pSM.slidingInput;
+        if (pSM.slideLeftInput == 0 && pSM.slideRightInput != 0)
         {
             if (slidingInput == 0 || slidingInput == 1)
             {
-                accelerate = true;
-                tDeceleration = 0;
-                decelerate = false;
-                rightInputReceived = false;
-                pSM.slidingInput = 1 * pSM.adjustedSlideDirection;
+                if (!startedAccelerating && currentSlidingSpeed != stats.maxSlidingSpeed)
+                {
+                    accelerate = true;
+                    tDeceleration = 0;
+                    decelerate = false;
+                    pSM.slidingInput = 1;
+                    startedDecelerating = false;
+                    startedAccelerating = true;
+                }
             }
             if (slidingInput == -1)
             {
-                decelerate = true;
-                startSlidingSpeedForDeceleration = currentSlidingSpeed;
-                accelerate = false;
-                tAcceleration = 0;
-                rightInputReceived = false;
+                if (!startedDecelerating)
+                {
+                    startSlidingSpeedForDeceleration = currentSlidingSpeed;
+                    decelerate = true;
+                    accelerate = false;
+                    startedAccelerating = false;
+                    startedDecelerating = true;
+                    tAcceleration = 0;
+                }
             }
         }
-        else if (leftInputReceived && !rightInputReceived)
+        else if (pSM.slideLeftInput != 0 && pSM.slideRightInput == 0)
         {
             if (slidingInput == 0 || slidingInput == -1)
             {
-                accelerate = true;
-                tDeceleration = 0;
-                decelerate = false;
-                rightInputReceived = false;
-                pSM.slidingInput = -1 * pSM.adjustedSlideDirection;
+                if (!startedAccelerating && currentSlidingSpeed != stats.maxSlidingSpeed)
+                {
+                    accelerate = true;
+                    tDeceleration = 0;
+                    decelerate = false;
+                    pSM.slidingInput = -1;
+                    startedAccelerating = true;
+                    startedDecelerating = false;
+                }
             }
             if (slidingInput == 1)
             {
-                decelerate = true;
-                startSlidingSpeedForDeceleration = currentSlidingSpeed;
-                accelerate = false;
-                tAcceleration = 0;
-                rightInputReceived = false;
+                if (!startedDecelerating)
+                {
+                    tDeceleration = 0;
+                    decelerate = true;
+                    accelerate = false;
+                    tAcceleration = 0;
+                    startSlidingSpeedForDeceleration = currentSlidingSpeed;
+                    startedAccelerating = false;
+                    startedDecelerating = true;
+                }
             }
         }
-    }
-
-    void SwitchSlidingDirectionWithCameraRotation()
-    {
-        var camDirection = ExtensionMethods.AngleDirection(pathDirection, Camera.main.transform.forward, Vector3.up);
-        float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
-        if (camDirection == -1 || (camDirection == 1 && (angle <= stats.fromAngleForAdjustedSlidingDirection || angle >= stats.toAngleForAdjustedSlidingDirection)))
+        else if (pSM.slideRightInput != 0 && pSM.slideLeftInput != 0)
         {
-            pSM.adjustedSlideDirection = 1;
+            if (!startedDecelerating)
+            {
+                startedAccelerating = false;
+                startedDecelerating = true;
+                decelerate = true;
+                accelerate = false;
+                tAcceleration = 0;
+                startSlidingSpeedForDeceleration = currentSlidingSpeed;
+            }
         }
-        else
+        if (pSM.slideRightInput == 0 && pSM.slideLeftInput == 0 && (startedAccelerating || startedDecelerating))
         {
-            pSM.adjustedSlideDirection = -1;
+            startedDecelerating = false;
+            startedAccelerating = false;
         }
     }
 
