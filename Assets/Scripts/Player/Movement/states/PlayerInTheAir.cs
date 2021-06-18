@@ -229,17 +229,19 @@ public class PlayerInTheAir : State
                     PSM.ladderJumpTarget = target;
                     PSM.baseVelocity.y = 0;
                     PSM.foldInputBool = false;
-                    //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
-                    
-                    Vector3 targetVelocity = Mathf.Clamp(1-Mathf.Abs(Vector3.Dot(PSM.playerVelocity, directionToWall) * stats.ladderPushCurrentVelocityFactor), 0, PSM.playerVelocity.magnitude) * PSM.playerVelocity.normalized + directionToWall * acceleration;
+                    Vector3 tempDirection1 = Mathf.Clamp( ExtensionMethods.resultingSpeed(PSM.playerVelocity, directionToWall),0,Mathf.Infinity)*directionToWall;
+                    Vector3 tempDirection2 = PSM.playerVelocity - tempDirection1;
+
+                    Vector3 targetDirection = (directionToWall + tempDirection2.normalized * stats.ladderPushCurrentVelocityFactor).normalized;
+                    Vector3 targetVelocity = targetDirection * acceleration;
+                    /*
                     Vector3 targetVelocityXZ = new Vector3(targetVelocity.x, 0, targetVelocity.z);
                     float y = targetVelocity.normalized.y * Mathf.Clamp(targetVelocity.y, 0, stats.maxJumpingSpeed);
                     PSM.baseVelocity = targetVelocityXZ.normalized * Mathf.Clamp(targetVelocityXZ.magnitude, 0, stats.maxJumpingSpeedForward);
                     PSM.baseVelocity.y = y;
                     targetVelocity -= PSM.baseVelocity;
+                    */
                     PSM.bonusVelocity = targetVelocity;
-
-
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
                 }
