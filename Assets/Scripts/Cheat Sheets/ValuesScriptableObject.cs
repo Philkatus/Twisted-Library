@@ -209,6 +209,9 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The maximum distance between ladder and rail to snap to the next rail while sliding.")]
     public float resnappingDistance = .5f;
 
+    [Tooltip("The dot product of the resnapping angle. 1 = resnapping angle must be parallel, 0 = resnapping angle can be 90°")]
+    public float resnappingDotProduct = .9f;
+
     [Tooltip("The angle from pathDorection to camera.forward which enables a special case where the button used to snap is saved and used to slide forward.")]
     public float specialCaseAngleForSlidingInput = 20f;
 

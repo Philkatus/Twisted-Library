@@ -427,7 +427,7 @@ public class PlayerMovementStateMachine : StateMachine
                     && possibleRails[i] != currentClosestRail)
                 //&& possibleRails[i].transform.position.y == currentClosestRail.transform.position.y)
                 {
-                    if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .99f)
+                    if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= stats.resnappingDotProduct)
                     {
                         closestDistance = distance;
                         nextClosestRail = possibleRails[i];
