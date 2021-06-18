@@ -24,6 +24,7 @@ public class UILogic : MonoBehaviour
 
     [SerializeField] GameObject startCanvas;
     public List<GameObject> uiElements;
+    public List<Button> startCanvasButtons;
     bool startGotPressed = false;
     float timer = 0;
 
@@ -93,7 +94,10 @@ public class UILogic : MonoBehaviour
         {
             timer += Time.deltaTime;
 
-            
+            foreach (Button b in startCanvasButtons)
+            {
+                b.interactable = false;
+            }
             foreach (GameObject g in uiElements)
             {
                 #region //positionchange
@@ -117,11 +121,12 @@ public class UILogic : MonoBehaviour
                     g.SetActive(false);
                 }
             }
+
             startCanvas.transform.position = Vector3.MoveTowards(startCanvas.transform.position, new Vector3(-1000f, 0, 0), 30f);
             startCamera.transform.position = Vector3.MoveTowards(startCamera.transform.position, playCamera.transform.position, .15f);
             startCamera.transform.rotation = Quaternion.Lerp(startCamera.transform.rotation, playCamera.transform.rotation, .1f);
 
-            if (timer >= 2f)
+            if (timer >= 1.5f)
             {
                 timer = 0;
                 startGotPressed = false;

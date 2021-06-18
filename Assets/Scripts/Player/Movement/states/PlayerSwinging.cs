@@ -67,8 +67,8 @@ public class PlayerSwinging : State
     float maxSlidingSpeed;
     float tAcceleration;
     float tDeceleration;
+    float startSlidingSpeedForDeceleration;
     bool dismountedHalfways;
-    bool donethisCallbackAlready;
     bool decelerate;
     bool accelerate;
     bool leftInputReceived;
@@ -141,10 +141,37 @@ public class PlayerSwinging : State
     {
         SnappingOrientation();
 
-        #region Input Callbacks Sliding
+        #region Set Variables Sliding
+        pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
+        float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
+        if (angle <= stats.specialCaseAngleForSlidingInput && pSM.startingSlidingInput != 0)
+        {
+            if (pSM.startingSlidingInput == -1)
+            {
+                needsToLeaveSpecialCaseAngle = true;
+                pSM.invertedSliding = true;
+            }
+        }
+        else if (angle >= 180 - stats.specialCaseAngleForSlidingInput && pSM.startingSlidingInput != 0)
+        {
+            if (pSM.startingSlidingInput == 1)
+            {
+                needsToLeaveSpecialCaseAngle = true;
+                pSM.invertedSliding = true;
+            }
+        }
+        pSM.GetInput();
+
         pathDirection = pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
         SwitchSlidingDirectionWithCameraRotation();
-        pSM.slidingInput = pSM.startingSlidingInput * pSM.adjustedSlideDirection;
+        if (needsToLeaveSpecialCaseAngle)
+        {
+            pSM.slidingInput = -pSM.startingSlidingInput;
+        }
+        else
+        {
+            pSM.slidingInput = pSM.startingSlidingInput * pSM.adjustedSlideDirection;
+        }
         maxSlidingSpeed = stats.maxSlidingSpeed;
         if (pSM.startingSlidingInput == 0)
         {
@@ -639,12 +666,12 @@ public class PlayerSwinging : State
             float angle = Vector3.Angle(pathDirection, Camera.main.transform.forward);
             if (angle > stats.angleToLeaveSpecialCaseSlindingInput && angle < 180 - stats.angleToLeaveSpecialCaseSlindingInput)
             {
-                Debug.Log("end special case!!");
+                pSM.invertedSliding = false;
+                pSM.GetInput();
                 needsToLeaveSpecialCaseAngle = false;
             }
         }
         ChangeSlidingSpeed();
-        donethisCallbackAlready = false;
 
         if (!pSM.dismounting)
         {
@@ -668,14 +695,19 @@ public class PlayerSwinging : State
                     if (decelerate)
                     {
                         tDeceleration += Time.deltaTime / (stats.slidingTimeToDecelerate * pressureFactor);
-                        currentSlidingSpeed = Mathf.Lerp(maxSlidingSpeed, 0, tDeceleration);
+                        currentSlidingSpeed = Mathf.Lerp(startSlidingSpeedForDeceleration, 0, tDeceleration);
+                        tAcceleration = 0;
                         if (currentSlidingSpeed == 0)
                         {
                             pSM.slidingInput = 0;
+                            tAcceleration = 0;
+                            tDeceleration = 0;
+                            decelerate = false;
                         }
                     }
                     if (accelerate && currentSlidingSpeed != stats.maxSlidingSpeed)
                     {
+                        tDeceleration = 0;
                         tAcceleration += Time.deltaTime / stats.slidingTimeToAccecelerate * pressureFactor;
                         currentSlidingSpeed = Mathf.Lerp(0, maxSlidingSpeed, tAcceleration);
                     }
@@ -779,6 +811,7 @@ public class PlayerSwinging : State
             if (slidingInput == -1)
             {
                 decelerate = true;
+                startSlidingSpeedForDeceleration = currentSlidingSpeed;
                 accelerate = false;
                 tAcceleration = 0;
                 rightInputReceived = false;
@@ -797,6 +830,7 @@ public class PlayerSwinging : State
             if (slidingInput == 1)
             {
                 decelerate = true;
+                startSlidingSpeedForDeceleration = currentSlidingSpeed;
                 accelerate = false;
                 tAcceleration = 0;
                 rightInputReceived = false;
@@ -814,7 +848,6 @@ public class PlayerSwinging : State
         }
         else
         {
-            Debug.Log("inverted" + angle);
             pSM.adjustedSlideDirection = -1;
         }
     }
@@ -924,6 +957,7 @@ public class PlayerSwinging : State
         #region Finish Sliding
         pSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
+        pSM.invertedSliding = false;
         #endregion
 
         yield break;

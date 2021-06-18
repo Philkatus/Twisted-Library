@@ -28,8 +28,8 @@ public class PlayerMovementStateMachine : StateMachine
     public float startingSlidingInput;
     public int adjustedSlideDirection;
     public bool dismounting;
+    public bool invertedSliding;
     public bool didLadderPush;
-
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
 
@@ -194,19 +194,27 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
 
-    #region Input/Controlls
+    #region Input/Controls
     public void GetInput()
     {
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
         swingingInput = swingAction.ReadValue<float>();
-        slideLeftInput = slideLeftAction.ReadValue<float>();
-        slideRightInput = slideRightAction.ReadValue<float>();
+        if (invertedSliding)
+        {
+            Debug.Log("inverted");
+            slideLeftInput = slideRightAction.ReadValue<float>();
+            slideRightInput = slideLeftAction.ReadValue<float>();
+        }
+        else
+        {
+            slideLeftInput = slideLeftAction.ReadValue<float>();
+            slideRightInput = slideRightAction.ReadValue<float>();
+        }
     }
 
     public void SaveInput(int index, float duration)
     {
-        // Debug.Log("saveIput"+index);
         if (inputTimer[index] != null)
         {
             StopCoroutine(inputTimer[index]);
@@ -480,7 +488,7 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnSnap()
     {
-        
+
         snapInputBool = false;
         effects.OnStateChangedSwinging();
         SetState(new PlayerSwinging(this));
