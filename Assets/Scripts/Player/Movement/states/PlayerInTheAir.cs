@@ -9,6 +9,7 @@ public class PlayerInTheAir : State
     ValuesScriptableObject stats;
 
     float wallJumpingTime;
+    float initialAirMovementTimer;
     float floatingTimer;
     public PlayerInTheAir(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
@@ -24,6 +25,7 @@ public class PlayerInTheAir : State
         PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaxJumpingSpeedForward);
         PSM.bonusVelocity += startBaseVelocity - PSM.baseVelocity;
         PSM.baseVelocity.y = y;
+        initialAirMovementTimer = 0;
     }
 
     public override void Movement()
@@ -53,7 +55,16 @@ public class PlayerInTheAir : State
             PSM.bonusVelocity -= currentDragSideway * Time.fixedDeltaTime;
         }
         #endregion
-        PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.AirMovementAcceleration;
+
+        if (initialAirMovementTimer < stats.initialAirMovementTime)
+        {
+            PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.InitialAirMovementAcceleration;
+            initialAirMovementTimer += Time.deltaTime;
+        }
+        else
+        {
+            PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.AirMovementAcceleration;
+        }
 
         //when wall jump occured, set the isWallJumping to false after 1 sec
         wallJumpingTime += Time.fixedDeltaTime;
@@ -66,7 +77,6 @@ public class PlayerInTheAir : State
         controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.AirVelocityFactor);
         if (HeadCollision())
         {
-            //Debug.LogError("Bonk");
             PSM.baseVelocity.y -= PSM.baseVelocity.y * .9f * Time.fixedDeltaTime;
             PSM.bonusVelocity.y = PSM.bonusVelocity.y * .9f * Time.fixedDeltaTime;
         }

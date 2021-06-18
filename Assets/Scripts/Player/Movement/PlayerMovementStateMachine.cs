@@ -202,7 +202,6 @@ public class PlayerMovementStateMachine : StateMachine
         swingingInput = swingAction.ReadValue<float>();
         if (invertedSliding)
         {
-            Debug.Log("inverted");
             slideLeftInput = slideRightAction.ReadValue<float>();
             slideRightInput = slideLeftAction.ReadValue<float>();
         }
@@ -428,7 +427,7 @@ public class PlayerMovementStateMachine : StateMachine
                     && possibleRails[i] != currentClosestRail)
                 //&& possibleRails[i].transform.position.y == currentClosestRail.transform.position.y)
                 {
-                    if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .99f)
+                    if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= stats.resnappingDotProduct)
                     {
                         closestDistance = distance;
                         nextClosestRail = possibleRails[i];

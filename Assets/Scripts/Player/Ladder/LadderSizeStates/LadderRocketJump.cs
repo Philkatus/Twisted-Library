@@ -47,7 +47,6 @@ public class LadderRocketJump : State
         distance = Vector3.Distance(target, pSM.transform.position);
         lSM.ladderParent.transform.localScale = new Vector3(distance, 1, 1);
         lSM.ladderLength = stats.ladderLengthBig;
-        //Debug.Log("hey");
 
     }
     public override void Fold()
