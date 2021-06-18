@@ -121,7 +121,7 @@ public class UILogic : MonoBehaviour
             startCamera.transform.position = Vector3.MoveTowards(startCamera.transform.position, playCamera.transform.position, .15f);
             startCamera.transform.rotation = Quaternion.Lerp(startCamera.transform.rotation, playCamera.transform.rotation, .1f);
 
-            if (timer >= 2f)
+            if (timer >= .5f)
             {
                 timer = 0;
                 startGotPressed = false;
