@@ -36,7 +36,6 @@ public static class ExtensionMethods
         }
     }
 
-
     /// <summary>
     /// Calculates the resulting signed magnitude alongside the targetdirection after a change of direction.
     /// </summary>
@@ -93,9 +92,4 @@ public static class ExtensionMethods
         currentVelocity += clampedVelocity;
         return currentVelocity;
     }
-
-
-
-
-
 }
