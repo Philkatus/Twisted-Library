@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 using PathCreation;
+using UnityEngine.VFX;
 
 public class VFX_Manager : MonoBehaviour
 {
@@ -41,6 +42,7 @@ public class VFX_Manager : MonoBehaviour
     #endregion
     #region PRIVATE
     [SerializeField] GameObject player, swingingFeedback;
+    [SerializeField] VisualEffect rocketjump;
 
     PlayerMovementStateMachine pSM;
     DecalProjector projector;
@@ -103,6 +105,10 @@ public class VFX_Manager : MonoBehaviour
         DisableParticleEffect(snappingFeedback);
         projector.gameObject.SetActive(false);
     }
+    public void OnStateChangedRocketJump()
+    {
+        StartRocketJumpVFX(rocketjump);
+    }
     #endregion
     void PlayParticleEffect(GameObject particleGameObject)
     {
@@ -123,6 +129,10 @@ public class VFX_Manager : MonoBehaviour
     {
         if (currentRail != null)
             snappingFeedback.transform.position = currentRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+    }
+    void StartRocketJumpVFX(VisualEffect vfx)
+    {
+        vfx.SendEvent("_Start");
     }
 
 }
