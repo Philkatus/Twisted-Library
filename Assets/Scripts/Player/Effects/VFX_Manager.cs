@@ -42,12 +42,14 @@ public class VFX_Manager : MonoBehaviour
     #endregion
     #region PRIVATE
     [SerializeField] GameObject player, swingingFeedback;
-    [SerializeField] VisualEffect ladderPush;
+    [SerializeField] VisualEffect ladderPushLeft, ladderPushRight;
 
     PlayerMovementStateMachine pSM;
     DecalProjector projector;
     GameObject cloud, snappingFeedback;
     Vector3 offset;
+    bool smokeOn = false;
+    public float smokeTimer = 2f;
     #endregion
     private void Start()
     {
@@ -80,6 +82,19 @@ public class VFX_Manager : MonoBehaviour
         }
         if (snappingFeedback.activeInHierarchy)
             MoveSnappingFeedback();
+
+        if (smokeOn)
+        {
+            smokeTimer -= Time.deltaTime;
+            
+            if(smokeTimer <= 0)
+            {
+                smokeOn = false;
+                ladderPushLeft.SetInt("_SmokeSpawnrate",0);
+                ladderPushRight.SetInt("_SmokeSpawnrate", 0);
+                smokeTimer = 2f;
+            }
+        }
     }
     #region OnStateChanged
     public void OnStateChangedWalking(bool land)
@@ -107,7 +122,8 @@ public class VFX_Manager : MonoBehaviour
     }
     public void OnStateChangedLadderPush()
     {
-        StartLadderPushVFX(ladderPush);
+        StartLadderPushVFX(ladderPushLeft);
+        StartLadderPushVFX(ladderPushRight);
     }
     #endregion
     void PlayParticleEffect(GameObject particleGameObject)
@@ -132,7 +148,10 @@ public class VFX_Manager : MonoBehaviour
     }
     void StartLadderPushVFX(VisualEffect vfx)
     {
+        ladderPushLeft.SetInt("_SmokeSpawnrate", 100);
+        ladderPushRight.SetInt("_SmokeSpawnrate", 100);
         vfx.SendEvent("_Start");
+        smokeOn = true;
     }
 
 }
