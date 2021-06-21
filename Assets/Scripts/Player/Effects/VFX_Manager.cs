@@ -42,7 +42,7 @@ public class VFX_Manager : MonoBehaviour
     #endregion
     #region PRIVATE
     [SerializeField] GameObject player, swingingFeedback;
-    [SerializeField] VisualEffect rocketjump;
+    [SerializeField] VisualEffect ladderPush;
 
     PlayerMovementStateMachine pSM;
     DecalProjector projector;
@@ -105,9 +105,9 @@ public class VFX_Manager : MonoBehaviour
         DisableParticleEffect(snappingFeedback);
         projector.gameObject.SetActive(false);
     }
-    public void OnStateChangedRocketJump()
+    public void OnStateChangedLadderPush()
     {
-        StartRocketJumpVFX(rocketjump);
+        StartLadderPushVFX(ladderPush);
     }
     #endregion
     void PlayParticleEffect(GameObject particleGameObject)
@@ -130,7 +130,7 @@ public class VFX_Manager : MonoBehaviour
         if (currentRail != null)
             snappingFeedback.transform.position = currentRail.pathCreator.path.GetClosestPointOnPath(transform.position);
     }
-    void StartRocketJumpVFX(VisualEffect vfx)
+    void StartLadderPushVFX(VisualEffect vfx)
     {
         vfx.SendEvent("_Start");
     }

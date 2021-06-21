@@ -224,7 +224,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         if (jumpInputBool)
         {
-            if (stats.useJumpForLadderShoot)
+            if (stats.useJumpForLadderPush)
             {
                 State.LadderPush();
             }
@@ -236,7 +236,7 @@ public class PlayerMovementStateMachine : StateMachine
         }
         if (foldInputBool && stats.canLadderFold)
         {
-            if (!stats.useJumpForLadderShoot)
+            if (!stats.useJumpForLadderPush)
             {
                 State.LadderPush();
             }
@@ -429,7 +429,7 @@ public class PlayerMovementStateMachine : StateMachine
                     Debug.Log(possiblePathDirection.normalized);
                     Debug.Log(currentDirection.normalized);
                     Debug.Log(Mathf.Abs(Vector3.Dot(currentDirection.normalized, possiblePathDirection.normalized)));
-                    if (Mathf.Abs(Vector3.Dot(currentDirection.normalized, possiblePathDirection.normalized)) > stats.resnappingDotProduct) // hab das >= zu einem > 0 gemacht erstmal, falls sich das gerade jmd ansieht. jetzt geht es einigermaßen
+                    if (Mathf.Abs(Vector3.Dot(currentDirection.normalized, possiblePathDirection.normalized)) > stats.resnappingDotProduct) // hab das >= zu einem > 0 gemacht erstmal, falls sich das gerade jmd ansieht. jetzt geht es einigermaï¿½en
                     {
                         closestDistance = distance;
                         nextClosestRail = possibleRails[i];
@@ -534,6 +534,6 @@ public class PlayerMovementStateMachine : StateMachine
         LadderSmall,
         LadderFold,
         LadderUnfold,
-        LadderRocketJump
+        LadderPush
     };
 }
