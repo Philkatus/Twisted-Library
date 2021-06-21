@@ -26,7 +26,6 @@ public class PlayerMovementStateMachine : StateMachine
     public float swingingInput;
     public float slidingInput;
     public float startingSlidingInput;
-    public int adjustedSlideDirection;
     public bool dismounting;
     public bool invertedSliding;
     public bool didLadderPush;
@@ -200,15 +199,15 @@ public class PlayerMovementStateMachine : StateMachine
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
         swingingInput = swingAction.ReadValue<float>();
-        if (invertedSliding)
-        {
-            slideLeftInput = slideRightAction.ReadValue<float>();
-            slideRightInput = slideLeftAction.ReadValue<float>();
-        }
-        else
+        if (!stats.useInvertedSliding)
         {
             slideLeftInput = slideLeftAction.ReadValue<float>();
             slideRightInput = slideRightAction.ReadValue<float>();
+        }
+        else
+        {
+            slideLeftInput = slideRightAction.ReadValue<float>();
+            slideRightInput = slideLeftAction.ReadValue<float>();
         }
     }
 
@@ -415,7 +414,7 @@ public class PlayerMovementStateMachine : StateMachine
 
             float closestDistance = stats.resnappingDistance;
             Rail nextClosestRail = null;
-
+            bool a = false;
             for (int i = 0; i < possibleRails.Count; i++)
             {
                 float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
@@ -425,16 +424,21 @@ public class PlayerMovementStateMachine : StateMachine
 
                 if (distance < closestDistance
                     && possibleRails[i] != currentClosestRail)
-                //&& possibleRails[i].transform.position.y == currentClosestRail.transform.position.y)
                 {
-                    if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .99f)
+                    Debug.Log("----");
+                    Debug.Log(possiblePathDirection.normalized);
+                    Debug.Log(currentDirection.normalized);
+                    Debug.Log(Mathf.Abs(Vector3.Dot(currentDirection.normalized, possiblePathDirection.normalized)));
+                    if (Mathf.Abs(Vector3.Dot(currentDirection.normalized, possiblePathDirection.normalized)) > stats.resnappingDotProduct) // hab das >= zu einem > 0 gemacht erstmal, falls sich das gerade jmd ansieht. jetzt geht es einigermaﬂen
                     {
                         closestDistance = distance;
                         nextClosestRail = possibleRails[i];
+                        a = true;
                     }
                 }
             }
-
+            if (!a)
+                Debug.Log("A");
             if (nextClosestRail != null)
             {
                 closestRail = nextClosestRail;
