@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 using PathCreation;
+using UnityEngine.VFX;
 
 public class VFX_Manager : MonoBehaviour
 {
@@ -41,11 +42,14 @@ public class VFX_Manager : MonoBehaviour
     #endregion
     #region PRIVATE
     [SerializeField] GameObject player, swingingFeedback;
+    [SerializeField] VisualEffect ladderPushLeft, ladderPushRight;
 
     PlayerMovementStateMachine pSM;
     DecalProjector projector;
     GameObject cloud, snappingFeedback;
     Vector3 offset;
+    bool smokeOn = false;
+    public float smokeTimer = 2f;
     #endregion
     private void Start()
     {
@@ -78,6 +82,19 @@ public class VFX_Manager : MonoBehaviour
         }
         if (snappingFeedback.activeInHierarchy)
             MoveSnappingFeedback();
+
+        if (smokeOn)
+        {
+            smokeTimer -= Time.deltaTime;
+            
+            if(smokeTimer <= 0)
+            {
+                smokeOn = false;
+                ladderPushLeft.SetInt("_SmokeSpawnrate",0);
+                ladderPushRight.SetInt("_SmokeSpawnrate", 0);
+                smokeTimer = 2f;
+            }
+        }
     }
     #region OnStateChanged
     public void OnStateChangedWalking(bool land)
@@ -103,6 +120,11 @@ public class VFX_Manager : MonoBehaviour
         DisableParticleEffect(snappingFeedback);
         projector.gameObject.SetActive(false);
     }
+    public void OnStateChangedLadderPush()
+    {
+        StartLadderPushVFX(ladderPushLeft);
+        StartLadderPushVFX(ladderPushRight);
+    }
     #endregion
     void PlayParticleEffect(GameObject particleGameObject)
     {
@@ -123,6 +145,13 @@ public class VFX_Manager : MonoBehaviour
     {
         if (currentRail != null)
             snappingFeedback.transform.position = currentRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+    }
+    void StartLadderPushVFX(VisualEffect vfx)
+    {
+        ladderPushLeft.SetInt("_SmokeSpawnrate", 100);
+        ladderPushRight.SetInt("_SmokeSpawnrate", 100);
+        vfx.SendEvent("_Start");
+        smokeOn = true;
     }
 
 }

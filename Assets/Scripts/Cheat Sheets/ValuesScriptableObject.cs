@@ -8,7 +8,7 @@ public class ValuesScriptableObject : ScriptableObject
     [Header("Enable Features")]
     [Space]
     [Tooltip("Use the button used for jumping instead of the fold button for the ladder shoot.")]
-    public bool useJumpForLadderShoot;
+    public bool useJumpForLadderPush;
 
     [Tooltip("Use the trigger buttons to snap and slide in a specific direction.")]
     public bool useTriggerToSlideWithMomentum;
@@ -131,7 +131,7 @@ public class ValuesScriptableObject : ScriptableObject
         }
     }
 
-    [Tooltip("How fast the player accelerates with the rocketJump.")]
+    [Tooltip("How fast the player accelerates with the ladder push.")]
     public float ladderPushAcceleration;
     public float LadderPushAcceleration
     {
@@ -142,7 +142,7 @@ public class ValuesScriptableObject : ScriptableObject
     }
     [Tooltip("factor to controll how much the current bonus Velocity factors into the end reVelocity" +
         "higher values mean the curretn velocity doesn't get changed much")]
-    [Range(0, 1)] public float ladderPushCurrentVelocityFactor=.1f;
+    [Range(0, 1)] public float ladderPushCurrentVelocityFactor = .1f;
 
     [Tooltip("Direction of the jump when facing the wall.")]
     public Vector3 jumpFromLadderDirection;
@@ -189,7 +189,7 @@ public class ValuesScriptableObject : ScriptableObject
         }
     }
     [Tooltip("how long do you float at the top before fallign down agai")]
-    public float floatTime =1;
+    public float floatTime = 1;
 
     [Tooltip("even gravity has its limits.")]
     public float maxFallingSpeed;
@@ -219,6 +219,9 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("The minumum player velocity needed to influence the snap direction.")]
     public float minVelocityToChangeSnapDirection = 1;
+
+    [Tooltip("The minumum cameraAngle needed to influence the snap direction.")]
+    [Range(0, 1)] public float minCameraAngleToChangeSnapDirection = .3f;
 
     [Tooltip("How fast the player climbs the ladder up and down while sliding.")]
     public float climbingSpeedOnLadder;
