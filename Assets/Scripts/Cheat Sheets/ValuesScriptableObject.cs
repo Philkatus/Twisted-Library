@@ -220,6 +220,9 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The minumum player velocity needed to influence the snap direction.")]
     public float minVelocityToChangeSnapDirection = 1;
 
+    [Tooltip("The minumum cameraAngle needed to influence the snap direction.")]
+    [Range(0,1)] public float minCameraAngleToChangeSnapDirection = .3f;
+
     [Tooltip("How fast the player climbs the ladder up and down while sliding.")]
     public float climbingSpeedOnLadder;
 
