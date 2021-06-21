@@ -223,25 +223,52 @@ public class PlayerSwinging : State
         currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
         ladder.transform.position = startingPoint;
         Vector3 startingNormal = path.GetNormalAtDistance(currentDistance);
+        Vector3 cameraDirection = new Vector3(Camera.main.transform.forward.x, 0, Camera.main.transform.forward.z).normalized;
 
-        //evtl. fuer spaeter noch wichtig wenn ich nochmal versuche das ganze velocity base zu machen
-        if (railType == Rail.RailType.TwoSided && pSM.playerVelocity.magnitude >= stats.minVelocityToChangeSnapDirection)
+        //decision of which side to snap to based on camera, velocity and position
+
+        if (railType == Rail.RailType.TwoSided)
         {
-            if (Vector3.Dot(pSM.playerVelocity.normalized, startingNormal) < 0)
+            //look for Camera direction
+            if (Mathf.Abs(Vector3.Dot(cameraDirection, startingNormal)) > stats.minCameraAngleToChangeSnapDirection)
             {
-                ladder.transform.forward = -startingNormal;
-                pSM.snapdirection = 1;
+                if (Vector3.Dot(cameraDirection, startingNormal) < 0)
+                {
+                    ladder.transform.forward = -startingNormal;
+                    pSM.snapdirection = 1;
+                }
+                else
+                {
+                    ladder.transform.forward = startingNormal;
+                    pSM.snapdirection = -1;
+                }
+
             }
-            else
+            //look for velocity
+            else if (pSM.playerVelocity.magnitude >= stats.minVelocityToChangeSnapDirection)
+            {
+                if (Vector3.Dot(pSM.playerVelocity.normalized, startingNormal) < 0)
+                {
+                    ladder.transform.forward = -startingNormal;
+                    pSM.snapdirection = 1;
+                }
+                else
+                {
+                    ladder.transform.forward = startingNormal;
+                    pSM.snapdirection = -1;
+                }
+            }
+            //look for position
+            else if (Vector3.Dot(startingPoint - pSM.transform.position, startingNormal) >= 0)
             {
                 ladder.transform.forward = startingNormal;
                 pSM.snapdirection = -1;
             }
-        }
-        else if (railType == Rail.RailType.TwoSided && Vector3.Dot(startingPoint - pSM.transform.position, startingNormal) >= 0)
-        {
-            ladder.transform.forward = startingNormal;
-            pSM.snapdirection = -1;
+            else
+            {
+                ladder.transform.forward = -startingNormal;
+                pSM.snapdirection = 1;
+            }
         }
         else
         {
@@ -729,24 +756,28 @@ public class PlayerSwinging : State
                 if (pSM.currentDistance <= 0 || pSM.currentDistance >= pathLength)
                 {
                     Vector3 endOfShelfDirection = new Vector3();
+                    int dir = 0;
                     if (pSM.closestRail != null)
                     {
                         if (pSM.currentDistance <= 0) //arriving at start of path
                         {
                             endOfShelfDirection = -pathDirection;
+                            dir = -1;
                         }
                         else if (pSM.currentDistance >= pathLength) //arriving at end of path
                         {
                             endOfShelfDirection = pathDirection; //ende - start
+                            dir = 1;
                         }
                     }
                     else
                         Debug.Log("There is something bad happening here lmao");
-                    Plane railPlane = new Plane(endOfShelfDirection.normalized, Vector3.zero);
-                    if (railPlane.GetSide(Vector3.zero + slidingDirection * currentSlidingSpeed)) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
+
+                    if (Vector3.Dot(slidingDirection, endOfShelfDirection) >= 0.9f) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
                     {
                         if (pSM.CheckForNextClosestRail(pSM.closestRail))
                         {
+
                             pSM.OnResnap();
                         }
                         else
