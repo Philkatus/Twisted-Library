@@ -67,12 +67,16 @@ public class PlayerSwinging : State
     float maxSlidingSpeed;
     float tAcceleration;
     float tDeceleration;
+    float changeDirectionTimer;
+    float changeDirectionWaitNotNeededTimer;
     float startSlidingSpeedForDeceleration;
     bool dismountedHalfways;
     bool decelerate;
     bool startedDecelerating;
     bool accelerate;
     bool startedAccelerating;
+    bool waitToChangeDirection;
+    bool mayChangeDirection;
 
     Vector3 dismountStartPos;
     Vector3 pathDirection;
@@ -219,10 +223,10 @@ public class PlayerSwinging : State
         currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
         ladder.transform.position = startingPoint;
         Vector3 startingNormal = path.GetNormalAtDistance(currentDistance);
-        Vector3 cameraDirection = new Vector3(Camera.main.transform.forward.x,0,Camera.main.transform.forward.z).normalized;
+        Vector3 cameraDirection = new Vector3(Camera.main.transform.forward.x, 0, Camera.main.transform.forward.z).normalized;
 
         //decision of which side to snap to based on camera, velocity and position
-        
+
         if (railType == Rail.RailType.TwoSided)
         {
             //look for Camera direction
@@ -233,7 +237,7 @@ public class PlayerSwinging : State
                     ladder.transform.forward = -startingNormal;
                     pSM.snapdirection = 1;
                 }
-                else 
+                else
                 {
                     ladder.transform.forward = startingNormal;
                     pSM.snapdirection = -1;
@@ -672,20 +676,42 @@ public class PlayerSwinging : State
             #region Move horizontally.
             if (stats.canSlide)
             {
+                if (mayChangeDirection)
+                {
+                    changeDirectionWaitNotNeededTimer += Time.deltaTime;
+                    if (changeDirectionWaitNotNeededTimer >= 0.16f)
+                    {
+                        waitToChangeDirection = false;
+                        changeDirectionWaitNotNeededTimer = 0;
+                        mayChangeDirection = false;
+                    }
+                }
                 pathDirection = path.GetDirectionAtDistance(currentDistance);
                 Vector3 slidingDirection = pathDirection * pSM.slidingInput;
 
                 if (!CheckForCollisionCharacter(slidingDirection) && !CheckForCollisionLadder(slidingDirection))
                 {
                     var pressureFactor = pSM.slideRightInput != 0 ? pSM.slideRightInput : pSM.slideLeftInput;
-                    if (decelerate)
+                    float remappedPressureFactor = RemapPressureFactor(pressureFactor);
+
+                    if (waitToChangeDirection)
+                    {
+                        changeDirectionTimer += Time.deltaTime;
+                        if (changeDirectionTimer >= 0.16f)
+                        {
+                            waitToChangeDirection = false;
+                            changeDirectionTimer = 0;
+                            mayChangeDirection = false;
+                        }
+                    }
+                    else if (decelerate)
                     {
                         if ((pSM.slideRightInput != 0 && pSM.slideLeftInput != 0))
                         {
-                            pressureFactor = 1;
+                            remappedPressureFactor = 1;
                         }
 
-                        tDeceleration += Time.deltaTime / stats.timeToDecelerate * pressureFactor;
+                        tDeceleration += Time.deltaTime / stats.timeToDecelerate * remappedPressureFactor;
                         currentSlidingSpeed = Mathf.Lerp(startSlidingSpeedForDeceleration, 0, tDeceleration);
                         tAcceleration = 0;
                         if (currentSlidingSpeed == 0)
@@ -696,6 +722,7 @@ public class PlayerSwinging : State
                             decelerate = false;
                             startedDecelerating = false;
                             startSlidingSpeedForDeceleration = 0;
+                            mayChangeDirection = true;
                         }
                     }
                     else if (accelerate)
@@ -703,8 +730,9 @@ public class PlayerSwinging : State
                         tDeceleration = 0;
                         startSlidingSpeedForDeceleration = 0;
                         startedDecelerating = false;
-                        var pressureAdjustment = pressureFactor == 1 ? 0f : 0.19f;
-                        tAcceleration += Time.deltaTime / stats.timeToAccecelerate * pressureFactor;
+                        var pressureAdjustment = remappedPressureFactor == 1 ? 0f : 0.19f;
+                        tAcceleration += Time.deltaTime / stats.timeToAccecelerate * remappedPressureFactor;
+                        mayChangeDirection = false;
                         currentSlidingSpeed = Mathf.Lerp(0, maxSlidingSpeed, tAcceleration);
                         if (currentSlidingSpeed == stats.maxSlidingSpeed)
                         {
@@ -749,7 +777,7 @@ public class PlayerSwinging : State
                     {
                         if (pSM.CheckForNextClosestRail(pSM.closestRail))
                         {
-                            
+
                             pSM.OnResnap();
                         }
                         else
@@ -795,6 +823,11 @@ public class PlayerSwinging : State
                     pSM.slidingInput = 1;
                     startedDecelerating = false;
                     startedAccelerating = true;
+                    if (slidingInput == 0 && mayChangeDirection)
+                    {
+                        waitToChangeDirection = true;
+                        changeDirectionTimer = 0f;
+                    }
                 }
             }
             if (slidingInput == -1)
@@ -822,6 +855,11 @@ public class PlayerSwinging : State
                     pSM.slidingInput = -1;
                     startedAccelerating = true;
                     startedDecelerating = false;
+                    if (slidingInput == 0 && mayChangeDirection)
+                    {
+                        waitToChangeDirection = true;
+                        changeDirectionTimer = 0f;
+                    }
                 }
             }
             if (slidingInput == 1)
@@ -855,6 +893,26 @@ public class PlayerSwinging : State
             startedDecelerating = false;
             startedAccelerating = false;
         }
+    }
+
+    float RemapPressureFactor(float pressureFactor)
+    {
+        float remappedPressureFactor = 0;
+        if (pressureFactor <= 0.25f)
+        {
+            remappedPressureFactor = ExtensionMethods.Remap(pressureFactor, 0f, 0.25f, 0f, 0.125f);
+        }
+        else if (pressureFactor > 0.25f && pressureFactor <= 0.75)
+        {
+            remappedPressureFactor = ExtensionMethods.Remap(pressureFactor, 0.25f, 0.75f, 0.125f, 0.325f);
+        }
+        else if (pressureFactor > 0.75f)
+        {
+            remappedPressureFactor = ExtensionMethods.Remap(pressureFactor, 0.75f, 1f, 0.325f, 1f);
+        }
+        if (pressureFactor != 0 && remappedPressureFactor == 0)
+            Debug.LogError("remapped factor is 0");
+        return remappedPressureFactor;
     }
 
     protected bool CheckForCollisionCharacter(Vector3 moveDirection)

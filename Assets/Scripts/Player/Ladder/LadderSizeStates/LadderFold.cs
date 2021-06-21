@@ -18,6 +18,7 @@ public class LadderFold : State
         stats = PSM.stats;
         time = ExtensionMethods.Remap(LadderSizeStateMachine.ladderLength, stats.ladderLengthSmall, stats.ladderLengthBig, stats.foldingTime, 0);
         isLerpGoing = true;
+        PSM.effects.OnStateChangedLadderPush();
         LadderSizeStateMachine.isFoldingUp = true;
     }
 
