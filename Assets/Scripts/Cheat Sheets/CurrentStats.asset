@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   useJumpForLadderShoot: 1
   useTriggerToSlideWithMomentum: 1
+  useInvertedSliding: 0
   bonusVelocityDrag: 0.1
   jumpInputTimer: 0.5
   snapInputTimer: 0.5
@@ -45,11 +46,8 @@ MonoBehaviour:
   snappingDistance: 6
   resnappingDistance: 0.5
   resnappingDotProduct: 0
-  specialCaseAngleForSlidingInput: 35
-  angleToLeaveSpecialCaseSlindingInput: 45
-  fromAngleForAdjustedSlidingDirection: 45
-  toAngleForAdjustedSlidingDirection: 135
   minVelocityToChangeSnapDirection: 1
+  minCameraAngleToChangeSnapDirection: 0.3
   climbingSpeedOnLadder: 1
   heightOnLadderKatapulFactor: 0.2
   ladderDismountSpeed: 1.5
@@ -58,11 +56,9 @@ MonoBehaviour:
   fallingMomentumPercentage: 1
   playerOffsetFromLadder: 0
   maxSlidingSpeed: 20
-  slidingTimeToAccecelerate: 0.7
-  slidingTimeToDecelerate: 0.2
-  timeToSwitchDirection: 0.4
-  accelerationCooldown: 0.3
-  swingingAcceleration: 2000
+  timeToAccecelerate: 0.7
+  timeToDecelerate: 0.4
+  swingingAcceleration: 1000
   minSwingingDeceleration: 0.0075
   maxSwingingDeceleration: 0.031
   minHangingDeceleration: 0.001

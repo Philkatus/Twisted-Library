@@ -332,7 +332,6 @@ public class PlayerSwinging : State
         SlidingMovement();
         RotateAroundY();
         Swing();
-        RotateAroundY();
     }
 
     #region SWINGING Functions
@@ -721,6 +720,7 @@ public class PlayerSwinging : State
 
                 pSM.currentDistance += currentSlidingSpeed * pSM.slidingInput * Time.fixedDeltaTime;
                 pSM.ladder.position = path.GetPointAtDistance(pSM.currentDistance, EndOfPathInstruction.Stop);
+                currentDistance = pSM.currentDistance;
                 #endregion
 
                 #region end of Path
