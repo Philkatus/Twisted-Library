@@ -1023,7 +1023,6 @@ public class PlayerSwinging : State
         #region Finish Sliding
         PSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
-        PSM.invertedSliding = false;
         #endregion
 
         yield break;

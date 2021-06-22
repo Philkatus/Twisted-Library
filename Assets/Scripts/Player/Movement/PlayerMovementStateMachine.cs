@@ -24,11 +24,9 @@ public class PlayerMovementStateMachine : StateMachine
     public float forwardInput;
     public float slideLeftInput;
     public float slideRightInput;
-    public float swingingInput;
     public float slidingInput;
     public float startingSlidingInput;
     public bool dismounting;
-    public bool invertedSliding;
     public bool didLadderPush;
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
@@ -60,7 +58,6 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public InputAction slideRightAction;
     [HideInInspector] public InputAction swingAction;
     [HideInInspector] public InputAction snapAction;
-    [HideInInspector] public InputAction NewAction;
     [HideInInspector] public InputAction fallFromLadder;
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
@@ -198,7 +195,6 @@ public class PlayerMovementStateMachine : StateMachine
     {
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
-        swingingInput = swingAction.ReadValue<float>();
         if (!stats.useInvertedSliding)
         {
             slideLeftInput = slideLeftAction.ReadValue<float>();
