@@ -11,7 +11,7 @@ public class PlayerMovementStateMachine : StateMachine
     [Tooltip("Change to use different variable value sets. Found in Assets-> Scripts-> Cheat Sheets.")]
     public ValuesScriptableObject stats;
     public InputActionAsset actionAsset;
-    public bool useRelativeBobPosition=true;
+    public bool useRelativeBobPosition = true;
 
     [Space]
     [Header("For reference")]
@@ -31,7 +31,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool didLadderPush;
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
-    
+
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
@@ -153,7 +153,8 @@ public class PlayerMovementStateMachine : StateMachine
     private void Update()
     {
         coyoteTimer += Time.deltaTime;
-        UpdateRailTimer();
+        if (playerState != PlayerState.swinging)
+            UpdateRailTimer();
         CheckForInputBools();
     }
 
@@ -229,7 +230,7 @@ public class PlayerMovementStateMachine : StateMachine
             }
             State.Jump();
         }
-        if (snapInputBool)
+        if (snapInputBool && playerState != PlayerState.swinging)
         {
             TryToSnapToShelf();
         }

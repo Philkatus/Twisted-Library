@@ -175,14 +175,12 @@ public class PlayerSwinging : State
         {
             PSM.bob.transform.position = PSM.ladder.transform.position + -PSM.ladderDirection * stats.ladderLengthBig;
         }
-        else 
+        else
         {
             PSM.bob.transform.position = PSM.Bob_Pivot.transform.position + -PSM.ladderDirection * stats.ladderLengthBig;
         }
 
-
         ladderParent = ladderSizeState.ladderParent.gameObject;
-
 
         onWall = false;
         inputGiven = false;
@@ -301,7 +299,7 @@ public class PlayerSwinging : State
         Vector3 axis = PSM.ladder.right;
         float rotateByAngle;
         rotateByAngle = (Vector3.SignedAngle(-PSM.ladderDirection, PSM.transform.position - startingPoint, axis));
-        
+
         if (railType != Rail.RailType.TwoSided)
         {
             if (rotateByAngle < 0)
@@ -411,7 +409,7 @@ public class PlayerSwinging : State
         {
             pivot_p = PSM.Bob_Pivot.transform.position;
         }
-        else 
+        else
         {
             pivot_p = ladder.transform.position;
         }
@@ -430,7 +428,7 @@ public class PlayerSwinging : State
         {
             relativeHeight = (bob_p).normalized.y;
         }
-        else 
+        else
         {
             relativeHeight = (bob_p - pivot_p).normalized.y;
         }
@@ -498,7 +496,7 @@ public class PlayerSwinging : State
         {
             return GetPointOnLine(Vector3.zero, bobPosition + movementDelta, ropeLength);
         }
-        else 
+        else
         {
             return GetPointOnLine(pivot_p, bobPosition + movementDelta, ropeLength);
         }
@@ -602,8 +600,6 @@ public class PlayerSwinging : State
             currentVelocity = currentVelocity.normalized * 100;
         }
 
-        // set max speed
-
         // Get only the forward/backward force
         playerVelocity = bobForward * ExtensionMethods.resultingSpeed(bobForward, currentVelocity);
         SetCurrentPlayerVelocity(ladder.transform.position);
@@ -615,7 +611,7 @@ public class PlayerSwinging : State
         {
             return GetPointOnLine(Vector3.zero, bob_p + movementDelta, ropeLength);
         }
-        else 
+        else
         {
             return GetPointOnLine(pivot_p, bob_p + movementDelta, ropeLength);
         }
