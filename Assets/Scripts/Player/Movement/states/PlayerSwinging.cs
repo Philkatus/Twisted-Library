@@ -704,7 +704,7 @@ public class PlayerSwinging : State
                     }
                     else if (decelerate)
                     {
-                        if ((pSM.slideRightInput != 0 && pSM.slideLeftInput != 0) || (pSM.slideRightInput == 0 && pSM.slideLeftInput == 0))
+                        if ((PSM.slideRightInput != 0 && PSM.slideLeftInput != 0) || (PSM.slideRightInput == 0 && PSM.slideLeftInput == 0))
                         {
                             remappedPressureFactor = 1;
                         }
@@ -753,7 +753,7 @@ public class PlayerSwinging : State
                 if (PSM.currentDistance <= 0 || PSM.currentDistance >= pathLength)
                 {
                     Vector3 endOfShelfDirection = new Vector3();
-                    if (pSM.closestRail != null)
+                    if (PSM.closestRail != null)
                     {
                         if (PSM.currentDistance <= 0) //arriving at start of path
                         {
