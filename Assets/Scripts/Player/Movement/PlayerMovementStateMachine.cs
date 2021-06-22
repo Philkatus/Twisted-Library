@@ -11,6 +11,7 @@ public class PlayerMovementStateMachine : StateMachine
     [Tooltip("Change to use different variable value sets. Found in Assets-> Scripts-> Cheat Sheets.")]
     public ValuesScriptableObject stats;
     public InputActionAsset actionAsset;
+    public bool useRelativeBobPosition=true;
 
     [Space]
     [Header("For reference")]
@@ -32,6 +33,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool didLadderPush;
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
+    
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
@@ -55,6 +57,7 @@ public class PlayerMovementStateMachine : StateMachine
     public CharacterController controller;
     public AnimationStateController animController;
     public GameObject bob;
+    public Transform Bob_Pivot;
     public VFX_Manager effects;
     [HideInInspector] public InputAction slideLeftAction;
     [HideInInspector] public InputAction slideRightAction;
