@@ -11,6 +11,7 @@ public class PlayerMovementStateMachine : StateMachine
     [Tooltip("Change to use different variable value sets. Found in Assets-> Scripts-> Cheat Sheets.")]
     public ValuesScriptableObject stats;
     public InputActionAsset actionAsset;
+    public bool useRelativeBobPosition=true;
 
     [Space]
     [Header("For reference")]
@@ -24,14 +25,13 @@ public class PlayerMovementStateMachine : StateMachine
     public float forwardInput;
     public float slideLeftInput;
     public float slideRightInput;
-    public float swingingInput;
     public float slidingInput;
     public float startingSlidingInput;
     public bool dismounting;
-    public bool invertedSliding;
     public bool didLadderPush;
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
+    
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
@@ -55,12 +55,12 @@ public class PlayerMovementStateMachine : StateMachine
     public CharacterController controller;
     public AnimationStateController animController;
     public GameObject bob;
+    public Transform Bob_Pivot;
     public VFX_Manager effects;
     [HideInInspector] public InputAction slideLeftAction;
     [HideInInspector] public InputAction slideRightAction;
     [HideInInspector] public InputAction swingAction;
     [HideInInspector] public InputAction snapAction;
-    [HideInInspector] public InputAction NewAction;
     [HideInInspector] public InputAction fallFromLadder;
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
@@ -153,7 +153,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void Update()
     {
         coyoteTimer += Time.deltaTime;
-        //UpdateRailTimer();
+        UpdateRailTimer();
         CheckForInputBools();
     }
 
@@ -198,7 +198,6 @@ public class PlayerMovementStateMachine : StateMachine
     {
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
-        swingingInput = swingAction.ReadValue<float>();
         if (!stats.useInvertedSliding)
         {
             slideLeftInput = slideLeftAction.ReadValue<float>();

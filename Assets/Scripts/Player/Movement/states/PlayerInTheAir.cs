@@ -84,6 +84,7 @@ public class PlayerInTheAir : State
         if (controller.isGrounded)
         {
             base.PSM.didLadderPush = false;
+
             PSM.OnLand();
         }
     }
@@ -148,6 +149,7 @@ public class PlayerInTheAir : State
     {
         if (stats.canLadderPush)
         {
+            PlayerFollowTarget.instance.OnLadderPush();
             float sphereRadius = .2f;
             float maxHeight = stats.ladderLengthBig - sphereRadius;
             float acceleration = stats.LadderPushAcceleration;
