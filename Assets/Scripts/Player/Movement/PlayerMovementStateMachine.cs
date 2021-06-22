@@ -153,7 +153,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void Update()
     {
         coyoteTimer += Time.deltaTime;
-        //UpdateRailTimer();
+        UpdateRailTimer();
         CheckForInputBools();
     }
 
