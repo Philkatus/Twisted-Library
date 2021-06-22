@@ -13,6 +13,7 @@ public class PlayerSwinging : State
         inWallLimits,
         firstRound = true;
     bool finishWithNormalJump;
+    bool stoppedSwingingToDismount;
 
     float dt = 0.01f,
         accumulator = 0f,
@@ -496,7 +497,6 @@ public class PlayerSwinging : State
 
         if (movingForward && !onWall)
         {
-
             if (angle <= stats.maxPushAngle)
             {
                 onWall = true;
@@ -527,18 +527,28 @@ public class PlayerSwinging : State
 
             tensionForce += centripetalForce;
             currentVelocity += tensionDirection * tensionForce * dt;
+            if (pSM.dismounting && !stoppedSwingingToDismount)
+            {
+                currentVelocity = Vector3.zero;
+                stoppedSwingingToDismount = true;
+                mass = 30f;
+            }
         }
         #endregion
 
         #region Acceleration & Final Calculations
-        inputForce = Vector3.zero;
-        if (pSM.swingInputBool)
+
+        if (!pSM.dismounting)
         {
-            pSM.swingInputBool = false;
-            if (!firstRound)
-                RepellingForce();
-            else
-                firstRound = false;
+            inputForce = Vector3.zero;
+            if (pSM.swingInputBool)
+            {
+                pSM.swingInputBool = false;
+                if (!firstRound)
+                    RepellingForce();
+                else
+                    firstRound = false;
+            }
         }
 
         // set max speed
@@ -958,9 +968,6 @@ public class PlayerSwinging : State
                 }
             }
         }
-        else if (pSM.HeightOnLadder == -1 && pSM.forwardInput < 0)
-        {
-        }
         else if (dismountTimer != 0)
         {
             dismountTimer = 0;
@@ -970,7 +977,7 @@ public class PlayerSwinging : State
     void Dismount()
     {
         // 1 is how much units the player needs to move up to be on top of the rail.
-        if ((pSM.transform.position - dismountStartPos).magnitude <= 1 && !dismountedHalfways)
+        if ((pSM.transform.position - dismountStartPos).magnitude <= 1.3f && !dismountedHalfways)
         {
             pSM.HeightOnLadder += stats.ladderDismountSpeed * Time.fixedDeltaTime;
             pSM.transform.position = ladder.transform.position + pSM.ladderDirection * ladderSizeState.ladderLength * pSM.HeightOnLadder;
