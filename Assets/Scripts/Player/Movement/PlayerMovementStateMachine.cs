@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using PathCreation;
 
@@ -26,7 +27,6 @@ public class PlayerMovementStateMachine : StateMachine
     public float swingingInput;
     public float slidingInput;
     public float startingSlidingInput;
-    public int adjustedSlideDirection;
     public bool dismounting;
     public bool invertedSliding;
     public bool didLadderPush;
@@ -153,9 +153,8 @@ public class PlayerMovementStateMachine : StateMachine
     private void Update()
     {
         coyoteTimer += Time.deltaTime;
-        UpdateRailTimer();
+        //UpdateRailTimer();
         CheckForInputBools();
-
     }
 
     private void FixedUpdate()
@@ -200,16 +199,15 @@ public class PlayerMovementStateMachine : StateMachine
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
         swingingInput = swingAction.ReadValue<float>();
-        if (invertedSliding)
-        {
-            Debug.Log("inverted");
-            slideLeftInput = slideRightAction.ReadValue<float>();
-            slideRightInput = slideLeftAction.ReadValue<float>();
-        }
-        else
+        if (!stats.useInvertedSliding)
         {
             slideLeftInput = slideLeftAction.ReadValue<float>();
             slideRightInput = slideRightAction.ReadValue<float>();
+        }
+        else
+        {
+            slideLeftInput = slideRightAction.ReadValue<float>();
+            slideRightInput = slideLeftAction.ReadValue<float>();
         }
     }
 
@@ -226,7 +224,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         if (jumpInputBool)
         {
-            if (stats.useJumpForLadderShoot)
+            if (stats.useJumpForLadderPush)
             {
                 State.LadderPush();
             }
@@ -238,7 +236,7 @@ public class PlayerMovementStateMachine : StateMachine
         }
         if (foldInputBool && stats.canLadderFold)
         {
-            if (!stats.useJumpForLadderShoot)
+            if (!stats.useJumpForLadderPush)
             {
                 State.LadderPush();
             }
@@ -345,6 +343,7 @@ public class PlayerMovementStateMachine : StateMachine
 
         railAllocator.CheckForRailsInRange(controller.transform);
         var possibleRails = railAllocator.railsInRange;
+        List<Rail> lessPossibleRails = new List<Rail>();
 
         if (possibleRails.Count == 0)
         {
@@ -355,7 +354,44 @@ public class PlayerMovementStateMachine : StateMachine
             float closestDistance = stats.snappingDistance;
             for (int i = 0; i < possibleRails.Count; i++)
             {
-                Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition);
+                Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
+                float distance = Vector3.Distance(snappingPoint, railCheckLadderPosition);
+                if (distance >= closestDistance)
+                {
+                    possibleRails.Remove(possibleRails[i]);
+                    i--;
+                }
+            }
+            for (int i = 0; i < possibleRails.Count; i++)
+            {
+                Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
+                LayerMask mask = LayerMask.GetMask("Environment");
+                RaycastHit hit;
+                if (Physics.Linecast(Camera.main.transform.position, snappingPoint, out hit, mask, QueryTriggerInteraction.Ignore))
+                {
+                    lessPossibleRails.Add(possibleRails[i]);
+                    possibleRails.Remove(possibleRails[i]);
+                    i--;
+                }
+            }
+            bool onlyObscuredRails = false;
+            if (possibleRails.Count == 0)
+            {
+                onlyObscuredRails = true;
+                possibleRails.AddRange(lessPossibleRails);
+            }
+
+            for (int i = 0; i < possibleRails.Count; i++)
+            {
+                Vector3 snappingPoint;
+                if (onlyObscuredRails)
+                {
+                    snappingPoint = possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition);
+                }
+                else
+                {
+                    snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
+                }
                 float distance = Vector3.Distance(snappingPoint, railCheckLadderPosition);
                 LayerMask mask = LayerMask.GetMask("Environment");
 
@@ -410,13 +446,14 @@ public class PlayerMovementStateMachine : StateMachine
         }
         else
         {
+
             //finding of the direction  of the current rail
             VertexPath currentClosestPath = currentClosestRail.pathCreator.path;
             Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
 
             float closestDistance = stats.resnappingDistance;
             Rail nextClosestRail = null;
-
+            bool a = false;
             for (int i = 0; i < possibleRails.Count; i++)
             {
                 float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
@@ -426,16 +463,21 @@ public class PlayerMovementStateMachine : StateMachine
 
                 if (distance < closestDistance
                     && possibleRails[i] != currentClosestRail)
-                //&& possibleRails[i].transform.position.y == currentClosestRail.transform.position.y)
                 {
-                    if (Mathf.Abs(Vector3.Dot(currentDirection, possiblePathDirection)) >= .99f)
+                    Debug.Log("----");
+                    Debug.Log(possiblePathDirection.normalized);
+                    Debug.Log(currentDirection.normalized);
+                    Debug.Log(Mathf.Abs(Vector3.Dot(currentDirection.normalized, possiblePathDirection.normalized)));
+                    if (Mathf.Abs(Vector3.Dot(currentDirection.normalized, possiblePathDirection.normalized)) > stats.resnappingDotProduct) // hab das >= zu einem > 0 gemacht erstmal, falls sich das gerade jmd ansieht. jetzt geht es einigerma�en
                     {
                         closestDistance = distance;
                         nextClosestRail = possibleRails[i];
+                        a = true;
                     }
                 }
             }
-
+            if (!a)
+                Debug.Log("A");
             if (nextClosestRail != null)
             {
                 closestRail = nextClosestRail;
@@ -531,6 +573,6 @@ public class PlayerMovementStateMachine : StateMachine
         LadderSmall,
         LadderFold,
         LadderUnfold,
-        LadderRocketJump
+        LadderPush
     };
 }

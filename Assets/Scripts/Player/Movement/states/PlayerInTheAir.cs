@@ -9,7 +9,8 @@ public class PlayerInTheAir : State
     ValuesScriptableObject stats;
 
     float wallJumpingTime;
-
+    float initialAirMovementTimer;
+    float floatingTimer;
     public PlayerInTheAir(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
     {
 
@@ -24,6 +25,7 @@ public class PlayerInTheAir : State
         PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaxJumpingSpeedForward);
         PSM.bonusVelocity += startBaseVelocity - PSM.baseVelocity;
         PSM.baseVelocity.y = y;
+        initialAirMovementTimer = 0;
     }
 
     public override void Movement()
@@ -53,7 +55,16 @@ public class PlayerInTheAir : State
             PSM.bonusVelocity -= currentDragSideway * Time.fixedDeltaTime;
         }
         #endregion
-        PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.AirMovementAcceleration;
+
+        if (initialAirMovementTimer < stats.initialAirMovementTime)
+        {
+            PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.InitialAirMovementAcceleration;
+            initialAirMovementTimer += Time.deltaTime;
+        }
+        else
+        {
+            PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.AirMovementAcceleration;
+        }
 
         //when wall jump occured, set the isWallJumping to false after 1 sec
         wallJumpingTime += Time.fixedDeltaTime;
@@ -66,7 +77,6 @@ public class PlayerInTheAir : State
         controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.AirVelocityFactor);
         if (HeadCollision())
         {
-            //Debug.LogError("Bonk");
             PSM.baseVelocity.y -= PSM.baseVelocity.y * .9f * Time.fixedDeltaTime;
             PSM.bonusVelocity.y = PSM.bonusVelocity.y * .9f * Time.fixedDeltaTime;
         }
@@ -85,8 +95,17 @@ public class PlayerInTheAir : State
         PSM.bonusVelocity.y -= stats.Gravity * Time.fixedDeltaTime;
         if (PSM.bonusVelocity.y <= 0)
         {
-            PSM.baseVelocity.y += PSM.bonusVelocity.y;
-            PSM.bonusVelocity.y = 0;
+            if (PSM.baseVelocity.y >= 0 || floatingTimer >= stats.floatTime)
+            {
+                PSM.baseVelocity.y += PSM.bonusVelocity.y;
+                PSM.bonusVelocity.y = 0;
+            }
+            else 
+            {
+                PSM.bonusVelocity.y = 0;
+                PSM.baseVelocity.y = 0;
+                floatingTimer += Time.deltaTime;
+            }
         }
 
         float ClampedVelocityY = Mathf.Clamp(PSM.baseVelocity.y, -stats.MaxFallingSpeed, stats.MaxJumpingSpeedUp);
@@ -192,6 +211,7 @@ public class PlayerInTheAir : State
             #endregion
             if (target != Vector3.zero)
             {
+               
                 Vector3 directionToWall = (PSM.transform.position - target).normalized;
                 if (Vector3.Angle(directionToWall, Vector3.up) < 45 && !PSM.didLadderPush)
                 {
@@ -201,7 +221,7 @@ public class PlayerInTheAir : State
                     PSM.foldInputBool = false;
                     //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
                     PSM.bonusVelocity += directionToWall * acceleration;
-
+                    floatingTimer = 0;
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
                 }
@@ -211,9 +231,19 @@ public class PlayerInTheAir : State
                     PSM.ladderJumpTarget = target;
                     PSM.baseVelocity.y = 0;
                     PSM.foldInputBool = false;
-                    //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
-                    PSM.bonusVelocity = Mathf.Clamp(ExtensionMethods.resultingSpeed(PSM.bonusVelocity, directionToWall) * stats.ladderPushCurrentVelocityFactor, 0, PSM.bonusVelocity.magnitude) * PSM.bonusVelocity.normalized + directionToWall * acceleration;
-
+                    Vector3 tempDirection1 = Mathf.Clamp( ExtensionMethods.resultingSpeed(PSM.playerVelocity, directionToWall),0,Mathf.Infinity)*directionToWall;
+                    Vector3 tempDirection2 = PSM.playerVelocity - tempDirection1;
+                    floatingTimer = 0;
+                    Vector3 targetDirection = (directionToWall + tempDirection2.normalized * stats.ladderPushCurrentVelocityFactor).normalized;
+                    Vector3 targetVelocity = targetDirection * acceleration;
+                    /*
+                    Vector3 targetVelocityXZ = new Vector3(targetVelocity.x, 0, targetVelocity.z);
+                    float y = targetVelocity.normalized.y * Mathf.Clamp(targetVelocity.y, 0, stats.maxJumpingSpeed);
+                    PSM.baseVelocity = targetVelocityXZ.normalized * Mathf.Clamp(targetVelocityXZ.magnitude, 0, stats.maxJumpingSpeedForward);
+                    PSM.baseVelocity.y = y;
+                    targetVelocity -= PSM.baseVelocity;
+                    */
+                    PSM.bonusVelocity = targetVelocity;
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
                 }
