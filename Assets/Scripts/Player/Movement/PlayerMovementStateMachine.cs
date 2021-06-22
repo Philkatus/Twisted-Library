@@ -355,26 +355,28 @@ public class PlayerMovementStateMachine : StateMachine
             for (int i = 0; i < possibleRails.Count; i++)
             {
                 Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
-                LayerMask mask = LayerMask.GetMask("Environment");
                 float distance = Vector3.Distance(snappingPoint, railCheckLadderPosition);
-                bool inSnappingRange = distance < closestDistance;
+                if (distance >= closestDistance)
+                {
+                    possibleRails.Remove(possibleRails[i]);
+                    i--;
+                }
+            }
+            for (int i = 0; i < possibleRails.Count; i++)
+            {
+                Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
+                LayerMask mask = LayerMask.GetMask("Environment");
                 RaycastHit hit;
                 if (Physics.Linecast(Camera.main.transform.position, snappingPoint, out hit, mask, QueryTriggerInteraction.Ignore))
                 {
-                    if (inSnappingRange)
-                        lessPossibleRails.Add(possibleRails[i]);
+                    lessPossibleRails.Add(possibleRails[i]);
                     possibleRails.Remove(possibleRails[i]);
+                    i--;
                 }
-            }
-
-            for (int i = 0; i < possibleRails.Count; i++)
-            {
-                Debug.Log(possibleRails[i].gameObject.name);
             }
             bool onlyObscuredRails = false;
             if (possibleRails.Count == 0)
             {
-                Debug.Log("only obscured rails possible");
                 onlyObscuredRails = true;
                 possibleRails.AddRange(lessPossibleRails);
             }
@@ -388,7 +390,6 @@ public class PlayerMovementStateMachine : StateMachine
                 }
                 else
                 {
-
                     snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
                 }
                 float distance = Vector3.Distance(snappingPoint, railCheckLadderPosition);
