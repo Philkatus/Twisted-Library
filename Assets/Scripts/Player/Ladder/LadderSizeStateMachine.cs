@@ -54,7 +54,7 @@ public class LadderSizeStateMachine : StateMachine
     ///</summary>
     public void OnFold()
     {
-        if (playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.swinging)
+        if (playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.swinging && !playerStateMachine.dismounting)
         {
             playerStateMachine.foldInputBool = false;
             if (!(State is LadderFold))
