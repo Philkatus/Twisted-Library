@@ -49,7 +49,7 @@ public class VFX_Manager : MonoBehaviour
     GameObject cloud, snappingFeedback;
     Vector3 offset;
     bool smokeOn = false;
-    public float smokeTimer = 2f;
+    float smokeTimer = 1f;
     #endregion
     private void Start()
     {
@@ -86,13 +86,13 @@ public class VFX_Manager : MonoBehaviour
         if (smokeOn)
         {
             smokeTimer -= Time.deltaTime;
-            
-            if(smokeTimer <= 0)
+
+            if (smokeTimer <= 0)
             {
                 smokeOn = false;
                 ladderPushLeft.SetInt("_SmokeSpawnrate",0);
                 ladderPushRight.SetInt("_SmokeSpawnrate", 0);
-                smokeTimer = 2f;
+                smokeTimer = 1f;
             }
         }
     }
@@ -148,8 +148,8 @@ public class VFX_Manager : MonoBehaviour
     }
     void StartLadderPushVFX(VisualEffect vfx)
     {
-        ladderPushLeft.SetInt("_SmokeSpawnrate", 100);
-        ladderPushRight.SetInt("_SmokeSpawnrate", 100);
+        ladderPushLeft.SetInt("_SmokeSpawnrate", 1000);
+        ladderPushRight.SetInt("_SmokeSpawnrate", 1000);
         vfx.SendEvent("_Start");
         smokeOn = true;
     }
