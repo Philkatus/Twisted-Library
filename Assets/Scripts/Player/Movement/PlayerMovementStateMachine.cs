@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using PathCreation;
 
@@ -10,6 +11,7 @@ public class PlayerMovementStateMachine : StateMachine
     [Tooltip("Change to use different variable value sets. Found in Assets-> Scripts-> Cheat Sheets.")]
     public ValuesScriptableObject stats;
     public InputActionAsset actionAsset;
+    public bool useRelativeBobPosition = true;
 
     [Space]
     [Header("For reference")]
@@ -23,14 +25,13 @@ public class PlayerMovementStateMachine : StateMachine
     public float forwardInput;
     public float slideLeftInput;
     public float slideRightInput;
-    public float swingingInput;
     public float slidingInput;
     public float startingSlidingInput;
     public bool dismounting;
-    public bool invertedSliding;
     public bool didLadderPush;
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
+
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
@@ -54,12 +55,12 @@ public class PlayerMovementStateMachine : StateMachine
     public CharacterController controller;
     public AnimationStateController animController;
     public GameObject bob;
+    public Transform Bob_Pivot;
     public VFX_Manager effects;
     [HideInInspector] public InputAction slideLeftAction;
     [HideInInspector] public InputAction slideRightAction;
     [HideInInspector] public InputAction swingAction;
     [HideInInspector] public InputAction snapAction;
-    [HideInInspector] public InputAction NewAction;
     [HideInInspector] public InputAction fallFromLadder;
     [HideInInspector] public Quaternion ladderWalkingRotation;
     [HideInInspector] public Vector3 ladderWalkingPosition;
@@ -152,9 +153,9 @@ public class PlayerMovementStateMachine : StateMachine
     private void Update()
     {
         coyoteTimer += Time.deltaTime;
-        UpdateRailTimer();
+        if (playerState != PlayerState.swinging)
+            UpdateRailTimer();
         CheckForInputBools();
-
     }
 
     private void FixedUpdate()
@@ -198,7 +199,6 @@ public class PlayerMovementStateMachine : StateMachine
     {
         forwardInput = moveAction.ReadValue<Vector2>().y;
         sideWaysInput = moveAction.ReadValue<Vector2>().x;
-        swingingInput = swingAction.ReadValue<float>();
         if (!stats.useInvertedSliding)
         {
             slideLeftInput = slideLeftAction.ReadValue<float>();
@@ -230,7 +230,7 @@ public class PlayerMovementStateMachine : StateMachine
             }
             State.Jump();
         }
-        if (snapInputBool)
+        if (snapInputBool && playerState != PlayerState.swinging)
         {
             TryToSnapToShelf();
         }
@@ -343,6 +343,7 @@ public class PlayerMovementStateMachine : StateMachine
 
         railAllocator.CheckForRailsInRange(controller.transform);
         var possibleRails = railAllocator.railsInRange;
+        List<Rail> lessPossibleRails = new List<Rail>();
 
         if (possibleRails.Count == 0)
         {
@@ -353,7 +354,44 @@ public class PlayerMovementStateMachine : StateMachine
             float closestDistance = stats.snappingDistance;
             for (int i = 0; i < possibleRails.Count; i++)
             {
-                Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition);
+                Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
+                float distance = Vector3.Distance(snappingPoint, railCheckLadderPosition);
+                if (distance >= closestDistance)
+                {
+                    possibleRails.Remove(possibleRails[i]);
+                    i--;
+                }
+            }
+            for (int i = 0; i < possibleRails.Count; i++)
+            {
+                Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
+                LayerMask mask = LayerMask.GetMask("Environment");
+                RaycastHit hit;
+                if (Physics.Linecast(Camera.main.transform.position, snappingPoint, out hit, mask, QueryTriggerInteraction.Ignore))
+                {
+                    lessPossibleRails.Add(possibleRails[i]);
+                    possibleRails.Remove(possibleRails[i]);
+                    i--;
+                }
+            }
+            bool onlyObscuredRails = false;
+            if (possibleRails.Count == 0)
+            {
+                onlyObscuredRails = true;
+                possibleRails.AddRange(lessPossibleRails);
+            }
+
+            for (int i = 0; i < possibleRails.Count; i++)
+            {
+                Vector3 snappingPoint;
+                if (onlyObscuredRails)
+                {
+                    snappingPoint = possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition);
+                }
+                else
+                {
+                    snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
+                }
                 float distance = Vector3.Distance(snappingPoint, railCheckLadderPosition);
                 LayerMask mask = LayerMask.GetMask("Environment");
 
@@ -408,6 +446,7 @@ public class PlayerMovementStateMachine : StateMachine
         }
         else
         {
+
             //finding of the direction  of the current rail
             VertexPath currentClosestPath = currentClosestRail.pathCreator.path;
             Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f06406a2f87f5a64781d8f07d19cd6c6, type: 3}
   m_Name: CurrentStats
   m_EditorClassIdentifier: 
-  useJumpForLadderShoot: 1
+  useJumpForLadderPush: 0
   useTriggerToSlideWithMomentum: 1
   useInvertedSliding: 0
   bonusVelocityDrag: 0.1
@@ -21,12 +21,12 @@ MonoBehaviour:
   foldInputTimer: 0.5
   swingInputTimer: 0.5
   slidingCoyoteTime: 0.2
-  canLadderPush: 1
+  canLadderPush: 0
   canLadderFold: 1
   canSlide: 1
   movementAcceleration: 50
-  maximumMovementSpeed: 15
-  movementDrag: 12
+  maximumMovementSpeed: 10
+  movementDrag: 13
   walkingBonusVelocityDrag: 0.01
   movementVelocityFactor: 1
   jumpHeight: 20
@@ -36,14 +36,14 @@ MonoBehaviour:
   ladderPushCurrentVelocityFactor: 0.5
   jumpFromLadderDirection: {x: 0, y: 30, z: 10}
   airMovementAcceleration: 50
-  initialAirMovementAcceleration: 200
+  initialAirMovementAcceleration: 500
   initialAirMovementTime: 1
   jumpingDrag: 3
   gravity: 60
   floatTime: 0.06
   maxFallingSpeed: 25
   AirVelocityFactor: 1
-  snappingDistance: 6
+  snappingDistance: 5
   resnappingDistance: 0.5
   resnappingDotProduct: 0
   minVelocityToChangeSnapDirection: 1
@@ -58,7 +58,7 @@ MonoBehaviour:
   maxSlidingSpeed: 20
   timeToAccecelerate: 0.7
   timeToDecelerate: 0.4
-  swingingAcceleration: 1000
+  swingingAcceleration: 2000
   minSwingingDeceleration: 0.0075
   maxSwingingDeceleration: 0.031
   minHangingDeceleration: 0.001
