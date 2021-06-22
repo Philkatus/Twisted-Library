@@ -209,7 +209,7 @@ public class PlayerInTheAir : State
             #endregion
             if (target != Vector3.zero)
             {
-                floatingTimer = 0;
+               
                 Vector3 directionToWall = (PSM.transform.position - target).normalized;
                 if (Vector3.Angle(directionToWall, Vector3.up) < 45 && !PSM.didLadderPush)
                 {
@@ -219,7 +219,7 @@ public class PlayerInTheAir : State
                     PSM.foldInputBool = false;
                     //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
                     PSM.bonusVelocity += directionToWall * acceleration;
-
+                    floatingTimer = 0;
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
                 }
@@ -231,7 +231,7 @@ public class PlayerInTheAir : State
                     PSM.foldInputBool = false;
                     Vector3 tempDirection1 = Mathf.Clamp( ExtensionMethods.resultingSpeed(PSM.playerVelocity, directionToWall),0,Mathf.Infinity)*directionToWall;
                     Vector3 tempDirection2 = PSM.playerVelocity - tempDirection1;
-
+                    floatingTimer = 0;
                     Vector3 targetDirection = (directionToWall + tempDirection2.normalized * stats.ladderPushCurrentVelocityFactor).normalized;
                     Vector3 targetVelocity = targetDirection * acceleration;
                     /*
