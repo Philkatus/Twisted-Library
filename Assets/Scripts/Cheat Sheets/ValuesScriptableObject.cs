@@ -140,6 +140,7 @@ public class ValuesScriptableObject : ScriptableObject
             return ladderPushAcceleration * AirVelocityFactor;
         }
     }
+
     [Tooltip("factor to controll how much the current bonus Velocity factors into the end reVelocity" +
         "higher values mean the curretn velocity doesn't get changed much")]
     [Range(0, 1)] public float ladderPushCurrentVelocityFactor = .1f;

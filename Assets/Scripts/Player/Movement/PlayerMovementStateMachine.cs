@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.InputSystem;
 using PathCreation;
 
@@ -152,9 +153,8 @@ public class PlayerMovementStateMachine : StateMachine
     private void Update()
     {
         coyoteTimer += Time.deltaTime;
-        UpdateRailTimer();
+        //UpdateRailTimer();
         CheckForInputBools();
-
     }
 
     private void FixedUpdate()
@@ -343,6 +343,7 @@ public class PlayerMovementStateMachine : StateMachine
 
         railAllocator.CheckForRailsInRange(controller.transform);
         var possibleRails = railAllocator.railsInRange;
+        List<Rail> lessPossibleRails = new List<Rail>();
 
         if (possibleRails.Count == 0)
         {
@@ -353,7 +354,44 @@ public class PlayerMovementStateMachine : StateMachine
             float closestDistance = stats.snappingDistance;
             for (int i = 0; i < possibleRails.Count; i++)
             {
-                Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition);
+                Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
+                float distance = Vector3.Distance(snappingPoint, railCheckLadderPosition);
+                if (distance >= closestDistance)
+                {
+                    possibleRails.Remove(possibleRails[i]);
+                    i--;
+                }
+            }
+            for (int i = 0; i < possibleRails.Count; i++)
+            {
+                Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
+                LayerMask mask = LayerMask.GetMask("Environment");
+                RaycastHit hit;
+                if (Physics.Linecast(Camera.main.transform.position, snappingPoint, out hit, mask, QueryTriggerInteraction.Ignore))
+                {
+                    lessPossibleRails.Add(possibleRails[i]);
+                    possibleRails.Remove(possibleRails[i]);
+                    i--;
+                }
+            }
+            bool onlyObscuredRails = false;
+            if (possibleRails.Count == 0)
+            {
+                onlyObscuredRails = true;
+                possibleRails.AddRange(lessPossibleRails);
+            }
+
+            for (int i = 0; i < possibleRails.Count; i++)
+            {
+                Vector3 snappingPoint;
+                if (onlyObscuredRails)
+                {
+                    snappingPoint = possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition);
+                }
+                else
+                {
+                    snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
+                }
                 float distance = Vector3.Distance(snappingPoint, railCheckLadderPosition);
                 LayerMask mask = LayerMask.GetMask("Environment");
 
@@ -408,6 +446,7 @@ public class PlayerMovementStateMachine : StateMachine
         }
         else
         {
+
             //finding of the direction  of the current rail
             VertexPath currentClosestPath = currentClosestRail.pathCreator.path;
             Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
