@@ -531,7 +531,6 @@ public class PlayerSwinging : State
         #endregion
 
         #region Acceleration & Final Calculations
-        var swingSpeed = stats.maxSwingSpeed;
         inputForce = Vector3.zero;
         if (!PSM.dismounting)
         {
@@ -543,14 +542,14 @@ public class PlayerSwinging : State
                 else
                     firstRound = false;
             }
+            currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
         }
         else
         {
-            swingSpeed = 300;
+            currentVelocity = currentVelocity.normalized * 100;
         }
 
         // set max speed
-        currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, swingSpeed);
 
         // Get only the forward/backward force
         playerVelocity = bobForward * ExtensionMethods.resultingSpeed(bobForward, currentVelocity);
