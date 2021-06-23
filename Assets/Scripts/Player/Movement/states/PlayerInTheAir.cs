@@ -35,10 +35,12 @@ public class PlayerInTheAir : State
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
         Vector3 direction = directionForward * PSM.forwardInput + directionRight * PSM.sideWaysInput;
 
+        controller.transform.rotation = Quaternion.AngleAxis(-Mathf.Abs( Vector3.SignedAngle(controller.transform.up,Vector3.up,controller.transform.right)*Time.fixedDeltaTime*4), controller.transform.right) * controller.transform.rotation;
         if (direction != Vector3.zero)
         {
-            controller.transform.forward = direction;
+            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
         }
+        
         #region Drag When No Input
         if (PSM.forwardInput == 0)
         {

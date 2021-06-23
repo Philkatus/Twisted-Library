@@ -28,7 +28,7 @@ public class PlayerWalking : State
         ladder.transform.SetParent(base.PSM.animController.spine);
         ladder.localPosition = PSM.ladderWalkingPosition;
         ladder.localRotation = PSM.ladderWalkingRotation;
-
+        controller.transform.rotation = Quaternion.AngleAxis( Vector3.SignedAngle(controller.transform.up, Vector3.up, controller.transform.right), controller.transform.right) * controller.transform.rotation;
         stats = base.PSM.stats;
     }
 
@@ -45,6 +45,7 @@ public class PlayerWalking : State
         {
             controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
         }
+        //controller.transform.up = Vector3.Lerp(controller.transform.up, Vector3.up, 20 * Time.fixedDeltaTime);
         PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.MovementAcceleration;
 
         #region Drag When No Input
