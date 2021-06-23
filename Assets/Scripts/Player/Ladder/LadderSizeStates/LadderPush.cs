@@ -34,8 +34,12 @@ public class LadderPush : State
 
     public override IEnumerator Finish()
     {
-        pSM.ladder.SetParent(pSM.animController.spine);
-        lSM.ladderParent.localRotation = LadderLocalRotation;
+        if (PSM.playerState != PlayerMovementStateMachine.PlayerState.swinging)
+        {
+            pSM.ladder.SetParent(pSM.animController.spine);
+        }
+            lSM.ladderParent.localRotation = LadderLocalRotation;
+        
 
         yield return null;
     }
@@ -62,8 +66,10 @@ public class LadderPush : State
             if (distance >= stats.ladderLengthBig || pSM.playerVelocity.y <= 0)
             {
                 isLerpGoing = false;
-                startingLocalPosition = pSM.ladder.localPosition;
-                startingLocalRotation = pSM.ladder.localRotation;
+               
+                    startingLocalPosition = pSM.ladder.localPosition;
+                    startingLocalRotation = pSM.ladder.localRotation;
+                
             }
         }
         else
@@ -72,12 +78,11 @@ public class LadderPush : State
 
             pSM.ladder.localPosition = Vector3.Lerp(startingLocalPosition, pSM.ladderWalkingPosition, time / stats.foldingTime);
             pSM.ladder.localRotation = Quaternion.Lerp(startingLocalRotation, pSM.ladderWalkingRotation, time / stats.foldingTime);
-            if (time >= stats.foldingTime)
-            {
+            
                 pSM.ladder.localPosition = pSM.ladderWalkingPosition;
                 pSM.ladder.localRotation = pSM.ladderWalkingRotation;
                 lSM.OnShrink();
-            }
+            
         }
     }
 }
