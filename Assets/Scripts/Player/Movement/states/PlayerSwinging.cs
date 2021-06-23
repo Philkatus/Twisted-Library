@@ -82,6 +82,7 @@ public class PlayerSwinging : State
     bool startedAccelerating;
     bool waitToChangeDirection;
     bool mayChangeDirection;
+    bool colliding;
 
     Vector3 dismountStartPos;
     Vector3 pathDirection;
@@ -754,9 +755,21 @@ public class PlayerSwinging : State
                 }
                 pathDirection = path.GetDirectionAtDistance(PSM.currentDistance);
                 Vector3 slidingDirection = pathDirection * PSM.slidingInput;
+                if (colliding)
+                {
+                    if (PSM.slidingInput == 1 && PSM.slideLeftInput != 0 && PSM.slideRightInput == 0)
+                    {
+                        slidingDirection = pathDirection * -1;
+                    }
+                    if (PSM.slidingInput == -1 && PSM.slideLeftInput == 0 && PSM.slideRightInput != 0)
+                    {
+                        slidingDirection = pathDirection;
+                    }
+                }
 
                 if (!CheckForCollisionCharacter(slidingDirection) && !CheckForCollisionLadder(slidingDirection))
                 {
+                    colliding = false;
                     var pressureFactor = PSM.slideRightInput != 0 ? PSM.slideRightInput : PSM.slideLeftInput;
                     float remappedPressureFactor = RemapPressureFactor(pressureFactor);
 
@@ -796,7 +809,6 @@ public class PlayerSwinging : State
                         tDeceleration = 0;
                         startSlidingSpeedForDeceleration = 0;
                         startedDecelerating = false;
-                        var pressureAdjustment = remappedPressureFactor == 1 ? 0f : 0.19f;
                         tAcceleration += Time.deltaTime / stats.timeToAccecelerate * remappedPressureFactor;
                         mayChangeDirection = false;
                         currentSlidingSpeed = Mathf.Lerp(0, maxSlidingSpeed, tAcceleration);
@@ -810,6 +822,7 @@ public class PlayerSwinging : State
                 else
                 {
                     currentSlidingSpeed = 0;
+                    colliding = true;
                 }
 
                 PSM.currentDistance += currentSlidingSpeed * PSM.slidingInput * Time.fixedDeltaTime;
@@ -980,10 +993,10 @@ public class PlayerSwinging : State
     protected bool CheckForCollisionCharacter(Vector3 moveDirection)
     {
         RaycastHit hit;
-        Vector3 p1 = PSM.transform.position + controller.center + Vector3.up * -controller.height / 1.5f;
+        Vector3 p1 = PSM.transform.position + controller.center + Vector3.up * -controller.height / 2f;
         Vector3 p2 = p1 + Vector3.up * controller.height;
 
-        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.2f, LayerMask.GetMask("SlidingObstacle")))
+        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment")))
         {
             return true;
         }
@@ -994,9 +1007,9 @@ public class PlayerSwinging : State
     {
         RaycastHit hit;
         LadderSizeStateMachine lSM = PSM.ladderSizeStateMachine;
-        Vector3 boxExtents = new Vector3(lSM.ladderParent.localScale.x * 0.5f, lSM.ladderParent.localScale.y * 0.5f, lSM.ladderParent.localScale.z * 0.5f);
+        Vector3 boxExtents = new Vector3(0.25f, 2, 0.025f);
 
-        if (Physics.BoxCast(PSM.ladder.position, lSM.ladderParent.localScale, moveDirection.normalized, out hit, Quaternion.identity, 0.1f, LayerMask.GetMask("SlidingObstacle")))
+        if (Physics.BoxCast(PSM.ladder.position + PSM.ladder.transform.up * -2f, boxExtents, moveDirection.normalized, out hit, PSM.ladder.rotation, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment")))
         {
             return true;
         }
