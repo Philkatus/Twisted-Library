@@ -149,12 +149,12 @@ public class PlayerInTheAir : State
     {
         if (stats.canLadderPush)
         {
-            PlayerFollowTarget.instance.OnLadderPush();
+            //PlayerFollowTarget.instance.OnLadderPush();
             float sphereRadius = .2f;
             float maxHeight = stats.ladderLengthBig - sphereRadius;
             float acceleration = stats.LadderPushAcceleration;
 
-            Vector3 origin = PSM.transform.position;
+            Vector3 origin = PSM.transform.position+Vector3.up*.5f;
             LayerMask mask = LayerMask.GetMask("Environment");
             List<RaycastHit> hits = new List<RaycastHit>();
             #region CastDown
@@ -225,7 +225,7 @@ public class PlayerInTheAir : State
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
                 }
-                else if (Vector3.Angle(directionToWall, Vector3.up) > 45)
+                else if (Vector3.Angle(directionToWall, Vector3.up) >= 60)
                 {
 
                     PSM.ladderJumpTarget = target;

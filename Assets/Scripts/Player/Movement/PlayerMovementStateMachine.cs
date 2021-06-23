@@ -533,8 +533,9 @@ public class PlayerMovementStateMachine : StateMachine
 
         snapInputBool = false;
         effects.OnStateChangedSwinging();
-        SetState(new PlayerSwinging(this));
         playerState = PlayerState.swinging;
+        SetState(new PlayerSwinging(this));
+        
     }
 
     ///<summary>

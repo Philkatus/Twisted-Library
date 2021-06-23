@@ -353,7 +353,6 @@ public class PlayerSwinging : State
         SlidingMovement();
         RotateAroundY();
         Swing();
-        //RotateAroundY();
     }
 
     #region SWINGING Functions
@@ -666,6 +665,7 @@ public class PlayerSwinging : State
         float rotateByAngle2 = Vector3.SignedAngle(PSM.ladder.right, HorizontalRailDirection * PSM.snapdirection, localUp);
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle2, localUp);
         PSM.ladder.rotation = targetRotation * PSM.ladder.rotation;
+        
     }
     #endregion
 
