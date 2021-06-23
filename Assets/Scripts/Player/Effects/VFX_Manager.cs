@@ -90,7 +90,7 @@ public class VFX_Manager : MonoBehaviour
             if (smokeTimer <= 0)
             {
                 smokeOn = false;
-                ladderPushLeft.SetInt("_SmokeSpawnrate",0);
+                ladderPushLeft.SetInt("_SmokeSpawnrate", 0);
                 ladderPushRight.SetInt("_SmokeSpawnrate", 0);
                 smokeTimer = 1f;
             }
