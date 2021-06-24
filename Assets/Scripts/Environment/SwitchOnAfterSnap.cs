@@ -36,7 +36,6 @@ public class SwitchOnAfterSnap : MonoBehaviour
     {
         if (switchOn)
         {
-            Debug.Log("tOn:" + tSwitchOn);
             tSwitchOn += Time.deltaTime;
             pivot.transform.rotation = Quaternion.Lerp(snapRotation, onRotation, tSwitchOn);
             railParent.transform.rotation = Quaternion.Lerp(railSnapRotation, railOnRotation, tSwitchOn);
@@ -50,7 +49,6 @@ public class SwitchOnAfterSnap : MonoBehaviour
         }
         if (switchOff)
         {
-            Debug.Log("tOff:" + tSwitchOff);
             switchOn = false;
             tSwitchOff += Time.deltaTime;
             pivot.transform.rotation = Quaternion.Lerp(onRotation, offRotation, tSwitchOff);

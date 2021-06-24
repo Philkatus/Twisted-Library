@@ -9,6 +9,9 @@ public class ChallengeComponent : MonoBehaviour
     [SerializeField] int componentNumber;
     Animator anim;
     float timeLeft = 0;
+    float tWheelAcceleration = 1;
+    float currentRotationDirection;
+    bool changeDirection;
 
     void Start()
     {
@@ -21,12 +24,49 @@ public class ChallengeComponent : MonoBehaviour
         relatedChallenge.completedChallengeParts.Add(false);
     }
 
-    private void OnTriggerEnter(Collider other)
+    void Update()
+    {
+        if (changeDirection)
+        {
+            if (tWheelAcceleration > 0)
+            {
+                tWheelAcceleration -= Time.deltaTime / 0.7f;
+                float angleDelta = Mathf.Lerp(0, 1f, tWheelAcceleration) * currentRotationDirection;
+                transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + angleDelta, transform.eulerAngles.z);
+            }
+            else if (tWheelAcceleration <= 0)
+            {
+                changeDirection = false;
+                tWheelAcceleration = 0;
+                StartCoroutine(RotateWheel());
+            }
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
     {
         if (other.tag == "Player")
         {
-            relatedChallenge.completedChallengeParts[componentNumber] = true;
-            StartCoroutine(RotateWheel());
+            var psm = other.gameObject.GetComponent<PlayerMovementStateMachine>();
+            bool isSliding = psm.playerState == PlayerMovementStateMachine.PlayerState.swinging;
+            var slidingInput = psm.slidingInput;
+            if (slidingInput != 0 && isSliding)
+            {
+                if (currentRotationDirection == 0)
+                {
+                    tWheelAcceleration = 0;
+                    relatedChallenge.completedChallengeParts[componentNumber] = true;
+                    StartCoroutine(RotateWheel());
+                    currentRotationDirection = slidingInput;
+                }
+                else if (currentRotationDirection != slidingInput)
+                {
+                    currentRotationDirection = slidingInput;
+                    tWheelAcceleration = 1;
+                    changeDirection = true;
+                    StopAllCoroutines();
+                }
+            }
         }
     }
 
@@ -34,7 +74,10 @@ public class ChallengeComponent : MonoBehaviour
     {
         while (true)
         {
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y+1, transform.eulerAngles.z);
+            tWheelAcceleration += Time.deltaTime / 1.3f;
+            Mathf.Clamp(tWheelAcceleration, 0f, 1f);
+            float angleDelta = Mathf.Lerp(0, 1f, tWheelAcceleration) * currentRotationDirection;
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y - angleDelta, transform.eulerAngles.z);
             yield return new WaitForEndOfFrame();
         }
     }
