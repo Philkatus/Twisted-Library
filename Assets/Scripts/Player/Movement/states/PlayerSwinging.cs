@@ -482,8 +482,16 @@ public class PlayerSwinging : State
         #region Acceleration & Deceleration
         if (PSM.swingInputBool)
         {
-            AccelerationForce();
+            PSM.swingInputBool = false;
+            if (!firstRound)
+                AccelerationForce();
+            else
+                firstRound = false;
         }
+        // if (PSM.swingInputBool)
+        // {
+        //     AccelerationForce();
+        // }
         inputForce = Vector3.zero;
         inputTimer += dt;
 
@@ -1006,7 +1014,7 @@ public class PlayerSwinging : State
         Vector3 p1 = PSM.transform.position + controller.center + Vector3.up * -controller.height / 2f;
         Vector3 p2 = p1 + Vector3.up * controller.height;
 
-        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment")))
+        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
         {
             return true;
         }
@@ -1019,7 +1027,7 @@ public class PlayerSwinging : State
         LadderSizeStateMachine lSM = PSM.ladderSizeStateMachine;
         Vector3 boxExtents = new Vector3(0.25f, 2, 0.025f);
 
-        if (Physics.BoxCast(PSM.ladder.position + PSM.ladder.transform.up * -2f, boxExtents, moveDirection.normalized, out hit, PSM.ladder.rotation, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment")))
+        if (Physics.BoxCast(PSM.ladder.position + PSM.ladder.transform.up * -2f, boxExtents, moveDirection.normalized, out hit, PSM.ladder.rotation, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
         {
             return true;
         }
