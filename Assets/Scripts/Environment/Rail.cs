@@ -17,6 +17,7 @@ public class Rail : MonoBehaviour
         " FreeHanging - Can Swing back and forth, but not necessarily up ")]
     public RailType railType;
     public bool stopSlidingAtTheEnd;
+    public bool isASwitch;
     #endregion
 
     #region Private

@@ -105,18 +105,21 @@ public class VFX_Manager : MonoBehaviour
 
         if (weAreSliding)
         {
-            if(pSM.slideRightInput >= 0)
-            {
-                sparkleBurstL.transform.Rotate(-180f, transform.rotation.y, transform.rotation.z);
-                sparkleBurstR.transform.Rotate(-180f, transform.rotation.y, transform.rotation.z);
-            }
-            if (pSM.slideLeftInput >= 0)
-            {
-                sparkleBurstL.transform.Rotate(180f, transform.rotation.y, transform.rotation.z);
-                sparkleBurstR.transform.Rotate(180f, transform.rotation.y, transform.rotation.z);
-            }
             SlidingSparkleIntensity(sparkleBurstLeft);
             SlidingSparkleIntensity(sparkleBurstRight);
+
+            /*if (pSM.slideLeftInput >= 0 && pSM.currentSlidingSpeed >= pSM.stats.maxSlidingSpeed * .7f)
+            {
+                sparkleBurstRight.SetVector2("_SparkleSpawnCount", new Vector2(2, 14));
+                sparkleBurstRight.SetInt("_FlameIntensity", 2);
+                Debug.Log("Left");
+            }
+            else if (pSM.slideRightInput >= 0 && pSM.currentSlidingSpeed >= pSM.stats.maxSlidingSpeed * .7f)
+            {
+                sparkleBurstLeft.SetVector2("_SparkleSpawnCount", new Vector2(2, 14));
+                sparkleBurstLeft.SetInt("_FlameIntensity", 2);
+                Debug.Log("RIGHT");
+            }*/
         }
     }
     #region OnStateChanged
@@ -187,6 +190,8 @@ public class VFX_Manager : MonoBehaviour
     }
     void StartSlidingSparkle(VisualEffect vfx)
     {
+        vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 0));
+        vfx.SetInt("_FlameIntensity", 0);
         vfx.SendEvent("_StartBurst");
         weAreSliding = true;
     }
@@ -197,7 +202,12 @@ public class VFX_Manager : MonoBehaviour
             vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 0));
             vfx.SetInt("_FlameIntensity", 0);
         }
-        if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .2 && pSM.currentSlidingSpeed > 0)
+        if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .9)
+        {
+            vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 0));
+            vfx.SetInt("_FlameIntensity", 0);
+        }
+        /*if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .2 && pSM.currentSlidingSpeed > 0)
         {
             vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 0));
             vfx.SetInt("_FlameIntensity", 1);
@@ -209,19 +219,19 @@ public class VFX_Manager : MonoBehaviour
         }
         if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .7 && pSM.currentSlidingSpeed > pSM.stats.maxSlidingSpeed * .5)
         {
-            vfx.SetVector2("_SparkleSpawnCount", new Vector2(2, 7));
-            vfx.SetInt("_FlameIntensity", 10);
-        }
+            vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 3));
+            vfx.SetInt("_FlameIntensity", 1);
+        }*/
         if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .9 && pSM.currentSlidingSpeed > pSM.stats.maxSlidingSpeed * .7)
         {
-            vfx.SetVector2("_SparkleSpawnCount", new Vector2(5, 7));
-            vfx.SetInt("_FlameIntensity", 20);
+            vfx.SetVector2("_SparkleSpawnCount", new Vector2(1, 4));
+            vfx.SetInt("_FlameIntensity", 2);
         }
         if (pSM.currentSlidingSpeed >= pSM.stats.maxSlidingSpeed && pSM.currentSlidingSpeed > pSM.stats.maxSlidingSpeed * .9)
         {
-            vfx.SetVector2("_SparkleSpawnCount", new Vector2(5, 12));
-            vfx.SetInt("_FlameIntensity", 25);
-        }
+            vfx.SetVector2("_SparkleSpawnCount", new Vector2(2, 7));
+            vfx.SetInt("_FlameIntensity", 3);
+        }       
     }
     void StopSlidingSparkle(VisualEffect vfx)
     {
