@@ -575,6 +575,7 @@ public class PlayerMovementStateMachine : StateMachine
         LadderSmall,
         LadderFold,
         LadderUnfold,
-        LadderPush
+        LadderPush,
+        LadderSnap
     };
 }
