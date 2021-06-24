@@ -223,6 +223,7 @@ public class PlayerSwinging : State
             switchScript.switchOn = true;
             switchScript.switchOff = false;
             switchScript.snapRotation = switchScript.pivot.rotation;
+            switchScript.railSnapRotation = switchScript.railParent.rotation;
         }
     }
 
