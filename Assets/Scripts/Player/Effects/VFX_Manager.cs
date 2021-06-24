@@ -105,6 +105,17 @@ public class VFX_Manager : MonoBehaviour
 
         if (weAreSliding)
         {
+            if (pSM.slidingInput <= -1 && pSM.currentSlidingSpeed > 0)
+            {
+                sparkleBurstL.transform.rotation = Quaternion.Euler(212, 287, 85);
+                sparkleBurstR.transform.rotation = Quaternion.Euler(212, 287, 85);
+            }
+            if (pSM.slidingInput >= 1 && pSM.currentSlidingSpeed > 0)
+            {
+                sparkleBurstL.transform.rotation = Quaternion.Euler(211, 462, -85);
+                sparkleBurstR.transform.rotation = Quaternion.Euler(211, 462, -85);
+            }
+
             SlidingSparkleIntensity(sparkleBurstLeft);
             SlidingSparkleIntensity(sparkleBurstRight);
 
@@ -216,21 +227,21 @@ public class VFX_Manager : MonoBehaviour
         {
             vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 2));
             vfx.SetInt("_FlameIntensity", 5);
-        }
+        }*/
         if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .7 && pSM.currentSlidingSpeed > pSM.stats.maxSlidingSpeed * .5)
         {
-            vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 3));
+            vfx.SetVector2("_SparkleSpawnCount", new Vector2(0.01f, .1f));
             vfx.SetInt("_FlameIntensity", 1);
-        }*/
+        }
         if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .9 && pSM.currentSlidingSpeed > pSM.stats.maxSlidingSpeed * .7)
         {
-            vfx.SetVector2("_SparkleSpawnCount", new Vector2(1, 4));
+            vfx.SetVector2("_SparkleSpawnCount", new Vector2(.1f, 1));
             vfx.SetInt("_FlameIntensity", 2);
         }
         if (pSM.currentSlidingSpeed >= pSM.stats.maxSlidingSpeed && pSM.currentSlidingSpeed > pSM.stats.maxSlidingSpeed * .9)
         {
-            vfx.SetVector2("_SparkleSpawnCount", new Vector2(2, 7));
-            vfx.SetInt("_FlameIntensity", 3);
+            vfx.SetVector2("_SparkleSpawnCount", new Vector2(2, 5));
+            vfx.SetInt("_FlameIntensity", 5);
         }       
     }
     void StopSlidingSparkle(VisualEffect vfx)
