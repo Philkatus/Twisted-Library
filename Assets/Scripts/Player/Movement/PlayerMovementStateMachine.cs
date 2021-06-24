@@ -27,6 +27,7 @@ public class PlayerMovementStateMachine : StateMachine
     public float slideRightInput;
     public float slidingInput;
     public float startingSlidingInput;
+    public float currentSlidingSpeed;
     public bool dismounting;
     public bool didLadderPush;
     public bool isWallJumping;
