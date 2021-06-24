@@ -8,11 +8,16 @@ public class SwitchOnAfterSnap : MonoBehaviour
     public bool switchOff;
     public bool isSwitchedOn;
     public Quaternion snapRotation;
+    public Quaternion railSnapRotation;
     public Transform pivot;
+    public Transform railParent;
 
     [SerializeField] Transform pivotEnd;
+    [SerializeField] Transform railParentEnd;
     Quaternion onRotation;
     Quaternion offRotation;
+    Quaternion railOnRotation;
+    Quaternion railOffRotation;
     float tSwitchOn;
     float tSwitchOff;
 
@@ -22,6 +27,8 @@ public class SwitchOnAfterSnap : MonoBehaviour
         GetComponent<Rail>().isASwitch = true;
         offRotation = pivot.rotation;
         onRotation = pivotEnd.rotation;
+        railOnRotation = railParentEnd.rotation;
+        railOffRotation = railParent.rotation;
     }
 
     // Update is called once per frame
@@ -32,6 +39,7 @@ public class SwitchOnAfterSnap : MonoBehaviour
             Debug.Log("tOn:" + tSwitchOn);
             tSwitchOn += Time.deltaTime;
             pivot.transform.rotation = Quaternion.Lerp(snapRotation, onRotation, tSwitchOn);
+            railParent.transform.rotation = Quaternion.Lerp(railSnapRotation, railOnRotation, tSwitchOn);
             if (pivot.transform.rotation == onRotation)
             {
                 switchOn = false;
@@ -46,6 +54,7 @@ public class SwitchOnAfterSnap : MonoBehaviour
             switchOn = false;
             tSwitchOff += Time.deltaTime;
             pivot.transform.rotation = Quaternion.Lerp(onRotation, offRotation, tSwitchOff);
+            railParent.transform.rotation = Quaternion.Lerp(railOnRotation, railOffRotation, tSwitchOff);
             if (pivot.transform.rotation == offRotation)
             {
                 switchOff = false;
