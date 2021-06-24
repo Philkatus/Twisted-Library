@@ -38,7 +38,6 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("How long is the time after falling of a ladder where you can still jump.")]
     public float slidingCoyoteTime = 0.2f;
     #endregion
-
     [Space]
     #region Ability bools
     [Header("Ability bools")]
@@ -97,7 +96,6 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The factor to convert Velocity into Movementspeed")]
     public float movementVelocityFactor = 1;
     #endregion
-
     [Space]
     #region jumping and air movement
     [Header("Jumping/Air Movement")]
@@ -140,8 +138,10 @@ public class ValuesScriptableObject : ScriptableObject
             return ladderPushAcceleration * AirVelocityFactor;
         }
     }
+    [Tooltip("the min. velocity which needs to be reached before the velocity changes the direction ")]
+    public float ladderPushVelocityThreshhold;
 
-    [Tooltip("factor to controll how much the current bonus Velocity factors into the end reVelocity" +
+    [Tooltip("factor to controll how much the current Velocity factors into the end reVelocity" +
         "higher values mean the curretn velocity doesn't get changed much")]
     [Range(0, 1)] public float ladderPushCurrentVelocityFactor = .1f;
 
@@ -289,9 +289,8 @@ public class ValuesScriptableObject : ScriptableObject
     public float swingingGravity;
 
     #endregion
-
-    #region ladder
     [Space]
+    #region ladder
     [Header("Ladder")]
     [Tooltip("The length of the ladder while extended.")]
     public float ladderLengthBig = 4;
