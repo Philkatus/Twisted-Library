@@ -68,7 +68,6 @@ public class PlayerSwinging : State
 
     #region PRIVATE SLIDING
     float dismountTimer;
-    float currentSlidingSpeed;
     float maxSlidingSpeed;
     float tAcceleration;
     float tDeceleration;
@@ -82,6 +81,7 @@ public class PlayerSwinging : State
     bool startedAccelerating;
     bool waitToChangeDirection;
     bool mayChangeDirection;
+    bool colliding;
 
     Vector3 dismountStartPos;
     Vector3 pathDirection;
@@ -151,11 +151,11 @@ public class PlayerSwinging : State
         maxSlidingSpeed = stats.maxSlidingSpeed;
         if (PSM.startingSlidingInput == 0)
         {
-            currentSlidingSpeed = 0;
+            PSM.currentSlidingSpeed = 0;
         }
         else
         {
-            currentSlidingSpeed = PSM.playerVelocity.magnitude;
+            PSM.currentSlidingSpeed = PSM.playerVelocity.magnitude;
             accelerate = true;
         }
         #endregion
@@ -175,14 +175,12 @@ public class PlayerSwinging : State
         {
             PSM.bob.transform.position = PSM.ladder.transform.position + -PSM.ladderDirection * stats.ladderLengthBig;
         }
-        else 
+        else
         {
             PSM.bob.transform.position = PSM.Bob_Pivot.transform.position + -PSM.ladderDirection * stats.ladderLengthBig;
         }
 
-
         ladderParent = ladderSizeState.ladderParent.gameObject;
-
 
         onWall = false;
         inputGiven = false;
@@ -212,6 +210,8 @@ public class PlayerSwinging : State
                 break;
         }
         #endregion
+
+        PSM.effects.OnStateChangedSlide();
 
         PSM.playerVelocity = Vector3.zero;
         PSM.baseVelocity = Vector3.zero;
@@ -301,7 +301,7 @@ public class PlayerSwinging : State
         Vector3 axis = PSM.ladder.right;
         float rotateByAngle;
         rotateByAngle = (Vector3.SignedAngle(-PSM.ladderDirection, PSM.transform.position - startingPoint, axis));
-        
+
         if (railType != Rail.RailType.TwoSided)
         {
             if (rotateByAngle < 0)
@@ -354,7 +354,6 @@ public class PlayerSwinging : State
         SlidingMovement();
         RotateAroundY();
         Swing();
-        //RotateAroundY();
     }
 
     #region SWINGING Functions
@@ -411,7 +410,7 @@ public class PlayerSwinging : State
         {
             pivot_p = PSM.Bob_Pivot.transform.position;
         }
-        else 
+        else
         {
             pivot_p = ladder.transform.position;
         }
@@ -430,7 +429,7 @@ public class PlayerSwinging : State
         {
             relativeHeight = (bob_p).normalized.y;
         }
-        else 
+        else
         {
             relativeHeight = (bob_p - pivot_p).normalized.y;
         }
@@ -498,7 +497,7 @@ public class PlayerSwinging : State
         {
             return GetPointOnLine(Vector3.zero, bobPosition + movementDelta, ropeLength);
         }
-        else 
+        else
         {
             return GetPointOnLine(pivot_p, bobPosition + movementDelta, ropeLength);
         }
@@ -602,8 +601,6 @@ public class PlayerSwinging : State
             currentVelocity = currentVelocity.normalized * 100;
         }
 
-        // set max speed
-
         // Get only the forward/backward force
         playerVelocity = bobForward * ExtensionMethods.resultingSpeed(bobForward, currentVelocity);
         SetCurrentPlayerVelocity(ladder.transform.position);
@@ -615,7 +612,7 @@ public class PlayerSwinging : State
         {
             return GetPointOnLine(Vector3.zero, bob_p + movementDelta, ropeLength);
         }
-        else 
+        else
         {
             return GetPointOnLine(pivot_p, bob_p + movementDelta, ropeLength);
         }
@@ -669,6 +666,7 @@ public class PlayerSwinging : State
         float rotateByAngle2 = Vector3.SignedAngle(PSM.ladder.right, HorizontalRailDirection * PSM.snapdirection, localUp);
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle2, localUp);
         PSM.ladder.rotation = targetRotation * PSM.ladder.rotation;
+        
     }
     #endregion
 
@@ -758,9 +756,21 @@ public class PlayerSwinging : State
                 }
                 pathDirection = path.GetDirectionAtDistance(PSM.currentDistance);
                 Vector3 slidingDirection = pathDirection * PSM.slidingInput;
+                if (colliding)
+                {
+                    if (PSM.slidingInput == 1 && PSM.slideLeftInput != 0 && PSM.slideRightInput == 0)
+                    {
+                        slidingDirection = pathDirection * -1;
+                    }
+                    if (PSM.slidingInput == -1 && PSM.slideLeftInput == 0 && PSM.slideRightInput != 0)
+                    {
+                        slidingDirection = pathDirection;
+                    }
+                }
 
                 if (!CheckForCollisionCharacter(slidingDirection) && !CheckForCollisionLadder(slidingDirection))
                 {
+                    colliding = false;
                     var pressureFactor = PSM.slideRightInput != 0 ? PSM.slideRightInput : PSM.slideLeftInput;
                     float remappedPressureFactor = RemapPressureFactor(pressureFactor);
 
@@ -782,9 +792,9 @@ public class PlayerSwinging : State
                         }
 
                         tDeceleration += Time.deltaTime / stats.timeToDecelerate * remappedPressureFactor;
-                        currentSlidingSpeed = Mathf.Lerp(startSlidingSpeedForDeceleration, 0, tDeceleration);
+                        PSM.currentSlidingSpeed = Mathf.Lerp(startSlidingSpeedForDeceleration, 0, tDeceleration);
                         tAcceleration = 0;
-                        if (currentSlidingSpeed == 0)
+                        if (PSM.currentSlidingSpeed == 0)
                         {
                             PSM.slidingInput = 0;
                             tAcceleration = 0;
@@ -800,11 +810,10 @@ public class PlayerSwinging : State
                         tDeceleration = 0;
                         startSlidingSpeedForDeceleration = 0;
                         startedDecelerating = false;
-                        var pressureAdjustment = remappedPressureFactor == 1 ? 0f : 0.19f;
                         tAcceleration += Time.deltaTime / stats.timeToAccecelerate * remappedPressureFactor;
                         mayChangeDirection = false;
-                        currentSlidingSpeed = Mathf.Lerp(0, maxSlidingSpeed, tAcceleration);
-                        if (currentSlidingSpeed == stats.maxSlidingSpeed)
+                        PSM.currentSlidingSpeed = Mathf.Lerp(0, maxSlidingSpeed, tAcceleration);
+                        if (PSM.currentSlidingSpeed == stats.maxSlidingSpeed)
                         {
                             tDeceleration = 0;
                             accelerate = false;
@@ -813,10 +822,12 @@ public class PlayerSwinging : State
                 }
                 else
                 {
+                    PSM.currentSlidingSpeed = 0;
                     currentSlidingSpeed = 0;
+                    colliding = true;
                 }
 
-                PSM.currentDistance += currentSlidingSpeed * PSM.slidingInput * Time.fixedDeltaTime;
+                PSM.currentDistance += PSM.currentSlidingSpeed * PSM.slidingInput * Time.fixedDeltaTime;
                 PSM.ladder.position = path.GetPointAtDistance(PSM.currentDistance, EndOfPathInstruction.Stop);
                 #endregion
 
@@ -851,13 +862,13 @@ public class PlayerSwinging : State
                             if (PSM.closestRail.stopSlidingAtTheEnd)
                             {
                                 PSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(PSM.playerVelocity, pathDirection, 0);
-                                currentSlidingSpeed = 0;
+                                PSM.currentSlidingSpeed = 0;
                                 PSM.slidingInput = 0;
                             }
                             else
                             {
                                 PSM.coyoteTimer = 0;
-                                PSM.bonusVelocity += stats.fallingMomentumPercentage * currentSlidingSpeed * pathDirection * PSM.slidingInput;
+                                PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed * pathDirection * PSM.slidingInput;
                                 PSM.OnFall();
                             }
                         }
@@ -881,7 +892,7 @@ public class PlayerSwinging : State
         {
             if (slidingInput == 0 || slidingInput == 1)
             {
-                if (!startedAccelerating && currentSlidingSpeed != stats.maxSlidingSpeed)
+                if (!startedAccelerating && PSM.currentSlidingSpeed != stats.maxSlidingSpeed)
                 {
                     accelerate = true;
                     tDeceleration = 0;
@@ -900,7 +911,7 @@ public class PlayerSwinging : State
             {
                 if (!startedDecelerating)
                 {
-                    startSlidingSpeedForDeceleration = currentSlidingSpeed;
+                    startSlidingSpeedForDeceleration = PSM.currentSlidingSpeed;
                     decelerate = true;
                     accelerate = false;
                     startedAccelerating = false;
@@ -913,7 +924,7 @@ public class PlayerSwinging : State
         {
             if (slidingInput == 0 || slidingInput == -1)
             {
-                if (!startedAccelerating && currentSlidingSpeed != stats.maxSlidingSpeed)
+                if (!startedAccelerating && PSM.currentSlidingSpeed != stats.maxSlidingSpeed)
                 {
                     accelerate = true;
                     tDeceleration = 0;
@@ -936,7 +947,7 @@ public class PlayerSwinging : State
                     decelerate = true;
                     accelerate = false;
                     tAcceleration = 0;
-                    startSlidingSpeedForDeceleration = currentSlidingSpeed;
+                    startSlidingSpeedForDeceleration = PSM.currentSlidingSpeed;
                     startedAccelerating = false;
                     startedDecelerating = true;
                 }
@@ -951,7 +962,7 @@ public class PlayerSwinging : State
                 decelerate = true;
                 accelerate = false;
                 tAcceleration = 0;
-                startSlidingSpeedForDeceleration = currentSlidingSpeed;
+                startSlidingSpeedForDeceleration = PSM.currentSlidingSpeed;
             }
         }
         if (PSM.slideRightInput == 0 && PSM.slideLeftInput == 0 && (startedAccelerating || startedDecelerating))
@@ -984,10 +995,10 @@ public class PlayerSwinging : State
     protected bool CheckForCollisionCharacter(Vector3 moveDirection)
     {
         RaycastHit hit;
-        Vector3 p1 = PSM.transform.position + controller.center + Vector3.up * -controller.height / 1.5f;
+        Vector3 p1 = PSM.transform.position + controller.center + Vector3.up * -controller.height / 2f;
         Vector3 p2 = p1 + Vector3.up * controller.height;
 
-        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.2f, LayerMask.GetMask("SlidingObstacle")))
+        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment")))
         {
             return true;
         }
@@ -998,9 +1009,9 @@ public class PlayerSwinging : State
     {
         RaycastHit hit;
         LadderSizeStateMachine lSM = PSM.ladderSizeStateMachine;
-        Vector3 boxExtents = new Vector3(lSM.ladderParent.localScale.x * 0.5f, lSM.ladderParent.localScale.y * 0.5f, lSM.ladderParent.localScale.z * 0.5f);
+        Vector3 boxExtents = new Vector3(0.25f, 2, 0.025f);
 
-        if (Physics.BoxCast(PSM.ladder.position, lSM.ladderParent.localScale, moveDirection.normalized, out hit, Quaternion.identity, 0.1f, LayerMask.GetMask("SlidingObstacle")))
+        if (Physics.BoxCast(PSM.ladder.position + PSM.ladder.transform.up * -2f, boxExtents, moveDirection.normalized, out hit, PSM.ladder.rotation, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment")))
         {
             return true;
         }
@@ -1084,6 +1095,7 @@ public class PlayerSwinging : State
         PSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
         #endregion
+        PSM.effects.OnStateChangedSlideEnd();
 
         yield break;
     }
