@@ -70,15 +70,6 @@ public class PlayerFollowTarget : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Adjust camera when player lands on different ground height.
-    /// Might not need.
-    /// </summary>
-    private void OnLeaveGround()
-    {
-
-    }
-
     public void OnLadderPush(){
         isLadderPush = true;
     }
