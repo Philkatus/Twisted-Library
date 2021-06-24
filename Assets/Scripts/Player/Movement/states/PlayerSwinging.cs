@@ -482,8 +482,16 @@ public class PlayerSwinging : State
         #region Acceleration & Deceleration
         if (PSM.swingInputBool)
         {
-            AccelerationForce();
+            PSM.swingInputBool = false;
+            if (!firstRound)
+                AccelerationForce();
+            else
+                firstRound = false;
         }
+        // if (PSM.swingInputBool)
+        // {
+        //     AccelerationForce();
+        // }
         inputForce = Vector3.zero;
         inputTimer += dt;
 
