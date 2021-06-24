@@ -236,6 +236,10 @@ public class PlayerInTheAir : State
                     Vector3 tempDirection1 = Mathf.Clamp( ExtensionMethods.resultingSpeed(PSM.playerVelocity, -directionToWall),0,Mathf.Infinity)*-directionToWall;
                     Vector3 tempDirection2 = PSM.playerVelocity - tempDirection1;
                     floatingTimer = 0;
+                    if (tempDirection2.magnitude < stats.ladderPushVelocityThreshhold) 
+                    {
+                        tempDirection2 = directionToWall;
+                    }
                     Vector3 targetDirection = (directionToWall + tempDirection2.normalized * stats.ladderPushCurrentVelocityFactor).normalized;
                     Vector3 targetVelocity = targetDirection * acceleration;
                     /*
