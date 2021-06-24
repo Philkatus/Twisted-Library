@@ -342,8 +342,8 @@ public class PlayerSwinging : State
         #endregion
         #region PlayerPlacement
         PSM.HeightOnLadder = -1;
-        controller.transform.parent = ladder.transform;
         PSM.transform.position = ladder.transform.position + PSM.ladderDirection * ladderSizeState.ladderLength * PSM.HeightOnLadder + ladder.transform.forward * -stats.playerOffsetFromLadder;
+        controller.transform.parent = ladder.transform;
         controller.transform.localRotation = Quaternion.Euler(0, 0, 0);
         #endregion
         #region Velocity Calculation
@@ -482,8 +482,16 @@ public class PlayerSwinging : State
         #region Acceleration & Deceleration
         if (PSM.swingInputBool)
         {
-            AccelerationForce();
+            PSM.swingInputBool = false;
+            if (!firstRound)
+                AccelerationForce();
+            else
+                firstRound = false;
         }
+        // if (PSM.swingInputBool)
+        // {
+        //     AccelerationForce();
+        // }
         inputForce = Vector3.zero;
         inputTimer += dt;
 

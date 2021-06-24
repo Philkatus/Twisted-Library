@@ -42,7 +42,7 @@ public class VFX_Manager : MonoBehaviour
     #endregion
     #region PRIVATE
     [SerializeField] GameObject player, swingingFeedback, sparkleBurstL, sparkleBurstR;
-    [SerializeField] VisualEffect ladderPushLeft, ladderPushRight;
+    [SerializeField] VisualEffect ladderPushLeft, ladderPushRight, speedLinesSliding;
 
     PlayerMovementStateMachine pSM;
     DecalProjector projector;
@@ -142,6 +142,7 @@ public class VFX_Manager : MonoBehaviour
         if (land)
         {
             PlayParticleEffect(cloud);
+            speedLinesSliding.SetFloat("_SpeedIntensity", 0);
         }
 
     }
@@ -212,11 +213,13 @@ public class VFX_Manager : MonoBehaviour
         {
             vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 0));
             vfx.SetInt("_FlameIntensity", 0);
+            speedLinesSliding.SetFloat("_SpeedIntensity", 0);
         }
         if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .9)
         {
             vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 0));
             vfx.SetInt("_FlameIntensity", 0);
+            speedLinesSliding.SetFloat("_SpeedIntensity", 0);
         }
         /*if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .2 && pSM.currentSlidingSpeed > 0)
         {
@@ -232,21 +235,25 @@ public class VFX_Manager : MonoBehaviour
         {
             vfx.SetVector2("_SparkleSpawnCount", new Vector2(0.01f, .1f));
             vfx.SetInt("_FlameIntensity", 1);
+            speedLinesSliding.SetFloat("_SpeedIntensity", 10);
         }
         if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .9 && pSM.currentSlidingSpeed > pSM.stats.maxSlidingSpeed * .7)
         {
             vfx.SetVector2("_SparkleSpawnCount", new Vector2(.1f, 1));
             vfx.SetInt("_FlameIntensity", 2);
+            speedLinesSliding.SetFloat("_SpeedIntensity", 50);
         }
         if (pSM.currentSlidingSpeed >= pSM.stats.maxSlidingSpeed && pSM.currentSlidingSpeed > pSM.stats.maxSlidingSpeed * .9)
         {
             vfx.SetVector2("_SparkleSpawnCount", new Vector2(2, 5));
             vfx.SetInt("_FlameIntensity", 5);
+            speedLinesSliding.SetFloat("_SpeedIntensity", 100);
         }       
     }
     void StopSlidingSparkle(VisualEffect vfx)
     {
         vfx.SendEvent("_StopBurst");
+        speedLinesSliding.SetFloat("_SpeedIntensity", 10);
         weAreSliding = false;
     }
 }
