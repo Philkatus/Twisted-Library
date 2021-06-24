@@ -215,6 +215,14 @@ public class PlayerSwinging : State
         PSM.playerVelocity = Vector3.zero;
         PSM.baseVelocity = Vector3.zero;
         PSM.bonusVelocity = Vector3.zero;
+
+        if (closestRail.isASwitch)
+        {
+            SwitchOnAfterSnap switchScript = closestRail.GetComponent<SwitchOnAfterSnap>();
+            switchScript.switchOn = true;
+            switchScript.switchOff = false;
+            switchScript.snapRotation = switchScript.pivot.rotation;
+        }
     }
 
     void SnappingOrientation()
@@ -665,7 +673,7 @@ public class PlayerSwinging : State
         float rotateByAngle2 = Vector3.SignedAngle(PSM.ladder.right, HorizontalRailDirection * PSM.snapdirection, localUp);
         Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle2, localUp);
         PSM.ladder.rotation = targetRotation * PSM.ladder.rotation;
-        
+
     }
     #endregion
 
@@ -1093,7 +1101,10 @@ public class PlayerSwinging : State
         PSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
         #endregion
-
+        if (closestRail.isASwitch)
+        {
+            closestRail.GetComponent<SwitchOnAfterSnap>().switchOff = true;
+        }
         yield break;
     }
 
