@@ -156,13 +156,13 @@ public class PlayerInTheAir : State
             float maxHeight = stats.ladderLengthBig - sphereRadius;
             float acceleration = stats.LadderPushAcceleration;
 
-            Vector3 origin = PSM.transform.position+Vector3.up*.5f;
+            Vector3 origin = PSM.transform.position;
             LayerMask mask = LayerMask.GetMask("Environment");
             List<RaycastHit> hits = new List<RaycastHit>();
             #region CastDown
             if (!PSM.didLadderPush)
             {
-                hits.AddRange(Physics.SphereCastAll(origin, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin+Vector3.up*.5f, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
             }
             float closestDistance = Mathf.Infinity;
             RaycastHit closestHit;
@@ -205,7 +205,7 @@ public class PlayerInTheAir : State
                         closestHit = hits[i];
                         closestDistance = distance;
                         target = closestHit.point;
-                        // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point, Color.red, 2);
+                        Debug.DrawLine(PSM.transform.position, hits[i].point, Color.red, 2);
                     }
                 }
             }
@@ -227,13 +227,13 @@ public class PlayerInTheAir : State
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
                 }
-                else if (Vector3.Angle(directionToWall, Vector3.up) >= 60)
+                else if (Vector3.Angle(directionToWall, Vector3.up) >= 45)
                 {
 
                     PSM.ladderJumpTarget = target;
                     PSM.baseVelocity.y = 0;
                     PSM.foldInputBool = false;
-                    Vector3 tempDirection1 = Mathf.Clamp( ExtensionMethods.resultingSpeed(PSM.playerVelocity, directionToWall),0,Mathf.Infinity)*directionToWall;
+                    Vector3 tempDirection1 = Mathf.Clamp( ExtensionMethods.resultingSpeed(PSM.playerVelocity, -directionToWall),0,Mathf.Infinity)*-directionToWall;
                     Vector3 tempDirection2 = PSM.playerVelocity - tempDirection1;
                     floatingTimer = 0;
                     Vector3 targetDirection = (directionToWall + tempDirection2.normalized * stats.ladderPushCurrentVelocityFactor).normalized;
