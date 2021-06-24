@@ -823,7 +823,7 @@ public class PlayerSwinging : State
                 else
                 {
                     PSM.currentSlidingSpeed = 0;
-                    currentSlidingSpeed = 0;
+                    //currentSlidingSpeed = 0;
                     colliding = true;
                 }
 
