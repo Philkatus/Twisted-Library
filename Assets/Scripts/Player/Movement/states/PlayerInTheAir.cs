@@ -236,7 +236,7 @@ public class PlayerInTheAir : State
                     Vector3 tempDirection1 = Mathf.Clamp( ExtensionMethods.resultingSpeed(PSM.playerVelocity, -directionToWall),0,Mathf.Infinity)*-directionToWall;
                     Vector3 tempDirection2 = PSM.playerVelocity - tempDirection1;
                     floatingTimer = 0;
-                    if (tempDirection2.magnitude < stats.ladderPushCurrentVelocityThreshhold) 
+                    if (tempDirection2.magnitude < stats.ladderPushVelocityThreshhold) 
                     {
                         tempDirection2 = directionToWall;
                     }

@@ -139,7 +139,7 @@ public class ValuesScriptableObject : ScriptableObject
         }
     }
     [Tooltip("the min. velocity which needs to be reached before the velocity changes the direction ")]
-    public float ladderPushCurrentVelocityThreshhold;
+    public float ladderPushVelocityThreshhold;
 
     [Tooltip("factor to controll how much the current Velocity factors into the end reVelocity" +
         "higher values mean the curretn velocity doesn't get changed much")]
