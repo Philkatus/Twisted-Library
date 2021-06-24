@@ -54,7 +54,7 @@ public class LadderSizeStateMachine : StateMachine
     ///</summary>
     public void OnFold()
     {
-        if (playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.swinging)
+        if (playerStateMachine.playerState == PlayerMovementStateMachine.PlayerState.swinging && !playerStateMachine.dismounting)
         {
             playerStateMachine.foldInputBool = false;
             if (!(State is LadderFold))
@@ -78,10 +78,10 @@ public class LadderSizeStateMachine : StateMachine
 
     public void OnLadderPush()
     {
-        SetState(new LadderRocketJump(this));
-        playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderRocketJump;
+        SetState(new LadderPush(this));
+        playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderPush;
     }
-    public void OnRocketJumpEnd()
+    public void OnLadderPushEnd()
     {
         SetState(new LadderFold(this));
         playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderFold;
