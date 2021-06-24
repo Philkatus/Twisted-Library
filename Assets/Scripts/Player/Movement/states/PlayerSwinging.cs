@@ -342,8 +342,8 @@ public class PlayerSwinging : State
         #endregion
         #region PlayerPlacement
         PSM.HeightOnLadder = -1;
-        controller.transform.parent = ladder.transform;
         PSM.transform.position = ladder.transform.position + PSM.ladderDirection * ladderSizeState.ladderLength * PSM.HeightOnLadder + ladder.transform.forward * -stats.playerOffsetFromLadder;
+        controller.transform.parent = ladder.transform;
         controller.transform.localRotation = Quaternion.Euler(0, 0, 0);
         #endregion
         #region Velocity Calculation

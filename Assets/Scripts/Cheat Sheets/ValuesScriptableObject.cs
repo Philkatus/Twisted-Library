@@ -16,6 +16,9 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The sliding buttons make the player slide in the opposite direction, just like Lila likes it <3")]
     public bool useInvertedSliding;
 
+    [Tooltip("if you want to use new Snapping movement set this to true")]
+    public bool useNewSnapping;
+
     [Space]
     [Header("General")]
     [Tooltip("How fast the bonusvelocity is lost again")]
