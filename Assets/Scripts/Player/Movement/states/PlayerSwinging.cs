@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using PathCreation;
 
 public class PlayerSwinging : State
@@ -82,6 +80,7 @@ public class PlayerSwinging : State
     bool waitToChangeDirection;
     bool mayChangeDirection;
     bool colliding;
+    bool fullStop;
 
     Vector3 dismountStartPos;
     Vector3 pathDirection;
@@ -764,7 +763,7 @@ public class PlayerSwinging : State
                 if (mayChangeDirection)
                 {
                     changeDirectionWaitNotNeededTimer += Time.deltaTime;
-                    if (changeDirectionWaitNotNeededTimer >= 0.16f)
+                    if (changeDirectionWaitNotNeededTimer >= stats.timeToWaitBeforeDirectionChange)
                     {
                         waitToChangeDirection = false;
                         changeDirectionWaitNotNeededTimer = 0;
@@ -794,7 +793,7 @@ public class PlayerSwinging : State
                     if (waitToChangeDirection)
                     {
                         changeDirectionTimer += Time.deltaTime;
-                        if (changeDirectionTimer >= 0.16f)
+                        if (changeDirectionTimer >= stats.timeToWaitBeforeDirectionChange)
                         {
                             waitToChangeDirection = false;
                             changeDirectionTimer = 0;
@@ -803,7 +802,7 @@ public class PlayerSwinging : State
                     }
                     else if (decelerate)
                     {
-                        if ((PSM.slideRightInput != 0 && PSM.slideLeftInput != 0) || (PSM.slideRightInput == 0 && PSM.slideLeftInput == 0))
+                        if ((PSM.slideRightInput != 0 && PSM.slideLeftInput != 0) || (PSM.slideRightInput == 0 && PSM.slideLeftInput == 0 && fullStop))
                         {
                             remappedPressureFactor = 1;
                         }
@@ -820,12 +819,14 @@ public class PlayerSwinging : State
                             startedDecelerating = false;
                             startSlidingSpeedForDeceleration = 0;
                             mayChangeDirection = true;
+                            fullStop = false;
                         }
                     }
                     else if (accelerate)
                     {
                         tDeceleration = 0;
                         startSlidingSpeedForDeceleration = 0;
+                        fullStop = false;
                         startedDecelerating = false;
                         tAcceleration += Time.deltaTime / stats.timeToAccecelerate * remappedPressureFactor;
                         mayChangeDirection = false;
@@ -985,6 +986,10 @@ public class PlayerSwinging : State
         {
             startedDecelerating = false;
             startedAccelerating = false;
+        }
+        if (startedDecelerating && (PSM.slideRightInput == 1 || PSM.slideLeftInput == 1))
+        {
+            fullStop = true;
         }
     }
 
