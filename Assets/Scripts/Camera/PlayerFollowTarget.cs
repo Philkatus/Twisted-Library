@@ -24,6 +24,7 @@ public class PlayerFollowTarget : MonoBehaviour
     [Tooltip("Insert the player target, the camera should follow.")]
     [SerializeField] Transform PlayerTarget;
     [SerializeField] Transform LadderTarget;
+    [SerializeField] Vector3 LadderTargetOffset;
     private Transform currentTarget;
     [SerializeField] float Damping;
     [SerializeField] Vector3 ScreenSpaceOffset;
@@ -43,14 +44,14 @@ public class PlayerFollowTarget : MonoBehaviour
     Vector3 pos;
     RaycastHit hit;
 
-    public void AssignAllVars(){
-        Camera = Camera.main;
-        PlayerTarget = GameObject.Find("POSITION_FollowTarget").transform;
-        LadderTarget = GameObject.Find("POSITION_FollowTarget_Swinging").transform;
-        Damping = 0.1f;
-        PlayerSM = GameObject.FindObjectOfType<PlayerMovementStateMachine>();
-        EnvironmentLayer = LayerMask.GetMask("Environment");
-    }
+    // public void AssignAllVars(){
+    //     Camera = Camera.main;
+    //     PlayerTarget = GameObject.Find("POSITION_FollowTarget").transform;
+    //     LadderTarget = GameObject.Find("POSITION_FollowTarget_Swinging").transform;
+    //     Damping = 0.1f;
+    //     PlayerSM = GameObject.FindObjectOfType<PlayerMovementStateMachine>();
+    //     EnvironmentLayer = LayerMask.GetMask("Environment");
+    // }
 
     void OnEnable()
     {
@@ -70,6 +71,7 @@ public class PlayerFollowTarget : MonoBehaviour
         offsetToPlayer = transform.position.y - PlayerTarget.position.y;
         Debug.Log("OFFSET: " + offsetToPlayer);
         dampingStandard = Damping;
+        AdjustCameraY();
     }
 
     void FixedUpdate()
@@ -77,6 +79,9 @@ public class PlayerFollowTarget : MonoBehaviour
         if (currentTarget != null)
         {
             pos = currentTarget.position;
+            if(currentTarget == LadderTarget){
+                pos += (-LadderTarget.forward * LadderTargetOffset.x) + (-LadderTarget.up * LadderTargetOffset.y);
+            }
             m_DampedPos = Damping < 0.01f
                 ? pos : Vector3.SmoothDamp(m_DampedPos, pos, ref m_CurrentVelocity, Damping);
             pos = m_DampedPos;
@@ -88,7 +93,6 @@ public class PlayerFollowTarget : MonoBehaviour
             }
             CheckIfFalling();
             MoveCameraY();
-
         }
     }
 
@@ -111,10 +115,7 @@ public class PlayerFollowTarget : MonoBehaviour
 
     private void CheckIfFalling()
     {
-        if (Physics.Raycast(PlayerTarget.position, transform.TransformDirection(Vector3.down), out hit, PlayerSM.stats.jumpHeight + 0.1f, EnvironmentLayer))
-        {
-        }
-        else
+        if (!Physics.Raycast(PlayerTarget.position, transform.TransformDirection(Vector3.down), out hit, PlayerSM.stats.jumpHeight + 0.1f, EnvironmentLayer))
         {
             inVerticalAdjustMode = true;
         }
