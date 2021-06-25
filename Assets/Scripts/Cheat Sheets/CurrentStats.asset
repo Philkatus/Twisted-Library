@@ -15,6 +15,7 @@ MonoBehaviour:
   useJumpForLadderPush: 1
   useTriggerToSlideWithMomentum: 1
   useInvertedSliding: 0
+  useNewSnapping: 0
   bonusVelocityDrag: 0.1
   jumpInputTimer: 0.5
   snapInputTimer: 0.5
@@ -29,10 +30,11 @@ MonoBehaviour:
   movementDrag: 13
   walkingBonusVelocityDrag: 0.01
   movementVelocityFactor: 1
-  jumpHeight: 20
+  jumpHeight: 17
   maxJumpingSpeed: 27
   maxJumpingSpeedForward: 10
   ladderPushAcceleration: 30
+  ladderPushVelocityThreshhold: 0
   ladderPushCurrentVelocityFactor: 0.5
   jumpFromLadderDirection: {x: 0, y: 30, z: 10}
   airMovementAcceleration: 50
@@ -51,12 +53,12 @@ MonoBehaviour:
   climbingSpeedOnLadder: 1
   heightOnLadderKatapulFactor: 0.2
   ladderDismountSpeed: 1.5
-  ladderDismountTimer: 0.2
+  ladderDismountTimer: 0.1
   preservesVelocityOnSnap: 0
   fallingMomentumPercentage: 1
   playerOffsetFromLadder: 0
   maxSlidingSpeed: 20
-  timeToAccecelerate: 1.3
+  timeToAccecelerate: 3
   timeToDecelerate: 0.4
   swingingAcceleration: 2000
   minSwingingDeceleration: 0.0075
