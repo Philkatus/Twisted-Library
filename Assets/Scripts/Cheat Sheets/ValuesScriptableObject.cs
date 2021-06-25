@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/ValuesScriptableObject", order = 1)]
@@ -15,6 +14,9 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("The sliding buttons make the player slide in the opposite direction, just like Lila likes it <3")]
     public bool useInvertedSliding;
+
+    [Tooltip("if you want to use new Snapping movement set this to true")]
+    public bool useNewSnapping;
 
     [Space]
     [Header("General")]
@@ -38,7 +40,6 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("How long is the time after falling of a ladder where you can still jump.")]
     public float slidingCoyoteTime = 0.2f;
     #endregion
-
     [Space]
     #region Ability bools
     [Header("Ability bools")]
@@ -97,7 +98,6 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The factor to convert Velocity into Movementspeed")]
     public float movementVelocityFactor = 1;
     #endregion
-
     [Space]
     #region jumping and air movement
     [Header("Jumping/Air Movement")]
@@ -140,8 +140,10 @@ public class ValuesScriptableObject : ScriptableObject
             return ladderPushAcceleration * AirVelocityFactor;
         }
     }
+    [Tooltip("the min. velocity which needs to be reached before the velocity changes the direction ")]
+    public float ladderPushVelocityThreshhold;
 
-    [Tooltip("factor to controll how much the current bonus Velocity factors into the end reVelocity" +
+    [Tooltip("factor to controll how much the current Velocity factors into the end reVelocity" +
         "higher values mean the curretn velocity doesn't get changed much")]
     [Range(0, 1)] public float ladderPushCurrentVelocityFactor = .1f;
 
@@ -255,6 +257,9 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("How fast the player decelarates to a halt while sliding and pressing the button completely.")]
     public float timeToDecelerate = 0.4f;
 
+    [Tooltip("How long the player waits after reaching 0 slidingspeed, before they change the sliding direction.")]
+    public float timeToWaitBeforeDirectionChange = 0.2f;
+
     #endregion
     [Space]
     #region swinging
@@ -289,9 +294,8 @@ public class ValuesScriptableObject : ScriptableObject
     public float swingingGravity;
 
     #endregion
-
-    #region ladder
     [Space]
+    #region ladder
     [Header("Ladder")]
     [Tooltip("The length of the ladder while extended.")]
     public float ladderLengthBig = 4;

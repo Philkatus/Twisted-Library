@@ -12,16 +12,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f06406a2f87f5a64781d8f07d19cd6c6, type: 3}
   m_Name: CurrentStats
   m_EditorClassIdentifier: 
-  useJumpForLadderPush: 0
+  useJumpForLadderPush: 1
   useTriggerToSlideWithMomentum: 1
   useInvertedSliding: 0
+  useNewSnapping: 0
   bonusVelocityDrag: 0.1
   jumpInputTimer: 0.5
   snapInputTimer: 0.5
   foldInputTimer: 0.5
   swingInputTimer: 0.5
   slidingCoyoteTime: 0.2
-  canLadderPush: 0
+  canLadderPush: 1
   canLadderFold: 1
   canSlide: 1
   movementAcceleration: 50
@@ -33,6 +34,7 @@ MonoBehaviour:
   maxJumpingSpeed: 27
   maxJumpingSpeedForward: 10
   ladderPushAcceleration: 30
+  ladderPushVelocityThreshhold: 0
   ladderPushCurrentVelocityFactor: 0.5
   jumpFromLadderDirection: {x: 0, y: 30, z: 10}
   airMovementAcceleration: 50
@@ -51,12 +53,12 @@ MonoBehaviour:
   climbingSpeedOnLadder: 1
   heightOnLadderKatapulFactor: 0.2
   ladderDismountSpeed: 1.5
-  ladderDismountTimer: 0.2
+  ladderDismountTimer: 0.1
   preservesVelocityOnSnap: 0
   fallingMomentumPercentage: 1
   playerOffsetFromLadder: 0
   maxSlidingSpeed: 20
-  timeToAccecelerate: 0.7
+  timeToAccecelerate: 3
   timeToDecelerate: 0.4
   swingingAcceleration: 2000
   minSwingingDeceleration: 0.0075

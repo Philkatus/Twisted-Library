@@ -27,6 +27,7 @@ public class PlayerMovementStateMachine : StateMachine
     public float slideRightInput;
     public float slidingInput;
     public float startingSlidingInput;
+    public float currentSlidingSpeed;
     public bool dismounting;
     public bool didLadderPush;
     public bool isWallJumping;
@@ -533,8 +534,9 @@ public class PlayerMovementStateMachine : StateMachine
 
         snapInputBool = false;
         effects.OnStateChangedSwinging();
-        SetState(new PlayerSwinging(this));
         playerState = PlayerState.swinging;
+        SetState(new PlayerSwinging(this));
+        
     }
 
     ///<summary>
@@ -573,6 +575,7 @@ public class PlayerMovementStateMachine : StateMachine
         LadderSmall,
         LadderFold,
         LadderUnfold,
-        LadderPush
+        LadderPush,
+        LadderSnap
     };
 }

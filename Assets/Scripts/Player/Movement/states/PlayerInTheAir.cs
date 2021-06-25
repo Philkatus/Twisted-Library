@@ -35,10 +35,12 @@ public class PlayerInTheAir : State
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
         Vector3 direction = directionForward * PSM.forwardInput + directionRight * PSM.sideWaysInput;
 
+        controller.transform.rotation = Quaternion.AngleAxis(-Mathf.Abs( Vector3.SignedAngle(controller.transform.up,Vector3.up,controller.transform.right)*Time.fixedDeltaTime*4), controller.transform.right) * controller.transform.rotation;
         if (direction != Vector3.zero)
         {
-            controller.transform.forward = direction;
+            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
         }
+        
         #region Drag When No Input
         if (PSM.forwardInput == 0)
         {
@@ -149,7 +151,7 @@ public class PlayerInTheAir : State
     {
         if (stats.canLadderPush)
         {
-            PlayerFollowTarget.instance.OnLadderPush();
+            //PlayerFollowTarget.instance.OnLadderPush();
             float sphereRadius = .2f;
             float maxHeight = stats.ladderLengthBig - sphereRadius;
             float acceleration = stats.LadderPushAcceleration;
@@ -160,7 +162,7 @@ public class PlayerInTheAir : State
             #region CastDown
             if (!PSM.didLadderPush)
             {
-                hits.AddRange(Physics.SphereCastAll(origin, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin+Vector3.up*.5f, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
             }
             float closestDistance = Mathf.Infinity;
             RaycastHit closestHit;
@@ -203,7 +205,7 @@ public class PlayerInTheAir : State
                         closestHit = hits[i];
                         closestDistance = distance;
                         target = closestHit.point;
-                        // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point, Color.red, 2);
+                        Debug.DrawLine(PSM.transform.position, hits[i].point, Color.red, 2);
                     }
                 }
             }
@@ -225,15 +227,19 @@ public class PlayerInTheAir : State
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
                 }
-                else if (Vector3.Angle(directionToWall, Vector3.up) > 45)
+                else if (Vector3.Angle(directionToWall, Vector3.up) >= 45)
                 {
 
                     PSM.ladderJumpTarget = target;
                     PSM.baseVelocity.y = 0;
                     PSM.foldInputBool = false;
-                    Vector3 tempDirection1 = Mathf.Clamp( ExtensionMethods.resultingSpeed(PSM.playerVelocity, directionToWall),0,Mathf.Infinity)*directionToWall;
+                    Vector3 tempDirection1 = Mathf.Clamp( ExtensionMethods.resultingSpeed(PSM.playerVelocity, -directionToWall),0,Mathf.Infinity)*-directionToWall;
                     Vector3 tempDirection2 = PSM.playerVelocity - tempDirection1;
                     floatingTimer = 0;
+                    if (tempDirection2.magnitude < stats.ladderPushVelocityThreshhold) 
+                    {
+                        tempDirection2 = directionToWall;
+                    }
                     Vector3 targetDirection = (directionToWall + tempDirection2.normalized * stats.ladderPushCurrentVelocityFactor).normalized;
                     Vector3 targetVelocity = targetDirection * acceleration;
                     /*
