@@ -50,7 +50,7 @@ public class VFX_Manager : MonoBehaviour
     Vector3 offset;
 
     bool smokeOn = false;
-    float smokeTimer = 1f;
+    float smokeTimer = .5f;
 
     VisualEffect sparkleBurstLeft, sparkleBurstRight;
     bool weAreSliding = false;
@@ -99,7 +99,7 @@ public class VFX_Manager : MonoBehaviour
                 smokeOn = false;
                 ladderPushLeft.SendEvent("_Stop");
                 ladderPushRight.SendEvent("_Stop");
-                smokeTimer = 1f;
+                smokeTimer = .5f;
             }
         }
 
