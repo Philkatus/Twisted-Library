@@ -378,7 +378,7 @@ GameObject:
   - component: {fileID: 2822021040320882554}
   - component: {fileID: 2822021040320882555}
   m_Layer: 0
-  m_Name: CameraController (1)
+  m_Name: CameraController
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -392,7 +392,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2822021040320882552}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.3680841, y: 0.27960074, z: -1.8221654}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4546119141244621999}
@@ -414,8 +414,6 @@ MonoBehaviour:
   cam01: {fileID: 2822021040468838100}
   cam02: {fileID: 2822021041376128954}
   brain: {fileID: 0}
-  target: {fileID: 0}
-  player: {fileID: 0}
 --- !u!1 &2822021040332676279
 GameObject:
   m_ObjectHideFlags: 0
@@ -427,7 +425,7 @@ GameObject:
   - component: {fileID: 2822021040332676297}
   - component: {fileID: 2822021040332676278}
   m_Layer: 0
-  m_Name: CameraFollowTarget (1)
+  m_Name: CameraFollowTarget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -441,7 +439,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2822021040332676279}
   m_LocalRotation: {x: -0, y: 0.70710766, z: -0, w: -0.707106}
-  m_LocalPosition: {x: 60.10076, y: 99.5104, z: -356.21957}
+  m_LocalPosition: {x: 25.999992, y: 114.454, z: -344.99997}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4546119141244621999}
@@ -459,13 +457,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bf70f2e360c2854e991e73ea9439088, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isLadderPush: 0
   Camera: {fileID: 0}
-  Target: {fileID: 0}
+  PlayerTarget: {fileID: 0}
+  LadderTarget: {fileID: 0}
   Damping: 0.1
   ScreenSpaceOffset: {x: 0, y: 0, z: 0}
-  standardFollowHeight: 0
-  player: {fileID: 0}
+  PlayerSM: {fileID: 0}
+  EnvironmentLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &2822021040341526811
 GameObject:
   m_ObjectHideFlags: 0
@@ -490,7 +490,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2822021040341526811}
-  m_LocalRotation: {x: -0.00000023841855, y: -0.0000322574, z: 0.000011906295, w: 1}
+  m_LocalRotation: {x: -0.00000023841858, y: 0.00017533824, z: -0.00006471787, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -685,7 +685,7 @@ GameObject:
   - component: {fileID: 2822021040468838100}
   - component: {fileID: 2822021040468838102}
   m_Layer: 0
-  m_Name: CM FreeLook2 (2)
+  m_Name: CM_UpperCam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -699,7 +699,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2822021040468838101}
   m_LocalRotation: {x: 0.17587587, y: 0.0006858302, z: -0.00012253097, w: 0.98441213}
-  m_LocalPosition: {x: 60.10076, y: 103.2204, z: -366.22958}
+  m_LocalPosition: {x: 25.999992, y: 118.164, z: -355.00998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2822021040649746688}
@@ -855,7 +855,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2822021040535891419}
-  m_LocalRotation: {x: -0.03565435, y: -0.00066176703, z: 0.00021778261, w: 0.99936396}
+  m_LocalRotation: {x: -0.03565435, y: -0.0006617834, z: 0.00021778798, w: 0.99936396}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1062,7 +1062,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2822021040649746689}
-  m_LocalRotation: {x: 0.0006710142, y: -0.0006534113, z: 0.00024167457, w: 0.9999995}
+  m_LocalRotation: {x: 0.0006710142, y: -0.00065344066, z: 0.00024168541, w: 0.9999995}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -1530,7 +1530,7 @@ GameObject:
   - component: {fileID: 2822021041376128954}
   - component: {fileID: 2822021041376128956}
   m_Layer: 0
-  m_Name: CM FreeLook2 (3)
+  m_Name: CM_LowerCam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1544,7 +1544,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2822021041376128955}
   m_LocalRotation: {x: 0.6195308, y: -0.30512533, z: 0.28424275, w: 0.6650461}
-  m_LocalPosition: {x: 60.10076, y: 98.5904, z: -359.1696}
+  m_LocalPosition: {x: 25.999992, y: 113.534004, z: -347.94998}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2822021040664541259}

@@ -29,7 +29,6 @@ public class LadderPush : State
         stats = pSM.stats;
         LadderLocalRotation = lSM.ladderParent.localRotation;
         RotateLadder();
-
     }
 
     public override IEnumerator Finish()
@@ -40,7 +39,6 @@ public class LadderPush : State
         }
             lSM.ladderParent.localRotation = LadderLocalRotation;
         
-
         yield return null;
     }
 
