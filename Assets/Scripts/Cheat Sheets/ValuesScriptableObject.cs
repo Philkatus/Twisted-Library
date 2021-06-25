@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/ValuesScriptableObject", order = 1)]
@@ -257,6 +256,9 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("How fast the player decelarates to a halt while sliding and pressing the button completely.")]
     public float timeToDecelerate = 0.4f;
+
+    [Tooltip("How long the player waits after reaching 0 slidingspeed, before they change the sliding direction.")]
+    public float timeToWaitBeforeDirectionChange = 0.2f;
 
     #endregion
     [Space]
