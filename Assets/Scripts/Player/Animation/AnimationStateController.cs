@@ -160,8 +160,10 @@ public class AnimationStateController : MonoBehaviour
         move = movementScript.playerVelocity;
         if (move.magnitude > 1f) move.Normalize();
         move = transform.InverseTransformDirection(move);
+
         forwardAmount = move.z * antiDrag;
         turnAmount = Mathf.Atan2(move.x, move.z);
+
 
         animator.SetFloat("Forward", forwardAmount, 0.1f, Time.deltaTime);
         animator.SetFloat("Turn", turnAmount, 0.1f, Time.deltaTime);
