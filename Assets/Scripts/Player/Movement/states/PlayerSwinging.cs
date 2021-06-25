@@ -1115,10 +1115,6 @@ public class PlayerSwinging : State
         #region Finish Sliding
         PSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
-        if (closestRail.isASwitch)
-        {
-            closestRail.GetComponent<SwitchOnAfterSnap>().switchOff = true;
-        }
         PSM.effects.OnStateChangedSlideEnd();
         #endregion
 
