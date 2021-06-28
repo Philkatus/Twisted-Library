@@ -41,8 +41,8 @@ public class VFX_Manager : MonoBehaviour
     }
     #endregion
     #region PRIVATE
-    [SerializeField] GameObject player, swingingFeedback, sparkleBurstL, sparkleBurstR;
-    [SerializeField] VisualEffect ladderPushLeft, ladderPushRight, speedLinesSliding;
+    [SerializeField] GameObject player, swingingFeedback, sparkleBurstL, sparkleBurstR, speedLinesS;
+    [SerializeField] VisualEffect ladderPushLeft, ladderPushRight;
 
     PlayerMovementStateMachine pSM;
     DecalProjector projector;
@@ -52,7 +52,7 @@ public class VFX_Manager : MonoBehaviour
     bool smokeOn = false;
     float smokeTimer = .5f;
 
-    VisualEffect sparkleBurstLeft, sparkleBurstRight;
+    VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
     #endregion
     private void Start()
@@ -74,6 +74,9 @@ public class VFX_Manager : MonoBehaviour
         //Set Burst Visual Effect
         sparkleBurstLeft = sparkleBurstL.GetComponent<VisualEffect>();
         sparkleBurstRight = sparkleBurstR.GetComponent<VisualEffect>();
+
+        //set Sliding Speedlines
+        speedLinesSliding = speedLinesS.GetComponent<VisualEffect>();
     }
     void Update()
     {
@@ -105,32 +108,23 @@ public class VFX_Manager : MonoBehaviour
 
         if (weAreSliding)
         {
-            if (pSM.slidingInput <= -1 && pSM.currentSlidingSpeed > 0)
+            if (pSM.slidingInput <= -1 && pSM.currentSlidingSpeed > 0)//Links
             {
                 sparkleBurstL.transform.rotation = Quaternion.Euler(212, 287, 85);
                 sparkleBurstR.transform.rotation = Quaternion.Euler(212, 287, 85);
+                CalculateSlideSpeedLineRotation(-220f, -180, 0);
+                //speedLinesS.transform.rotation = Quaternion.Euler(speedLinesS.transform.rotation.x, -230f, speedLinesS.transform.rotation.z);
             }
-            if (pSM.slidingInput >= 1 && pSM.currentSlidingSpeed > 0)
+            if (pSM.slidingInput >= 1 && pSM.currentSlidingSpeed > 0)//Rechts
             {
                 sparkleBurstL.transform.rotation = Quaternion.Euler(211, 462, -85);
                 sparkleBurstR.transform.rotation = Quaternion.Euler(211, 462, -85);
+                CalculateSlideSpeedLineRotation(-140, -180, 0);
+                //speedLinesS.transform.rotation = Quaternion.Euler(speedLinesS.transform.rotation.x, -140f, speedLinesS.transform.rotation.z);
             }
 
             SlidingSparkleIntensity(sparkleBurstLeft);
             SlidingSparkleIntensity(sparkleBurstRight);
-
-            /*if (pSM.slideLeftInput >= 0 && pSM.currentSlidingSpeed >= pSM.stats.maxSlidingSpeed * .7f)
-            {
-                sparkleBurstRight.SetVector2("_SparkleSpawnCount", new Vector2(2, 14));
-                sparkleBurstRight.SetInt("_FlameIntensity", 2);
-                Debug.Log("Left");
-            }
-            else if (pSM.slideRightInput >= 0 && pSM.currentSlidingSpeed >= pSM.stats.maxSlidingSpeed * .7f)
-            {
-                sparkleBurstLeft.SetVector2("_SparkleSpawnCount", new Vector2(2, 14));
-                sparkleBurstLeft.SetInt("_FlameIntensity", 2);
-                Debug.Log("RIGHT");
-            }*/
         }
     }
     #region OnStateChanged
@@ -255,5 +249,26 @@ public class VFX_Manager : MonoBehaviour
         vfx.SendEvent("_StopBurst");
         speedLinesSliding.SetFloat("_SpeedIntensity", 10);
         weAreSliding = false;
+    }
+    void CalculateSlideSpeedLineRotation(float yRotationOrthogonal, float yRotationParallel, float yRotationEntgegengesetzt)
+    {
+        Vector3 directon = pSM.closestRail.pathCreator.path.GetDirectionAtDistance(pSM.currentDistance);
+
+        if(Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) > .9f)
+        {
+            speedLinesS.transform.rotation = Quaternion.Euler(speedLinesS.transform.rotation.x, yRotationParallel, speedLinesS.transform.rotation.z);
+        }
+        /*if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) >= 0f)
+        {
+            speedLinesS.transform.rotation = Quaternion.Euler(speedLinesS.transform.rotation.x, yRotationOrthogonal, speedLinesS.transform.rotation.z);
+        }*/
+        if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) < -.9f)
+        {
+            speedLinesS.transform.rotation = Quaternion.Euler(speedLinesS.transform.rotation.x, yRotationEntgegengesetzt, speedLinesS.transform.rotation.z);
+        }
+        else
+        {
+            speedLinesS.transform.rotation = Quaternion.Euler(speedLinesS.transform.rotation.x, yRotationOrthogonal, speedLinesS.transform.rotation.z);
+        }
     }
 }
