@@ -19,6 +19,8 @@ public class PlayerWalking : State
 
     public override void Initialize()
     {
+        // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
+        PlayerFollowTarget.instance.FollowPlayer();
         ladder = PSM.ladder;
         controller = PSM.controller;
 
@@ -28,7 +30,7 @@ public class PlayerWalking : State
         ladder.transform.SetParent(base.PSM.animController.spine);
         ladder.localPosition = PSM.ladderWalkingPosition;
         ladder.localRotation = PSM.ladderWalkingRotation;
-        controller.transform.rotation = Quaternion.AngleAxis( Vector3.SignedAngle(controller.transform.up, Vector3.up, controller.transform.right), controller.transform.right) * controller.transform.rotation;
+        controller.transform.rotation = Quaternion.AngleAxis(Vector3.SignedAngle(controller.transform.up, Vector3.up, controller.transform.right), controller.transform.right) * controller.transform.rotation;
         stats = base.PSM.stats;
     }
 

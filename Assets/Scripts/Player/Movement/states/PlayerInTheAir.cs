@@ -26,6 +26,9 @@ public class PlayerInTheAir : State
         PSM.bonusVelocity += startBaseVelocity - PSM.baseVelocity;
         PSM.baseVelocity.y = y;
         initialAirMovementTimer = 0;
+
+        // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
+        PlayerFollowTarget.instance.FollowPlayer();
     }
 
     public override void Movement()
@@ -35,12 +38,12 @@ public class PlayerInTheAir : State
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
         Vector3 direction = directionForward * PSM.forwardInput + directionRight * PSM.sideWaysInput;
 
-        controller.transform.rotation = Quaternion.AngleAxis(-Mathf.Abs( Vector3.SignedAngle(controller.transform.up,Vector3.up,controller.transform.right)*Time.fixedDeltaTime*4), controller.transform.right) * controller.transform.rotation;
+        controller.transform.rotation = Quaternion.AngleAxis(-Mathf.Abs(Vector3.SignedAngle(controller.transform.up, Vector3.up, controller.transform.right) * Time.fixedDeltaTime * 4), controller.transform.right) * controller.transform.rotation;
         if (direction != Vector3.zero)
         {
             controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
         }
-        
+
         #region Drag When No Input
         if (PSM.forwardInput == 0)
         {
@@ -102,7 +105,7 @@ public class PlayerInTheAir : State
                 PSM.baseVelocity.y += PSM.bonusVelocity.y;
                 PSM.bonusVelocity.y = 0;
             }
-            else 
+            else
             {
                 PSM.bonusVelocity.y = 0;
                 PSM.baseVelocity.y = 0;
@@ -151,7 +154,9 @@ public class PlayerInTheAir : State
     {
         if (stats.canLadderPush)
         {
-            //PlayerFollowTarget.instance.OnLadderPush();
+            // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
+            PlayerFollowTarget.instance.AdjustCameraY();
+
             float sphereRadius = .2f;
             float maxHeight = stats.ladderLengthBig - sphereRadius;
             float acceleration = stats.LadderPushAcceleration;
@@ -213,7 +218,7 @@ public class PlayerInTheAir : State
             #endregion
             if (target != Vector3.zero)
             {
-               
+
                 Vector3 directionToWall = (PSM.transform.position - target).normalized;
                 if (Vector3.Angle(directionToWall, Vector3.up) < 45 && !PSM.didLadderPush)
                 {
@@ -233,6 +238,7 @@ public class PlayerInTheAir : State
                     PSM.ladderJumpTarget = target;
                     PSM.baseVelocity.y = 0;
                     PSM.foldInputBool = false;
+
                     Vector3 tempDirection1 = Mathf.Clamp( ExtensionMethods.resultingSpeed(PSM.playerVelocity, -directionToWall),0,Mathf.Infinity)*-directionToWall;
                     Vector3 tempDirection2 = PSM.playerVelocity - tempDirection1;
                     floatingTimer = 0;
