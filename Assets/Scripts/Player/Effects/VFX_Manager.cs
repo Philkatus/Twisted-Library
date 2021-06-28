@@ -54,6 +54,8 @@ public class VFX_Manager : MonoBehaviour
 
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
+
+    public float lerpSpeed = .01f;
     #endregion
     private void Start()
     {
@@ -112,15 +114,13 @@ public class VFX_Manager : MonoBehaviour
             {
                 sparkleBurstL.transform.rotation = Quaternion.Euler(212, 287, 85);
                 sparkleBurstR.transform.rotation = Quaternion.Euler(212, 287, 85);
-                CalculateSlideSpeedLineRotation(-220f, -180, 0);
-                //speedLinesS.transform.rotation = Quaternion.Euler(speedLinesS.transform.rotation.x, -230f, speedLinesS.transform.rotation.z);
+                CalculateSlideSpeedLineRotation();
             }
             if (pSM.slidingInput >= 1 && pSM.currentSlidingSpeed > 0)//Rechts
             {
                 sparkleBurstL.transform.rotation = Quaternion.Euler(211, 462, -85);
                 sparkleBurstR.transform.rotation = Quaternion.Euler(211, 462, -85);
-                CalculateSlideSpeedLineRotation(-140, -180, 0);
-                //speedLinesS.transform.rotation = Quaternion.Euler(speedLinesS.transform.rotation.x, -140f, speedLinesS.transform.rotation.z);
+                CalculateSlideSpeedLineRotation();
             }
 
             SlidingSparkleIntensity(sparkleBurstLeft);
@@ -250,25 +250,31 @@ public class VFX_Manager : MonoBehaviour
         speedLinesSliding.SetFloat("_SpeedIntensity", 10);
         weAreSliding = false;
     }
-    void CalculateSlideSpeedLineRotation(float yRotationOrthogonal, float yRotationParallel, float yRotationEntgegengesetzt)
+    void CalculateSlideSpeedLineRotation()
     {
         Vector3 directon = pSM.closestRail.pathCreator.path.GetDirectionAtDistance(pSM.currentDistance);
 
-        if(Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) > .9f)
+        if(Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) >= 0f)
         {
-            speedLinesS.transform.rotation = Quaternion.Euler(speedLinesS.transform.rotation.x, yRotationParallel, speedLinesS.transform.rotation.z);
+            speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward, (directon * pSM.slidingInput) * -1f, lerpSpeed);
+            Debug.Log("Same direction");
         }
-        /*if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) >= 0f)
+        if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) < -.75f)
         {
-            speedLinesS.transform.rotation = Quaternion.Euler(speedLinesS.transform.rotation.x, yRotationOrthogonal, speedLinesS.transform.rotation.z);
-        }*/
-        if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) < -.9f)
+            //speedLinesS.transform.forward = (directon * pSM.slidingInput) * -1f;//* cameraOffset 
+            speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward, Camera.main.transform.forward *-1, lerpSpeed);
+            Debug.Log("Zwischending");
+        }
+        /*if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) < -.75f)
         {
-            speedLinesS.transform.rotation = Quaternion.Euler(speedLinesS.transform.rotation.x, yRotationEntgegengesetzt, speedLinesS.transform.rotation.z);
+            speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward,(directon *-1 * pSM.slidingInput) * -1f, .2f);
+            Debug.Log("Entgegengesetzt und so");
         }
         else
         {
-            speedLinesS.transform.rotation = Quaternion.Euler(speedLinesS.transform.rotation.x, yRotationOrthogonal, speedLinesS.transform.rotation.z);
-        }
+            //speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward, (directon * pSM.slidingInput) * -1f, lerpSpeed);
+            //speedLinesS.transform.forward = (directon * pSM.slidingInput)*-1f;
+            //speedLinesS.transform.forward = Camera.main.transform.forward * -1f;
+        }*/
     }
 }
