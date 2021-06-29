@@ -55,7 +55,9 @@ public class PlayerSwinging : State
     {
         get
         {
-            return PSM.bob.transform.forward;
+           
+                return PSM.bob.transform.forward;
+           
         }
     }
 
@@ -134,11 +136,11 @@ public class PlayerSwinging : State
         #region ReInitialize Swinging
         if (PSM.useRelativeBobPosition)
         {
-            PSM.bob.transform.position = PSM.ladder.transform.position + -PSM.ladderDirection * stats.ladderLengthBig;
+            PSM.bob.transform.position = PSM.ladder.transform.position + - PSM.ladderDirection * stats.ladderLengthBig;
         }
         else
         {
-            PSM.bob.transform.position = PSM.Bob_Pivot.position - PSM.Bob_Pivot.up * stats.ladderLengthBig;
+            PSM.bob.transform.position = PSM.Bob_Pivot.position + - PSM.Bob_Pivot.up * stats.ladderLengthBig;
         }
         Rail.RailType oldRailType = railType;
         railType = closestRail.railType;
@@ -147,7 +149,14 @@ public class PlayerSwinging : State
             onWall = false;
             inputGiven = false;
         }
-        ropeLength = Vector3.Distance(pivot.transform.position, PSM.bob.transform.position);
+        if (PSM.useRelativeBobPosition)
+        {
+            ropeLength = Vector3.Distance(pivot.transform.position, PSM.bob.transform.position);
+        }
+        else
+        {
+            ropeLength = Vector3.Distance(PSM.Bob_Pivot.transform.position, PSM.bob.transform.position);
+        }
         #endregion
     }
 
@@ -155,9 +164,13 @@ public class PlayerSwinging : State
     {
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
         PlayerFollowTarget.instance.FollowLadder();
-
+        if (!PSM.useRelativeBobPosition)
+        {
+            PSM.bob.transform.SetParent(null);
+            PSM.Bob_Pivot.rotation = Quaternion.Euler(0, 90, 0);
+        }
         SnappingOrientation();
-
+       
         #region Set Variables Sliding
 
         PSM.slidingInput = PSM.startingSlidingInput;
@@ -201,8 +214,14 @@ public class PlayerSwinging : State
         canPress = true;
 
         // Get the initial rope length from how far away the bob is now
-        ropeLength = Vector3.Distance(pivot.transform.position, PSM.bob.transform.position);
-
+        if (PSM.useRelativeBobPosition)
+        {
+            ropeLength = Vector3.Distance(pivot.transform.position, PSM.bob.transform.position);
+        }
+        else
+        {
+            ropeLength = Vector3.Distance(PSM.Bob_Pivot.transform.position, PSM.bob.transform.position);
+        }
 
         currentVelocity = Vector3.zero;
         currentStatePosition = bobPosition;
@@ -439,9 +458,12 @@ public class PlayerSwinging : State
             PSM.ladder.rotation = targetRotation * PSM.ladder.rotation;
 
         }
-        if (!PSM.useRelativeBobPosition)
+        else
         {
             Vector3 axis = PSM.Bob_Pivot.right;
+            Debug.DrawRay(PSM.Bob_Pivot.transform.position, -PSM.Bob_Pivot.up, Color.red);
+            Debug.DrawRay(PSM.Bob_Pivot.transform.position, -PSM.Bob_Pivot.right, Color.red);
+            Debug.DrawRay(PSM.Bob_Pivot.transform.position, newPosition, Color.green);
             float rotateByAngle = (Vector3.SignedAngle(-PSM.Bob_Pivot.up, newPosition, axis));
             Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
             PSM.Bob_Pivot.rotation = targetRotation * PSM.Bob_Pivot.rotation;
@@ -585,9 +607,9 @@ public class PlayerSwinging : State
         bool movingForward = forwardCheck >= .93f;
 
         //Calculate the wallDirection
-        float distance = path.GetClosestDistanceAlongPath(PSM.transform.position);
+       
         Vector3 right = ladder.transform.position + PSM.ladder.right.normalized;
-        Vector3 forward = ladder.transform.position + path.GetNormalAtDistance(distance);
+        Vector3 forward = ladder.transform.position + path.GetNormalAtDistance(PSM.currentDistance);
 
         Plane wallDirectionPlane = new Plane(ladder.transform.position, right, forward);
         Vector3 wallDirection = -wallDirectionPlane.normal.normalized;
@@ -595,7 +617,7 @@ public class PlayerSwinging : State
         #region If On Wall
 
         Vector3 axis = PSM.ladder.right;
-        float angle = Vector3.SignedAngle(wallDirection, bob_p.normalized, axis);
+        float angle = Vector3.SignedAngle(wallDirection, -PSM.ladderDirection.normalized, axis);
         if (Mathf.Abs(angle) <= wallLimitsAngle)
         {
             inWallLimits = true;
@@ -619,7 +641,7 @@ public class PlayerSwinging : State
         if (onWall)
         {
             currentVelocity = Vector3.zero;
-            bob_p = wallDirection * ropeLength;
+            bob_p =  wallDirection * ropeLength;
             SetCurrentPlayerVelocity(ladder.transform.position);
         }
         #endregion
@@ -640,8 +662,7 @@ public class PlayerSwinging : State
 
             tensionForce += centripetalForce;
             currentVelocity += tensionDirection * tensionForce * dt;
-            Debug.DrawRay(PSM.transform.position, currentVelocity, Color.red, dt);
-            Debug.DrawRay(PSM.transform.position, tensionDirection * tensionForce * dt, Color.blue, dt);
+        
             if (PSM.dismounting && !stoppedSwingingToDismount)
             {
                 currentVelocity = Vector3.zero;
@@ -666,7 +687,7 @@ public class PlayerSwinging : State
         }
         else
         {
-            currentVelocity = bobForward * 50;
+            currentVelocity = currentVelocity * 100;
         }
 
         // Get only the forward/backward force
@@ -682,7 +703,7 @@ public class PlayerSwinging : State
         }
         else
         {
-            return GetPointOnLine(pivot_p, bob_p + movementDelta, ropeLength);
+            return GetPointOnLine(pivot_p, PSM.bob.transform.position + movementDelta, ropeLength);
         }
         #endregion
     }
@@ -709,7 +730,7 @@ public class PlayerSwinging : State
         if (inWallLimits)
         {
             onWall = false;
-            inputForce = repelDirection * stats.swingingAcceleration * dt * 0.3f;
+            inputForce = repelDirection * stats.swingingAcceleration * dt * 1.2f;
             currentVelocity += inputForce;
             PSM.swingInputBool = false;
 
@@ -762,12 +783,15 @@ public class PlayerSwinging : State
 
     private void RotateAroundY()
     {
-        Vector3 localUp = Vector3.up;
-        Vector3 pathDirection = pathCreator.path.GetDirectionAtDistance(PSM.currentDistance, EndOfPathInstruction.Stop);
-        Vector3 HorizontalRailDirection = new Vector3(pathDirection.x, 0, pathDirection.z);
-        float rotateByAngle = Vector3.SignedAngle(PSM.ladder.right, HorizontalRailDirection * PSM.snapdirection, localUp);
-        Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, localUp);
-        PSM.ladder.rotation = targetRotation * PSM.ladder.rotation;
+        if (!PSM.dismounting)
+        {
+            Vector3 localUp = Vector3.up;
+            Vector3 pathDirection = pathCreator.path.GetDirectionAtDistance(PSM.currentDistance, EndOfPathInstruction.Stop);
+            Vector3 HorizontalRailDirection = new Vector3(pathDirection.x, 0, pathDirection.z);
+            float rotateByAngle = Vector3.SignedAngle(PSM.ladder.right, HorizontalRailDirection * PSM.snapdirection, localUp);
+            Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, localUp);
+            PSM.ladder.rotation = targetRotation * PSM.ladder.rotation;
+        }
     }
     #endregion
 
@@ -1173,7 +1197,7 @@ public class PlayerSwinging : State
         else if (dismountedHalfways)
         {
             PSM.dismounting = false;
-            PSM.OnLadderTop();
+            PSM.OnFall();
         }
     }
     #endregion
