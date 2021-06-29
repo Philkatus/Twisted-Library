@@ -293,6 +293,11 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("How fast the player decelerates while swinging without giving an input.")]
     public float swingingGravity;
 
+    [Tooltip("Influences how much force is added to the swinging with higher sliding velocities around corners")]
+    public float centripetalForceFactor =1;
+
+    [Tooltip("describes the maximum velocity you can reach while repelling from a wall")]
+    public float maxRepellingVelocity = 1;
     #endregion
     [Space]
     #region ladder

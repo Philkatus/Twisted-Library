@@ -87,6 +87,7 @@ public class PlayerSwinging : State
 
     Vector3 dismountStartPos;
     Vector3 pathDirection;
+    Vector3 previousSlidingVelocity;
     VertexPath path;
     Rail closestRail;
     ValuesScriptableObject stats;
@@ -411,11 +412,15 @@ public class PlayerSwinging : State
         RotateAroundY();
         if (!PSM.expandAfterSnap)
         {
+            if (!PSM.useRelativeBobPosition)
+            {
+                CalculateCentrifugalForce();
+            }
             SlidingMovement();
             Swing();
         }
         else
-            ExpandAfterSnap();
+            ExpandAfterSnap();  
     }
 
     #region SWINGING Functions
@@ -673,6 +678,7 @@ public class PlayerSwinging : State
 
         #region Acceleration & Final Calculations
         inputForce = Vector3.zero;
+        currentVelocity = Vector3.ClampMagnitude(currentVelocity, stats.maxRepellingVelocity);
         if (!PSM.dismounting)
         {
             if (PSM.swingInputBool)
@@ -797,8 +803,19 @@ public class PlayerSwinging : State
             PSM.ladder.rotation = targetRotation * PSM.ladder.rotation;
         }
     }
-    #endregion
 
+
+    #endregion
+    public void CalculateCentrifugalForce()
+    {
+        Vector3 CurrentSlidingVelocity = PSM.currentSlidingSpeed * pathDirection * PSM.slidingInput;
+        if (previousSlidingVelocity != Vector3.zero)
+        {
+            Vector3 inputForce = bobForward * ExtensionMethods.resultingSpeed(previousSlidingVelocity, PSM.transform.forward) * stats.centripetalForceFactor;
+            currentVelocity += inputForce;
+        }
+        previousSlidingVelocity = CurrentSlidingVelocity;
+    }
     public override void Jump()
     {
         if (ladderSizeState.isUnFolding)
@@ -816,17 +833,17 @@ public class PlayerSwinging : State
             float offSet = .5f;
             float heightOnLadderRemapped = (-PSM.HeightOnLadder * stats.heightOnLadderKatapulFactor + 1 - stats.heightOnLadderKatapulFactor);
             Vector3 direction = (PSM.ladderDirection + Vector3.up * offSet).normalized;
-            base.PSM.bonusVelocity = direction * (2.5f * stats.RailCatapultJumpMultiplier) * heightOnLadderRemapped;
+            PSM.bonusVelocity = direction * (2.5f * stats.RailCatapultJumpMultiplier) * heightOnLadderRemapped;
             shouldRetainSwingVelocity = false;
-            base.PSM.OnFall();
+            PSM.OnFall();
             PSM.animationControllerisFoldingJumped = true;
         }
         else
         {
-            PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.playerVelocity;
+            PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed*PSM.slidingInput*pathDirection;
             if (playerVelocity.x == playerVelocity.z && playerVelocity.z == 0)
             {
-                finishWithNormalJump = true;
+                finishWithNormalJump = false;
             }
 
             if (stats.jumpFromLadderDirection != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
@@ -839,21 +856,24 @@ public class PlayerSwinging : State
             }
             else
             {
-                base.PSM.baseVelocity.y += stats.JumpHeight;
+                PSM.baseVelocity.y += stats.JumpHeight;
             }
             shouldRetainSwingVelocity = true;
-            base.PSM.OnFall();
+            PSM.OnFall();
             PSM.animationControllerisFoldingJumped = false;
         }
-        base.PSM.jumpInputBool = false;
+        PSM.jumpInputBool = false;
     }
 
     public override void FallFromLadder()
     {
-        base.PSM.OnFall();
+        PSM.OnFall();
         PSM.animationControllerisFoldingJumped = false;
-        base.PSM.jumpInputBool = false;
+        PSM.jumpInputBool = false;
     }
+
+   
+
 
     #region SLIDING Functions
     void SlidingMovement()
