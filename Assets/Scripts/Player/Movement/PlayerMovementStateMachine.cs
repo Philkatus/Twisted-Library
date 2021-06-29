@@ -32,7 +32,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool didLadderPush;
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
-
+    public bool expandAfterSnap;
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
@@ -454,7 +454,6 @@ public class PlayerMovementStateMachine : StateMachine
 
             float closestDistance = stats.resnappingDistance;
             Rail nextClosestRail = null;
-            bool a = false;
             for (int i = 0; i < possibleRails.Count; i++)
             {
                 float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
@@ -465,20 +464,16 @@ public class PlayerMovementStateMachine : StateMachine
                 if (distance < closestDistance
                     && possibleRails[i] != currentClosestRail)
                 {
-                    Debug.Log("----");
-                    Debug.Log(possiblePathDirection.normalized);
-                    Debug.Log(currentDirection.normalized);
-                    Debug.Log(Mathf.Abs(Vector3.Dot(currentDirection.normalized, possiblePathDirection.normalized)));
+                   
                     if (Mathf.Abs(Vector3.Dot(currentDirection.normalized, possiblePathDirection.normalized)) > stats.resnappingDotProduct) // hab das >= zu einem > 0 gemacht erstmal, falls sich das gerade jmd ansieht. jetzt geht es einigerma�en
                     {
                         closestDistance = distance;
                         nextClosestRail = possibleRails[i];
-                        a = true;
+                       
                     }
                 }
             }
-            if (!a)
-                Debug.Log("A");
+            
             if (nextClosestRail != null)
             {
                 closestRail = nextClosestRail;
@@ -536,7 +531,7 @@ public class PlayerMovementStateMachine : StateMachine
         effects.OnStateChangedSwinging();
         playerState = PlayerState.swinging;
         SetState(new PlayerSwinging(this));
-        
+
     }
 
     ///<summary>

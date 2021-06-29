@@ -14,6 +14,7 @@ public class SwitchOnAfterSnap : MonoBehaviour
 
     [SerializeField] Transform pivotEnd;
     [SerializeField] Transform railParentEnd;
+    [SerializeField] ChallengeComponent challengeComponent;
     Quaternion onRotation;
     Quaternion offRotation;
     Quaternion railOnRotation;
@@ -29,6 +30,7 @@ public class SwitchOnAfterSnap : MonoBehaviour
         onRotation = pivotEnd.rotation;
         railOnRotation = railParentEnd.rotation;
         railOffRotation = railParent.rotation;
+        challengeComponent.onResetChallenge += new ChallengeComponent.EventHandler(SwitchOff);
     }
 
     // Update is called once per frame
@@ -45,6 +47,7 @@ public class SwitchOnAfterSnap : MonoBehaviour
                 tSwitchOn = 0;
                 tSwitchOff = 0;
                 isSwitchedOn = true;
+                challengeComponent.Completed = true;
             }
         }
         if (switchOff)
@@ -61,5 +64,10 @@ public class SwitchOnAfterSnap : MonoBehaviour
                 isSwitchedOn = false;
             }
         }
+    }
+
+    void SwitchOff()
+    {
+        switchOff = true;
     }
 }
