@@ -55,9 +55,9 @@ public class PlayerSwinging : State
     {
         get
         {
-           
-                return PSM.bob.transform.forward;
-           
+
+            return PSM.bob.transform.forward;
+
         }
     }
 
@@ -87,6 +87,7 @@ public class PlayerSwinging : State
 
     Vector3 dismountStartPos;
     Vector3 pathDirection;
+    Vector3 previousSlidingVelocity;
     VertexPath path;
     Rail closestRail;
     ValuesScriptableObject stats;
@@ -136,11 +137,11 @@ public class PlayerSwinging : State
         #region ReInitialize Swinging
         if (PSM.useRelativeBobPosition)
         {
-            PSM.bob.transform.position = PSM.ladder.transform.position + - PSM.ladderDirection * stats.ladderLengthBig;
+            PSM.bob.transform.position = PSM.ladder.transform.position + -PSM.ladderDirection * stats.ladderLengthBig;
         }
         else
         {
-            PSM.bob.transform.position = PSM.Bob_Pivot.position + - PSM.Bob_Pivot.up * stats.ladderLengthBig;
+            PSM.bob.transform.position = PSM.Bob_Pivot.position + -PSM.Bob_Pivot.up * stats.ladderLengthBig;
         }
         Rail.RailType oldRailType = railType;
         railType = closestRail.railType;
@@ -170,7 +171,7 @@ public class PlayerSwinging : State
             PSM.Bob_Pivot.rotation = Quaternion.Euler(0, 90, 0);
         }
         SnappingOrientation();
-       
+
         #region Set Variables Sliding
 
         PSM.slidingInput = PSM.startingSlidingInput;
@@ -203,7 +204,7 @@ public class PlayerSwinging : State
         }
         else
         {
-            PSM.bob.transform.position = PSM.Bob_Pivot.position - PSM.Bob_Pivot.up* stats.ladderLengthBig;
+            PSM.bob.transform.position = PSM.Bob_Pivot.position - PSM.Bob_Pivot.up * stats.ladderLengthBig;
 
         }
 
@@ -246,9 +247,9 @@ public class PlayerSwinging : State
 
         PSM.effects.OnStateChangedSlide();
 
-        PSM.playerVelocity = Vector3.zero;
-        PSM.baseVelocity = Vector3.zero;
-        PSM.bonusVelocity = Vector3.zero;
+        // PSM.playerVelocity = Vector3.zero;
+        // PSM.baseVelocity = Vector3.zero;
+        // PSM.bonusVelocity = Vector3.zero;
 
         if (closestRail.isASwitch)
         {
@@ -265,7 +266,6 @@ public class PlayerSwinging : State
     {
         #region  Variable assignment
         stats = PSM.stats;
-
         ladderSizeState = PSM.ladderSizeStateMachine;
         closestRail = PSM.closestRail;
         railType = closestRail.railType;
@@ -274,8 +274,8 @@ public class PlayerSwinging : State
         ladder = PSM.ladder;
         pathCreator = closestRail.pathCreator;
         path = pathCreator.path;
-
         #endregion
+
         #region LadderPlacement
         Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(PSM.transform.position);
         ladder.transform.position = startingPoint;
@@ -382,6 +382,7 @@ public class PlayerSwinging : State
 
         //LadderLength Calculation
         PSM.ladderSizeStateMachine.ladderLength = Vector3.Distance(PSM.transform.position, startingPoint);
+        Debug.Log(PSM.ladderSizeStateMachine.ladderLength);
         PSM.ladderSizeStateMachine.OnSnap();
 
         #endregion
@@ -408,14 +409,24 @@ public class PlayerSwinging : State
 
     public override void Movement()
     {
-        SlidingMovement();
         RotateAroundY();
-        Swing();
+        if (!PSM.expandAfterSnap)
+        {
+            if (!PSM.useRelativeBobPosition)
+            {
+                CalculateCentrifugalForce();
+            }
+            SlidingMovement();
+            Swing();
+        }
+        else
+            ExpandAfterSnap();  
     }
 
     #region SWINGING Functions
     public override void Swing()
     {
+        Debug.Log("swinging");
         #region FixedUpdate
         float frameTime = Time.fixedDeltaTime;
         accumulator += frameTime;
@@ -601,7 +612,7 @@ public class PlayerSwinging : State
         bool movingForward = forwardCheck >= .93f;
 
         //Calculate the wallDirection
-       
+
         Vector3 right = ladder.transform.position + PSM.ladder.right.normalized;
         Vector3 forward = ladder.transform.position + path.GetNormalAtDistance(PSM.currentDistance);
 
@@ -635,7 +646,7 @@ public class PlayerSwinging : State
         if (onWall)
         {
             currentVelocity = Vector3.zero;
-            bob_p =  wallDirection * ropeLength;
+            bob_p = wallDirection * ropeLength;
             SetCurrentPlayerVelocity(ladder.transform.position);
         }
         #endregion
@@ -656,7 +667,7 @@ public class PlayerSwinging : State
 
             tensionForce += centripetalForce;
             currentVelocity += tensionDirection * tensionForce * dt;
-        
+
             if (PSM.dismounting && !stoppedSwingingToDismount)
             {
                 currentVelocity = Vector3.zero;
@@ -667,6 +678,7 @@ public class PlayerSwinging : State
 
         #region Acceleration & Final Calculations
         inputForce = Vector3.zero;
+        currentVelocity = Vector3.ClampMagnitude(currentVelocity, stats.maxRepellingVelocity);
         if (!PSM.dismounting)
         {
             if (PSM.swingInputBool)
@@ -731,6 +743,43 @@ public class PlayerSwinging : State
         }
     }
 
+    void ExpandAfterSnap()
+    {
+        // Transform cam = Camera.main.transform;
+        // Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
+        // Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
+        // if (PSM.forwardInput == 0)
+        // {
+        //     Vector3 currentDragForward = stats.JumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionForward);
+        //     PSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
+        //     currentDragForward = stats.bonusVelocityDrag * ExtensionMethods.resultingVelocity(PSM.bonusVelocity, directionForward);
+        //     PSM.bonusVelocity -= currentDragForward * Time.fixedDeltaTime;
+        // }
+        // float ClampedVelocityY = Mathf.Clamp(PSM.baseVelocity.y, -stats.MaxFallingSpeed, stats.MaxJumpingSpeedUp);
+        // PSM.baseVelocity.y = 0;
+        // PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaxJumpingSpeedForward);
+        // PSM.baseVelocity.y = ClampedVelocityY;
+        Debug.Log("expandaftersnap");
+        // currentVelocity += PSM.playerVelocity;
+
+        // gravityForce = mass * stats.swingingGravity;
+        // gravityDirection = Physics.gravity.normalized;
+        // currentVelocity += gravityDirection * gravityForce * dt;
+
+        PSM.baseVelocity.y -= 90 * Time.fixedDeltaTime;
+
+        float ClampedVelocityY = Mathf.Clamp(PSM.baseVelocity.y, -stats.MaxFallingSpeed, stats.MaxJumpingSpeedUp);
+        PSM.baseVelocity.y = 0;
+        PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaxJumpingSpeedForward);
+        PSM.baseVelocity.y = ClampedVelocityY;
+        // Vector3 pivott = PSM.closestRail.pathCreator.path.GetPointAtDistance(PSM.currentDistance);
+        // PSM.HeightOnLadder += Vector3.Distance(pivott, PSM.transform.position);
+        // PSM.HeightOnLadder = Mathf.Clamp(PSM.HeightOnLadder, -0.75f, 0);
+        //PSM.transform.localPosition = new Vector3(0, ladderSizeState.ladderLength * PSM.HeightOnLadder, -0.38f);
+        controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.AirVelocityFactor);
+
+    }
+
     void SetCurrentPlayerVelocity(Vector3 pivot_p)
     {
         // Set currentMovement Force
@@ -754,8 +803,19 @@ public class PlayerSwinging : State
             PSM.ladder.rotation = targetRotation * PSM.ladder.rotation;
         }
     }
-    #endregion
 
+
+    #endregion
+    public void CalculateCentrifugalForce()
+    {
+        Vector3 CurrentSlidingVelocity = PSM.currentSlidingSpeed * pathDirection * PSM.slidingInput;
+        if (previousSlidingVelocity != Vector3.zero)
+        {
+            Vector3 inputForce = bobForward * ExtensionMethods.resultingSpeed(previousSlidingVelocity, PSM.transform.forward) * stats.centripetalForceFactor;
+            currentVelocity += inputForce;
+        }
+        previousSlidingVelocity = CurrentSlidingVelocity;
+    }
     public override void Jump()
     {
         if (ladderSizeState.isUnFolding)
@@ -773,17 +833,17 @@ public class PlayerSwinging : State
             float offSet = .5f;
             float heightOnLadderRemapped = (-PSM.HeightOnLadder * stats.heightOnLadderKatapulFactor + 1 - stats.heightOnLadderKatapulFactor);
             Vector3 direction = (PSM.ladderDirection + Vector3.up * offSet).normalized;
-            base.PSM.bonusVelocity = direction * (2.5f * stats.RailCatapultJumpMultiplier) * heightOnLadderRemapped;
+            PSM.bonusVelocity = direction * (2.5f * stats.RailCatapultJumpMultiplier) * heightOnLadderRemapped;
             shouldRetainSwingVelocity = false;
-            base.PSM.OnFall();
+            PSM.OnFall();
             PSM.animationControllerisFoldingJumped = true;
         }
         else
         {
-            PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.playerVelocity;
+            PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed*PSM.slidingInput*pathDirection;
             if (playerVelocity.x == playerVelocity.z && playerVelocity.z == 0)
             {
-                finishWithNormalJump = true;
+                finishWithNormalJump = false;
             }
 
             if (stats.jumpFromLadderDirection != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
@@ -796,21 +856,24 @@ public class PlayerSwinging : State
             }
             else
             {
-                base.PSM.baseVelocity.y += stats.JumpHeight;
+                PSM.baseVelocity.y += stats.JumpHeight;
             }
             shouldRetainSwingVelocity = true;
-            base.PSM.OnFall();
+            PSM.OnFall();
             PSM.animationControllerisFoldingJumped = false;
         }
-        base.PSM.jumpInputBool = false;
+        PSM.jumpInputBool = false;
     }
 
     public override void FallFromLadder()
     {
-        base.PSM.OnFall();
+        PSM.OnFall();
         PSM.animationControllerisFoldingJumped = false;
-        base.PSM.jumpInputBool = false;
+        PSM.jumpInputBool = false;
     }
+
+   
+
 
     #region SLIDING Functions
     void SlidingMovement()
@@ -1137,6 +1200,7 @@ public class PlayerSwinging : State
 
     void Dismount()
     {
+        Debug.Log("dlkfjfddfjkldflkdjfkl");
         // 1 is how much units the player needs to move up to be on top of the rail.
         if ((PSM.transform.position - dismountStartPos).magnitude <= 1.3f && !dismountedHalfways)
         {
@@ -1193,10 +1257,6 @@ public class PlayerSwinging : State
         #region Finish Sliding
         PSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
-        if (closestRail.isASwitch)
-        {
-            closestRail.GetComponent<SwitchOnAfterSnap>().switchOff = true;
-        }
         PSM.effects.OnStateChangedSlideEnd();
         #endregion
 
