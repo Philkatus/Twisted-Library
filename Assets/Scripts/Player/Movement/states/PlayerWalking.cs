@@ -24,14 +24,16 @@ public class PlayerWalking : State
         ladder = PSM.ladder;
         controller = PSM.controller;
 
-        controller.transform.SetParent(base.PSM.myParent);
+        controller.transform.SetParent(PSM.myParent);
         ladder.transform.localScale = new Vector3(1, 1, 1);
         controller.transform.localScale = new Vector3(1, 1, 1);
-        ladder.transform.SetParent(base.PSM.animController.spine);
+        ladder.transform.SetParent(PSM.animController.spine);
+        
+        controller.transform.rotation = Quaternion.AngleAxis(Vector3.SignedAngle(controller.transform.up, Vector3.up, controller.transform.right), controller.transform.right) * controller.transform.rotation;
         ladder.localPosition = PSM.ladderWalkingPosition;
         ladder.localRotation = PSM.ladderWalkingRotation;
-        controller.transform.rotation = Quaternion.AngleAxis(Vector3.SignedAngle(controller.transform.up, Vector3.up, controller.transform.right), controller.transform.right) * controller.transform.rotation;
-        stats = base.PSM.stats;
+        Debug.Log(ladder.localRotation.eulerAngles);
+        stats = PSM.stats;
     }
 
     public override void Movement()
@@ -106,14 +108,14 @@ public class PlayerWalking : State
 
     public override void Jump()
     {
-        base.PSM.baseVelocity.y = stats.JumpHeight;
-        base.PSM.jumpInputBool = false;
-        base.PSM.OnFall();
+        PSM.baseVelocity.y = stats.JumpHeight;
+        PSM.jumpInputBool = false;
+        PSM.OnFall();
     }
 
     public override void Snap()
     {
-        base.PSM.OnSnap();
+        PSM.OnSnap();
 
     }
 
