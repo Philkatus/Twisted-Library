@@ -190,7 +190,7 @@ public class PlayerSwinging : State
         }
         else
         {
-            PSM.bob.transform.position = PSM.Bob_Pivot.position - PSM.Bob_Pivot.up* stats.ladderLengthBig;
+            PSM.bob.transform.position = PSM.Bob_Pivot.position - PSM.Bob_Pivot.up * stats.ladderLengthBig;
 
         }
 
@@ -227,9 +227,9 @@ public class PlayerSwinging : State
 
         PSM.effects.OnStateChangedSlide();
 
-        PSM.playerVelocity = Vector3.zero;
-        PSM.baseVelocity = Vector3.zero;
-        PSM.bonusVelocity = Vector3.zero;
+        // PSM.playerVelocity = Vector3.zero;
+        // PSM.baseVelocity = Vector3.zero;
+        // PSM.bonusVelocity = Vector3.zero;
 
         if (closestRail.isASwitch)
         {
@@ -246,7 +246,6 @@ public class PlayerSwinging : State
     {
         #region  Variable assignment
         stats = PSM.stats;
-
         ladderSizeState = PSM.ladderSizeStateMachine;
         closestRail = PSM.closestRail;
         railType = closestRail.railType;
@@ -255,8 +254,8 @@ public class PlayerSwinging : State
         ladder = PSM.ladder;
         pathCreator = closestRail.pathCreator;
         path = pathCreator.path;
-
         #endregion
+
         #region LadderPlacement
         Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(PSM.transform.position);
         ladder.transform.position = startingPoint;
@@ -363,6 +362,7 @@ public class PlayerSwinging : State
 
         //LadderLength Calculation
         PSM.ladderSizeStateMachine.ladderLength = Vector3.Distance(PSM.transform.position, startingPoint);
+        Debug.Log(PSM.ladderSizeStateMachine.ladderLength);
         PSM.ladderSizeStateMachine.OnSnap();
 
         #endregion
@@ -389,14 +389,20 @@ public class PlayerSwinging : State
 
     public override void Movement()
     {
-        SlidingMovement();
         RotateAroundY();
-        Swing();
+        if (!PSM.expandAfterSnap)
+        {
+            SlidingMovement();
+            Swing();
+        }
+        else
+            ExpandAfterSnap();
     }
 
     #region SWINGING Functions
     public override void Swing()
     {
+        Debug.Log("swinging");
         #region FixedUpdate
         float frameTime = Time.fixedDeltaTime;
         accumulator += frameTime;
@@ -708,6 +714,39 @@ public class PlayerSwinging : State
             PSM.swingInputBool = false;
 
         }
+    }
+
+    void ExpandAfterSnap()
+    {
+        // Transform cam = Camera.main.transform;
+        // Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
+        // Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
+        // if (PSM.forwardInput == 0)
+        // {
+        //     Vector3 currentDragForward = stats.JumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionForward);
+        //     PSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
+        //     currentDragForward = stats.bonusVelocityDrag * ExtensionMethods.resultingVelocity(PSM.bonusVelocity, directionForward);
+        //     PSM.bonusVelocity -= currentDragForward * Time.fixedDeltaTime;
+        // }
+        // float ClampedVelocityY = Mathf.Clamp(PSM.baseVelocity.y, -stats.MaxFallingSpeed, stats.MaxJumpingSpeedUp);
+        // PSM.baseVelocity.y = 0;
+        // PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaxJumpingSpeedForward);
+        // PSM.baseVelocity.y = ClampedVelocityY;
+        // Debug.Log("basevelocity" + PSM.baseVelocity.y);
+        // currentVelocity += PSM.playerVelocity;
+
+        // gravityForce = mass * stats.swingingGravity;
+        // gravityDirection = Physics.gravity.normalized;
+        // currentVelocity += gravityDirection * gravityForce * dt;
+
+        PSM.baseVelocity.y -= stats.Gravity * Time.fixedDeltaTime;
+
+        float ClampedVelocityY = Mathf.Clamp(PSM.baseVelocity.y, -stats.MaxFallingSpeed, stats.MaxJumpingSpeedUp);
+        PSM.baseVelocity.y = 0;
+        PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaxJumpingSpeedForward);
+        PSM.baseVelocity.y = ClampedVelocityY;
+        // controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.AirVelocityFactor);
+
     }
 
     void SetCurrentPlayerVelocity(Vector3 pivot_p)
