@@ -32,7 +32,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool didLadderPush;
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
-
+    public bool expandAfterSnap;
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
@@ -531,7 +531,7 @@ public class PlayerMovementStateMachine : StateMachine
         effects.OnStateChangedSwinging();
         playerState = PlayerState.swinging;
         SetState(new PlayerSwinging(this));
-        
+
     }
 
     ///<summary>
