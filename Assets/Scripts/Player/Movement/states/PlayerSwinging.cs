@@ -55,9 +55,9 @@ public class PlayerSwinging : State
     {
         get
         {
-           
-                return PSM.bob.transform.forward;
-           
+
+            return PSM.bob.transform.forward;
+
         }
     }
 
@@ -136,11 +136,11 @@ public class PlayerSwinging : State
         #region ReInitialize Swinging
         if (PSM.useRelativeBobPosition)
         {
-            PSM.bob.transform.position = PSM.ladder.transform.position + - PSM.ladderDirection * stats.ladderLengthBig;
+            PSM.bob.transform.position = PSM.ladder.transform.position + -PSM.ladderDirection * stats.ladderLengthBig;
         }
         else
         {
-            PSM.bob.transform.position = PSM.Bob_Pivot.position + - PSM.Bob_Pivot.up * stats.ladderLengthBig;
+            PSM.bob.transform.position = PSM.Bob_Pivot.position + -PSM.Bob_Pivot.up * stats.ladderLengthBig;
         }
         Rail.RailType oldRailType = railType;
         railType = closestRail.railType;
@@ -170,7 +170,7 @@ public class PlayerSwinging : State
             PSM.Bob_Pivot.rotation = Quaternion.Euler(0, 90, 0);
         }
         SnappingOrientation();
-       
+
         #region Set Variables Sliding
 
         PSM.slidingInput = PSM.startingSlidingInput;
@@ -607,7 +607,7 @@ public class PlayerSwinging : State
         bool movingForward = forwardCheck >= .93f;
 
         //Calculate the wallDirection
-       
+
         Vector3 right = ladder.transform.position + PSM.ladder.right.normalized;
         Vector3 forward = ladder.transform.position + path.GetNormalAtDistance(PSM.currentDistance);
 
@@ -641,7 +641,7 @@ public class PlayerSwinging : State
         if (onWall)
         {
             currentVelocity = Vector3.zero;
-            bob_p =  wallDirection * ropeLength;
+            bob_p = wallDirection * ropeLength;
             SetCurrentPlayerVelocity(ladder.transform.position);
         }
         #endregion
@@ -662,7 +662,7 @@ public class PlayerSwinging : State
 
             tensionForce += centripetalForce;
             currentVelocity += tensionDirection * tensionForce * dt;
-        
+
             if (PSM.dismounting && !stoppedSwingingToDismount)
             {
                 currentVelocity = Vector3.zero;
@@ -753,20 +753,24 @@ public class PlayerSwinging : State
         // PSM.baseVelocity.y = 0;
         // PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaxJumpingSpeedForward);
         // PSM.baseVelocity.y = ClampedVelocityY;
-        // Debug.Log("basevelocity" + PSM.baseVelocity.y);
+        Debug.Log("expandaftersnap");
         // currentVelocity += PSM.playerVelocity;
 
         // gravityForce = mass * stats.swingingGravity;
         // gravityDirection = Physics.gravity.normalized;
         // currentVelocity += gravityDirection * gravityForce * dt;
 
-        PSM.baseVelocity.y -= stats.Gravity * Time.fixedDeltaTime;
+        PSM.baseVelocity.y -= 90 * Time.fixedDeltaTime;
 
         float ClampedVelocityY = Mathf.Clamp(PSM.baseVelocity.y, -stats.MaxFallingSpeed, stats.MaxJumpingSpeedUp);
         PSM.baseVelocity.y = 0;
         PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaxJumpingSpeedForward);
         PSM.baseVelocity.y = ClampedVelocityY;
-        // controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.AirVelocityFactor);
+        // Vector3 pivott = PSM.closestRail.pathCreator.path.GetPointAtDistance(PSM.currentDistance);
+        // PSM.HeightOnLadder += Vector3.Distance(pivott, PSM.transform.position);
+        // PSM.HeightOnLadder = Mathf.Clamp(PSM.HeightOnLadder, -0.75f, 0);
+        //PSM.transform.localPosition = new Vector3(0, ladderSizeState.ladderLength * PSM.HeightOnLadder, -0.38f);
+        controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.AirVelocityFactor);
 
     }
 
@@ -1176,6 +1180,7 @@ public class PlayerSwinging : State
 
     void Dismount()
     {
+        Debug.Log("dlkfjfddfjkldflkdjfkl");
         // 1 is how much units the player needs to move up to be on top of the rail.
         if ((PSM.transform.position - dismountStartPos).magnitude <= 1.3f && !dismountedHalfways)
         {
