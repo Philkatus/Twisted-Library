@@ -1211,10 +1211,6 @@ public class PlayerSwinging : State
         PSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
         PSM.effects.OnStateChangedSlideEnd();
-        if (closestRail.isASwitch)
-        {
-            closestRail.GetComponent<SwitchOnAfterSnap>().RefreshChallengeTimer();
-        }
         #endregion
 
         yield break;

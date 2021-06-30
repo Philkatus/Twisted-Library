@@ -415,7 +415,7 @@ public class UILogic : MonoBehaviour
 
     }
 
-    public void OnChallengeComplete()
+    public void OnChallengeComplete(GameObject linkedUI)
     {
         // wenn alle switches an sind, wird das aufgerufen (challenge complete)
     }

@@ -31,7 +31,7 @@ public class Challenge : MonoBehaviour
                 Debug.Log("Challenge complete!");
                 gameObject.SendMessage("OnAllComponentsCompleted");
                 landmark.CheckIfAllChallengesComplete();
-                ObjectManager.instance.uILogic.OnChallengeComplete();
+                landmark.ShowChallengeCompletionInUI(this);
             }
             challengeCompleted = value;
         }
@@ -39,16 +39,6 @@ public class Challenge : MonoBehaviour
 
     void Start()
     {
-        if (linkedLandmark == LinkedLandmark.Volcano)
-        {
-            landmark = ChallengeManager.instance.volcano;
-            landmark.challenges.Add(this);
-        }
-        else if (linkedLandmark == LinkedLandmark.WindChimes)
-        {
-            landmark = ChallengeManager.instance.windChimes;
-            landmark.challenges.Add(this);
-        }
         foreach (ChallengeComponent component in components)
         {
             component.challenge = this;
