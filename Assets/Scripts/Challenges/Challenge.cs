@@ -13,11 +13,10 @@ public class Challenge : MonoBehaviour
 
     public LinkedLandmark linkedLandmark;
     public List<ChallengeComponent> components = new List<ChallengeComponent>();
-    public float componentCompletionTime;
+    [HideInInspector] public float componentCompletionTime;
     public float timeToCompleteComponents;
 
     Landmark landmark;
-    UILogic uILogic;
     bool challengeCompleted;
     public bool ChallengeCompleted
     {
@@ -27,12 +26,12 @@ public class Challenge : MonoBehaviour
         }
         set
         {
-            if (value == true)
+            if (value == true && !challengeCompleted)
             {
                 Debug.Log("Challenge complete!");
                 gameObject.SendMessage("OnAllComponentsCompleted");
                 landmark.CheckIfAllChallengesComplete();
-                uILogic.OnChallengeComplete();
+                ObjectManager.instance.uILogic.OnChallengeComplete();
             }
             challengeCompleted = value;
         }
@@ -54,19 +53,18 @@ public class Challenge : MonoBehaviour
         {
             component.challenge = this;
         }
-        uILogic = ObjectManager.instance.uILogic;
     }
 
     void Update()
     {
-        if (componentCompletionTime != 0)
+        if (componentCompletionTime != 0 && !challengeCompleted)
         {
-            float timeSinceCompletion = componentCompletionTime - Time.time;
+            float timeSinceCompletion = Time.time - componentCompletionTime;
             foreach (ChallengeComponent component in components)
             {
                 if (component.Completed)
                 {
-                    uILogic.UpdateComponentVisual(component.linkedUI, timeSinceCompletion);
+                    ObjectManager.instance.uILogic.UpdateComponentVisual(component.linkedUI, component.type, timeSinceCompletion, timeToCompleteComponents, false);
                 }
             }
 
@@ -75,8 +73,8 @@ public class Challenge : MonoBehaviour
                 foreach (ChallengeComponent component in components)
                 {
                     component.Completed = false;
+                    ObjectManager.instance.uILogic.OnChallengeFailed(component.linkedUI);
                 }
-                uILogic.OnChallengeFailed();
                 componentCompletionTime = 0;
                 Debug.Log("Challenge failed!");
             }

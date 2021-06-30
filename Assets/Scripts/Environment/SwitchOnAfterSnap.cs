@@ -6,7 +6,6 @@ public class SwitchOnAfterSnap : MonoBehaviour
 {
     public bool switchOn;
     public bool switchOff;
-    public bool isSwitchedOn;
     public Quaternion snapRotation;
     public Quaternion railSnapRotation;
     public Transform pivot;
@@ -31,37 +30,40 @@ public class SwitchOnAfterSnap : MonoBehaviour
         railOnRotation = railParentEnd.rotation;
         railOffRotation = railParent.rotation;
         challengeComponent.onResetChallenge += new ChallengeComponent.EventHandler(SwitchOff);
+        challengeComponent.type = "switch";
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (switchOn)
+        if (!challengeComponent.challenge.ChallengeCompleted)
         {
-            tSwitchOn += Time.deltaTime;
-            pivot.transform.rotation = Quaternion.Lerp(snapRotation, onRotation, tSwitchOn);
-            railParent.transform.rotation = Quaternion.Lerp(railSnapRotation, railOnRotation, tSwitchOn);
-            if (pivot.transform.rotation == onRotation)
+            if (switchOn)
+            {
+                tSwitchOn += Time.deltaTime;
+                pivot.transform.rotation = Quaternion.Lerp(snapRotation, onRotation, tSwitchOn);
+                railParent.transform.rotation = Quaternion.Lerp(railSnapRotation, railOnRotation, tSwitchOn);
+                ObjectManager.instance.uILogic.UpdateComponentVisual(challengeComponent.linkedUI, challengeComponent.type, tSwitchOn, challengeComponent.challenge.timeToCompleteComponents, true);
+
+                if (pivot.transform.rotation == onRotation)
+                {
+                    switchOn = false;
+                    tSwitchOn = 0;
+                    tSwitchOff = 0;
+                }
+            }
+            if (switchOff)
             {
                 switchOn = false;
-                tSwitchOn = 0;
-                tSwitchOff = 0;
-                isSwitchedOn = true;
-                challengeComponent.Completed = true;
-            }
-        }
-        if (switchOff)
-        {
-            switchOn = false;
-            tSwitchOff += Time.deltaTime;
-            pivot.transform.rotation = Quaternion.Lerp(onRotation, offRotation, tSwitchOff);
-            railParent.transform.rotation = Quaternion.Lerp(railOnRotation, railOffRotation, tSwitchOff);
-            if (pivot.transform.rotation == offRotation)
-            {
-                switchOff = false;
-                tSwitchOff = 0;
-                tSwitchOn = 0;
-                isSwitchedOn = false;
+                tSwitchOff += Time.deltaTime;
+                pivot.transform.rotation = Quaternion.Lerp(onRotation, offRotation, tSwitchOff);
+                railParent.transform.rotation = Quaternion.Lerp(railOnRotation, railOffRotation, tSwitchOff);
+                if (pivot.transform.rotation == offRotation)
+                {
+                    switchOff = false;
+                    tSwitchOff = 0;
+                    tSwitchOn = 0;
+                }
             }
         }
     }
@@ -69,5 +71,10 @@ public class SwitchOnAfterSnap : MonoBehaviour
     void SwitchOff()
     {
         switchOff = true;
+    }
+
+    public void RefreshChallengeTimer()
+    {
+        challengeComponent.Completed = true;
     }
 }
