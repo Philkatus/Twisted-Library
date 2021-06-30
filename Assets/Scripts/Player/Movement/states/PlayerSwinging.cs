@@ -10,7 +10,6 @@ public class PlayerSwinging : State
         inputGiven,
         inWallLimits,
         firstRound = true;
-    bool finishWithNormalJump;
     bool stoppedSwingingToDismount;
 
     float dt = 0.01f,
@@ -816,10 +815,6 @@ public class PlayerSwinging : State
         else
         {
             PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed * PSM.slidingInput * pathDirection;
-            if (playerVelocity.x == playerVelocity.z && playerVelocity.z == 0)
-            {
-                finishWithNormalJump = false;
-            }
 
             if (stats.jumpFromLadderDirection != Vector3.zero) //just that it doesn't bug for the others TODO: put it the if statement away, only use wallJump
             {
@@ -846,9 +841,6 @@ public class PlayerSwinging : State
         PSM.animationControllerisFoldingJumped = false;
         PSM.jumpInputBool = false;
     }
-
-
-
 
     #region SLIDING Functions
     void SlidingMovement()
@@ -1206,16 +1198,12 @@ public class PlayerSwinging : State
         #region Finish Swinging
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
         PlayerFollowTarget.instance.AdjustCameraY();
-
         SetCurrentPlayerVelocity(ladder.transform.position);
-        if (!finishWithNormalJump)
+        if (shouldRetainSwingVelocity)
         {
-            if (shouldRetainSwingVelocity)
-            {
-                PSM.bonusVelocity += (currentMovement + Vector3.up * 1.1f).normalized * currentMovement.magnitude;
-            }
-
+            PSM.bonusVelocity += (currentMovement + Vector3.up * 1.1f).normalized * currentMovement.magnitude * stats.retainSwingVelocityOnJumpFactor;
         }
+
         PSM.snapInputBool = false;
         PSM.startingSlidingInput = 0;
         if (!PSM.useRelativeBobPosition)
