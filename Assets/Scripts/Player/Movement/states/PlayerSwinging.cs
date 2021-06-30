@@ -181,7 +181,8 @@ public class PlayerSwinging : State
         }
         else
         {
-            PSM.currentSlidingSpeed = PSM.playerVelocity.magnitude;
+            Vector3 horizontalVelocity = new Vector3(PSM.playerVelocity.x, Mathf.Clamp(PSM.playerVelocity.y, 0, Mathf.Infinity), PSM.playerVelocity.z);
+            tAcceleration = Mathf.Clamp(horizontalVelocity.magnitude / (maxSlidingSpeed - 2), 0, 1);
             accelerate = true;
         }
         #endregion
@@ -396,16 +397,8 @@ public class PlayerSwinging : State
         PSM.bob.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
         #endregion
-        #region Velocity Calculation
 
-        if (!stats.preservesVelocityOnSnap)
-        {
-            PSM.baseVelocity = ExtensionMethods.resultingClampedVelocity(PSM.baseVelocity, ladder.transform.forward, stats.maxSwingSpeed);
-            PSM.bonusVelocity = ExtensionMethods.resultingVelocity(PSM.bonusVelocity, ladder.transform.forward);
-        }
         Time.fixedDeltaTime = 0.002f;
-
-        #endregion
     }
 
     public override void Movement()
@@ -834,12 +827,14 @@ public class PlayerSwinging : State
         }
         PSM.jumpInputBool = false;
     }
-
     public override void FallFromLadder()
     {
+        PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed * PSM.slidingInput * pathDirection;
+        shouldRetainSwingVelocity = true;
         PSM.OnFall();
         PSM.animationControllerisFoldingJumped = false;
         PSM.jumpInputBool = false;
+
     }
 
     #region SLIDING Functions
@@ -1216,6 +1211,10 @@ public class PlayerSwinging : State
         PSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
         PSM.effects.OnStateChangedSlideEnd();
+        if (closestRail.isASwitch)
+        {
+            closestRail.GetComponent<SwitchOnAfterSnap>().RefreshChallengeTimer();
+        }
         #endregion
 
         yield break;
