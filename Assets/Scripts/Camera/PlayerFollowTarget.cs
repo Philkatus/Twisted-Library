@@ -18,7 +18,6 @@ public class PlayerFollowTarget : MonoBehaviour
     #endregion
 
     [Tooltip("Insert Main Camera.")]
-
     [SerializeField] Camera Camera;
 
     [Tooltip("Insert the player target, the camera should follow.")]
@@ -29,15 +28,10 @@ public class PlayerFollowTarget : MonoBehaviour
     [SerializeField] float Damping;
     [SerializeField] Vector3 ScreenSpaceOffset;
 
-    [SerializeField] PlayerMovementStateMachine PlayerSM;
     [SerializeField] LayerMask EnvironmentLayer;
 
     float dampingStandard;
     float offsetToPlayer;
-    bool inVerticalAdjustMode = false;
-    bool isFalling = false;
-
-    Coroutine readjustCameraCo;
 
     Vector3 m_CurrentVelocity;
     Vector3 m_DampedPos;
@@ -59,12 +53,8 @@ public class PlayerFollowTarget : MonoBehaviour
         pos = Camera.transform.worldToLocalMatrix * pos;
         pos += ScreenSpaceOffset;
         pos = Camera.transform.localToWorldMatrix * pos;
-        // Debug.Log("PLAYERTARGET: " + PlayerTarget.position.y);
-        Debug.Log("this: " + transform.position.y);
         offsetToPlayer = transform.position.y - PlayerTarget.position.y;
-        // Debug.Log("OFFSET: " + offsetToPlayer);
         dampingStandard = Damping;
-        AdjustCameraY();
     }
 
     void FixedUpdate()
@@ -74,10 +64,11 @@ public class PlayerFollowTarget : MonoBehaviour
             pos = currentTarget.position;
             if (currentTarget == LadderTarget)
             {
-                Debug.DrawRay(currentTarget.position, -currentTarget.forward, Color.blue, Mathf.Infinity);
-                pos += (-(currentTarget.forward * LadderTargetOffset.x)) + (-(LadderTarget.right * LadderTargetOffset.y));
+                pos += (-(currentTarget.forward * LadderTargetOffset.x)) + (-(currentTarget.up * LadderTargetOffset.y));
             }
-            m_DampedPos = Damping < 0.01f ? pos : Vector3.SmoothDamp(m_DampedPos, pos, ref m_CurrentVelocity, Damping);
+
+            m_DampedPos = Damping < 0.01f ? pos : Vector3.Lerp(m_DampedPos, pos, Damping);
+            // Vector3.SmoothDamp(m_DampedPos, pos, ref m_CurrentVelocity, Damping);
             pos = m_DampedPos;
             if (Camera != null)
             {
@@ -85,7 +76,6 @@ public class PlayerFollowTarget : MonoBehaviour
                 pos += ScreenSpaceOffset;
                 pos = Camera.transform.localToWorldMatrix * pos;
             }
-            // Debug.Log("Target: " + currentTarget.position.y);
             CheckIfFalling();
             MoveCameraY();
         }
@@ -119,11 +109,9 @@ public class PlayerFollowTarget : MonoBehaviour
 
         if (CheckIfFalling())
         {
-            Debug.Log("falling");
         }
         else
         {
-            Debug.Log("Not Falling");
             doNotAdjust = true;
         }
 
@@ -141,19 +129,47 @@ public class PlayerFollowTarget : MonoBehaviour
             transform.position = new Vector3(transform.position.x, currentTarget.position.y, transform.position.z);
         }
     }
+    [SerializeField] AnimationCurve lerpCurve;
+    [SerializeField] Transform tempTarget;
 
     public void FollowPlayer()
     {
-        currentTarget = PlayerTarget;
+        if (switchCoroutine != null)
+        {
+            StopCoroutine(switchCoroutine);
+        }
+        switchCoroutine = StartCoroutine(MoveTowards(PlayerTarget));
     }
 
     public void FollowLadder()
     {
-        currentTarget = LadderTarget;
+        if (currentTarget != LadderTarget)
+        {
+            if (switchCoroutine != null)
+            {
+                StopCoroutine(switchCoroutine);
+            }
+            switchCoroutine = StartCoroutine(MoveTowards(LadderTarget));
+        }
     }
 
-    public void AdjustCameraY()
+    Coroutine switchCoroutine;
+    IEnumerator MoveTowards(Transform endTarget)
     {
-        inVerticalAdjustMode = true;
+        m_DampedPos = transform.position;
+        m_CurrentVelocity = Vector3.zero;
+        var timer = 0f;
+        var startPos = transform.position;
+        var maxDuration = .4f;
+        tempTarget.position = startPos;
+        currentTarget = tempTarget;
+        while (timer < maxDuration)
+        {
+            var endPos = endTarget.position;
+            timer += Time.deltaTime;
+            currentTarget.transform.position = Vector3.Lerp(startPos, endPos, lerpCurve.Evaluate(timer / maxDuration));
+            yield return null;
+        }
+        currentTarget = endTarget;
     }
 }

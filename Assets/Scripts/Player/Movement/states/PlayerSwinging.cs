@@ -102,9 +102,6 @@ public class PlayerSwinging : State
 
     public override void ReInitialize()
     {
-        // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
-        CameraController.instance.SwitchToLadderCam();
-
         #region ReInitialize Sliding
         // Assign variables.
         stats = PSM.stats;
