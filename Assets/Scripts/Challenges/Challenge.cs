@@ -17,6 +17,7 @@ public class Challenge : MonoBehaviour
     public float timeToCompleteComponents;
 
     Landmark landmark;
+    UILogic uILogic;
     bool challengeCompleted;
     public bool ChallengeCompleted
     {
@@ -31,6 +32,7 @@ public class Challenge : MonoBehaviour
                 Debug.Log("Challenge complete!");
                 gameObject.SendMessage("OnAllComponentsCompleted");
                 landmark.CheckIfAllChallengesComplete();
+                uILogic.OnChallengeComplete();
             }
             challengeCompleted = value;
         }
@@ -52,18 +54,29 @@ public class Challenge : MonoBehaviour
         {
             component.challenge = this;
         }
+        uILogic = ObjectManager.instance.uILogic;
     }
 
     void Update()
     {
         if (componentCompletionTime != 0)
         {
-            if (componentCompletionTime + timeToCompleteComponents <= Time.time)
+            float timeSinceCompletion = componentCompletionTime - Time.time;
+            foreach (ChallengeComponent component in components)
+            {
+                if (component.Completed)
+                {
+                    uILogic.UpdateComponentVisual(component.linkedUI, timeSinceCompletion);
+                }
+            }
+
+            if (timeSinceCompletion >= timeToCompleteComponents)
             {
                 foreach (ChallengeComponent component in components)
                 {
                     component.Completed = false;
                 }
+                uILogic.OnChallengeFailed();
                 componentCompletionTime = 0;
                 Debug.Log("Challenge failed!");
             }
