@@ -73,8 +73,8 @@ public class Challenge : MonoBehaviour
                 foreach (ChallengeComponent component in components)
                 {
                     component.Completed = false;
+                    ObjectManager.instance.uILogic.OnChallengeFailed(component.linkedUI);
                 }
-                ObjectManager.instance.uILogic.OnChallengeFailed();
                 componentCompletionTime = 0;
                 Debug.Log("Challenge failed!");
             }
