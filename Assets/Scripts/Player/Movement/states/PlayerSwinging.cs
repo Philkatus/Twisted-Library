@@ -181,7 +181,8 @@ public class PlayerSwinging : State
         }
         else
         {
-            tAcceleration = Mathf.Clamp(Mathf.Abs(ExtensionMethods.resultingSpeed(PSM.playerVelocity,pathDirection))*.3f+ PSM.playerVelocity.magnitude*.7f / maxSlidingSpeed, 0, 1);
+            Vector3 horizontalVelocity = new Vector3(PSM.playerVelocity.x, Mathf.Clamp(PSM.playerVelocity.y, 0, Mathf.Infinity), PSM.playerVelocity.z);
+            tAcceleration = Mathf.Clamp(horizontalVelocity.magnitude / (maxSlidingSpeed - 2), 0, 1);
             accelerate = true;
         }
         #endregion
@@ -396,7 +397,7 @@ public class PlayerSwinging : State
         PSM.bob.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
         #endregion
-       
+
         Time.fixedDeltaTime = 0.002f;
     }
 
@@ -1208,6 +1209,10 @@ public class PlayerSwinging : State
         PSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
         PSM.effects.OnStateChangedSlideEnd();
+        if (closestRail.isASwitch)
+        {
+            closestRail.GetComponent<SwitchOnAfterSnap>().RefreshChallengeTimer();
+        }
         #endregion
 
         yield break;
