@@ -411,6 +411,7 @@ public class UILogic : MonoBehaviour
     public void OnChallengeComponentComplete(GameObject linkedUI)
     {
         // wenn das canvas noch nicht runtergezogen wurde (bool), dann hol es runter, sonst nur das eine UIElement anschalten
+        linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, 40);
 
     }
 
@@ -425,8 +426,18 @@ public class UILogic : MonoBehaviour
     }
 
 
-    public void UpdateComponentVisual(GameObject linkedUI, float timer)
+    public void UpdateComponentVisual(GameObject linkedUI, string type, float timer, float timeToCompleteComponents, bool turnOn)
     {
-
+        if (type == "switch")
+        {
+            if (turnOn)
+            {
+                linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 40, timer));
+            }
+            else
+            {
+                linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(40, 0, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1)));
+            }
+        }
     }
 }
