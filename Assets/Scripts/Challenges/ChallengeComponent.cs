@@ -7,6 +7,7 @@ public class ChallengeComponent : MonoBehaviour
     public delegate void EventHandler();
     public event EventHandler onResetChallenge;
     public Challenge challenge;
+    public GameObject linkedUI;
 
     bool completed;
     public bool Completed
@@ -24,6 +25,7 @@ public class ChallengeComponent : MonoBehaviour
             else
             {
                 challenge.componentCompletionTime = Time.time;
+                ObjectManager.instance.uILogic.OnChallengeComponentComplete(linkedUI);
                 CheckIfChallengeCompleted();
             }
             completed = value;

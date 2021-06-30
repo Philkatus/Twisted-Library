@@ -181,7 +181,8 @@ public class PlayerSwinging : State
         }
         else
         {
-            PSM.currentSlidingSpeed = PSM.playerVelocity.magnitude;
+
+            tAcceleration = Mathf.Clamp(Mathf.Abs(ExtensionMethods.resultingSpeed(PSM.playerVelocity,pathDirection))*.3f+ PSM.playerVelocity.magnitude*.7f / maxSlidingSpeed, 0, 1);
             accelerate = true;
         }
         #endregion
@@ -396,16 +397,8 @@ public class PlayerSwinging : State
         PSM.bob.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
         #endregion
-        #region Velocity Calculation
-
-        if (!stats.preservesVelocityOnSnap)
-        {
-            PSM.baseVelocity = ExtensionMethods.resultingClampedVelocity(PSM.baseVelocity, ladder.transform.forward, stats.maxSwingSpeed);
-            PSM.bonusVelocity = ExtensionMethods.resultingVelocity(PSM.bonusVelocity, ladder.transform.forward);
-        }
+       
         Time.fixedDeltaTime = 0.002f;
-
-        #endregion
     }
 
     public override void Movement()
@@ -834,7 +827,6 @@ public class PlayerSwinging : State
         }
         PSM.jumpInputBool = false;
     }
-
     public override void FallFromLadder()
     {
         PSM.OnFall();

@@ -45,6 +45,7 @@ public class UILogic : MonoBehaviour
 
     private void Start()
     {
+        ObjectManager.instance.uILogic = this;
         EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("PLAY"));
 
         iaa = ObjectManager.instance.pSM.actionAsset;
@@ -166,7 +167,7 @@ public class UILogic : MonoBehaviour
         }
     }
 
-    public void debugMessage() 
+    public void debugMessage()
     {
         Debug.LogError("options button");
     }
@@ -400,5 +401,32 @@ public class UILogic : MonoBehaviour
             handle.GetComponent<RectTransform>().anchoredPosition = Vector3.SmoothDamp(handle.GetComponent<RectTransform>().anchoredPosition, new Vector3(-281.1f, -168.3f, 0), ref velocity, .5f);
             handle.GetComponent<Image>().CrossFadeAlpha(1f, .5f, false);
         }*/
+    }
+
+    public void OnChallengeFailed()
+    {
+
+    }
+
+    public void OnChallengeComponentComplete(GameObject linkedUI)
+    {
+        // wenn das canvas noch nicht runtergezogen wurde (bool), dann hol es runter, sonst nur das eine UIElement anschalten
+
+    }
+
+    public void OnChallengeComplete()
+    {
+
+    }
+
+    public void OnLandmarkComplete()
+    {
+
+    }
+
+
+    public void UpdateComponentVisual(GameObject linkedUI, float timer)
+    {
+
     }
 }

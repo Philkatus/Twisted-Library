@@ -6,6 +6,7 @@ public class ObjectManager : MonoBehaviour
 {
     public static ObjectManager instance;
     public PlayerMovementStateMachine pSM;
+    public UILogic uILogic;
 
     private void Awake()
     {
