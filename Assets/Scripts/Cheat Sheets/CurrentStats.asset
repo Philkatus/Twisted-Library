@@ -30,13 +30,13 @@ MonoBehaviour:
   movementDrag: 13
   walkingBonusVelocityDrag: 0.01
   movementVelocityFactor: 1
-  jumpHeight: 17
+  jumpHeight: 20
   maxJumpingSpeed: 27
   maxJumpingSpeedForward: 10
   ladderPushAcceleration: 30
   ladderPushVelocityThreshhold: 0
   ladderPushCurrentVelocityFactor: 0.5
-  jumpFromLadderDirection: {x: 0, y: 30, z: 10}
+  jumpFromLadderDirection: {x: 0, y: 36, z: 8}
   airMovementAcceleration: 50
   initialAirMovementAcceleration: 500
   initialAirMovementTime: 1
@@ -50,12 +50,12 @@ MonoBehaviour:
   resnappingDotProduct: 0
   minVelocityToChangeSnapDirection: 1
   minCameraAngleToChangeSnapDirection: 0.3
-  climbingSpeedOnLadder: 1
+  climbingSpeedOnLadder: 2
   heightOnLadderKatapulFactor: 0.2
   ladderDismountSpeed: 1.5
   ladderDismountTimer: 0.1
   preservesVelocityOnSnap: 0
-  fallingMomentumPercentage: 1
+  fallingMomentumPercentage: 0.5
   playerOffsetFromLadder: 0
   maxSlidingSpeed: 20
   timeToAccecelerate: 3
@@ -70,8 +70,9 @@ MonoBehaviour:
   maxPushAngle: 0.1
   maxSwingSpeed: 45
   swingingGravity: 70
-  centripetalForceFactor: 0.49
-  maxRepellingVelocity: 25.05
+  centripetalForceFactor: 0.5
+  maxRepellingVelocity: 25
+  retainSwingVelocityOnJumpFactor: 0.8
   ladderLengthBig: 4
   ladderLengthSmall: 1.25
   foldingTime: 0.2

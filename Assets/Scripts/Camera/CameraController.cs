@@ -16,12 +16,12 @@ public class CameraController : MonoBehaviour
             Destroy(this);
     }
     [SerializeField] Camera mainCam;
-    [SerializeField] CinemachineFreeLook cam01, cam02;
+    [SerializeField] CinemachineFreeLook cam01, cam02, ladderCam;
     [SerializeField] CinemachineBrain brain;
 
     CinemachineFreeLook current;
     bool justSwitched = false;
-    float delta = 0.005f;
+    float delta = 0.04f;
 
     public void AssignAllVars()
     {
@@ -41,6 +41,26 @@ public class CameraController : MonoBehaviour
     void FixedUpdate()
     {
         SwitchCams();
+    }
+
+    public void SwitchToLadderCam()
+    {
+        current.Priority -= 5;
+        ladderCam.Priority += 5;
+        current = ladderCam;
+            PlayerFollowTarget.instance.FollowLadder();
+
+    }
+
+    public void SwitchToPlayerCam()
+    {
+        if (current == ladderCam)
+        {
+            current.Priority -= 5;
+            cam01.Priority += 5;
+            current = cam01;
+            PlayerFollowTarget.instance.FollowPlayer();
+        }
     }
 
     private void SwitchCams()

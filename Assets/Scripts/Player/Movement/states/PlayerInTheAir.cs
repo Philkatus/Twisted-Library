@@ -28,7 +28,7 @@ public class PlayerInTheAir : State
         initialAirMovementTimer = 0;
 
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
-        PlayerFollowTarget.instance.FollowPlayer();
+        CameraController.instance.SwitchToPlayerCam();
     }
 
     public override void Movement()
@@ -146,17 +146,15 @@ public class PlayerInTheAir : State
 
             PSM.coyoteTimer = stats.slidingCoyoteTime;
             PSM.animationControllerisFoldingJumped = false;
+            PSM.jumpInputBool = false;
         }
-        PSM.jumpInputBool = false;
+        
     }
 
     public override void LadderPush()
     {
         if (stats.canLadderPush)
         {
-            // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
-            PlayerFollowTarget.instance.AdjustCameraY();
-
             float sphereRadius = .2f;
             float maxHeight = stats.ladderLengthBig - sphereRadius;
             float acceleration = stats.LadderPushAcceleration;
@@ -167,7 +165,7 @@ public class PlayerInTheAir : State
             #region CastDown
             if (!PSM.didLadderPush)
             {
-                hits.AddRange(Physics.SphereCastAll(origin+Vector3.up*.5f, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin + Vector3.up * .5f, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
             }
             float closestDistance = Mathf.Infinity;
             RaycastHit closestHit;
@@ -226,11 +224,14 @@ public class PlayerInTheAir : State
                     PSM.ladderJumpTarget = target;
                     PSM.baseVelocity.y = 0;
                     PSM.foldInputBool = false;
+                    PSM.jumpInputBool = false;
                     //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
                     PSM.bonusVelocity += directionToWall * acceleration;
                     floatingTimer = 0;
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
+                    PlayerFollowTarget.instance.DoAdjustY(true);
+
                 }
                 else if (Vector3.Angle(directionToWall, Vector3.up) >= 45)
                 {
@@ -238,11 +239,11 @@ public class PlayerInTheAir : State
                     PSM.ladderJumpTarget = target;
                     PSM.baseVelocity.y = 0;
                     PSM.foldInputBool = false;
-
-                    Vector3 tempDirection1 = Mathf.Clamp( ExtensionMethods.resultingSpeed(PSM.playerVelocity, -directionToWall),0,Mathf.Infinity)*-directionToWall;
+                    PSM.jumpInputBool = false;
+                    Vector3 tempDirection1 = Mathf.Clamp(ExtensionMethods.resultingSpeed(PSM.playerVelocity, -directionToWall), 0, Mathf.Infinity) * -directionToWall;
                     Vector3 tempDirection2 = PSM.playerVelocity - tempDirection1;
                     floatingTimer = 0;
-                    if (tempDirection2.magnitude < stats.ladderPushVelocityThreshhold) 
+                    if (tempDirection2.magnitude < stats.ladderPushVelocityThreshhold)
                     {
                         tempDirection2 = directionToWall;
                     }
@@ -258,6 +259,8 @@ public class PlayerInTheAir : State
                     PSM.bonusVelocity = targetVelocity;
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
+                    PlayerFollowTarget.instance.DoAdjustY(true);
+
                 }
             }
         }

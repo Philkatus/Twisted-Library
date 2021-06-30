@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Main Camera Blends
   m_EditorClassIdentifier: 
   m_CustomBlends:
-  - m_From: CM FreeLook2 (2)
-    m_To: CM FreeLook2 (3)
+  - m_From: CM_UpperCam
+    m_To: CM_LowerCam
     m_Blend:
-      m_Style: 1
-      m_Time: 0.3
+      m_Style: 6
+      m_Time: 1
       m_CustomCurve:
         serializedVersion: 2
         m_Curve:
@@ -42,11 +42,69 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 0
-  - m_From: CM FreeLook2 (3)
-    m_To: CM FreeLook2 (2)
+  - m_From: CM_LowerCam
+    m_To: CM_UpperCam
     m_Blend:
-      m_Style: 1
-      m_Time: 0.3
+      m_Style: 6
+      m_Time: 1
+      m_CustomCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+  - m_From: '**ANY CAMERA**'
+    m_To: CM_LadderCam
+    m_Blend:
+      m_Style: 3
+      m_Time: 1
+      m_CustomCurve:
+        serializedVersion: 2
+        m_Curve:
+        - serializedVersion: 3
+          time: 0
+          value: 0
+          inSlope: 0
+          outSlope: 0
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 1
+          value: 1
+          inSlope: 2
+          outSlope: 2
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        m_PreInfinity: 2
+        m_PostInfinity: 2
+        m_RotationOrder: 0
+  - m_From: CM_LadderCam
+    m_To: '**ANY CAMERA**'
+    m_Blend:
+      m_Style: 3
+      m_Time: 1
       m_CustomCurve:
         serializedVersion: 2
         m_Curve:

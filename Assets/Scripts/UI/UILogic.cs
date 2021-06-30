@@ -33,8 +33,19 @@ public class UILogic : MonoBehaviour
     bool optionGotDeselectet = false;
     bool startcanvasDisabled = false;
 
+    [SerializeField] List<Image> schalterUI;
+    [SerializeField] List<Sprite> schalterImages;
+    [SerializeField] List<Sprite> schalterImagesSide;
+    Vector3 velocity = Vector3.zero;
+    float schalterTimer = 5f;
+    float timeCount = 2f;
+
+    public GameObject handle;
+
+
     private void Start()
     {
+        ObjectManager.instance.uILogic = this;
         EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("PLAY"));
 
         iaa = ObjectManager.instance.pSM.actionAsset;
@@ -52,6 +63,7 @@ public class UILogic : MonoBehaviour
     {
         DisableStartCanvas();
         Transitions();
+        ShowMechanicProgress();
     }
 
     void ShowControls()
@@ -155,7 +167,7 @@ public class UILogic : MonoBehaviour
         }
     }
 
-    public void debugMessage() 
+    public void debugMessage()
     {
         Debug.LogError("options button");
     }
@@ -283,5 +295,156 @@ public class UILogic : MonoBehaviour
     {
         controller.SetActive(false);
         keyboard.SetActive(true);
+    }
+
+    void ShowMechanicProgress()
+    {
+        //check if first mechanic has been activated
+        //check if it was a switch or gear
+        //if (it is a gear)
+        //{ UI Element wird eingeblendet/ Rotation oder animation oder whatever getriggerd}
+
+        /*schalterTimer -= Time.deltaTime;        
+        if(schalterTimer <= 0) //Schalter wird zurueck gedreht
+        {
+            schalterLeft.transform.rotation = Quaternion.Slerp(schalterLeft.transform.rotation, Quaternion.Euler(70,0,0),.001f);
+            schalterLeft.GetComponent<RectTransform>().anchoredPosition = Vector3.SmoothDamp(schalterLeft.GetComponent<RectTransform>().anchoredPosition, new Vector3(-300, -140, 0), ref velocity,  10f);
+            schalterLeft.GetComponent<Image>().CrossFadeAlpha(.3f, 10f, false);
+        }
+        else //Schalter wird umgeschaltet
+        {
+            schalterLeft.transform.rotation = Quaternion.Slerp(schalterLeft.transform.rotation, Quaternion.Euler(0, 0, 0), .01f);
+            schalterLeft.GetComponent<RectTransform>().anchoredPosition = Vector3.SmoothDamp(schalterLeft.GetComponent<RectTransform>().anchoredPosition, new Vector3(-300, -160, 0), ref velocity, .5f);
+            schalterLeft.GetComponent<Image>().CrossFadeAlpha(1f, .5f, false);
+        }*/
+
+        //Frontale Sprites
+        /*if (schalterTimer >= 10f && schalterTimer <= 10.5f) //Schalter wird zurueck gedreht
+        {
+            schalterUI[1].GetComponent<Image>().CrossFadeAlpha(.3f, .2f, false);
+            schalterUI[2].GetComponent<Image>().CrossFadeAlpha(.3f, .2f, false);
+            schalterUI[0].sprite = schalterImages[0];
+        }
+        if(schalterTimer >= 6f && schalterTimer <= 6.5f)
+        {
+            schalterUI[0].sprite = schalterImages[1];
+        }
+        if (schalterTimer >= 3f && schalterTimer <= 7f)
+        {
+            schalterUI[0].sprite = schalterImages[2];
+        }
+        if (schalterTimer >= 1f && schalterTimer <= 3f)
+        {
+            schalterUI[0].sprite = schalterImages[3];
+        }
+        if (schalterTimer <= 0)
+        {
+            schalterUI[0].sprite = schalterImages[4];
+            schalterUI[0].GetComponent<Image>().CrossFadeAlpha(.3f, .2f, false);
+        }
+        schalterTimer -= Time.deltaTime;*/
+
+        //Seitliche Sprites
+        /*if (schalterTimer >= 10f && schalterTimer <= 10.5f) //Schalter wird zurueck gedreht
+        {
+            schalterUI[1].GetComponent<Image>().CrossFadeAlpha(.3f, .2f, false);
+            schalterUI[2].GetComponent<Image>().CrossFadeAlpha(.3f, .2f, false);
+            schalterUI[0].sprite = schalterImagesSide[0];
+        }
+        if (schalterTimer >= 6f && schalterTimer <= 6.5f)
+        {
+            schalterUI[0].sprite = schalterImagesSide[1];
+        }
+        if (schalterTimer >= 3f && schalterTimer <= 7f)
+        {
+            schalterUI[0].sprite = schalterImagesSide[2];
+        }
+        if (schalterTimer >= 1f && schalterTimer <= 3f)
+        {
+            schalterUI[0].sprite = schalterImagesSide[3];
+        }
+        if (schalterTimer <= 0)
+        {
+            schalterUI[0].sprite = schalterImagesSide[4];
+            schalterUI[0].GetComponent<Image>().CrossFadeAlpha(.3f, .2f, false);
+        }
+        schalterTimer -= Time.deltaTime;*/
+
+        //RotateScvhalter VER1
+        /*schalterTimer -= Time.deltaTime;
+        if (schalterTimer <= 0) //Schalter wird zurueck gedreht
+        {
+            handle.transform.rotation = Quaternion.Slerp(handle.transform.rotation, Quaternion.Euler(0, 0, 0), .005f);
+            handle.GetComponent<RectTransform>().anchoredPosition = Vector3.SmoothDamp(handle.GetComponent<RectTransform>().anchoredPosition, new Vector3(-300, -140, 0), ref velocity, 2.5f);
+            //handle.GetComponent<Image>().CrossFadeAlpha(.3f, 10f, false);
+        }
+        else //Schalter wird umgeschaltet
+        {
+            //handle.transform.rotation = Vector3.RotateTowards(handle.transform.rotation, new Vector3(0, 0, 63), .1f, .1f);
+            handle.transform.rotation = Quaternion.Slerp(handle.transform.rotation, Quaternion.Euler(0, 0, 63), .1f);
+            handle.GetComponent<RectTransform>().anchoredPosition = Vector3.SmoothDamp(handle.GetComponent<RectTransform>().anchoredPosition, new Vector3(-281.1f, -168.3f, 0), ref velocity, .5f);
+            handle.GetComponent<Image>().CrossFadeAlpha(1f, .5f, false);
+        }*/
+
+        //RotateScvhalter VER2
+        /*schalterTimer -= Time.deltaTime;
+        if (schalterTimer <= 0) //Schalter wird zurueck gedreht
+        {
+            handle.transform.rotation = Quaternion.Slerp(handle.transform.rotation, Quaternion.Euler(0, 0, 0), .005f);
+            handle.GetComponent<RectTransform>().anchoredPosition = Vector3.SmoothDamp(handle.GetComponent<RectTransform>().anchoredPosition, new Vector3(-300, -140, 0), ref velocity, 2.5f);
+            //handle.GetComponent<Image>().CrossFadeAlpha(.3f, 10f, false);
+        }
+        else //Schalter wird umgeschaltet
+        {
+            //handle.transform.rotation = Vector3.RotateTowards(handle.transform.rotation, new Vector3(0, 0, 63), .1f, .1f);
+            handle.transform.rotation = Quaternion.Slerp(handle.transform.rotation, Quaternion.Euler(0, 0, 63), .1f);
+            handle.GetComponent<RectTransform>().anchoredPosition = Vector3.SmoothDamp(handle.GetComponent<RectTransform>().anchoredPosition, new Vector3(-281.1f, -168.3f, 0), ref velocity, .5f);
+            handle.GetComponent<Image>().CrossFadeAlpha(1f, .5f, false);
+        }*/
+    }
+
+    public void OnChallengeFailed(GameObject linkedUI)
+    {
+        linkedUI.GetComponent<RectTransform>().localScale = new Vector3(.8f, .8f, .8f);
+        linkedUI.GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
+        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
+    }
+
+    public void OnChallengeComponentComplete(GameObject linkedUI)
+    {
+        // immer wenn ein hebel umgelegt wird, wird das im jeweiligen hebel aufgerufen mit dem jeweiligen ui objekt (linkedUI)
+        linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, 40);
+    }
+
+    public void OnChallengeComplete()
+    {
+        // wenn alle switches an sind, wird das aufgerufen (challenge complete)
+    }
+
+    public void OnLandmarkComplete()
+    {
+
+    }
+
+
+    public void UpdateComponentVisual(GameObject linkedUI, string type, float timer, float timeToCompleteComponents, bool turnOn)
+    {
+        // abhängig ob switch oder zahnrad
+        if (type == "switch")
+        {
+            // nur zum "Anschalten", geht schnell runter
+            if (turnOn)
+            {
+                linkedUI.GetComponent<RectTransform>().localScale = new Vector3(1f, 1f, 1f);
+                linkedUI.GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
+                linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
+                linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 40, timer));
+            }
+            else
+            {
+                // geht dann hoch abhängig von timeToCompleteComponents (im Inspektor von der Challenge gesetzt)
+                linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(40, 0, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1)));
+            }
+        }
     }
 }

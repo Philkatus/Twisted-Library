@@ -7,6 +7,8 @@ public class ChallengeComponent : MonoBehaviour
     public delegate void EventHandler();
     public event EventHandler onResetChallenge;
     public Challenge challenge;
+    public GameObject linkedUI;
+    [HideInInspector] public string type;
 
     bool completed;
     public bool Completed
@@ -24,6 +26,7 @@ public class ChallengeComponent : MonoBehaviour
             else
             {
                 challenge.componentCompletionTime = Time.time;
+                ObjectManager.instance.uILogic.OnChallengeComponentComplete(linkedUI);
                 CheckIfChallengeCompleted();
             }
             completed = value;
@@ -35,9 +38,11 @@ public class ChallengeComponent : MonoBehaviour
     void Start()
     {
         if (ChallengeManager.instance == null)
-            Debug.Log("This scene needs a Challenge Manager");
+            Debug.LogError("This scene needs a Challenge Manager");
         else
             challengeManager = ChallengeManager.instance;
+        // if (!challenge.components.Contains(this))
+        //     challenge.components.Add(this);
     }
 
     void CheckIfChallengeCompleted()

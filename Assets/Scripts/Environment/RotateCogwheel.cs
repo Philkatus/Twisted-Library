@@ -16,6 +16,7 @@ public class RotateCogwheel : MonoBehaviour
         anim = GetComponent<Animator>();
         challengeComponent = GetComponent<ChallengeComponent>();
         challengeComponent.onResetChallenge += new ChallengeComponent.EventHandler(SetStopWheelTrue);
+        challengeComponent.type = "cogwheel";
     }
 
     void Update()

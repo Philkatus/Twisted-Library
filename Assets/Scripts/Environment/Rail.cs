@@ -24,4 +24,11 @@ public class Rail : MonoBehaviour
     PlayerMovementStateMachine playerStateMachine;
     #endregion
 
+    private void Awake()
+    {
+        if (pathCreator == null) 
+        {
+            pathCreator = GetComponent<PathCreator>();
+        }
+    }
 }
