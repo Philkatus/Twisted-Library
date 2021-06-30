@@ -20,7 +20,9 @@ public class PlayerWalking : State
     public override void Initialize()
     {
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
-        PlayerFollowTarget.instance.FollowPlayer();
+        // PlayerFollowTarget.instance.FollowPlayer();
+        PlayerFollowTarget.instance.DoAdjustY(false);
+
         ladder = PSM.ladder;
         controller = PSM.controller;
 
@@ -28,7 +30,7 @@ public class PlayerWalking : State
         ladder.transform.localScale = new Vector3(1, 1, 1);
         controller.transform.localScale = new Vector3(1, 1, 1);
         ladder.transform.SetParent(PSM.animController.spine);
-        
+
         controller.transform.rotation = Quaternion.AngleAxis(Vector3.SignedAngle(controller.transform.up, Vector3.up, controller.transform.right), controller.transform.right) * controller.transform.rotation;
         ladder.localPosition = PSM.ladderWalkingPosition;
         ladder.localRotation = PSM.ladderWalkingRotation;
@@ -75,7 +77,6 @@ public class PlayerWalking : State
         {
             PSM.baseVelocity.z = 0;
         }
-
         #endregion
 
         PSM.baseVelocity.y -= stats.Gravity * Time.fixedDeltaTime;
@@ -108,6 +109,10 @@ public class PlayerWalking : State
 
     public override void Jump()
     {
+        if (Mathf.Abs(PSM.controller.velocity.y) < 0.2f)
+        {
+            PlayerFollowTarget.instance.OnSimpleJump();
+        }
         PSM.baseVelocity.y = stats.JumpHeight;
         PSM.jumpInputBool = false;
         PSM.OnFall();
@@ -117,6 +122,11 @@ public class PlayerWalking : State
     {
         PSM.OnSnap();
 
+    }
+
+    public override IEnumerator Finish()
+    {
+        yield return null;
     }
 
 }
