@@ -828,9 +828,12 @@ public class PlayerSwinging : State
     }
     public override void FallFromLadder()
     {
+        PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed * PSM.slidingInput * pathDirection;
+        shouldRetainSwingVelocity = true;
         PSM.OnFall();
         PSM.animationControllerisFoldingJumped = false;
         PSM.jumpInputBool = false;
+
     }
 
     #region SLIDING Functions
