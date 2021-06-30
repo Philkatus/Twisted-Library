@@ -403,16 +403,17 @@ public class UILogic : MonoBehaviour
         }*/
     }
 
-    public void OnChallengeFailed()
+    public void OnChallengeFailed(GameObject linkedUI)
     {
-
+        linkedUI.GetComponent<RectTransform>().localScale = new Vector3(.8f, .8f, .8f);
+        linkedUI.GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
+        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
     }
 
     public void OnChallengeComponentComplete(GameObject linkedUI)
     {
         // immer wenn ein hebel umgelegt wird, wird das im jeweiligen hebel aufgerufen mit dem jeweiligen ui objekt (linkedUI)
         linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, 40);
-
     }
 
     public void OnChallengeComplete(GameObject linkedUI)
@@ -434,6 +435,9 @@ public class UILogic : MonoBehaviour
             // nur zum "Anschalten", geht schnell runter
             if (turnOn)
             {
+                linkedUI.GetComponent<RectTransform>().localScale = new Vector3(1f, 1f, 1f);
+                linkedUI.GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
+                linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
                 linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 40, timer));
             }
             else
