@@ -36,21 +36,25 @@ public class LadderSnap : State
         bool isFullyUnfolded = LadderSizeStateMachine.ladderLength >= stats.ladderLengthBig;
         if (!isFullyUnfolded && !hasExpanded)
         {
-            // if ((isSwingingUp && isOverRail) || (!isSwingingUp && !isOverRail))
-            // {
-            PSM.expandAfterSnap = true;
-            //LadderSizeStateMachine.ladderLength += Mathf.Clamp(Vector3.Distance(PSM.ladder.transform.position, currentPlayerPosition) + 0.1f, stats.ladderLengthSmall, stats.ladderLengthBig);
-            LadderSizeStateMachine.ladderLength = Mathf.Clamp(Vector3.Distance(pivot, currentPlayerPosition) + 0.1f, LadderSizeStateMachine.ladderLength, stats.ladderLengthBig);
-            Debug.Log("expansion!");
-            LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
-            // }
-            // else
-            // {
-            //     LadderSizeStateMachine.ladderLength = Mathf.Clamp(Vector3.Distance(PSM.ladder.transform.position, currentPlayerPosition), LadderSizeStateMachine.ladderLength, stats.ladderLengthBig);
-            //     LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
-            //     Debug.Log("jfjkkjkfkdjfdjk");
-            //     PSM.expandAfterSnap = false;
-            // }
+            if ((isSwingingUp && isOverRail) || (!isSwingingUp && !isOverRail))
+            {
+                PSM.expandAfterSnap = true;
+
+                //LadderSizeStateMachine.ladderLength += Mathf.Clamp(Vector3.Distance(PSM.ladder.transform.position, currentPlayerPosition) + 0.1f, stats.ladderLengthSmall, stats.ladderLengthBig);
+                LadderSizeStateMachine.ladderLength = Mathf.Clamp(Vector3.Distance(pivot, currentPlayerPosition) + 0.1f, LadderSizeStateMachine.ladderLength, stats.ladderLengthBig);
+                Debug.Log("expansion!");
+                LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
+                PSM.HeightOnLadder -= Vector3.Distance(pivot, PSM.transform.position);
+                PSM.HeightOnLadder = Mathf.Clamp(PSM.HeightOnLadder, -0.75f, 0);
+                PSM.transform.localPosition = new Vector3(0, LadderSizeStateMachine.ladderLength * PSM.HeightOnLadder, -0.38f);
+            }
+            else
+            {
+                LadderSizeStateMachine.ladderLength = Mathf.Clamp(Vector3.Distance(PSM.ladder.transform.position, currentPlayerPosition), LadderSizeStateMachine.ladderLength, stats.ladderLengthBig);
+                LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
+                Debug.Log("jfjkkjkfkdjfdjk");
+                PSM.expandAfterSnap = false;
+            }
         }
         else
         {

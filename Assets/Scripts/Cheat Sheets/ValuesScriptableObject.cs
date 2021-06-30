@@ -298,6 +298,9 @@ public class ValuesScriptableObject : ScriptableObject
 
     [Tooltip("describes the maximum velocity you can reach while repelling from a wall")]
     public float maxRepellingVelocity = 1;
+
+    [Tooltip("influences how much of the swinging velocity gets retain on jump")]
+    public float retainSwingVelocityOnJumpFactor = 1;
     #endregion
     [Space]
     #region ladder
