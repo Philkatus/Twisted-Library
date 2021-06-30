@@ -41,7 +41,8 @@ public class ChallengeComponent : MonoBehaviour
             Debug.LogError("This scene needs a Challenge Manager");
         else
             challengeManager = ChallengeManager.instance;
-        challenge.components.Add(this);
+        // if (!challenge.components.Contains(this))
+        //     challenge.components.Add(this);
     }
 
     void CheckIfChallengeCompleted()
