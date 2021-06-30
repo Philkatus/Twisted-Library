@@ -799,9 +799,9 @@ public class PlayerSwinging : State
         {
             float offSet = .5f;
             Vector3 direction = (-PSM.ladderDirection + Vector3.up * offSet).normalized; ;
-            base.PSM.bonusVelocity = direction * (2.5f * stats.ReversedRailCatapultJumpMultiplier);
+            PSM.bonusVelocity = direction * (2.5f * stats.ReversedRailCatapultJumpMultiplier);
             shouldRetainSwingVelocity = false;
-            base.PSM.OnFall();
+            PSM.OnFall();
             PSM.animationControllerisFoldingJumped = true;
         }
 
@@ -1216,12 +1216,8 @@ public class PlayerSwinging : State
             if (shouldRetainSwingVelocity)
             {
                 PSM.bonusVelocity += (currentMovement + Vector3.up * 1.1f).normalized * currentMovement.magnitude;
-                PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaximumMovementSpeed);
             }
-            else
-            {
-                PSM.baseVelocity.y = 0;
-            }
+           
         }
         PSM.snapInputBool = false;
         PSM.startingSlidingInput = 0;
