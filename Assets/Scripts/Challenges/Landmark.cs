@@ -32,6 +32,7 @@ public class Landmark : MonoBehaviour
         }
         if (allChallengesComplete)
         {
+            ObjectManager.instance.uILogic.OnLandmarkComplete();
             landmarkComplete = true;
         }
     }
