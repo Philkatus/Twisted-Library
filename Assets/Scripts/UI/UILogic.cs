@@ -403,20 +403,22 @@ public class UILogic : MonoBehaviour
         }*/
     }
 
-    public void OnChallengeFailed()
+    public void OnChallengeFailed(GameObject linkedUI)
     {
-
+        linkedUI.GetComponent<RectTransform>().localScale = new Vector3(.8f, .8f, .8f);
+        linkedUI.GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
+        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
     }
 
     public void OnChallengeComponentComplete(GameObject linkedUI)
     {
-        // wenn das canvas noch nicht runtergezogen wurde (bool), dann hol es runter, sonst nur das eine UIElement anschalten
-
+        // immer wenn ein hebel umgelegt wird, wird das im jeweiligen hebel aufgerufen mit dem jeweiligen ui objekt (linkedUI)
+        linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, 40);
     }
 
     public void OnChallengeComplete()
     {
-
+        // wenn alle switches an sind, wird das aufgerufen (challenge complete)
     }
 
     public void OnLandmarkComplete()
@@ -425,8 +427,24 @@ public class UILogic : MonoBehaviour
     }
 
 
-    public void UpdateComponentVisual(GameObject linkedUI, float timer)
+    public void UpdateComponentVisual(GameObject linkedUI, string type, float timer, float timeToCompleteComponents, bool turnOn)
     {
-
+        // abhängig ob switch oder zahnrad
+        if (type == "switch")
+        {
+            // nur zum "Anschalten", geht schnell runter
+            if (turnOn)
+            {
+                linkedUI.GetComponent<RectTransform>().localScale = new Vector3(1f, 1f, 1f);
+                linkedUI.GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
+                linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
+                linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 40, timer));
+            }
+            else
+            {
+                // geht dann hoch abhängig von timeToCompleteComponents (im Inspektor von der Challenge gesetzt)
+                linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(40, 0, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1)));
+            }
+        }
     }
 }
