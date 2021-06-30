@@ -146,8 +146,9 @@ public class PlayerInTheAir : State
 
             PSM.coyoteTimer = stats.slidingCoyoteTime;
             PSM.animationControllerisFoldingJumped = false;
+            PSM.jumpInputBool = false;
         }
-        PSM.jumpInputBool = false;
+        
     }
 
     public override void LadderPush()
@@ -223,6 +224,7 @@ public class PlayerInTheAir : State
                     PSM.ladderJumpTarget = target;
                     PSM.baseVelocity.y = 0;
                     PSM.foldInputBool = false;
+                    PSM.jumpInputBool = false;
                     //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
                     PSM.bonusVelocity += directionToWall * acceleration;
                     floatingTimer = 0;
@@ -237,7 +239,7 @@ public class PlayerInTheAir : State
                     PSM.ladderJumpTarget = target;
                     PSM.baseVelocity.y = 0;
                     PSM.foldInputBool = false;
-
+                    PSM.jumpInputBool = false;
                     Vector3 tempDirection1 = Mathf.Clamp(ExtensionMethods.resultingSpeed(PSM.playerVelocity, -directionToWall), 0, Mathf.Infinity) * -directionToWall;
                     Vector3 tempDirection2 = PSM.playerVelocity - tempDirection1;
                     floatingTimer = 0;

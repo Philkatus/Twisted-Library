@@ -181,7 +181,6 @@ public class PlayerSwinging : State
         }
         else
         {
-
             tAcceleration = Mathf.Clamp(Mathf.Abs(ExtensionMethods.resultingSpeed(PSM.playerVelocity, pathDirection)) * .3f + PSM.playerVelocity.magnitude * .7f / maxSlidingSpeed, 0, 1);
             accelerate = true;
         }
@@ -829,9 +828,12 @@ public class PlayerSwinging : State
     }
     public override void FallFromLadder()
     {
+        PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed * PSM.slidingInput * pathDirection;
+        shouldRetainSwingVelocity = true;
         PSM.OnFall();
         PSM.animationControllerisFoldingJumped = false;
         PSM.jumpInputBool = false;
+
     }
 
     #region SLIDING Functions
