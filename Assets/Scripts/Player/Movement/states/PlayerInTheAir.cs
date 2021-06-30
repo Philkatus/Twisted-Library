@@ -28,7 +28,7 @@ public class PlayerInTheAir : State
         initialAirMovementTimer = 0;
 
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
-        PlayerFollowTarget.instance.FollowPlayer();
+        CameraController.instance.SwitchToPlayerCam();
     }
 
     public override void Movement()

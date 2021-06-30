@@ -104,7 +104,7 @@ public class PlayerSwinging : State
     public override void ReInitialize()
     {
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
-        PlayerFollowTarget.instance.FollowLadder();
+        CameraController.instance.SwitchToLadderCam();
 
         #region ReInitialize Sliding
         // Assign variables.
@@ -164,7 +164,7 @@ public class PlayerSwinging : State
     public override void Initialize()
     {
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
-        PlayerFollowTarget.instance.FollowLadder();
+        CameraController.instance.SwitchToLadderCam();
         if (!PSM.useRelativeBobPosition)
         {
             PSM.bob.transform.SetParent(null);
@@ -1230,9 +1230,6 @@ public class PlayerSwinging : State
     public override IEnumerator Finish()
     {
         #region Finish Swinging
-        // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
-        PlayerFollowTarget.instance.AdjustCameraY();
-
         SetCurrentPlayerVelocity(ladder.transform.position);
         if (!finishWithNormalJump)
         {

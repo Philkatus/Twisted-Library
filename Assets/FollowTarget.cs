@@ -11,7 +11,6 @@ public class FollowTarget : MonoBehaviour
         if (target != null)
         {
             transform.position = target.position;
-            Debug.Log("Rotation: " + target.rotation.y);
             transform.rotation = Quaternion.Euler(transform.eulerAngles.x, target.eulerAngles.y, transform.eulerAngles.z);
         }
     }
