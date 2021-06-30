@@ -385,7 +385,6 @@ public class PlayerSwinging : State
 
         //LadderLength Calculation
         PSM.ladderSizeStateMachine.ladderLength = Vector3.Distance(PSM.transform.position, startingPoint);
-        Debug.Log(PSM.ladderSizeStateMachine.ladderLength);
         PSM.ladderSizeStateMachine.OnSnap();
 
         #endregion
@@ -429,7 +428,6 @@ public class PlayerSwinging : State
     #region SWINGING Functions
     public override void Swing()
     {
-        Debug.Log("swinging");
         #region FixedUpdate
         float frameTime = Time.fixedDeltaTime;
         accumulator += frameTime;
@@ -1177,7 +1175,6 @@ public class PlayerSwinging : State
 
     void Dismount()
     {
-        Debug.Log("dlkfjfddfjkldflkdjfkl");
         // 1 is how much units the player needs to move up to be on top of the rail.
         if ((PSM.transform.position - dismountStartPos).magnitude <= 1.3f && !dismountedHalfways)
         {
@@ -1217,7 +1214,7 @@ public class PlayerSwinging : State
             {
                 PSM.bonusVelocity += (currentMovement + Vector3.up * 1.1f).normalized * currentMovement.magnitude;
             }
-           
+
         }
         PSM.snapInputBool = false;
         PSM.startingSlidingInput = 0;
