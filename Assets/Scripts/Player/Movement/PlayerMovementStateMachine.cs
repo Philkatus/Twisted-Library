@@ -225,11 +225,12 @@ public class PlayerMovementStateMachine : StateMachine
     {
         if (jumpInputBool)
         {
-            if (stats.useJumpForLadderPush)
+            State.Jump();
+            if (stats.useJumpForLadderPush && jumpInputBool)
             {
                 State.LadderPush();
             }
-            State.Jump();
+            
         }
         if (snapInputBool && playerState != PlayerState.swinging)
         {
