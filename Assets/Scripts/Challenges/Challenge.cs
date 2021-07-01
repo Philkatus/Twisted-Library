@@ -105,4 +105,11 @@ public class Challenge : MonoBehaviour
             }
         }
     }
+
+    public void ShowCurrentLandmark()
+    {
+        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.firstLinkedUI);
+        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.secondLinkedUI);
+        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.thirdLinkedUI);
+    }
 }

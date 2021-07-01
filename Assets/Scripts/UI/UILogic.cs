@@ -436,7 +436,7 @@ public class UILogic : MonoBehaviour
         linkedUI.transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
     }
 
-    public void OnChallengeStarted(GameObject linkedUI)
+    public void OnChallengeStartedComponent(GameObject linkedUI, string type)
     {
         // show the UI items and set correct sizes
         // passiert nur ein mal, wenn die erste switch aktiviert wird bei der challenge
@@ -451,6 +451,11 @@ public class UILogic : MonoBehaviour
         linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
         linkedUI.transform.GetChild(1).GetComponent<Image>().CrossFadeAlpha(.7f, .2f, false);
         linkedUI.transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
+    }
+
+    public void OnChallengeStartedLandmark(GameObject linkedUI)
+    {
+
     }
 
     public void OnLandmarkComplete()
