@@ -567,6 +567,12 @@ public class PlayerMovementStateMachine : StateMachine
         ladderSizeStateMachine.OnShrink();
         HeightOnLadder = -1;
     }
+    //Gets called, when the Player is being catapulted out of Landmark 1
+    //if this is at the wrong place just move it
+    public void Jump()
+    {
+        State.Jump();
+    }
     #endregion
 
     public enum PlayerState
