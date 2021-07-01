@@ -405,6 +405,7 @@ public class UILogic : MonoBehaviour
 
     public void OnChallengeFailed(GameObject linkedUI)
     {
+        // verstecke wieder alle switches und zahnräder, weil die challenge gefailt wurde
         linkedUI.GetComponent<RectTransform>().localScale = new Vector3(.8f, .8f, .8f);
         linkedUI.GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
         linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
@@ -420,19 +421,23 @@ public class UILogic : MonoBehaviour
 
     public void OnChallengeCompleteLandmark(GameObject linkedUI)
     {
-        // wenn alle switches an sind, wird das aufgerufen (challenge complete)
+        // wenn alle switches an sind, wird das aufgerufen (challenge complete), wird im landmark script aufgerufen für das dazu
+        // gehörige element vom landmark, was nun leuchten soll
         var image = linkedUI.GetComponent<Image>();
         image.color = new Color(image.color.r, image.color.g, image.color.b, 1f);
     }
 
     public void OnChallengeCompleteComponent(GameObject linkedUI)
     {
+        // hide component ui after challenge was completed
         linkedUI.GetComponent<Image>().enabled = false;
         linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = false;
     }
 
     public void OnChallengeStarted(GameObject linkedUI)
     {
+        // show the UI items and set correct sizes
+        // passiert nur ein mal, wenn die erste switch aktiviert wird bei der challenge
         linkedUI.GetComponent<Image>().enabled = true;
         linkedUI.GetComponent<RectTransform>().localScale = new Vector3(.8f, .8f, .8f);
         linkedUI.GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
