@@ -24,7 +24,8 @@ public class PlayerSwinging : State
         inputTimer,
         tensionForce = 0f,
         gravityForce = 0f,
-        wallLimitsAngle = 10;
+        wallLimitsAngle = 10,
+        timewhend;
 
     Vector3 repelDirection,
         currentStatePosition,
@@ -74,6 +75,7 @@ public class PlayerSwinging : State
     float changeDirectionTimer;
     float changeDirectionWaitNotNeededTimer;
     float startSlidingSpeedForDeceleration;
+    float ladderPushSpeedBonusDelta;
     bool dismountedHalfways;
     bool decelerate;
     bool startedDecelerating;
@@ -167,7 +169,7 @@ public class PlayerSwinging : State
             PSM.Bob_Pivot.rotation = Quaternion.Euler(0, 90, 0);
         }
         SnappingOrientation();
-        
+
         #region Set Variables Sliding
 
         PSM.slidingInput = PSM.startingSlidingInput;
@@ -179,9 +181,16 @@ public class PlayerSwinging : State
         else
         {
             Vector3 horizontalVelocity = new Vector3(PSM.playerVelocity.x, Mathf.Clamp(PSM.playerVelocity.y, 0, Mathf.Infinity), PSM.playerVelocity.z);
+            if (PSM.didLadderPush)
+            {
+                ladderPushSpeedBonusDelta = (stats.timeToLoseLadderPushBonusSpeed / (horizontalVelocity.magnitude - maxSlidingSpeed));
+                timewhend = Time.time;
+                maxSlidingSpeed = Mathf.Max(maxSlidingSpeed, horizontalVelocity.magnitude);
+            }
             tAcceleration = Mathf.Clamp(horizontalVelocity.magnitude / (maxSlidingSpeed - 2), 0, 1);
             accelerate = true;
         }
+        PSM.didLadderPush = false;
         #endregion
 
         #region Set Variables Swinging
@@ -260,7 +269,7 @@ public class PlayerSwinging : State
             switchScript.railSnapRotation = switchScript.railParent.rotation;
         }
         //RotateAroundY();
-        
+
     }
 
     void SnappingOrientation()
@@ -337,7 +346,7 @@ public class PlayerSwinging : State
             PSM.snapdirection = 1;
         }
         ladder.transform.SetParent(PSM.myParent);
-        if(wallDirection.y < 0) 
+        if (wallDirection.y < 0)
         {
             wallDirection *= -1;
         }
@@ -405,20 +414,20 @@ public class PlayerSwinging : State
 
     public override void Movement()
     {
-        
+
         RotateAroundY();
         if (!PSM.expandAfterSnap)
         {
             if (!PSM.useRelativeBobPosition)
             {
-               CalculateCentrifugalForce();
+                CalculateCentrifugalForce();
             }
             SlidingMovement();
             Swing();
         }
         else
             ExpandAfterSnap();
-        
+
     }
 
     #region SWINGING Functions
@@ -614,9 +623,9 @@ public class PlayerSwinging : State
         Vector3 forward = ladder.transform.position + path.GetNormalAtDistance(PSM.currentDistance);
 
         Plane wallDirectionPlane = new Plane(ladder.transform.position, right, forward);
-        
+
         Vector3 wallDirection = -wallDirectionPlane.normal.normalized;
-        if (wallDirection.y > 0) 
+        if (wallDirection.y > 0)
         {
             wallDirection *= -1;
         }
@@ -772,7 +781,7 @@ public class PlayerSwinging : State
             Vector3 localUp = Vector3.up;
             Vector3 pathDirection = pathCreator.path.GetDirectionAtDistance(PSM.currentDistance, EndOfPathInstruction.Stop);
             Vector3 HorizontalRailDirection = new Vector3(pathDirection.x, 0, pathDirection.z);
-            if (Vector3.Dot(HorizontalRailDirection, ladder.transform.right*PSM.snapdirection) < 0) 
+            if (Vector3.Dot(HorizontalRailDirection, ladder.transform.right * PSM.snapdirection) < 0)
             {
                 HorizontalRailDirection *= -1;
             }
@@ -867,6 +876,11 @@ public class PlayerSwinging : State
             #region Move horizontally.
             if (stats.canSlide)
             {
+                if (maxSlidingSpeed > stats.maxSlidingSpeed)
+                {
+                    maxSlidingSpeed -= Time.deltaTime / ladderPushSpeedBonusDelta;
+                    maxSlidingSpeed = Mathf.Max(maxSlidingSpeed, stats.maxSlidingSpeed);
+                }
                 if (mayChangeDirection)
                 {
                     changeDirectionWaitNotNeededTimer += Time.deltaTime;
@@ -950,8 +964,8 @@ public class PlayerSwinging : State
                     PSM.currentSlidingSpeed = 0;
                     colliding = true;
                 }
-                int relativePathDirection = Mathf.RoundToInt( Vector3.Dot(pathDirection, ladder.transform.right));
-                PSM.currentDistance += PSM.currentSlidingSpeed * PSM.slidingInput *relativePathDirection* Time.fixedDeltaTime;
+                int relativePathDirection = Mathf.RoundToInt(Vector3.Dot(pathDirection, ladder.transform.right));
+                PSM.currentDistance += PSM.currentSlidingSpeed * PSM.slidingInput * relativePathDirection * Time.fixedDeltaTime;
                 PSM.ladder.position = path.GetPointAtDistance(PSM.currentDistance, EndOfPathInstruction.Stop);
                 #endregion
 
@@ -964,11 +978,11 @@ public class PlayerSwinging : State
                     {
                         if (PSM.currentDistance <= 0) //arriving at start of path
                         {
-                            endOfShelfDirection = -pathDirection*relativePathDirection;
+                            endOfShelfDirection = -pathDirection * relativePathDirection;
                         }
                         else if (PSM.currentDistance >= pathLength) //arriving at end of path
                         {
-                            endOfShelfDirection = pathDirection*relativePathDirection; //ende - start
+                            endOfShelfDirection = pathDirection * relativePathDirection; //ende - start
                         }
                     }
                     else

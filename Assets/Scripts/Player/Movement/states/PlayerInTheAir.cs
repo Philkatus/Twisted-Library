@@ -121,7 +121,6 @@ public class PlayerInTheAir : State
 
     public override void Snap()
     {
-        PSM.didLadderPush = false;
         PSM.OnSnap();
     }
 
@@ -148,7 +147,7 @@ public class PlayerInTheAir : State
             PSM.animationControllerisFoldingJumped = false;
             PSM.jumpInputBool = false;
         }
-        
+
     }
 
     public override void LadderPush()
