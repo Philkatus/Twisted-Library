@@ -46,13 +46,13 @@ public class Landmark : MonoBehaviour
         switch (index)
         {
             case 0:
-                ObjectManager.instance.uILogic.OnChallengeComplete(firstLinkedUI);
+                ObjectManager.instance.uILogic.OnChallengeCompleteLandmark(firstLinkedUI);
                 break;
             case 1:
-                ObjectManager.instance.uILogic.OnChallengeComplete(secondLinkedUI);
+                ObjectManager.instance.uILogic.OnChallengeCompleteLandmark(secondLinkedUI);
                 break;
             case 2:
-                ObjectManager.instance.uILogic.OnChallengeComplete(thirdLinkedUI);
+                ObjectManager.instance.uILogic.OnChallengeCompleteLandmark(thirdLinkedUI);
                 break;
         }
     }

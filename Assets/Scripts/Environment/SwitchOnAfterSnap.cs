@@ -40,11 +40,18 @@ public class SwitchOnAfterSnap : MonoBehaviour
         {
             if (switchOn)
             {
+                if (!challengeComponent.challenge.challengeStarted)
+                {
+                    foreach (ChallengeComponent component in challengeComponent.challenge.components)
+                    {
+                        ObjectManager.instance.uILogic.OnChallengeStarted(component.linkedUI);
+                    }
+                }
                 tSwitchOn += Time.deltaTime * 2;
                 pivot.transform.rotation = Quaternion.Lerp(snapRotation, onRotation, tSwitchOn);
                 railParent.transform.rotation = Quaternion.Lerp(railSnapRotation, railOnRotation, tSwitchOn);
                 ObjectManager.instance.uILogic.UpdateComponentVisual(challengeComponent.linkedUI, challengeComponent.type, tSwitchOn, challengeComponent.challenge.timeToCompleteComponents, true);
-
+                Debug.Log("switchon vis");
                 if (pivot.transform.rotation == onRotation)
                 {
                     switchOn = false;
