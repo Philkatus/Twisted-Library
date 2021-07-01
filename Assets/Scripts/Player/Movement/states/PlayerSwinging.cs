@@ -411,7 +411,7 @@ public class PlayerSwinging : State
         {
             if (!PSM.useRelativeBobPosition)
             {
-                CalculateCentrifugalForce();
+               CalculateCentrifugalForce();
             }
             SlidingMovement();
             Swing();
@@ -787,6 +787,7 @@ public class PlayerSwinging : State
     public void CalculateCentrifugalForce()
     {
         Vector3 CurrentSlidingVelocity = PSM.currentSlidingSpeed * pathDirection * PSM.slidingInput;
+        CurrentSlidingVelocity = new Vector3(CurrentSlidingVelocity.x, 0, CurrentSlidingVelocity.z);
         if (previousSlidingVelocity != Vector3.zero)
         {
             Vector3 inputForce = bobForward * ExtensionMethods.resultingSpeed(previousSlidingVelocity, PSM.transform.forward) * stats.centripetalForceFactor;
