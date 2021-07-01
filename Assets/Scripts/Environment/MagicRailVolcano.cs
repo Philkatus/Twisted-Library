@@ -40,6 +40,7 @@ public class MagicRailVolcano : MonoBehaviour
             transform.localPosition = Vector3.Lerp(currPos, endPosition, t);
             yield return new WaitForEndOfFrame();
         }
+        psm.Jump();
         while (psm.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
             yield return new WaitForEndOfFrame();
@@ -58,6 +59,7 @@ public class MagicRailVolcano : MonoBehaviour
             transform.localPosition = Vector3.Lerp(startingPos, startingPos + Vector3.up * 1, t);
             yield return new WaitForEndOfFrame();
         }
+        
         StartCoroutine(MoveUp(transform.localPosition));
     }
     IEnumerator MoveBackDown(Vector3 currPos)
