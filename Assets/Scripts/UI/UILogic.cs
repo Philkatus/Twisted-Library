@@ -408,17 +408,36 @@ public class UILogic : MonoBehaviour
         linkedUI.GetComponent<RectTransform>().localScale = new Vector3(.8f, .8f, .8f);
         linkedUI.GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
         linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
+        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = false;
+        linkedUI.GetComponent<Image>().enabled = false;
     }
 
-    public void OnChallengeComponentComplete(GameObject linkedUI)
+    public void OnComponentComplete(GameObject linkedUI)
     {
         // immer wenn ein hebel umgelegt wird, wird das im jeweiligen hebel aufgerufen mit dem jeweiligen ui objekt (linkedUI)
         linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, 40);
     }
 
-    public void OnChallengeComplete()
+    public void OnChallengeCompleteLandmark(GameObject linkedUI)
     {
         // wenn alle switches an sind, wird das aufgerufen (challenge complete)
+        var image = linkedUI.GetComponent<Image>();
+        image.color = new Color(image.color.r, image.color.g, image.color.b, 1f);
+    }
+
+    public void OnChallengeCompleteComponent(GameObject linkedUI)
+    {
+        linkedUI.GetComponent<Image>().enabled = false;
+        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = false;
+    }
+
+    public void OnChallengeStarted(GameObject linkedUI)
+    {
+        linkedUI.GetComponent<Image>().enabled = true;
+        linkedUI.GetComponent<RectTransform>().localScale = new Vector3(.8f, .8f, .8f);
+        linkedUI.GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
+        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = true;
+        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
     }
 
     public void OnLandmarkComplete()
@@ -435,7 +454,7 @@ public class UILogic : MonoBehaviour
             // nur zum "Anschalten", geht schnell runter
             if (turnOn)
             {
-                linkedUI.GetComponent<RectTransform>().localScale = new Vector3(1f, 1f, 1f);
+                linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(new Vector3(.8f, .8f, .8f), new Vector3(1f, 1f, 1f), timer);
                 linkedUI.GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
                 linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
                 linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 40, timer));

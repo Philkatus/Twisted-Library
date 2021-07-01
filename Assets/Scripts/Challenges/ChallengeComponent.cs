@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ChallengeComponent : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class ChallengeComponent : MonoBehaviour
     public GameObject linkedUI;
     [HideInInspector] public string type;
 
-    bool completed;
+    [SerializeField] bool completed;
     public bool Completed
     {
         get
@@ -19,6 +20,7 @@ public class ChallengeComponent : MonoBehaviour
         }
         set
         {
+            completed = value;
             if (value == false)
             {
                 onResetChallenge();
@@ -26,10 +28,11 @@ public class ChallengeComponent : MonoBehaviour
             else
             {
                 challenge.componentCompletionTime = Time.time;
-                ObjectManager.instance.uILogic.OnChallengeComponentComplete(linkedUI);
-                CheckIfChallengeCompleted();
+                challenge.challengeStarted = true;
+                ObjectManager.instance.uILogic.OnComponentComplete(linkedUI);
+                challenge.CheckIfChallengeCompleted();
+                Debug.Log("comp complete");
             }
-            completed = value;
         }
     }
 
@@ -43,22 +46,5 @@ public class ChallengeComponent : MonoBehaviour
             challengeManager = ChallengeManager.instance;
         // if (!challenge.components.Contains(this))
         //     challenge.components.Add(this);
-    }
-
-    void CheckIfChallengeCompleted()
-    {
-        bool allComponentsComplete = true;
-        foreach (ChallengeComponent component in challenge.components)
-        {
-            if (!component.completed)
-            {
-                allComponentsComplete = false;
-                break;
-            }
-        }
-        if (allComponentsComplete)
-        {
-            challenge.ChallengeCompleted = true;
-        }
     }
 }
