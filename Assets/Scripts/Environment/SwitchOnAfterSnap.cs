@@ -20,6 +20,7 @@ public class SwitchOnAfterSnap : MonoBehaviour
     Quaternion railOffRotation;
     float tSwitchOn;
     float tSwitchOff;
+    bool doOnce;
 
     // Start is called before the first frame update
     void Start()
@@ -40,12 +41,13 @@ public class SwitchOnAfterSnap : MonoBehaviour
         {
             if (switchOn)
             {
-                if (!challengeComponent.challenge.challengeStarted)
+                if (!challengeComponent.challenge.challengeStarted && !doOnce)
                 {
                     foreach (ChallengeComponent component in challengeComponent.challenge.components)
                     {
                         ObjectManager.instance.uILogic.OnChallengeStarted(component.linkedUI);
                     }
+                    doOnce = true;
                 }
                 tSwitchOn += Time.deltaTime * 2;
                 pivot.transform.rotation = Quaternion.Lerp(snapRotation, onRotation, tSwitchOn);
@@ -79,5 +81,6 @@ public class SwitchOnAfterSnap : MonoBehaviour
     void SwitchOff()
     {
         switchOff = true;
+        doOnce = false;
     }
 }
