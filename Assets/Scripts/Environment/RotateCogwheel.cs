@@ -56,6 +56,14 @@ public class RotateCogwheel : MonoBehaviour
             var slidingInput = psm.slidingInput;
             if (slidingInput != 0 && isSliding)
             {
+                if (!challengeComponent.challenge.challengeStarted)
+                {
+                    foreach (ChallengeComponent component in challengeComponent.challenge.components)
+                    {
+                        ObjectManager.instance.uILogic.OnChallengeStarted(component.linkedUI);
+                    }
+                }
+                challengeComponent.Completed = true;
                 if (currentRotationDirection == 0)
                 {
                     tWheelAcceleration = 0;

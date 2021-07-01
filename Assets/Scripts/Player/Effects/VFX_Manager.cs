@@ -242,7 +242,7 @@ public class VFX_Manager : MonoBehaviour
             vfx.SetVector2("_SparkleSpawnCount", new Vector2(2, 5));
             vfx.SetInt("_FlameIntensity", 5);
             speedLinesSliding.SetFloat("_SpeedIntensity", 100);
-        }       
+        }
     }
     void StopSlidingSparkle(VisualEffect vfx)
     {
@@ -254,16 +254,14 @@ public class VFX_Manager : MonoBehaviour
     {
         Vector3 directon = pSM.closestRail.pathCreator.path.GetDirectionAtDistance(pSM.currentDistance);
 
-        if(Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) >= 0f)
+        if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) >= 0f)
         {
             speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward, (directon * pSM.slidingInput) * -1f, lerpSpeed);
-            Debug.Log("Same direction");
         }
         if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) < -.75f)
         {
             //speedLinesS.transform.forward = (directon * pSM.slidingInput) * -1f;//* cameraOffset 
-            speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward, Camera.main.transform.forward *-1, lerpSpeed);
-            Debug.Log("Zwischending");
+            speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward, Camera.main.transform.forward * -1, lerpSpeed);
         }
         /*if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) < -.75f)
         {

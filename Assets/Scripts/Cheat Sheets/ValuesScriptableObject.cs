@@ -232,15 +232,15 @@ public class ValuesScriptableObject : ScriptableObject
     [Tooltip("The factor that determines how much the height on the ladder changes the velocity of the rail catapult jump.")]
     [Range(0f, 1)] public float heightOnLadderKatapulFactor = .2f;
 
+    [Tooltip("How long it takes for the player to loose the bonus speed gained by snapping after a ladder push.")]
+    public float timeToLoseLadderPushBonusSpeed = 3f;
+
     [Space]
     [Tooltip("The (animation) speed for the player coming off the ladder on the top while sliding.")]
     public float ladderDismountSpeed;
 
     [Tooltip("How long the player needs to hold the key to dismount the ladder on top or bottom while sliding.")]
     public float ladderDismountTimer;
-
-    [Tooltip("If true the player preserves their velocity on snap.")]
-    public bool preservesVelocityOnSnap = false;
 
     [Tooltip("The percentage of velocity the player has when falling at the end of a rail that gets added as bonus velocity. 1 = 100%")]
     public float fallingMomentumPercentage;
@@ -294,7 +294,7 @@ public class ValuesScriptableObject : ScriptableObject
     public float swingingGravity;
 
     [Tooltip("Influences how much force is added to the swinging with higher sliding velocities around corners")]
-    public float centripetalForceFactor =1;
+    public float centripetalForceFactor = 1;
 
     [Tooltip("describes the maximum velocity you can reach while repelling from a wall")]
     public float maxRepellingVelocity = 1;

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class VolcanoBehaviour : MonoBehaviour, ICentralObject
+public class VolcanoChallengeInnerBehaviour : MonoBehaviour, ICentralObject
 {
     // Start is called before the first frame update
     void Start()

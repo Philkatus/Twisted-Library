@@ -53,7 +53,6 @@ public class SwitchOnAfterSnap : MonoBehaviour
                 pivot.transform.rotation = Quaternion.Lerp(snapRotation, onRotation, tSwitchOn);
                 railParent.transform.rotation = Quaternion.Lerp(railSnapRotation, railOnRotation, tSwitchOn);
                 ObjectManager.instance.uILogic.UpdateComponentVisual(challengeComponent.linkedUI, challengeComponent.type, tSwitchOn, challengeComponent.challenge.timeToCompleteComponents, true);
-                Debug.Log("switchon vis");
                 if (pivot.transform.rotation == onRotation)
                 {
                     switchOn = false;
