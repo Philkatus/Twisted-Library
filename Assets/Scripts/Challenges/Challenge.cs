@@ -14,6 +14,7 @@ public class Challenge : MonoBehaviour
     public LinkedLandmark linkedLandmark;
     public List<ChallengeComponent> components = new List<ChallengeComponent>();
     [HideInInspector] public float componentCompletionTime;
+    [HideInInspector] public bool challengeStarted;
     public float timeToCompleteComponents;
 
     Landmark landmark;
@@ -31,7 +32,11 @@ public class Challenge : MonoBehaviour
                 Debug.Log("Challenge complete!");
                 gameObject.SendMessage("OnAllComponentsCompleted");
                 landmark.CheckIfAllChallengesComplete();
-                ObjectManager.instance.uILogic.OnChallengeComplete();
+                landmark.ShowChallengeCompletionInUI(this);
+                foreach (ChallengeComponent component in components)
+                {
+                    ObjectManager.instance.uILogic.OnChallengeCompleteComponent(component.linkedUI);
+                }
             }
             challengeCompleted = value;
         }
@@ -39,19 +44,17 @@ public class Challenge : MonoBehaviour
 
     void Start()
     {
+        foreach (ChallengeComponent component in components)
+        {
+            component.challenge = this;
+        }
         if (linkedLandmark == LinkedLandmark.Volcano)
         {
             landmark = ChallengeManager.instance.volcano;
-            landmark.challenges.Add(this);
         }
         else if (linkedLandmark == LinkedLandmark.WindChimes)
         {
             landmark = ChallengeManager.instance.windChimes;
-            landmark.challenges.Add(this);
-        }
-        foreach (ChallengeComponent component in components)
-        {
-            component.challenge = this;
         }
     }
 
@@ -76,7 +79,30 @@ public class Challenge : MonoBehaviour
                     ObjectManager.instance.uILogic.OnChallengeFailed(component.linkedUI);
                 }
                 componentCompletionTime = 0;
+                challengeStarted = false;
                 Debug.Log("Challenge failed!");
+            }
+        }
+    }
+
+    public void CheckIfChallengeCompleted()
+    {
+        bool allComponentsComplete = true;
+        foreach (ChallengeComponent component in components)
+        {
+            if (!component.Completed)
+            {
+                Debug.Log("not complete");
+                allComponentsComplete = false;
+                break;
+            }
+        }
+        if (allComponentsComplete)
+        {
+            ChallengeCompleted = true;
+            foreach (ChallengeComponent component in components)
+            {
+                ObjectManager.instance.uILogic.OnChallengeCompleteComponent(component.linkedUI);
             }
         }
     }
