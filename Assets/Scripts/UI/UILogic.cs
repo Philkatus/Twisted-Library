@@ -407,16 +407,16 @@ public class UILogic : MonoBehaviour
     {
         // verstecke wieder alle switches und zahnräder, weil die challenge gefailt wurde
         linkedUI.GetComponent<RectTransform>().localScale = new Vector3(.8f, .8f, .8f);
-        linkedUI.GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
-        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
-        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = false;
-        linkedUI.GetComponent<Image>().enabled = false;
+        linkedUI.GetComponent<Slider>().value = .75f;
+        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = .75f;
     }
 
     public void OnComponentComplete(GameObject linkedUI)
     {
         // immer wenn ein hebel umgelegt wird, wird das im jeweiligen hebel aufgerufen mit dem jeweiligen ui objekt (linkedUI)
         linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, 40);
+        linkedUI.GetComponent<Slider>().value = 1;
+        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = 1;
     }
 
     public void OnChallengeCompleteLandmark(GameObject linkedUI)
@@ -424,25 +424,33 @@ public class UILogic : MonoBehaviour
         // wenn alle switches an sind, wird das aufgerufen (challenge complete), wird im landmark script aufgerufen für das dazu
         // gehörige element vom landmark, was nun leuchten soll
         var image = linkedUI.GetComponent<Image>();
-        image.color = new Color(image.color.r, image.color.g, image.color.b, 1f);
+        image.color = new Color(image.color.r, image.color.g, image.color.b, 1f);//Alpha
     }
 
     public void OnChallengeCompleteComponent(GameObject linkedUI)
     {
         // hide component ui after challenge was completed
-        linkedUI.GetComponent<Image>().enabled = false;
-        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = false;
+        linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
+        linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
+        linkedUI.transform.GetChild(1).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
+        linkedUI.transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
     }
 
     public void OnChallengeStarted(GameObject linkedUI)
     {
         // show the UI items and set correct sizes
         // passiert nur ein mal, wenn die erste switch aktiviert wird bei der challenge
-        linkedUI.GetComponent<Image>().enabled = true;
         linkedUI.GetComponent<RectTransform>().localScale = new Vector3(.8f, .8f, .8f);
-        linkedUI.GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
-        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = true;
-        linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(.3f, .1f, false);
+
+        linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = true;
+        linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = true;
+        linkedUI.transform.GetChild(1).GetComponent<Image>().enabled = true;
+        linkedUI.transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().enabled = true;
+
+        linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(.7f, .2f, false);
+        linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
+        linkedUI.transform.GetChild(1).GetComponent<Image>().CrossFadeAlpha(.7f, .2f, false);
+        linkedUI.transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
     }
 
     public void OnLandmarkComplete()
@@ -460,15 +468,22 @@ public class UILogic : MonoBehaviour
             if (turnOn)
             {
                 linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(new Vector3(.8f, .8f, .8f), new Vector3(1f, 1f, 1f), timer);
-                linkedUI.GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
-                linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
                 linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 40, timer));
+
+                linkedUI.GetComponent<Slider>().value = 1;
+                linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = 1;
             }
             else
             {
                 // geht dann hoch abhängig von timeToCompleteComponents (im Inspektor von der Challenge gesetzt)
                 linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(40, 0, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1)));
+                linkedUI.GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
+                linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
             }
+        }
+        if (type == "cogwheel")
+        {
+
         }
     }
 
