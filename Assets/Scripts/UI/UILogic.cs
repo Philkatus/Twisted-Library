@@ -471,4 +471,19 @@ public class UILogic : MonoBehaviour
             }
         }
     }
+
+    public void ToggleInvertedSliding()
+    {
+
+    }
+
+    public void ToggleInvertedCameraAxis()
+    {
+
+    }
+
+    public void ToggleJumpForLadderPush()
+    {
+
+    }
 }
