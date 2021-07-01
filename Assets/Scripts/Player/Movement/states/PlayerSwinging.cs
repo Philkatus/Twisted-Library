@@ -950,8 +950,8 @@ public class PlayerSwinging : State
                     PSM.currentSlidingSpeed = 0;
                     colliding = true;
                 }
-
-                PSM.currentDistance += PSM.currentSlidingSpeed * PSM.slidingInput * Time.fixedDeltaTime;
+                int relativePathDirection = Mathf.RoundToInt( Vector3.Dot(pathDirection, ladder.transform.right));
+                PSM.currentDistance += PSM.currentSlidingSpeed * PSM.slidingInput *relativePathDirection* Time.fixedDeltaTime;
                 PSM.ladder.position = path.GetPointAtDistance(PSM.currentDistance, EndOfPathInstruction.Stop);
                 #endregion
 
@@ -964,11 +964,11 @@ public class PlayerSwinging : State
                     {
                         if (PSM.currentDistance <= 0) //arriving at start of path
                         {
-                            endOfShelfDirection = -pathDirection;
+                            endOfShelfDirection = -pathDirection*relativePathDirection;
                         }
                         else if (PSM.currentDistance >= pathLength) //arriving at end of path
                         {
-                            endOfShelfDirection = pathDirection; //ende - start
+                            endOfShelfDirection = pathDirection*relativePathDirection; //ende - start
                         }
                     }
                     else
