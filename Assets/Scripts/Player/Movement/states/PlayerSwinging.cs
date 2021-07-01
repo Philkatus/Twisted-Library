@@ -118,17 +118,14 @@ public class PlayerSwinging : State
         Vector3 startingPoint = Vector3.zero;
         if (closestRail != null)
         {
-            startingPoint = pathCreator.path.GetClosestPointOnPath(PSM.ladder.transform.position);
+            startingPoint = pathCreator.path.GetPointAtDistance(PSM.currentDistance);
         }
         else
         {
             Debug.LogError("Shelf is null!");
         }
-
         ladder.transform.position = startingPoint;
-
         pathLength = path.cumulativeLengthAtEachVertex[path.cumulativeLengthAtEachVertex.Length - 1];
-        PSM.currentDistance = path.GetClosestDistanceAlongPath(startingPoint);
         #endregion
         #region ReInitialize Swinging
         if (PSM.useRelativeBobPosition)
@@ -259,7 +256,7 @@ public class PlayerSwinging : State
             switchScript.snapRotation = switchScript.pivot.rotation;
             switchScript.railSnapRotation = switchScript.railParent.rotation;
         }
-        //RotateAroundY();
+        RotateAroundY();
         
     }
 
@@ -777,7 +774,7 @@ public class PlayerSwinging : State
                 HorizontalRailDirection *= -1;
             }
             float rotateByAngle = Vector3.SignedAngle(PSM.ladder.right, HorizontalRailDirection * PSM.snapdirection, localUp);
-            Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, localUp);
+            Quaternion targetRotation = Quaternion.AngleAxis(Mathf.Lerp(0, rotateByAngle,.008f), localUp);
             PSM.ladder.rotation = targetRotation * PSM.ladder.rotation;
         }
     }
@@ -786,8 +783,9 @@ public class PlayerSwinging : State
     #endregion
     public void CalculateCentrifugalForce()
     {
-        Vector3 CurrentSlidingVelocity = PSM.currentSlidingSpeed * pathDirection * PSM.slidingInput;
+        Vector3 CurrentSlidingVelocity = PSM.currentSlidingSpeed * ladder.transform.right * PSM.slidingInput ;
         CurrentSlidingVelocity = new Vector3(CurrentSlidingVelocity.x, 0, CurrentSlidingVelocity.z);
+       
         if (previousSlidingVelocity != Vector3.zero)
         {
             Vector3 inputForce = bobForward * ExtensionMethods.resultingSpeed(previousSlidingVelocity, PSM.transform.forward) * stats.centripetalForceFactor;
@@ -976,24 +974,29 @@ public class PlayerSwinging : State
 
                     if (Vector3.Dot(slidingDirection, endOfShelfDirection) >= 0.9f) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
                     {
+                        Debug.LogWarning("check for resnap");
                         if (PSM.CheckForNextClosestRail(PSM.closestRail))
                         {
 
                             PSM.OnResnap();
+                            Debug.LogWarning("resnap");
                         }
                         else
                         {
+                            Debug.LogWarning("nothing to resnap");
                             if (PSM.closestRail.stopSlidingAtTheEnd)
                             {
                                 PSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(PSM.playerVelocity, pathDirection, 0);
                                 PSM.currentSlidingSpeed = 0;
                                 PSM.slidingInput = 0;
+                                Debug.LogWarning("stop");
                             }
                             else
                             {
                                 PSM.coyoteTimer = 0;
                                 PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed * pathDirection * PSM.slidingInput;
                                 PSM.OnFall();
+                                Debug.LogWarning("fall");
                             }
                         }
                     }
