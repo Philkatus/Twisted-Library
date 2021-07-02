@@ -10,11 +10,13 @@ public class UILogic : MonoBehaviour
 {
     [SerializeField] EventSystem canvasEventsystem;
 
-    InputActionAsset iaa;
+    InputActionAsset inputActionAsset;
     InputActionMap playerControlsMap;
     InputActionMap UIControlsMap;
     InputAction escape;
     InputAction escapeUI;
+    InputAction showMoreOptions;
+    InputAction back;
     public GameObject options, inGameUI;
     public GameObject controller;
     public GameObject keyboard;
@@ -30,18 +32,10 @@ public class UILogic : MonoBehaviour
     float timer = 0;
 
     public GameObject[] dummyTexts;
-    bool optionGotSelectet = false;
-    bool optionGotDeselectet = false;
+    bool optionGotSelected = false;
+    bool optionGotDeselected = false;
     bool startcanvasDisabled = false;
 
-    [SerializeField] List<Image> schalterUI;
-    [SerializeField] List<Sprite> schalterImages;
-    [SerializeField] List<Sprite> schalterImagesSide;
-    Vector3 velocity = Vector3.zero;
-    float schalterTimer = 5f;
-    float timeCount = 2f;
-
-    public GameObject handle;
     public Vector3 inactiveSize;
     public Vector3 activeSize;
 
@@ -51,12 +45,16 @@ public class UILogic : MonoBehaviour
         ObjectManager.instance.uILogic = this;
         EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("PLAY"));
 
-        iaa = ObjectManager.instance.pSM.actionAsset;
-        playerControlsMap = iaa.FindActionMap("PlayerControls");
-        UIControlsMap = iaa.FindActionMap("UIControls");
+        inputActionAsset = ObjectManager.instance.pSM.actionAsset;
+        playerControlsMap = inputActionAsset.FindActionMap("PlayerControls");
         escape = playerControlsMap.FindAction("Escape");
+        UIControlsMap = inputActionAsset.FindActionMap("UIControls");
         escape.performed += context => ShowControls();
         escapeUI = UIControlsMap.FindAction("Escape");
+        back = UIControlsMap.FindAction("Back");
+        showMoreOptions = UIControlsMap.FindAction("MoreOptions");
+        showMoreOptions.performed += context => ShowMoreOptions();
+        back.performed += context => Back();
         escapeUI.performed += context => Options();
         playerControlsMap.Disable();
         UIControlsMap.Enable();
@@ -191,7 +189,7 @@ public class UILogic : MonoBehaviour
         }
         else
         {
-            optionGotSelectet = true;
+            optionGotSelected = true;
         }
     }
 
@@ -202,7 +200,7 @@ public class UILogic : MonoBehaviour
 
     void Transitions()
     {
-        if (optionGotSelectet && startCanvas.activeSelf)
+        if (optionGotSelected && startCanvas.activeSelf)
         {
             options.SetActive(true);
             options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(0, 0, 0), 30f);
@@ -212,10 +210,10 @@ public class UILogic : MonoBehaviour
             {
                 startCanvas.SetActive(false);
                 EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("BACK"));
-                optionGotSelectet = false;
+                optionGotSelected = false;
             }
         }
-        if (optionGotSelectet && !startCanvas.activeSelf)
+        if (optionGotSelected && !startCanvas.activeSelf)
         {
             options.SetActive(true);
             options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(0, 0, 0), 30f);
@@ -223,10 +221,10 @@ public class UILogic : MonoBehaviour
             if (Vector3.Distance(options.transform.position, new Vector3(0, 0, 0)) < 0.001f)
             {
                 EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("BACK"));
-                optionGotSelectet = false;
+                optionGotSelected = false;
             }
         }
-        if (!startGotPressed && optionGotDeselectet && !startCanvas.activeSelf)
+        if (!startGotPressed && optionGotDeselected && !startCanvas.activeSelf)
         {
             options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(-1253f, 0, 0), 30f);
 
@@ -237,14 +235,14 @@ public class UILogic : MonoBehaviour
                     g.SetActive(false);
                 }
                 options.SetActive(false);
-                optionGotDeselectet = false;
+                optionGotDeselected = false;
             }
         }
-        if (optionGotDeselectet && !startCanvas.activeSelf && !startcanvasDisabled)
+        if (optionGotDeselected && !startCanvas.activeSelf && !startcanvasDisabled)
         {
             startCanvas.SetActive(true);
         }
-        if (optionGotDeselectet && startCanvas.activeSelf)
+        if (optionGotDeselected && startCanvas.activeSelf)
         {
             options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(-1253f, 0, 0), 30f);
             startCanvas.transform.position = Vector3.MoveTowards(startCanvas.transform.position, new Vector3(0, 0, 0), 30f);
@@ -257,14 +255,22 @@ public class UILogic : MonoBehaviour
                 }
                 options.SetActive(false);
                 EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("PLAY"));
-                optionGotDeselectet = false;
+                optionGotDeselected = false;
             }
         }
     }
 
     public void Back()
     {
-        optionGotDeselectet = true;
+        optionGotDeselected = true;
+    }
+
+    public void ShowMoreOptions()
+    {
+        if (optionGotSelected)
+        {
+            // schreib hier rein, was passieren soll, wenn mehr ooptions angezeigt werden sollen (toggles erschienen usw.)
+        }
     }
 
     public void AudioSettings()
@@ -382,9 +388,9 @@ public class UILogic : MonoBehaviour
         groundUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
     }
 
-    public void OnChallengeCompleteComponent(GameObject linkedUI, string type)
+    public void OnHideChallengeComponent(GameObject linkedUI, string type)
     {
-        // hide component ui after challenge was completed
+        // hide component ui after challenge was completed or failed
 
         if (type == "switch")
         {
@@ -392,11 +398,14 @@ public class UILogic : MonoBehaviour
             linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
             linkedUI.transform.GetChild(1).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
             linkedUI.transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
+            linkedUI.GetComponent<Slider>().value = .75f;
+            linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = .75f;
         }
         if (type == "cogwheel")
         {
             linkedUI.transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
-            linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
+            linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", false);
+            linkedUI.GetComponent<Slider>().value = .49f;
         }
     }
 
@@ -426,8 +435,8 @@ public class UILogic : MonoBehaviour
             linkedUI.GetComponent<RectTransform>().localScale = inactiveSize;
             linkedUI.GetComponent<Slider>().value = .49f;
 
-            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 0.7f, .2f);
-            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).gameObject, 0.7f, .2f);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 0.3f, .2f);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).gameObject, 1f, .2f);
         }
     }
 
