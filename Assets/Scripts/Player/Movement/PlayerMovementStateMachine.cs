@@ -444,7 +444,7 @@ public class PlayerMovementStateMachine : StateMachine
 
         if (possibleRails.Count == 1)
         {
-            Debug.LogWarning("no other Rails in Range");
+           
             return false;
         }
         else
@@ -466,16 +466,13 @@ public class PlayerMovementStateMachine : StateMachine
                 if (distance < closestDistance
                     && possibleRails[i] != currentRail)
                 {
-                    Debug.LogWarning("a rail is close enough");
+
                     if (Mathf.Abs(Vector3.Dot(currentDirection.normalized, possiblePathDirection.normalized)) > stats.resnappingDotProduct) // hab das >= zu einem > 0 gemacht erstmal, falls sich das gerade jmd ansieht. jetzt geht es einigerma�en
                     {
                         closestDistance = distance;
                         nextClosestRail = possibleRails[i];
                     }
-                    else 
-                    {
-                        Debug.LogWarning("But not in the right direction");
-                    }
+                    
                 }
                
             }
@@ -492,7 +489,7 @@ public class PlayerMovementStateMachine : StateMachine
             }
             else
             {
-                Debug.LogWarning("no acceptable rail");
+               
                 return false;
             }
         }

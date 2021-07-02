@@ -960,6 +960,8 @@ public class PlayerSwinging : State
                 else
                 {
                     PSM.currentSlidingSpeed = 0;
+                    tAcceleration = 0;
+                    tDeceleration = 0;
                     colliding = true;
                 }
                 int relativePathDirection = Mathf.RoundToInt(Vector3.Dot(pathDirection, ladder.transform.right));
@@ -983,34 +985,30 @@ public class PlayerSwinging : State
                             endOfShelfDirection = pathDirection * relativePathDirection; //ende - start
                         }
                     }
-                    else
-                        Debug.Log("There is something bad happening here lmao");
-
+                   
                     if (Vector3.Dot(slidingDirection, endOfShelfDirection) >= 0.9f) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
                     {
-                        Debug.LogWarning("check for resnap");
+
                         if (PSM.CheckForNextClosestRail(PSM.closestRail))
                         {
 
                             PSM.OnResnap();
-                            Debug.LogWarning("resnap");
                         }
                         else
                         {
-                            Debug.LogWarning("nothing to resnap");
+                           
                             if (PSM.closestRail.stopSlidingAtTheEnd)
                             {
                                 PSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(PSM.playerVelocity, pathDirection, 0);
                                 PSM.currentSlidingSpeed = 0;
                                 PSM.slidingInput = 0;
-                                Debug.LogWarning("stop");
                             }
                             else
                             {
                                 PSM.coyoteTimer = 0;
                                 PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed * pathDirection * PSM.slidingInput;
                                 PSM.OnFall();
-                                Debug.LogWarning("fall");
+                              
                             }
                         }
                     }
