@@ -29,7 +29,7 @@ public class ChallengeComponent : MonoBehaviour
             {
                 challenge.componentCompletionTime = Time.time;
                 challenge.challengeStarted = true;
-                ObjectManager.instance.uILogic.OnComponentComplete(linkedUI);
+                ObjectManager.instance.uILogic.OnComponentComplete(linkedUI, type);
                 challenge.CheckIfChallengeCompleted();
             }
         }
