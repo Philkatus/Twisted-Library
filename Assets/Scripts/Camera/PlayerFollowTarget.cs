@@ -95,7 +95,7 @@ public class PlayerFollowTarget : MonoBehaviour
 
     private bool CheckIfFalling()
     {
-        if (!Physics.Raycast(PlayerTarget.position, transform.TransformDirection(Vector3.down), out hit, 5, EnvironmentLayer))
+        if (!Physics.Raycast(PlayerTarget.position, transform.TransformDirection(Vector3.down), out hit, 6, EnvironmentLayer))
         {
             doNotAdjust = false;
             return true;
@@ -106,16 +106,12 @@ public class PlayerFollowTarget : MonoBehaviour
     bool doNotAdjust = false;
     public void OnSimpleJump()
     {
-
-        if (CheckIfFalling())
-        {
-        }
-        else
+        if (!CheckIfFalling())
         {
             doNotAdjust = true;
         }
-
     }
+
     public void DoAdjustY(bool onLadderPush)
     {
         if (doNotAdjust == true || onLadderPush)
