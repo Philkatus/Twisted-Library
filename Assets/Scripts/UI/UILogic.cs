@@ -552,22 +552,22 @@ public class UILogic : MonoBehaviour
         {
             // nur zum "Anschalten", geht schnell runter
             if (turnOn)
-             {
+            {
                 linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, timer);
                 linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 40, timer));
 
-                 linkedUI.GetComponent<Slider>().value = 1;
-                 linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = 1;
-             }
-             else
-             {
+                linkedUI.GetComponent<Slider>().value = 1;
+                linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = 1;
+            }
+            else
+            {
                 // geht dann hoch abhängig von timeToCompleteComponents (im Inspektor von der Challenge gesetzt)
-                
+
 
                 linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(40, 0, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1)));
-                 linkedUI.GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
-                 linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
-             }
+                linkedUI.GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
+                linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
+            }
         }
         if (type == "cogwheel")
         {
@@ -576,7 +576,7 @@ public class UILogic : MonoBehaviour
                 linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, timer);
                 linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", true);
                 linkedUI.GetComponent<Slider>().value = .83f;
-                Debug.Log("This is my size:"+ linkedUI.GetComponent<RectTransform>().localScale);
+                Debug.Log("This is my size:" + linkedUI.GetComponent<RectTransform>().localScale);
             }
             else
             {
