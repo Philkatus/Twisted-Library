@@ -439,7 +439,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool CheckForNextClosestRail(Rail currentRail)
     {
         railCheckLadderPosition = ladder.transform.position;
-        railAllocator.CheckForRailsInRange(controller.transform);
+        railAllocator.CheckForRailsInRange(ladder.transform);
         var possibleRails = railAllocator.railsInRange;
 
         if (possibleRails.Count == 1)
