@@ -467,6 +467,7 @@ public class UILogic : MonoBehaviour
         // passiert nur ein mal, wenn die erste switch aktiviert wird bei der challenge
         linkedUI.GetComponent<RectTransform>().localScale = new Vector3(.8f, .8f, .8f);
 
+
         linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = true;
         linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = true;
         linkedUI.transform.GetChild(1).GetComponent<Image>().enabled = true;
@@ -495,7 +496,7 @@ public class UILogic : MonoBehaviour
         if (type == "switch")
         {
             // nur zum "Anschalten", geht schnell runter
-            if (turnOn)
+           /* if (turnOn)
             {
                 linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(new Vector3(.8f, .8f, .8f), new Vector3(1f, 1f, 1f), timer);
                 linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 40, timer));
@@ -509,7 +510,7 @@ public class UILogic : MonoBehaviour
                 linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(40, 0, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1)));
                 linkedUI.GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
                 linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
-            }
+            }*/
         }
         if (type == "cogwheel")
         {
