@@ -77,6 +77,9 @@ public class RotateCogwheel : MonoBehaviour
                         ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, challengeComponent.type);
                     }
                     challengeComponent.challenge.ShowCurrentLandmark();
+                }
+                if (!doOncePerAttempt)
+                {
                     doOncePerAttempt = true;
                     turnOn = true;
                 }
