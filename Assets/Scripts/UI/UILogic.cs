@@ -57,6 +57,31 @@ public class UILogic : MonoBehaviour
         escapeUI.performed += context => Options();
         playerControlsMap.Disable();
         UIControlsMap.Enable();
+
+        #region Set PlayerPrefs
+        if (PlayerPrefs.GetInt("UseInvertedSliding", 0) == 1)
+        {
+            ObjectManager.instance.pSM.stats.useInvertedSliding = true;
+            // TO DO: checkbox auf an setzen
+        }
+        else
+        {
+            ObjectManager.instance.pSM.stats.useInvertedSliding = false;
+            // TO DO: checkbox auf aus setzen
+        }
+
+        if (PlayerPrefs.GetInt("UseJumpForLadderPush", 1) == 1)
+        {
+            ObjectManager.instance.pSM.stats.useJumpForLadderPush = true;
+            // TO DO: checkbox auf an setzen
+        }
+        else
+        {
+            ObjectManager.instance.pSM.stats.useJumpForLadderPush = false;
+            // TO DO: checkbox auf aus setzen
+        }
+
+        #endregion
     }
 
     private void Update()
@@ -494,16 +519,47 @@ public class UILogic : MonoBehaviour
 
     public void ToggleInvertedSliding()
     {
-
+        // get value after value was changed in the checkbox
+        var value = true;
+        if (value)
+        {
+            PlayerPrefs.SetInt("UseInvertedSliding", 1);
+            ObjectManager.instance.pSM.stats.useInvertedSliding = value;
+        }
+        else
+        {
+            PlayerPrefs.SetInt("UseInvertedSliding", 0);
+            ObjectManager.instance.pSM.stats.useInvertedSliding = value;
+        }
     }
 
     public void ToggleInvertedCameraAxis()
     {
-
+        var value = true;
+        if (value)
+        {
+            PlayerPrefs.SetInt("UseInvertedCamera", 1);
+            // TO DO: invert Camera
+        }
+        else
+        {
+            PlayerPrefs.SetInt("UseInvertedCamera", 0);
+            // TO DO: invert Camera
+        }
     }
 
     public void ToggleJumpForLadderPush()
     {
-
+        var value = true;
+        if (value)
+        {
+            PlayerPrefs.SetInt("UseJumpForLadderPush", 1);
+            ObjectManager.instance.pSM.stats.useJumpForLadderPush = value;
+        }
+        else
+        {
+            PlayerPrefs.SetInt("UseJumpForLadderPush", 0);
+            ObjectManager.instance.pSM.stats.useJumpForLadderPush = value;
+        }
     }
 }
