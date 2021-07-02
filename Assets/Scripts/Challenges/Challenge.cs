@@ -111,7 +111,6 @@ public class Challenge : MonoBehaviour
 
     public void ShowCurrentLandmark()
     {
-        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.firstLinkedUI, landmark.secondLinkedUI, landmark.thirdLinkedUI, landmark.groundUI, true);
-        //ObjectManager.instance.uILogic.OnChallengeStartedLandmark(otherLandmark.firstLinkedUI, otherLandmark.secondLinkedUI, otherLandmark.thirdLinkedUI, otherLandmark.groundUI, false);
+        landmark.lerpScaleToBig = true;
     }
 }
