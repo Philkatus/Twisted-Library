@@ -15,7 +15,7 @@ public class UILogic : MonoBehaviour
     InputActionMap UIControlsMap;
     InputAction escape;
     InputAction escapeUI;
-    public GameObject options;
+    public GameObject options, inGameUI;
     public GameObject controller;
     public GameObject keyboard;
     bool controlsActive = false;
@@ -91,7 +91,6 @@ public class UILogic : MonoBehaviour
     {
         DisableStartCanvas();
         Transitions();
-        ShowMechanicProgress();
     }
 
     void ShowControls()
@@ -132,6 +131,7 @@ public class UILogic : MonoBehaviour
     {
         if (startGotPressed)
         {
+            inGameUI.SetActive(true);
             timer += Time.deltaTime;
 
             foreach (Button b in startCanvasButtons)
@@ -322,112 +322,6 @@ public class UILogic : MonoBehaviour
     {
         controller.SetActive(false);
         keyboard.SetActive(true);
-    }
-
-    void ShowMechanicProgress()
-    {
-        //check if first mechanic has been activated
-        //check if it was a switch or gear
-        //if (it is a gear)
-        //{ UI Element wird eingeblendet/ Rotation oder animation oder whatever getriggerd}
-
-        /*schalterTimer -= Time.deltaTime;        
-        if(schalterTimer <= 0) //Schalter wird zurueck gedreht
-        {
-            schalterLeft.transform.rotation = Quaternion.Slerp(schalterLeft.transform.rotation, Quaternion.Euler(70,0,0),.001f);
-            schalterLeft.GetComponent<RectTransform>().anchoredPosition = Vector3.SmoothDamp(schalterLeft.GetComponent<RectTransform>().anchoredPosition, new Vector3(-300, -140, 0), ref velocity,  10f);
-            schalterLeft.GetComponent<Image>().CrossFadeAlpha(.3f, 10f, false);
-        }
-        else //Schalter wird umgeschaltet
-        {
-            schalterLeft.transform.rotation = Quaternion.Slerp(schalterLeft.transform.rotation, Quaternion.Euler(0, 0, 0), .01f);
-            schalterLeft.GetComponent<RectTransform>().anchoredPosition = Vector3.SmoothDamp(schalterLeft.GetComponent<RectTransform>().anchoredPosition, new Vector3(-300, -160, 0), ref velocity, .5f);
-            schalterLeft.GetComponent<Image>().CrossFadeAlpha(1f, .5f, false);
-        }*/
-
-        //Frontale Sprites
-        /*if (schalterTimer >= 10f && schalterTimer <= 10.5f) //Schalter wird zurueck gedreht
-        {
-            schalterUI[1].GetComponent<Image>().CrossFadeAlpha(.3f, .2f, false);
-            schalterUI[2].GetComponent<Image>().CrossFadeAlpha(.3f, .2f, false);
-            schalterUI[0].sprite = schalterImages[0];
-        }
-        if(schalterTimer >= 6f && schalterTimer <= 6.5f)
-        {
-            schalterUI[0].sprite = schalterImages[1];
-        }
-        if (schalterTimer >= 3f && schalterTimer <= 7f)
-        {
-            schalterUI[0].sprite = schalterImages[2];
-        }
-        if (schalterTimer >= 1f && schalterTimer <= 3f)
-        {
-            schalterUI[0].sprite = schalterImages[3];
-        }
-        if (schalterTimer <= 0)
-        {
-            schalterUI[0].sprite = schalterImages[4];
-            schalterUI[0].GetComponent<Image>().CrossFadeAlpha(.3f, .2f, false);
-        }
-        schalterTimer -= Time.deltaTime;*/
-
-        //Seitliche Sprites
-        /*if (schalterTimer >= 10f && schalterTimer <= 10.5f) //Schalter wird zurueck gedreht
-        {
-            schalterUI[1].GetComponent<Image>().CrossFadeAlpha(.3f, .2f, false);
-            schalterUI[2].GetComponent<Image>().CrossFadeAlpha(.3f, .2f, false);
-            schalterUI[0].sprite = schalterImagesSide[0];
-        }
-        if (schalterTimer >= 6f && schalterTimer <= 6.5f)
-        {
-            schalterUI[0].sprite = schalterImagesSide[1];
-        }
-        if (schalterTimer >= 3f && schalterTimer <= 7f)
-        {
-            schalterUI[0].sprite = schalterImagesSide[2];
-        }
-        if (schalterTimer >= 1f && schalterTimer <= 3f)
-        {
-            schalterUI[0].sprite = schalterImagesSide[3];
-        }
-        if (schalterTimer <= 0)
-        {
-            schalterUI[0].sprite = schalterImagesSide[4];
-            schalterUI[0].GetComponent<Image>().CrossFadeAlpha(.3f, .2f, false);
-        }
-        schalterTimer -= Time.deltaTime;*/
-
-        //RotateScvhalter VER1
-        /*schalterTimer -= Time.deltaTime;
-        if (schalterTimer <= 0) //Schalter wird zurueck gedreht
-        {
-            handle.transform.rotation = Quaternion.Slerp(handle.transform.rotation, Quaternion.Euler(0, 0, 0), .005f);
-            handle.GetComponent<RectTransform>().anchoredPosition = Vector3.SmoothDamp(handle.GetComponent<RectTransform>().anchoredPosition, new Vector3(-300, -140, 0), ref velocity, 2.5f);
-            //handle.GetComponent<Image>().CrossFadeAlpha(.3f, 10f, false);
-        }
-        else //Schalter wird umgeschaltet
-        {
-            //handle.transform.rotation = Vector3.RotateTowards(handle.transform.rotation, new Vector3(0, 0, 63), .1f, .1f);
-            handle.transform.rotation = Quaternion.Slerp(handle.transform.rotation, Quaternion.Euler(0, 0, 63), .1f);
-            handle.GetComponent<RectTransform>().anchoredPosition = Vector3.SmoothDamp(handle.GetComponent<RectTransform>().anchoredPosition, new Vector3(-281.1f, -168.3f, 0), ref velocity, .5f);
-            handle.GetComponent<Image>().CrossFadeAlpha(1f, .5f, false);
-        }*/
-
-        //RotateScvhalter VER2
-        /*schalterTimer -= Time.deltaTime;
-        if (schalterTimer <= 0) //Schalter wird zurueck gedreht
-        {
-            handle.transform.rotation = Quaternion.Slerp(handle.transform.rotation, Quaternion.Euler(0, 0, 0), .005f);
-            handle.GetComponent<RectTransform>().anchoredPosition = Vector3.SmoothDamp(handle.GetComponent<RectTransform>().anchoredPosition, new Vector3(-300, -140, 0), ref velocity, 2.5f);
-            //handle.GetComponent<Image>().CrossFadeAlpha(.3f, 10f, false);
-        }
-        else //Schalter wird umgeschaltet
-        {
-            //handle.transform.rotation = Vector3.RotateTowards(handle.transform.rotation, new Vector3(0, 0, 63), .1f, .1f);
-            handle.transform.rotation = Quaternion.Slerp(handle.transform.rotation, Quaternion.Euler(0, 0, 63), .1f);
-            handle.GetComponent<RectTransform>().anchoredPosition = Vector3.SmoothDamp(handle.GetComponent<RectTransform>().anchoredPosition, new Vector3(-281.1f, -168.3f, 0), ref velocity, .5f);
-            handle.GetComponent<Image>().CrossFadeAlpha(1f, .5f, false);
-        }*/
     }
 
     public void ShowLandmarkUI(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI)
