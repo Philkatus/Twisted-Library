@@ -147,7 +147,6 @@ public class PlayerInTheAir : State
             PSM.animationControllerisFoldingJumped = false;
             PSM.jumpInputBool = false;
         }
-
     }
 
     public override void LadderPush()

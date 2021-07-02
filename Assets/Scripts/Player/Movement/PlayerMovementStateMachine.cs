@@ -139,6 +139,7 @@ public class PlayerMovementStateMachine : StateMachine
     InputAction jumpAction;
     InputAction moveAction;
     InputAction foldAction;
+    Rail lastRail;
 
     Coroutine[] inputTimer = new Coroutine[4];
     #endregion
@@ -220,6 +221,14 @@ public class PlayerMovementStateMachine : StateMachine
         }
         inputTimer[index] = StartCoroutine(InputTimer(index, duration));
     }
+    public void SaveInput(int index, float duration,Rail rail)
+    {
+        if (inputTimer[index] != null)
+        {
+            StopCoroutine(inputTimer[index]);
+        }
+        inputTimer[index] = StartCoroutine(InputTimer(index, duration,rail));
+    }
 
     private void CheckForInputBools()
     {
@@ -253,6 +262,18 @@ public class PlayerMovementStateMachine : StateMachine
         inputBools[index] = false;
     }
 
+    IEnumerator InputTimer(int index, float duration, Rail lastRail)
+    {
+        this.lastRail = lastRail;
+        yield return new WaitForSeconds(.34f);
+        if (slideRightInput != 0 || slideLeftInput != 0)
+        {
+            inputBools[index] = true;
+        }
+        yield return new WaitForSeconds(duration);
+        inputBools[index] = false;
+        this.lastRail = null;
+    }
     private void GetControls()
     {
         playerControlsMap = actionAsset.FindActionMap("PlayerControls");
@@ -358,7 +379,7 @@ public class PlayerMovementStateMachine : StateMachine
             {
                 Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
                 float distance = Vector3.Distance(snappingPoint, railCheckLadderPosition);
-                if (distance >= closestDistance)
+                if (distance >= closestDistance || possibleRails[i] == lastRail)
                 {
                     possibleRails.Remove(possibleRails[i]);
                     i--;
