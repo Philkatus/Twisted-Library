@@ -1007,6 +1007,18 @@ public class PlayerSwinging : State
                             {
                                 PSM.coyoteTimer = 0;
                                 PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed * pathDirection * PSM.slidingInput;
+                                if (PSM.slidingInput * relativePathDirection == 1 && PSM.slideRightInput != 0) 
+                                {
+                                    PSM.SaveInput(1, 1,closestRail);
+                                    Debug.Log("right");
+                                }
+                                if (PSM.slidingInput * relativePathDirection == -1 && PSM.slideLeftInput != 0)
+                                {
+                                    PSM.SaveInput(1, 1,closestRail);
+                                    Debug.Log("left");
+                                }
+
+
                                 PSM.OnFall();
                               
                             }
@@ -1223,7 +1235,7 @@ public class PlayerSwinging : State
             PSM.bonusVelocity += (currentMovement + Vector3.up * 1.1f).normalized * currentMovement.magnitude * stats.retainSwingVelocityOnJumpFactor;
         }
 
-        PSM.snapInputBool = false;
+        //PSM.snapInputBool = false;
         PSM.startingSlidingInput = 0;
         if (!PSM.useRelativeBobPosition)
         {
