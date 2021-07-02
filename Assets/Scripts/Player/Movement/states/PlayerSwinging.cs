@@ -985,34 +985,42 @@ public class PlayerSwinging : State
                             endOfShelfDirection = pathDirection * relativePathDirection; //ende - start
                         }
                     }
-                    else
-                        Debug.Log("There is something bad happening here lmao");
-
+                   
                     if (Vector3.Dot(slidingDirection, endOfShelfDirection) >= 0.9f) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
                     {
-                        Debug.LogWarning("check for resnap");
+
                         if (PSM.CheckForNextClosestRail(PSM.closestRail))
                         {
 
                             PSM.OnResnap();
-                            Debug.LogWarning("resnap");
                         }
                         else
                         {
-                            Debug.LogWarning("nothing to resnap");
+                           
                             if (PSM.closestRail.stopSlidingAtTheEnd)
                             {
                                 PSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(PSM.playerVelocity, pathDirection, 0);
                                 PSM.currentSlidingSpeed = 0;
                                 PSM.slidingInput = 0;
-                                Debug.LogWarning("stop");
                             }
                             else
                             {
                                 PSM.coyoteTimer = 0;
                                 PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed * pathDirection * PSM.slidingInput;
+                                if (PSM.slidingInput * relativePathDirection == 1 && PSM.slideRightInput != 0) 
+                                {
+                                    PSM.SaveInput(1, 1,closestRail);
+                                    Debug.Log("right");
+                                }
+                                if (PSM.slidingInput * relativePathDirection == -1 && PSM.slideLeftInput != 0)
+                                {
+                                    PSM.SaveInput(1, 1,closestRail);
+                                    Debug.Log("left");
+                                }
+
+
                                 PSM.OnFall();
-                                Debug.LogWarning("fall");
+                              
                             }
                         }
                     }
@@ -1227,7 +1235,7 @@ public class PlayerSwinging : State
             PSM.bonusVelocity += (currentMovement + Vector3.up * 1.1f).normalized * currentMovement.magnitude * stats.retainSwingVelocityOnJumpFactor;
         }
 
-        PSM.snapInputBool = false;
+        //PSM.snapInputBool = false;
         PSM.startingSlidingInput = 0;
         if (!PSM.useRelativeBobPosition)
         {
