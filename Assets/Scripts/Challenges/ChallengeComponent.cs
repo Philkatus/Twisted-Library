@@ -7,7 +7,7 @@ public class ChallengeComponent : MonoBehaviour
 {
     public delegate void EventHandler();
     public event EventHandler onResetChallenge;
-    public Challenge challenge;
+    [HideInInspector] public Challenge challenge;
     public GameObject linkedUI;
     [HideInInspector] public string type;
 
@@ -29,9 +29,8 @@ public class ChallengeComponent : MonoBehaviour
             {
                 challenge.componentCompletionTime = Time.time;
                 challenge.challengeStarted = true;
-                ObjectManager.instance.uILogic.OnComponentComplete(linkedUI);
+                ObjectManager.instance.uILogic.OnComponentComplete(linkedUI, type);
                 challenge.CheckIfChallengeCompleted();
-                Debug.Log("comp complete");
             }
         }
     }
@@ -44,7 +43,5 @@ public class ChallengeComponent : MonoBehaviour
             Debug.LogError("This scene needs a Challenge Manager");
         else
             challengeManager = ChallengeManager.instance;
-        // if (!challenge.components.Contains(this))
-        //     challenge.components.Add(this);
     }
 }

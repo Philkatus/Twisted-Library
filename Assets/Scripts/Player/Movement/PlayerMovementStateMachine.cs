@@ -139,6 +139,7 @@ public class PlayerMovementStateMachine : StateMachine
     InputAction jumpAction;
     InputAction moveAction;
     InputAction foldAction;
+    Rail lastRail;
 
     Coroutine[] inputTimer = new Coroutine[4];
     #endregion
@@ -220,6 +221,14 @@ public class PlayerMovementStateMachine : StateMachine
         }
         inputTimer[index] = StartCoroutine(InputTimer(index, duration));
     }
+    public void SaveInput(int index, float duration,Rail rail)
+    {
+        if (inputTimer[index] != null)
+        {
+            StopCoroutine(inputTimer[index]);
+        }
+        inputTimer[index] = StartCoroutine(InputTimer(index, duration,rail));
+    }
 
     private void CheckForInputBools()
     {
@@ -253,6 +262,18 @@ public class PlayerMovementStateMachine : StateMachine
         inputBools[index] = false;
     }
 
+    IEnumerator InputTimer(int index, float duration, Rail lastRail)
+    {
+        this.lastRail = lastRail;
+        yield return new WaitForSeconds(.34f);
+        if (slideRightInput != 0 || slideLeftInput != 0)
+        {
+            inputBools[index] = true;
+        }
+        yield return new WaitForSeconds(duration);
+        inputBools[index] = false;
+        this.lastRail = null;
+    }
     private void GetControls()
     {
         playerControlsMap = actionAsset.FindActionMap("PlayerControls");
@@ -358,7 +379,7 @@ public class PlayerMovementStateMachine : StateMachine
             {
                 Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
                 float distance = Vector3.Distance(snappingPoint, railCheckLadderPosition);
-                if (distance >= closestDistance)
+                if (distance >= closestDistance || possibleRails[i] == lastRail)
                 {
                     possibleRails.Remove(possibleRails[i]);
                     i--;
@@ -436,52 +457,60 @@ public class PlayerMovementStateMachine : StateMachine
     ///<summary>
     /// A function to determine the closest rail to the player that ignores the current rail. Return false if none are in range.
     ///</summary>
-    public bool CheckForNextClosestRail(Rail currentClosestRail)
+    public bool CheckForNextClosestRail(Rail currentRail)
     {
         railCheckLadderPosition = ladder.transform.position;
-        railAllocator.CheckForRailsInRange(controller.transform);
+        railAllocator.CheckForRailsInRange(ladder.transform);
         var possibleRails = railAllocator.railsInRange;
 
         if (possibleRails.Count == 1)
         {
+           
             return false;
         }
         else
         {
 
             //finding of the direction  of the current rail
-            VertexPath currentClosestPath = currentClosestRail.pathCreator.path;
-            Vector3 currentDirection = currentClosestPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
+            VertexPath currentPath = currentRail.pathCreator.path;
+            Vector3 currentDirection = currentPath.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
 
             float closestDistance = stats.resnappingDistance;
             Rail nextClosestRail = null;
             for (int i = 0; i < possibleRails.Count; i++)
             {
-                float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(railCheckLadderPosition), railCheckLadderPosition);
+                float distance = Vector3.Distance(possibleRails[i].pathCreator.path.GetClosestPointOnPath(currentPath.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop)), currentPath.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop));
                 VertexPath possiblePath = possibleRails[i].pathCreator.path;
                 Vector3 possiblePathDirection = possiblePath.GetDirectionAtDistance(
-                possiblePath.GetClosestDistanceAlongPath(currentClosestPath.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop)), EndOfPathInstruction.Stop);
+                possiblePath.GetClosestDistanceAlongPath(currentPath.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop)), EndOfPathInstruction.Stop);
 
                 if (distance < closestDistance
-                    && possibleRails[i] != currentClosestRail)
+                    && possibleRails[i] != currentRail)
                 {
-                   
+
                     if (Mathf.Abs(Vector3.Dot(currentDirection.normalized, possiblePathDirection.normalized)) > stats.resnappingDotProduct) // hab das >= zu einem > 0 gemacht erstmal, falls sich das gerade jmd ansieht. jetzt geht es einigerma�en
                     {
                         closestDistance = distance;
                         nextClosestRail = possibleRails[i];
-                       
                     }
+                    
                 }
+               
             }
             
             if (nextClosestRail != null)
             {
+                float pathlength = closestRail.pathCreator.path.cumulativeLengthAtEachVertex[closestRail.pathCreator.path.cumulativeLengthAtEachVertex.Length - 1];
+                if (currentDistance >= pathlength)
+                    currentDistance -= pathlength;
+                else
+                    currentDistance = pathlength + currentDistance;
                 closestRail = nextClosestRail;
                 return true;
             }
             else
             {
+               
                 return false;
             }
         }
