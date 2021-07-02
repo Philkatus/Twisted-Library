@@ -18,6 +18,7 @@ public class Challenge : MonoBehaviour
     public float timeToCompleteComponents;
 
     Landmark landmark;
+    Landmark otherLandmark;
     bool challengeCompleted;
     public bool ChallengeCompleted
     {
@@ -50,10 +51,12 @@ public class Challenge : MonoBehaviour
         }
         if (linkedLandmark == LinkedLandmark.Volcano)
         {
+            otherLandmark = ChallengeManager.instance.windChimes;
             landmark = ChallengeManager.instance.volcano;
         }
         else if (linkedLandmark == LinkedLandmark.WindChimes)
         {
+            otherLandmark = ChallengeManager.instance.volcano;
             landmark = ChallengeManager.instance.windChimes;
         }
     }
@@ -108,8 +111,7 @@ public class Challenge : MonoBehaviour
 
     public void ShowCurrentLandmark()
     {
-        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.firstLinkedUI);
-        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.secondLinkedUI);
-        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.thirdLinkedUI);
+        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.firstLinkedUI, landmark.secondLinkedUI, landmark.thirdLinkedUI, landmark.groundUI, true);
+        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(otherLandmark.firstLinkedUI, otherLandmark.secondLinkedUI, otherLandmark.thirdLinkedUI, otherLandmark.groundUI, false);
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Cinemachine;
 
 public class UILogic : MonoBehaviour
 {
@@ -59,6 +60,31 @@ public class UILogic : MonoBehaviour
         escapeUI.performed += context => Options();
         playerControlsMap.Disable();
         UIControlsMap.Enable();
+
+        #region Set PlayerPrefs
+        if (PlayerPrefs.GetInt("UseInvertedSliding", 0) == 1)
+        {
+            ObjectManager.instance.pSM.stats.useInvertedSliding = true;
+            // TO DO: checkbox auf an setzen
+        }
+        else
+        {
+            ObjectManager.instance.pSM.stats.useInvertedSliding = false;
+            // TO DO: checkbox auf aus setzen
+        }
+
+        if (PlayerPrefs.GetInt("UseJumpForLadderPush", 1) == 1)
+        {
+            ObjectManager.instance.pSM.stats.useJumpForLadderPush = true;
+            // TO DO: checkbox auf an setzen
+        }
+        else
+        {
+            ObjectManager.instance.pSM.stats.useJumpForLadderPush = false;
+            // TO DO: checkbox auf aus setzen
+        }
+
+        #endregion
     }
 
     private void Update()
@@ -498,9 +524,19 @@ public class UILogic : MonoBehaviour
         }
     }
 
-    public void OnChallengeStartedLandmark(GameObject linkedUI)
+    public void OnChallengeStartedLandmark(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, bool currentLandmark)
     {
+        // parameter sind alle ui elemente vom landmark, die funktion wird zwei mal aufgerufen, einmal fur das Landmark, was gerade bespielt wird (bool currentLandmark ist true)
+        // und dann für das andere Landmaek (bool currentLandmark ist false)
 
+        if (currentLandmark)
+        {
+            // hebe es hervor
+        }
+        else
+        {
+            // zeig es nur an
+        }
     }
 
     public void OnLandmarkComplete()
@@ -553,16 +589,48 @@ public class UILogic : MonoBehaviour
 
     public void ToggleInvertedSliding()
     {
-
+        // get value after value was changed in the checkbox
+        var value = true;
+        if (value)
+        {
+            PlayerPrefs.SetInt("UseInvertedSliding", 1);
+            ObjectManager.instance.pSM.stats.useInvertedSliding = value;
+        }
+        else
+        {
+            PlayerPrefs.SetInt("UseInvertedSliding", 0);
+            ObjectManager.instance.pSM.stats.useInvertedSliding = value;
+        }
     }
 
     public void ToggleInvertedCameraAxis()
     {
+        var value = true;
+        if (value)
+        {
+            PlayerPrefs.SetInt("UseInvertedCamera", 1);
+            // TO DO: invert Camera
 
+        }
+        else
+        {
+            PlayerPrefs.SetInt("UseInvertedCamera", 0);
+            // TO DO: invert Camera
+        }
     }
 
     public void ToggleJumpForLadderPush()
     {
-
+        var value = true;
+        if (value)
+        {
+            PlayerPrefs.SetInt("UseJumpForLadderPush", 1);
+            ObjectManager.instance.pSM.stats.useJumpForLadderPush = value;
+        }
+        else
+        {
+            PlayerPrefs.SetInt("UseJumpForLadderPush", 0);
+            ObjectManager.instance.pSM.stats.useJumpForLadderPush = value;
+        }
     }
 }
