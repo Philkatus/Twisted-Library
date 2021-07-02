@@ -67,7 +67,7 @@ public class Challenge : MonoBehaviour
             {
                 if (component.Completed)
                 {
-                    ObjectManager.instance.uILogic.UpdateComponentVisual(component.linkedUI, "switch", timeSinceCompletion, timeToCompleteComponents, false);
+                    ObjectManager.instance.uILogic.UpdateComponentVisual(component.linkedUI, component.type, timeSinceCompletion, timeToCompleteComponents, false);
                 }
             }
 
