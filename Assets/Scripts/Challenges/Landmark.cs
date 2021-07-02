@@ -8,6 +8,7 @@ public class Landmark : MonoBehaviour
     public GameObject firstLinkedUI;
     public GameObject secondLinkedUI;
     public GameObject thirdLinkedUI;
+    public GameObject groundUI;
     bool landmarkComplete;
 
     // Start is called before the first frame update

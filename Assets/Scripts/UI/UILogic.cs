@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Cinemachine;
 
 public class UILogic : MonoBehaviour
 {
@@ -479,9 +480,19 @@ public class UILogic : MonoBehaviour
         linkedUI.transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
     }
 
-    public void OnChallengeStartedLandmark(GameObject linkedUI)
+    public void OnChallengeStartedLandmark(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, bool currentLandmark)
     {
+        // parameter sind alle ui elemente vom landmark, die funktion wird zwei mal aufgerufen, einmal fur das Landmark, was gerade bespielt wird (bool currentLandmark ist true)
+        // und dann für das andere Landmaek (bool currentLandmark ist false)
 
+        if (currentLandmark)
+        {
+            // hebe es hervor
+        }
+        else
+        {
+            // zeig es nur an
+        }
     }
 
     public void OnLandmarkComplete()
@@ -496,21 +507,21 @@ public class UILogic : MonoBehaviour
         if (type == "switch")
         {
             // nur zum "Anschalten", geht schnell runter
-           /* if (turnOn)
-            {
-                linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(new Vector3(.8f, .8f, .8f), new Vector3(1f, 1f, 1f), timer);
-                linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 40, timer));
+            /* if (turnOn)
+             {
+                 linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(new Vector3(.8f, .8f, .8f), new Vector3(1f, 1f, 1f), timer);
+                 linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 40, timer));
 
-                linkedUI.GetComponent<Slider>().value = 1;
-                linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = 1;
-            }
-            else
-            {
-                // geht dann hoch abhängig von timeToCompleteComponents (im Inspektor von der Challenge gesetzt)
-                linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(40, 0, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1)));
-                linkedUI.GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
-                linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
-            }*/
+                 linkedUI.GetComponent<Slider>().value = 1;
+                 linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = 1;
+             }
+             else
+             {
+                 // geht dann hoch abhängig von timeToCompleteComponents (im Inspektor von der Challenge gesetzt)
+                 linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(40, 0, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1)));
+                 linkedUI.GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
+                 linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
+             }*/
         }
         if (type == "cogwheel")
         {
@@ -541,6 +552,7 @@ public class UILogic : MonoBehaviour
         {
             PlayerPrefs.SetInt("UseInvertedCamera", 1);
             // TO DO: invert Camera
+
         }
         else
         {
