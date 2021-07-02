@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Cinemachine;
 
 public class UILogic : MonoBehaviour
 {
@@ -41,6 +42,8 @@ public class UILogic : MonoBehaviour
     float timeCount = 2f;
 
     public GameObject handle;
+    public Vector3 inactiveSize;
+    public Vector3 activeSize;
 
 
     private void Start()
@@ -57,6 +60,31 @@ public class UILogic : MonoBehaviour
         escapeUI.performed += context => Options();
         playerControlsMap.Disable();
         UIControlsMap.Enable();
+
+        #region Set PlayerPrefs
+        if (PlayerPrefs.GetInt("UseInvertedSliding", 0) == 1)
+        {
+            ObjectManager.instance.pSM.stats.useInvertedSliding = true;
+            // TO DO: checkbox auf an setzen
+        }
+        else
+        {
+            ObjectManager.instance.pSM.stats.useInvertedSliding = false;
+            // TO DO: checkbox auf aus setzen
+        }
+
+        if (PlayerPrefs.GetInt("UseJumpForLadderPush", 1) == 1)
+        {
+            ObjectManager.instance.pSM.stats.useJumpForLadderPush = true;
+            // TO DO: checkbox auf an setzen
+        }
+        else
+        {
+            ObjectManager.instance.pSM.stats.useJumpForLadderPush = false;
+            // TO DO: checkbox auf aus setzen
+        }
+
+        #endregion
     }
 
     private void Update()
@@ -229,7 +257,6 @@ public class UILogic : MonoBehaviour
                 }
                 options.SetActive(false);
                 EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("PLAY"));
-                Debug.Log("PLAY");
                 optionGotDeselectet = false;
             }
         }
@@ -408,13 +435,13 @@ public class UILogic : MonoBehaviour
         // verstecke wieder alle switches und zahnräder, weil die challenge gefailt wurde
         if (type == "switch")
         {
-            linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(new Vector3(1f, 1f, 1f), new Vector3(.8f, .8f, .8f), timer);
+            linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, timer);
             linkedUI.GetComponent<Slider>().value = .75f;
             linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = .75f;
         }
         if (type == "cogwheel")
         {
-            linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(new Vector3(1f, 1f, 1f), new Vector3(.8f, .8f, .8f), timer);
+            linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, timer);
             linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", false);
             linkedUI.transform.GetChild(0).GetComponent<Animator>().speed = 1f;
             linkedUI.GetComponent<Slider>().value = .49f;
@@ -432,7 +459,6 @@ public class UILogic : MonoBehaviour
         }
         if (type == "cogwheel")
         {
-            linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(new Vector3(.8f, .8f, .8f), new Vector3(1f, 1f, 1f), timer);
             linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", true);
             linkedUI.GetComponent<Slider>().value = .83f;
         }
@@ -468,10 +494,12 @@ public class UILogic : MonoBehaviour
     {
         // show the UI items and set correct sizes
         // passiert nur ein mal, wenn die erste switch aktiviert wird bei der challenge
-        linkedUI.GetComponent<RectTransform>().localScale = new Vector3(.8f, .8f, .8f);
-
         if (type == "switch")
         {
+            linkedUI.GetComponent<RectTransform>().localScale = inactiveSize;
+
+            linkedUI.GetComponent<Slider>().value = .75f;
+            linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = .75f;
             linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = true;
             linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = true;
             linkedUI.transform.GetChild(1).GetComponent<Image>().enabled = true;
@@ -484,6 +512,10 @@ public class UILogic : MonoBehaviour
         }
         if (type == "cogwheel")
         {
+
+            linkedUI.GetComponent<RectTransform>().localScale = inactiveSize;
+            linkedUI.GetComponent<Slider>().value = .49f;
+
             linkedUI.transform.GetChild(0).GetComponent<Image>().enabled = true;
             linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = true;
 
@@ -492,9 +524,19 @@ public class UILogic : MonoBehaviour
         }
     }
 
-    public void OnChallengeStartedLandmark(GameObject linkedUI)
+    public void OnChallengeStartedLandmark(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, bool currentLandmark)
     {
+        // parameter sind alle ui elemente vom landmark, die funktion wird zwei mal aufgerufen, einmal fur das Landmark, was gerade bespielt wird (bool currentLandmark ist true)
+        // und dann für das andere Landmaek (bool currentLandmark ist false)
 
+        if (currentLandmark)
+        {
+            // hebe es hervor
+        }
+        else
+        {
+            // zeig es nur an
+        }
     }
 
     public void OnLandmarkComplete()
@@ -511,16 +553,18 @@ public class UILogic : MonoBehaviour
             // nur zum "Anschalten", geht schnell runter
             if (turnOn)
              {
-                 linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(new Vector3(.8f, .8f, .8f), new Vector3(1f, 1f, 1f), timer);
-                 linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 40, timer));
+                linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, timer);
+                linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(0, 40, timer));
 
                  linkedUI.GetComponent<Slider>().value = 1;
                  linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = 1;
              }
              else
              {
-                 // geht dann hoch abhängig von timeToCompleteComponents (im Inspektor von der Challenge gesetzt)
-                 linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(40, 0, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1)));
+                // geht dann hoch abhängig von timeToCompleteComponents (im Inspektor von der Challenge gesetzt)
+                
+
+                linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(40, 0, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1)));
                  linkedUI.GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
                  linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
              }
@@ -529,9 +573,10 @@ public class UILogic : MonoBehaviour
         {
             if (turnOn)
             {
-                linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(new Vector3(.8f, .8f, .8f), new Vector3(1f, 1f, 1f), timer);
+                linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, timer);
                 linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", true);
                 linkedUI.GetComponent<Slider>().value = .83f;
+                Debug.Log("This is my size:"+ linkedUI.GetComponent<RectTransform>().localScale);
             }
             else
             {
@@ -544,16 +589,48 @@ public class UILogic : MonoBehaviour
 
     public void ToggleInvertedSliding()
     {
-
+        // get value after value was changed in the checkbox
+        var value = true;
+        if (value)
+        {
+            PlayerPrefs.SetInt("UseInvertedSliding", 1);
+            ObjectManager.instance.pSM.stats.useInvertedSliding = value;
+        }
+        else
+        {
+            PlayerPrefs.SetInt("UseInvertedSliding", 0);
+            ObjectManager.instance.pSM.stats.useInvertedSliding = value;
+        }
     }
 
     public void ToggleInvertedCameraAxis()
     {
+        var value = true;
+        if (value)
+        {
+            PlayerPrefs.SetInt("UseInvertedCamera", 1);
+            // TO DO: invert Camera
 
+        }
+        else
+        {
+            PlayerPrefs.SetInt("UseInvertedCamera", 0);
+            // TO DO: invert Camera
+        }
     }
 
     public void ToggleJumpForLadderPush()
     {
-
+        var value = true;
+        if (value)
+        {
+            PlayerPrefs.SetInt("UseJumpForLadderPush", 1);
+            ObjectManager.instance.pSM.stats.useJumpForLadderPush = value;
+        }
+        else
+        {
+            PlayerPrefs.SetInt("UseJumpForLadderPush", 0);
+            ObjectManager.instance.pSM.stats.useJumpForLadderPush = value;
+        }
     }
 }

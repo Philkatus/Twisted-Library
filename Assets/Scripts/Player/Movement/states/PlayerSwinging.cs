@@ -960,6 +960,8 @@ public class PlayerSwinging : State
                 else
                 {
                     PSM.currentSlidingSpeed = 0;
+                    tAcceleration = 0;
+                    tDeceleration = 0;
                     colliding = true;
                 }
                 int relativePathDirection = Mathf.RoundToInt(Vector3.Dot(pathDirection, ladder.transform.right));
