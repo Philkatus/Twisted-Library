@@ -10,6 +10,7 @@ public class RotateCogwheel : MonoBehaviour
     float currentRotationDirection;
     bool changeDirection;
     bool stopWheel;
+    bool doOncePerAttempt;
 
     void Start()
     {
@@ -56,6 +57,16 @@ public class RotateCogwheel : MonoBehaviour
             var slidingInput = psm.slidingInput;
             if (slidingInput != 0 && isSliding)
             {
+                if (!challengeComponent.challenge.challengeStarted && !doOncePerAttempt)
+                {
+                    foreach (ChallengeComponent component in challengeComponent.challenge.components)
+                    {
+                        ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, challengeComponent.type);
+                    }
+                    challengeComponent.challenge.ShowCurrentLandmark();
+                    doOncePerAttempt = true;
+                }
+                challengeComponent.Completed = true;
                 if (currentRotationDirection == 0)
                 {
                     tWheelAcceleration = 0;
@@ -95,5 +106,6 @@ public class RotateCogwheel : MonoBehaviour
     void SetStopWheelTrue()
     {
         stopWheel = true;
+        doOncePerAttempt = false;
     }
 }

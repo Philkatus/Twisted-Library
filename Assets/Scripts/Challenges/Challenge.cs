@@ -67,7 +67,7 @@ public class Challenge : MonoBehaviour
             {
                 if (component.Completed)
                 {
-                    ObjectManager.instance.uILogic.UpdateComponentVisual(component.linkedUI, component.type, timeSinceCompletion, timeToCompleteComponents, false);
+                    ObjectManager.instance.uILogic.UpdateComponentVisual(component.linkedUI, "switch", timeSinceCompletion, timeToCompleteComponents, false);
                 }
             }
 
@@ -92,7 +92,6 @@ public class Challenge : MonoBehaviour
         {
             if (!component.Completed)
             {
-                Debug.Log("not complete");
                 allComponentsComplete = false;
                 break;
             }
@@ -105,5 +104,12 @@ public class Challenge : MonoBehaviour
                 ObjectManager.instance.uILogic.OnChallengeCompleteComponent(component.linkedUI);
             }
         }
+    }
+
+    public void ShowCurrentLandmark()
+    {
+        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.firstLinkedUI);
+        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.secondLinkedUI);
+        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.thirdLinkedUI);
     }
 }
