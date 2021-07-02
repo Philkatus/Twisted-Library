@@ -430,6 +430,14 @@ public class UILogic : MonoBehaviour
         }*/
     }
 
+    public void ShowLandmarkUI(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI)
+    {
+        ExtensionMethods.CrossFadeAlphaFixed(firstLinkedUI, .3f, .2f);
+        ExtensionMethods.CrossFadeAlphaFixed(secondLinkedUI, .3f, .2f);
+        ExtensionMethods.CrossFadeAlphaFixed(thirdLinkedUI, .3f, .2f);
+        ExtensionMethods.CrossFadeAlphaFixed(groundUI, .3f, .2f);
+    }
+
     public void OnChallengeFailed(GameObject linkedUI, string type)
     {
         // verstecke wieder alle switches und zahnräder, weil die challenge gefailt wurde
@@ -468,8 +476,16 @@ public class UILogic : MonoBehaviour
     {
         // wenn alle switches an sind, wird das aufgerufen (challenge complete), wird im landmark script aufgerufen für das dazu
         // gehörige element vom landmark, was nun leuchten soll
-        var image = linkedUI.GetComponent<Image>();
-        image.color = new Color(image.color.r, image.color.g, image.color.b, 1f);//Alpha
+        ExtensionMethods.CrossFadeAlphaFixed(linkedUI, 1f, .1f);
+    }
+
+    public void SetLandmarkScaleBackToSmall(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, float time)
+    {
+        // wenn ein echallenge complete ist, soll das landmark ui wieder klein werden
+        firstLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
+        secondLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
+        thirdLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
+        groundUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
     }
 
     public void OnChallengeCompleteComponent(GameObject linkedUI, string type)
@@ -500,10 +516,10 @@ public class UILogic : MonoBehaviour
 
             linkedUI.GetComponent<Slider>().value = .75f;
             linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = .75f;
-            linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = true;
-            linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = true;
-            linkedUI.transform.GetChild(1).GetComponent<Image>().enabled = true;
-            linkedUI.transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().enabled = true;
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject, 1f, .2f);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject, 1f, .2f);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(1).gameObject, 1f, .2f);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(1).transform.GetChild(0).gameObject, 1f, .2f);
 
             linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(.7f, .2f, false);
             linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
@@ -516,27 +532,18 @@ public class UILogic : MonoBehaviour
             linkedUI.GetComponent<RectTransform>().localScale = inactiveSize;
             linkedUI.GetComponent<Slider>().value = .49f;
 
-            linkedUI.transform.GetChild(0).GetComponent<Image>().enabled = true;
-            linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().enabled = true;
-
-            linkedUI.transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(.7f, .2f, false);
-            linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 1f, .2f);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).gameObject, 1f, .2f);
         }
     }
 
-    public void OnChallengeStartedLandmark(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, bool currentLandmark)
+    public void OnChallengeStartedLandmark(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, float time)
     {
-        // parameter sind alle ui elemente vom landmark, die funktion wird zwei mal aufgerufen, einmal fur das Landmark, was gerade bespielt wird (bool currentLandmark ist true)
-        // und dann für das andere Landmaek (bool currentLandmark ist false)
-
-        if (currentLandmark)
-        {
-            // hebe es hervor
-        }
-        else
-        {
-            // zeig es nur an
-        }
+        // mach dieses landmark größer, weil gerade deren challenge gemacht wird
+        firstLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
+        secondLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
+        thirdLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
+        groundUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
     }
 
     public void OnLandmarkComplete()
@@ -576,7 +583,6 @@ public class UILogic : MonoBehaviour
                 linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, timer);
                 linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", true);
                 linkedUI.GetComponent<Slider>().value = .83f;
-                Debug.Log("This is my size:" + linkedUI.GetComponent<RectTransform>().localScale);
             }
             else
             {
@@ -600,22 +606,6 @@ public class UILogic : MonoBehaviour
         {
             PlayerPrefs.SetInt("UseInvertedSliding", 0);
             ObjectManager.instance.pSM.stats.useInvertedSliding = value;
-        }
-    }
-
-    public void ToggleInvertedCameraAxis()
-    {
-        var value = true;
-        if (value)
-        {
-            PlayerPrefs.SetInt("UseInvertedCamera", 1);
-            // TO DO: invert Camera
-
-        }
-        else
-        {
-            PlayerPrefs.SetInt("UseInvertedCamera", 0);
-            // TO DO: invert Camera
         }
     }
 

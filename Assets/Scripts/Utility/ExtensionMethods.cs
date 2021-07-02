@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 
 public static class ExtensionMethods
@@ -7,6 +8,21 @@ public static class ExtensionMethods
     public static float Remap(this float value, float inputFrom, float inputTo, float outputFrom, float outputTo)
     {
         return (value - inputFrom) / (inputTo - inputFrom) * (outputTo - outputFrom) + outputFrom;
+    }
+
+    public static void CrossFadeAlphaFixed(GameObject uiObject, float alpha, float duration)
+    {
+        var img = uiObject.GetComponent<Image>();
+        //Make the alpha 1
+        Color fixedColor = img.color;
+        fixedColor.a = 1;
+        img.color = fixedColor;
+
+        //Set the 0 to zero then duration to 0
+        img.CrossFadeAlpha(0f, 0f, true);
+
+        //Finally perform CrossFadeAlpha
+        img.CrossFadeAlpha(alpha, duration, false);
     }
 
     /// <summary>
