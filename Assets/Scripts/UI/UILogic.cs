@@ -31,7 +31,9 @@ public class UILogic : MonoBehaviour
     bool startGotPressed = false;
     float timer = 0;
 
-    public GameObject[] dummyTexts;
+    public GameObject[] optionsContent;
+    [SerializeField] Image controlsImage;
+    bool moreOptionsSelected = false;
     bool optionGotSelected = false;
     bool optionGotDeselected = false;
     bool startcanvasDisabled = false;
@@ -49,7 +51,7 @@ public class UILogic : MonoBehaviour
         playerControlsMap = inputActionAsset.FindActionMap("PlayerControls");
         escape = playerControlsMap.FindAction("Escape");
         UIControlsMap = inputActionAsset.FindActionMap("UIControls");
-        escape.performed += context => ShowControls();
+        //escape.performed += context => ShowControls();
         escapeUI = UIControlsMap.FindAction("Escape");
         back = UIControlsMap.FindAction("Back");
         showMoreOptions = UIControlsMap.FindAction("MoreOptions");
@@ -91,38 +93,9 @@ public class UILogic : MonoBehaviour
         Transitions();
     }
 
-    void ShowControls()
-    {
-        /*UIControlsMap.Disable();
-        playerControlsMap.Disable();
-
-        if (controlsActive)
-        {
-            playerControlsMap.Enable();
-            Cursor.lockState = CursorLockMode.Locked;
-            playerControlsMap.Enable();
-            options.SetActive(false);
-            controlsActive = false;
-        }
-        else
-        {
-            UIControlsMap.Enable();
-            Cursor.lockState = CursorLockMode.None;
-            playerControlsMap.Disable();
-            options.SetActive(true);
-            controlsActive = true;
-        }*/
-    }
-
     public void Play()
     {
         startGotPressed = true;
-
-        /*playerControlsMap.Enable();
-        Cursor.lockState = CursorLockMode.Locked;
-        playerControlsMap.Enable();
-        controls.SetActive(false);
-        controlsActive = false;*/
     }
 
     void DisableStartCanvas()
@@ -230,7 +203,7 @@ public class UILogic : MonoBehaviour
 
             if (Vector3.Distance(options.transform.position, new Vector3(-1253f, 0, 0)) < 0.001f)
             {
-                foreach (GameObject g in dummyTexts)
+                foreach (GameObject g in optionsContent)
                 {
                     g.SetActive(false);
                 }
@@ -249,7 +222,7 @@ public class UILogic : MonoBehaviour
 
             if (Vector3.Distance(startCanvas.transform.position, new Vector3(0, 0, 0)) < 0.001f)
             {
-                foreach (GameObject g in dummyTexts)
+                foreach (GameObject g in optionsContent)
                 {
                     g.SetActive(false);
                 }
@@ -262,72 +235,32 @@ public class UILogic : MonoBehaviour
 
     public void Back()
     {
-        optionGotDeselected = true;
+        if (moreOptionsSelected)
+        {
+            controlsImage.enabled = true;
+            moreOptionsSelected = false;
+            foreach (GameObject g in optionsContent)
+            {
+                g.SetActive(false);
+            }
+        }
+        else
+        {
+            optionGotDeselected = true;
+        }
     }
 
     public void ShowMoreOptions()
     {
-        if (optionGotSelected)
+        // schreib hier rein, was passieren soll, wenn mehr ooptions angezeigt werden sollen (toggles erschienen usw.)
+        controlsImage.enabled = false;
+        moreOptionsSelected = true;
+
+        foreach (GameObject g in optionsContent)
         {
-            // schreib hier rein, was passieren soll, wenn mehr ooptions angezeigt werden sollen (toggles erschienen usw.)
+            g.SetActive(true);
         }
-    }
-
-    public void AudioSettings()
-    {
-        foreach (GameObject g in dummyTexts)
-        {
-            if (g.name == "Audio")
-            {
-                g.gameObject.SetActive(true);
-            }
-            else
-            {
-                g.SetActive(false);
-            }
-        }
-    }
-
-    public void Controls()
-    {
-        foreach (GameObject g in dummyTexts)
-        {
-            if (g.name == "Controls")
-            {
-                g.gameObject.SetActive(true);
-            }
-            else
-            {
-                g.SetActive(false);
-            }
-        }
-    }
-
-    public void Visuals()
-    {
-        foreach (GameObject g in dummyTexts)
-        {
-            if (g.name == "Visuals")
-            {
-                g.gameObject.SetActive(true);
-            }
-            else
-            {
-                g.SetActive(false);
-            }
-        }
-    }
-
-    public void ShowControllerControls()
-    {
-        controller.SetActive(true);
-        keyboard.SetActive(false);
-    }
-
-    public void ShowKeyboardControls()
-    {
-        controller.SetActive(false);
-        keyboard.SetActive(true);
+        EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("FirstToggle"));
     }
 
     public void ShowLandmarkUI(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI)
