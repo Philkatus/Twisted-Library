@@ -139,6 +139,7 @@ public class PlayerMovementStateMachine : StateMachine
     InputAction jumpAction;
     InputAction moveAction;
     InputAction foldAction;
+    Rail lastRail;
 
     Coroutine[] inputTimer = new Coroutine[4];
     #endregion
@@ -220,6 +221,14 @@ public class PlayerMovementStateMachine : StateMachine
         }
         inputTimer[index] = StartCoroutine(InputTimer(index, duration));
     }
+    public void SaveInput(int index, float duration,Rail rail)
+    {
+        if (inputTimer[index] != null)
+        {
+            StopCoroutine(inputTimer[index]);
+        }
+        inputTimer[index] = StartCoroutine(InputTimer(index, duration,rail));
+    }
 
     private void CheckForInputBools()
     {
@@ -253,6 +262,18 @@ public class PlayerMovementStateMachine : StateMachine
         inputBools[index] = false;
     }
 
+    IEnumerator InputTimer(int index, float duration, Rail lastRail)
+    {
+        this.lastRail = lastRail;
+        yield return new WaitForSeconds(.34f);
+        if (slideRightInput != 0 || slideLeftInput != 0)
+        {
+            inputBools[index] = true;
+        }
+        yield return new WaitForSeconds(duration);
+        inputBools[index] = false;
+        this.lastRail = null;
+    }
     private void GetControls()
     {
         playerControlsMap = actionAsset.FindActionMap("PlayerControls");
@@ -358,7 +379,7 @@ public class PlayerMovementStateMachine : StateMachine
             {
                 Vector3 snappingPoint = possibleRails[i].pathCreator.path.GetClosestNotConcealedPointOnPathData(railCheckLadderPosition);
                 float distance = Vector3.Distance(snappingPoint, railCheckLadderPosition);
-                if (distance >= closestDistance)
+                if (distance >= closestDistance || possibleRails[i] == lastRail)
                 {
                     possibleRails.Remove(possibleRails[i]);
                     i--;
@@ -439,12 +460,12 @@ public class PlayerMovementStateMachine : StateMachine
     public bool CheckForNextClosestRail(Rail currentRail)
     {
         railCheckLadderPosition = ladder.transform.position;
-        railAllocator.CheckForRailsInRange(controller.transform);
+        railAllocator.CheckForRailsInRange(ladder.transform);
         var possibleRails = railAllocator.railsInRange;
 
         if (possibleRails.Count == 1)
         {
-            Debug.LogWarning("no other Rails in Range");
+           
             return false;
         }
         else
@@ -466,16 +487,13 @@ public class PlayerMovementStateMachine : StateMachine
                 if (distance < closestDistance
                     && possibleRails[i] != currentRail)
                 {
-                    Debug.LogWarning("a rail is close enough");
+
                     if (Mathf.Abs(Vector3.Dot(currentDirection.normalized, possiblePathDirection.normalized)) > stats.resnappingDotProduct) // hab das >= zu einem > 0 gemacht erstmal, falls sich das gerade jmd ansieht. jetzt geht es einigerma�en
                     {
                         closestDistance = distance;
                         nextClosestRail = possibleRails[i];
                     }
-                    else 
-                    {
-                        Debug.LogWarning("But not in the right direction");
-                    }
+                    
                 }
                
             }
@@ -492,7 +510,7 @@ public class PlayerMovementStateMachine : StateMachine
             }
             else
             {
-                Debug.LogWarning("no acceptable rail");
+               
                 return false;
             }
         }

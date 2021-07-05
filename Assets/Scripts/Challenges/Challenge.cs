@@ -18,6 +18,7 @@ public class Challenge : MonoBehaviour
     public float timeToCompleteComponents;
 
     Landmark landmark;
+    Landmark otherLandmark;
     bool challengeCompleted;
     public bool ChallengeCompleted
     {
@@ -35,7 +36,7 @@ public class Challenge : MonoBehaviour
                 landmark.ShowChallengeCompletionInUI(this);
                 foreach (ChallengeComponent component in components)
                 {
-                    ObjectManager.instance.uILogic.OnChallengeCompleteComponent(component.linkedUI, component.type);
+                    ObjectManager.instance.uILogic.OnHideChallengeComponent(component.linkedUI, component.type);
                 }
             }
             challengeCompleted = value;
@@ -50,10 +51,12 @@ public class Challenge : MonoBehaviour
         }
         if (linkedLandmark == LinkedLandmark.Volcano)
         {
+            otherLandmark = ChallengeManager.instance.windChimes;
             landmark = ChallengeManager.instance.volcano;
         }
         else if (linkedLandmark == LinkedLandmark.WindChimes)
         {
+            otherLandmark = ChallengeManager.instance.volcano;
             landmark = ChallengeManager.instance.windChimes;
         }
     }
@@ -67,7 +70,7 @@ public class Challenge : MonoBehaviour
             {
                 if (component.Completed)
                 {
-                    ObjectManager.instance.uILogic.UpdateComponentVisual(component.linkedUI, "switch", timeSinceCompletion, timeToCompleteComponents, false);
+                    ObjectManager.instance.uILogic.UpdateComponentVisual(component.linkedUI, component.type, timeSinceCompletion, timeToCompleteComponents, false);
                 }
             }
 
@@ -76,7 +79,7 @@ public class Challenge : MonoBehaviour
                 foreach (ChallengeComponent component in components)
                 {
                     component.Completed = false;
-                    ObjectManager.instance.uILogic.OnChallengeFailed(component.linkedUI, component.type);
+                    ObjectManager.instance.uILogic.OnHideChallengeComponent(component.linkedUI, component.type);
                 }
                 componentCompletionTime = 0;
                 challengeStarted = false;
@@ -101,15 +104,13 @@ public class Challenge : MonoBehaviour
             ChallengeCompleted = true;
             foreach (ChallengeComponent component in components)
             {
-                ObjectManager.instance.uILogic.OnChallengeCompleteComponent(component.linkedUI, component.type);
+                ObjectManager.instance.uILogic.OnHideChallengeComponent(component.linkedUI, component.type);
             }
         }
     }
 
     public void ShowCurrentLandmark()
     {
-        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.firstLinkedUI);
-        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.secondLinkedUI);
-        ObjectManager.instance.uILogic.OnChallengeStartedLandmark(landmark.thirdLinkedUI);
+        landmark.lerpScaleToBig = true;
     }
 }

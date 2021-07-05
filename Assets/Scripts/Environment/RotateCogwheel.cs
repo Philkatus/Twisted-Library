@@ -8,6 +8,8 @@ public class RotateCogwheel : MonoBehaviour
     ChallengeComponent challengeComponent;
     float tWheelAcceleration = 1;
     float currentRotationDirection;
+    float turnOnTimer;
+    bool turnOn;
     bool changeDirection;
     bool stopWheel;
     bool doOncePerAttempt;
@@ -46,6 +48,17 @@ public class RotateCogwheel : MonoBehaviour
                 stopWheel = false;
             }
         }
+        if (turnOn)
+        {
+            turnOnTimer += Time.deltaTime;
+            ObjectManager.instance.uILogic.UpdateComponentVisual(challengeComponent.linkedUI, challengeComponent.type, turnOnTimer, challengeComponent.challenge.timeToCompleteComponents, true);
+            if (turnOnTimer >= 1)
+            {
+                challengeComponent.Completed = true;
+                turnOnTimer = 0;
+                turnOn = false;
+            }
+        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -64,9 +77,12 @@ public class RotateCogwheel : MonoBehaviour
                         ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, challengeComponent.type);
                     }
                     challengeComponent.challenge.ShowCurrentLandmark();
-                    doOncePerAttempt = true;
                 }
-                challengeComponent.Completed = true;
+                if (!doOncePerAttempt)
+                {
+                    doOncePerAttempt = true;
+                    turnOn = true;
+                }
                 if (currentRotationDirection == 0)
                 {
                     tWheelAcceleration = 0;
