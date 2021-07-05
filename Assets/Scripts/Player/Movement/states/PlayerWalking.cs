@@ -121,7 +121,6 @@ public class PlayerWalking : State
     public override void Snap()
     {
         PSM.OnSnap();
-
     }
 
     public override IEnumerator Finish()

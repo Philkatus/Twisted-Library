@@ -21,7 +21,7 @@ public class CameraController : MonoBehaviour
 
     CinemachineFreeLook current;
     bool justSwitched = false;
-    float delta = 0.04f;
+    float delta = 0.05f;
 
     public void AssignAllVars()
     {
