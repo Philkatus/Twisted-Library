@@ -65,6 +65,12 @@ public class AudioManager : MonoBehaviour
         inactiveSoundSources.Add(source);
         source.gameObject.SetActive(false);
     }
+
+    public void Play() 
+    {
+
+
+    }
     public void PlayRandom(string name)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
@@ -131,6 +137,8 @@ public class AudioManager : MonoBehaviour
         s.source.audioSource.Play();
     }
    
+
+
 
     public void StopSound(string name)
     {
