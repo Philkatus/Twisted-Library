@@ -34,13 +34,14 @@ public class UILogic : MonoBehaviour
     public Vector3 inactiveSize;
     public Vector3 activeSize;
 
-    float timer = 0;
-    bool startGotPressed = false;
-    bool controlsActive = false;
-    bool moreOptionsSelected = false;
-    bool optionGotSelected = false;
-    bool optionGotDeselected = false;
-    bool startcanvasDisabled = false;
+    float timer;
+    float uiAlpha;
+    bool startGotPressed;
+    bool controlsActive;
+    bool moreOptionsSelected;
+    bool optionGotSelected;
+    bool optionGotDeselected;
+    bool startcanvasDisabled;
 
     private void Start()
     {
@@ -60,6 +61,7 @@ public class UILogic : MonoBehaviour
         escapeUI.performed += context => Options();
         playerControlsMap.Disable();
         UIControlsMap.Enable();
+        uiAlpha = ObjectManager.instance.pSM.stats.alphaForTransparentUI;
 
         #region Set PlayerPrefs
         if (PlayerPrefs.GetInt("UseInvertedSliding", 0) == 1)
@@ -267,10 +269,10 @@ public class UILogic : MonoBehaviour
 
     public void ShowLandmarkUI(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI)
     {
-        ExtensionMethods.CrossFadeAlphaFixed(firstLinkedUI, .3f, .2f);
-        ExtensionMethods.CrossFadeAlphaFixed(secondLinkedUI, .3f, .2f);
-        ExtensionMethods.CrossFadeAlphaFixed(thirdLinkedUI, .3f, .2f);
-        ExtensionMethods.CrossFadeAlphaFixed(groundUI, .3f, .2f);
+        ExtensionMethods.CrossFadeAlphaFixed(firstLinkedUI, uiAlpha, .2f);
+        ExtensionMethods.CrossFadeAlphaFixed(secondLinkedUI, uiAlpha, .2f);
+        ExtensionMethods.CrossFadeAlphaFixed(thirdLinkedUI, uiAlpha, .2f);
+        ExtensionMethods.CrossFadeAlphaFixed(groundUI, uiAlpha, .2f);
     }
 
     public void OnChallengeFailed(GameObject linkedUI, string type)
@@ -278,16 +280,15 @@ public class UILogic : MonoBehaviour
         // verstecke wieder alle switches und zahnräder, weil die challenge gefailt wurde
         if (type == "switch")
         {
-            linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, timer);
+            linkedUI.GetComponent<RectTransform>().localScale = inactiveSize;
             linkedUI.GetComponent<Slider>().value = .75f;
             linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = .75f;
         }
         if (type == "cogwheel")
         {
-            linkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, timer);
-            linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", false);
-            linkedUI.transform.GetChild(0).GetComponent<Animator>().speed = 1f;
             linkedUI.GetComponent<Slider>().value = .49f;
+            linkedUI.GetComponent<RectTransform>().localScale = inactiveSize;
+            linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", false);
         }
     }
 
@@ -316,7 +317,7 @@ public class UILogic : MonoBehaviour
 
     public void SetLandmarkScaleBackToSmall(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, float time)
     {
-        // wenn ein echallenge complete ist, soll das landmark ui wieder klein werden
+        // wenn ein challenge complete ist, soll das landmark ui wieder klein werden
         firstLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
         secondLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
         thirdLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
@@ -329,18 +330,15 @@ public class UILogic : MonoBehaviour
 
         if (type == "switch")
         {
-            linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
-            linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
-            linkedUI.transform.GetChild(1).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
-            linkedUI.transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
-            linkedUI.GetComponent<Slider>().value = .75f;
-            linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = .75f;
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject, 0.0f, 0.5f);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject, 0.0f, 0.5f);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(1).transform.GetChild(0).gameObject, 0.0f, 0.5f);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(1).gameObject, 0.0f, 0.5f);
         }
         if (type == "cogwheel")
         {
-            linkedUI.transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(0, .5f, false);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 0.0f, 0.5f);
             linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", false);
-            linkedUI.GetComponent<Slider>().value = .49f;
         }
     }
 
@@ -354,23 +352,17 @@ public class UILogic : MonoBehaviour
 
             linkedUI.GetComponent<Slider>().value = .75f;
             linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = .75f;
-            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject, .7f, .2f);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject, uiAlpha, .2f);
             ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject, 1f, .2f);
-            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(1).gameObject, .7f, .2f);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(1).gameObject, uiAlpha, .2f);
             ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(1).transform.GetChild(0).gameObject, 1f, .2f);
-
-            linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(.7f, .2f, false);
-            linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
-            linkedUI.transform.GetChild(1).GetComponent<Image>().CrossFadeAlpha(.7f, .2f, false);
-            linkedUI.transform.GetChild(1).transform.GetChild(0).GetComponent<Image>().CrossFadeAlpha(1f, .2f, false);
         }
         if (type == "cogwheel")
         {
-
             linkedUI.GetComponent<RectTransform>().localScale = inactiveSize;
             linkedUI.GetComponent<Slider>().value = .49f;
 
-            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 0.3f, .2f);
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, uiAlpha, .2f);
             ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).gameObject, 1f, .2f);
         }
     }
@@ -407,8 +399,6 @@ public class UILogic : MonoBehaviour
             else
             {
                 // geht dann hoch abhängig von timeToCompleteComponents (im Inspektor von der Challenge gesetzt)
-
-
                 linkedUI.transform.GetChild(0).transform.rotation = Quaternion.Euler(0, 0, Mathf.Lerp(40, 0, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1)));
                 linkedUI.GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
                 linkedUI.transform.GetChild(0).transform.GetChild(0).GetComponent<Slider>().value = Mathf.Lerp(1f, .75f, ExtensionMethods.Remap(timer, 0, timeToCompleteComponents, 0, 1));
