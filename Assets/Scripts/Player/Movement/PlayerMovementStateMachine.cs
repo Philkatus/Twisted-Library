@@ -190,7 +190,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     public void TryToSnapToShelf()
     {
-        if (CheckForRail())
+        if (playerState != PlayerState.swinging && CheckForRail())
         {
             State.Snap();
         }
@@ -556,7 +556,7 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnSnap()
     {
-
+       
         snapInputBool = false;
         effects.OnStateChangedSwinging();
         playerState = PlayerState.swinging;
