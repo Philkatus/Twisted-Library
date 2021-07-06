@@ -11,7 +11,8 @@ public class EnableUITrigger : MonoBehaviour
         if (collider.tag == "Player" && !uiShown)
         {
             ChallengeManager.instance.volcano.ShowLandmarkUI();
-            //ChallengeManager.instance.windChimes.ShowLandmarkUI();
+            ChallengeManager.instance.volcano.lerpScaleToBig = true; ;
+            ChallengeManager.instance.windChimes.ShowLandmarkUI();
             uiShown = true;
         }
     }
