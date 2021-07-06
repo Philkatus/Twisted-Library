@@ -168,7 +168,7 @@ public class UILogic : MonoBehaviour
         }
     }
 
-    public void debugMessage()
+    public void DebugMessage()
     {
         Debug.LogError("options button");
     }
@@ -315,7 +315,7 @@ public class UILogic : MonoBehaviour
         ExtensionMethods.CrossFadeAlphaFixed(linkedUI, 1f, .1f);
     }
 
-    public void SetLandmarkScaleBackToSmall(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, float time)
+    public void SetLandmarkScaleToSmall(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, float time)
     {
         // wenn ein challenge complete ist, soll das landmark ui wieder klein werden
         firstLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
@@ -367,7 +367,7 @@ public class UILogic : MonoBehaviour
         }
     }
 
-    public void OnChallengeStartedLandmark(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, float time)
+    public void SetLandmarkScaleToBig(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, float time)
     {
         // mach dieses landmark größer, weil gerade deren challenge gemacht wird
         firstLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
