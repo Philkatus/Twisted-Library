@@ -1,18 +1,20 @@
 using UnityEngine.Audio;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
     public Sound[] sounds;
+    List<AudioSource> activeSoundSources = new List<AudioSource>();
+    List<AudioSource> inactiveSoundSources = new List<AudioSource>();
 
-    public static AudioManager instance;
+    public static AudioManager Instance;
     void Awake()
     {
-        /*
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
+            Instance = this;
         }
         else
         {
@@ -20,18 +22,42 @@ public class AudioManager : MonoBehaviour
             return;
         }
         DontDestroyOnLoad(gameObject);
-        */
-
-
+        
         foreach (Sound s in sounds)
         {
-            s.source = gameObject.AddComponent<AudioSource>();
-            s.source.clip = s.clip;
-            s.source.volume = s.volume;
-            s.source.pitch = s.pitch;
-            s.source.loop = s.loop;
+            CreateSoundSource(s);
         }
     }
+
+    void CreateSoundSource(Sound s) 
+    {
+        s.source = GetInactiveSoundSource();
+        s.source.clip = s.clip;
+        s.source.volume = s.volume;
+        s.source.pitch = s.pitch;
+        s.source.loop = s.loop;
+    }
+    AudioSource GetInactiveSoundSource() 
+    {
+       AudioSource soundSource;
+        if (inactiveSoundSources.Count == 0) 
+        {
+
+            soundSource = Instantiate(new GameObject()).AddComponent<AudioSource>();
+        }
+        else 
+        {
+            soundSource = inactiveSoundSources[0];
+            soundSource.gameObject.SetActive(true);
+        }
+        return soundSource;
+    }
+
+    void SetSoundSourceInactive(GameObject source) 
+    {
+
+    }
+
 
     public void Play(string name)
     {
