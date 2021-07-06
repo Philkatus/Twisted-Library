@@ -1028,7 +1028,7 @@ public class PlayerSwinging : State
                 }
             }
             #endregion
-            if (railType != Rail.RailType.TwoSided)
+            if (railType != Rail.RailType.TwoSided && railType != Rail.RailType.FreeHanging)
                 CheckIfReadyToDismount();
         }
         else

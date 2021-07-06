@@ -23,10 +23,12 @@ public class ChallengeComponent : MonoBehaviour
             completed = value;
             if (value == false)
             {
+                challenge.componentTimer = 0;
                 onResetChallenge();
             }
             else
             {
+                challenge.componentTimer = 0;
                 challenge.componentCompletionTime = Time.time;
                 challenge.challengeStarted = true;
                 ObjectManager.instance.uILogic.OnComponentComplete(linkedUI, type);
