@@ -4932,7 +4932,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6164259229706539060}
   - component: {fileID: 6164259229706539063}
-  - component: {fileID: 6164259229706539062}
   - component: {fileID: 6164259229706539057}
   - component: {fileID: 6164259229706539061}
   m_Layer: 0
@@ -5001,14 +5000,6 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
---- !u!81 &6164259229706539062
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6164259229706539056}
-  m_Enabled: 1
 --- !u!114 &6164259229706539057
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7567,6 +7558,8 @@ GameObject:
   - component: {fileID: 7511473034388439087}
   - component: {fileID: 7511473034388439080}
   - component: {fileID: 5224045388643823046}
+  - component: {fileID: 5864969124257482289}
+  - component: {fileID: 2130404036128119178}
   m_Layer: 0
   m_Name: PlayerCharacter
   m_TagString: Player
@@ -7712,6 +7705,34 @@ MonoBehaviour:
   snapdirection: 1
   coyoteTimer: 0
   myParent: {fileID: 0}
+--- !u!81 &5864969124257482289
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7511473034388439085}
+  m_Enabled: 1
+--- !u!114 &2130404036128119178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7511473034388439085}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 113e4aa2cd3db44d1ac0cb7e9794964b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGainDb: 0
+  occlusionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  stereoSpeakerModeEnabled: 0
+  recorderSeamless: 0
+  recorderSourceTag: Untagged
+  recorderFoldout: 0
 --- !u!1 &7511473034649444846
 GameObject:
   m_ObjectHideFlags: 0
