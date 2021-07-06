@@ -845,6 +845,7 @@ public class PlayerSwinging : State
             PSM.animationControllerisFoldingJumped = false;
         }
         PSM.jumpInputBool = false;
+        PSM.snapInputBool = false;
     }
     public override void FallFromLadder()
     {

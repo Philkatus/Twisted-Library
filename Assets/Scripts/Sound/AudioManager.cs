@@ -6,8 +6,8 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     public Sound[] sounds;
-    List<AudioSource> activeSoundSources = new List<AudioSource>();
-    List<AudioSource> inactiveSoundSources = new List<AudioSource>();
+    List<ResonanceAudioSource> activeSoundSources = new List<ResonanceAudioSource>();
+    List<ResonanceAudioSource> inactiveSoundSources = new List<ResonanceAudioSource>();
 
     public static AudioManager Instance;
     void Awake()
@@ -32,30 +32,36 @@ public class AudioManager : MonoBehaviour
     void CreateSoundSource(Sound s) 
     {
         s.source = GetInactiveSoundSource();
-        s.source.clip = s.clip;
-        s.source.volume = s.volume;
-        s.source.pitch = s.pitch;
-        s.source.loop = s.loop;
+        s.source.audioSource.clip = s.clip;
+        s.source.audioSource.volume = s.volume;
+        s.source.audioSource.pitch = s.pitch;
+        s.source.audioSource.loop = s.loop;
     }
-    AudioSource GetInactiveSoundSource() 
+    ResonanceAudioSource GetInactiveSoundSource() 
     {
-       AudioSource soundSource;
+        ResonanceAudioSource soundSource;
         if (inactiveSoundSources.Count == 0) 
         {
 
-            soundSource = Instantiate(new GameObject()).AddComponent<AudioSource>();
+            soundSource = Instantiate(new GameObject()).AddComponent<ResonanceAudioSource>();
         }
         else 
         {
             soundSource = inactiveSoundSources[0];
             soundSource.gameObject.SetActive(true);
+            inactiveSoundSources.RemoveAt(0);
+            activeSoundSources.Add(soundSource);
         }
         return soundSource;
     }
 
-    void SetSoundSourceInactive(GameObject source) 
+    void SetSoundSourceInactive(ResonanceAudioSource source) 
     {
-
+        Sound s = Array.Find(sounds, sound => sound.source == source);
+        s.source = null;
+        activeSoundSources.Remove(source);
+        inactiveSoundSources.Add(source);
+        source.gameObject.SetActive(false);
     }
 
 
@@ -67,7 +73,11 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        s.source.Play();
+        if (s.source == null) 
+        {
+            s.source = GetInactiveSoundSource();
+        }
+        s.source.audioSource.Play();
     }
 
     public void StopSound(string name)
@@ -78,6 +88,9 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        s.source.Stop();
+        if (s.source != null)
+        {
+            s.source.audioSource.Stop();
+        }
     }
 }
