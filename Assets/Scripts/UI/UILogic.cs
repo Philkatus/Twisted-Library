@@ -17,30 +17,30 @@ public class UILogic : MonoBehaviour
     InputAction escapeUI;
     InputAction showMoreOptions;
     InputAction back;
-    public GameObject options, inGameUI;
-    public GameObject controller;
-    public GameObject keyboard;
-    bool controlsActive = false;
 
     [SerializeField] Camera startCamera;
     [SerializeField] Camera playCamera;
-
+    [SerializeField] Image controlsImage;
     [SerializeField] GameObject startCanvas;
+    [SerializeField] Toggle invertedSlidingToggle;
+    [SerializeField] Toggle jumpForLadderPushToggle;
+
+    public GameObject options, inGameUI;
+    public GameObject controller;
+    public GameObject keyboard;
+    public GameObject[] optionsContent;
     public List<GameObject> uiElements;
     public List<Button> startCanvasButtons;
-    bool startGotPressed = false;
-    float timer = 0;
+    public Vector3 inactiveSize;
+    public Vector3 activeSize;
 
-    public GameObject[] optionsContent;
-    [SerializeField] Image controlsImage;
+    float timer = 0;
+    bool startGotPressed = false;
+    bool controlsActive = false;
     bool moreOptionsSelected = false;
     bool optionGotSelected = false;
     bool optionGotDeselected = false;
     bool startcanvasDisabled = false;
-
-    public Vector3 inactiveSize;
-    public Vector3 activeSize;
-
 
     private void Start()
     {
@@ -190,6 +190,7 @@ public class UILogic : MonoBehaviour
         {
             options.SetActive(true);
             options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(0, 0, 0), 30f);
+            Time.timeScale = 0;
 
             if (Vector3.Distance(options.transform.position, new Vector3(0, 0, 0)) < 0.001f)
             {
@@ -200,6 +201,7 @@ public class UILogic : MonoBehaviour
         if (!startGotPressed && optionGotDeselected && !startCanvas.activeSelf)
         {
             options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(-1253f, 0, 0), 30f);
+            Time.timeScale = 1;
 
             if (Vector3.Distance(options.transform.position, new Vector3(-1253f, 0, 0)) < 0.001f)
             {
@@ -432,7 +434,7 @@ public class UILogic : MonoBehaviour
     public void ToggleInvertedSliding()
     {
         // get value after value was changed in the checkbox
-        var value = true;
+        var value = invertedSlidingToggle.isOn;
         if (value)
         {
             PlayerPrefs.SetInt("UseInvertedSliding", 1);
@@ -447,7 +449,7 @@ public class UILogic : MonoBehaviour
 
     public void ToggleJumpForLadderPush()
     {
-        var value = true;
+        var value = jumpForLadderPushToggle.isOn;
         if (value)
         {
             PlayerPrefs.SetInt("UseJumpForLadderPush", 1);
