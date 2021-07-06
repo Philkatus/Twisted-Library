@@ -6,8 +6,8 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     public Sound[] sounds;
-    List<ResonanceAudioSource> activeSoundSources = new List<ResonanceAudioSource>();
-    List<ResonanceAudioSource> inactiveSoundSources = new List<ResonanceAudioSource>();
+    public List<ResonanceAudioSource> activeSoundSources = new List<ResonanceAudioSource>();
+    public List<ResonanceAudioSource> inactiveSoundSources = new List<ResonanceAudioSource>();
 
     public static AudioManager Instance;
     void Awake()
@@ -23,19 +23,14 @@ public class AudioManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
         
-        foreach (Sound s in sounds)
-        {
-            CreateSoundSource(s);
-        }
     }
 
-    void CreateSoundSource(Sound s) 
-    {
-        s.source = GetInactiveSoundSource();
-        s.source.audioSource.clip = s.clip;
-        s.source.audioSource.volume = s.volume;
-        s.source.audioSource.pitch = s.pitch;
-        s.source.audioSource.loop = s.loop;
+    void ApplyValuesToSource(Sound s,AudioSource source)
+    { 
+        source.clip = s.clip;
+        source.volume = s.volume;
+        source.pitch = s.pitch;
+        source.loop = s.loop;
     }
     ResonanceAudioSource GetInactiveSoundSource() 
     {
@@ -76,6 +71,7 @@ public class AudioManager : MonoBehaviour
         if (s.source == null) 
         {
             s.source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.source.audioSource);
         }
         s.source.audioSource.Play();
     }
