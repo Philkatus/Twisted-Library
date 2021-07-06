@@ -47,7 +47,6 @@ public class SwitchOnAfterSnap : MonoBehaviour
                     {
                         ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, challengeComponent.type);
                     }
-                    challengeComponent.challenge.ShowCurrentLandmark();
                     doOncePerAttempt = true;
                 }
                 tSwitchOn += Time.deltaTime * 2;
