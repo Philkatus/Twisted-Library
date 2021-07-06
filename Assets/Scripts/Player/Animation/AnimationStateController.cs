@@ -245,7 +245,7 @@ public class AnimationStateController : MonoBehaviour
             //Audio
             if (!foldAudioPlaying)
             {
-                audioManager.Play("FoldLadder");
+                audioManager.PlayRandom("FoldLadder",ladderScript.transform.position);
                 foldAudioPlaying = true;
             }
         }
@@ -279,7 +279,7 @@ public class AnimationStateController : MonoBehaviour
         if (canLand && controller.isGrounded)
         {
             canLand = false;
-            audioManager.Play("LandingAfterJump");
+            audioManager.PlayRandom("LandingAfterJump",movementScript.transform.position);
             if (lastAirTime >= timeForLanding)
             {
                 animator.SetBool("isLanding", true);
@@ -306,7 +306,7 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isRolling", true);
             canHardLand = false;
-            audioManager.Play("LandingAfterJump");
+            audioManager.PlayRandom("LandingAfterJump",movementScript.transform.position);
         }
         else
         {
@@ -317,7 +317,7 @@ public class AnimationStateController : MonoBehaviour
         {
             animator.SetBool("isHardLanding", true);
             canHardLand = false;
-            audioManager.Play("LandingAfterFall");
+            audioManager.PlayRandom("LandingAfterFall",movementScript.transform.position);
             
             StartCoroutine(ImpactInput());
         }
@@ -346,7 +346,7 @@ public class AnimationStateController : MonoBehaviour
             //Audio
             if (!fallAudioPlaying)
             {
-                audioManager.Play("Falling");
+                audioManager.PlayRandom("Falling");
                 fallAudioPlaying = true;
             }
 
@@ -381,7 +381,7 @@ public class AnimationStateController : MonoBehaviour
 
 
             //Audio
-            audioManager.Play("JumpStart");
+            audioManager.PlayRandom("JumpStart");
         }
     }
 
@@ -425,7 +425,7 @@ public class AnimationStateController : MonoBehaviour
             //Slide Audio
             if (movementScript.slidingInput != 0 && !slideAudioPlaying)
             {
-                audioManager.Play("Sliding");
+                audioManager.PlayRandom("Sliding");
                 slideAudioPlaying = true;
             }
             if (movementScript.slidingInput == 0 && slideAudioPlaying)
@@ -445,7 +445,7 @@ public class AnimationStateController : MonoBehaviour
             //Attach Audio
             if (!attachAudioPlaying)
             {
-                audioManager.Play("AttachLadder");
+                audioManager.PlayRandom("AttachLadder",ladderScript.transform.position);
                 attachAudioPlaying = true;
             }
             
