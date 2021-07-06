@@ -168,8 +168,8 @@ public class PlayerSwinging : State
         SnappingOrientation();
 
         #region Set Variables Sliding
-
-        PSM.slidingInput = PSM.startingSlidingInput;
+        var inverstedSlidingAdjustment = PSM.stats.useInvertedSliding ? -1 : 1;
+        PSM.slidingInput = PSM.startingSlidingInput * inverstedSlidingAdjustment;
         maxSlidingSpeed = stats.maxSlidingSpeed;
         if (PSM.startingSlidingInput == 0)
         {
@@ -266,7 +266,7 @@ public class PlayerSwinging : State
             switchScript.railSnapRotation = switchScript.railParent.rotation;
         }
         RotateAroundY();
-        
+
     }
 
     void SnappingOrientation()
@@ -783,7 +783,7 @@ public class PlayerSwinging : State
                 HorizontalRailDirection *= -1;
             }
             float rotateByAngle = Vector3.SignedAngle(PSM.ladder.right, HorizontalRailDirection * PSM.snapdirection, localUp);
-            Quaternion targetRotation = Quaternion.AngleAxis(Mathf.Lerp(0, rotateByAngle,.008f), localUp);
+            Quaternion targetRotation = Quaternion.AngleAxis(Mathf.Lerp(0, rotateByAngle, .008f), localUp);
             PSM.ladder.rotation = targetRotation * PSM.ladder.rotation;
         }
     }
@@ -792,9 +792,9 @@ public class PlayerSwinging : State
     #endregion
     public void CalculateCentrifugalForce()
     {
-        Vector3 CurrentSlidingVelocity = PSM.currentSlidingSpeed * ladder.transform.right * PSM.slidingInput ;
+        Vector3 CurrentSlidingVelocity = PSM.currentSlidingSpeed * ladder.transform.right * PSM.slidingInput;
         CurrentSlidingVelocity = new Vector3(CurrentSlidingVelocity.x, 0, CurrentSlidingVelocity.z);
-       
+
         if (previousSlidingVelocity != Vector3.zero)
         {
             Vector3 inputForce = bobForward * ExtensionMethods.resultingSpeed(previousSlidingVelocity, PSM.transform.forward) * stats.centripetalForceFactor;
@@ -845,6 +845,7 @@ public class PlayerSwinging : State
             PSM.animationControllerisFoldingJumped = false;
         }
         PSM.jumpInputBool = false;
+        PSM.snapInputBool = false;
     }
     public override void FallFromLadder()
     {
@@ -985,7 +986,7 @@ public class PlayerSwinging : State
                             endOfShelfDirection = pathDirection * relativePathDirection; //ende - start
                         }
                     }
-                   
+
                     if (Vector3.Dot(slidingDirection, endOfShelfDirection) >= 0.9f) //player moves in the direction of the end point (move left when going out at start, moves right when going out at end)
                     {
 
@@ -996,7 +997,7 @@ public class PlayerSwinging : State
                         }
                         else
                         {
-                           
+
                             if (PSM.closestRail.stopSlidingAtTheEnd)
                             {
                                 PSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(PSM.playerVelocity, pathDirection, 0);
@@ -1007,20 +1008,20 @@ public class PlayerSwinging : State
                             {
                                 PSM.coyoteTimer = 0;
                                 PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed * pathDirection * PSM.slidingInput;
-                                if (PSM.slidingInput * relativePathDirection == 1 && PSM.slideRightInput != 0) 
+                                if (PSM.slidingInput * relativePathDirection == 1 && PSM.slideRightInput != 0)
                                 {
-                                    PSM.SaveInput(1, 1,closestRail);
+                                    PSM.SaveInput(1, 1, closestRail);
                                     Debug.Log("right");
                                 }
                                 if (PSM.slidingInput * relativePathDirection == -1 && PSM.slideLeftInput != 0)
                                 {
-                                    PSM.SaveInput(1, 1,closestRail);
+                                    PSM.SaveInput(1, 1, closestRail);
                                     Debug.Log("left");
                                 }
 
 
                                 PSM.OnFall();
-                              
+
                             }
                         }
                     }
