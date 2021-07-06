@@ -4,21 +4,28 @@ using UnityEngine;
 
 public class ToggleVolcanoUI : MonoBehaviour
 {
-    bool winchimeUIShown;
+    bool volcanoUIShown = true;
 
     void OnTriggerEnter(Collider collider)
     {
         if (collider.tag == "Player")
         {
-            if (winchimeUIShown)
+            if (!volcanoUIShown)
             {
-                ChallengeManager.instance.windChimes.lerpScaleToBig = false;
-                ChallengeManager.instance.windChimes.lerpScaleToSmall = true;
+                ChallengeManager.instance.volcano.lerpScaleToBig = true;
+                ChallengeManager.instance.volcano.lerpScaleToSmall = false;
             }
-            else
+        }
+    }
+
+    void OnTriggerExit(Collider collider)
+    {
+        if (collider.tag == "Player")
+        {
+            if (volcanoUIShown)
             {
-                ChallengeManager.instance.windChimes.lerpScaleToBig = true;
-                ChallengeManager.instance.windChimes.lerpScaleToSmall = false;
+                ChallengeManager.instance.volcano.lerpScaleToBig = false;
+                ChallengeManager.instance.volcano.lerpScaleToSmall = true;
             }
         }
     }

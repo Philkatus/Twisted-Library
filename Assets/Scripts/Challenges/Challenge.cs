@@ -122,9 +122,4 @@ public class Challenge : MonoBehaviour
             }
         }
     }
-
-    public void ShowCurrentLandmark()
-    {
-        landmark.lerpScaleToBig = true;
-    }
 }

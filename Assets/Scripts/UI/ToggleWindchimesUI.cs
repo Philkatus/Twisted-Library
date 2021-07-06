@@ -4,21 +4,28 @@ using UnityEngine;
 
 public class ToggleWindchimesUI : MonoBehaviour
 {
-    bool winchimeUIShown;
+    bool windchimeUIShown;
 
     void OnTriggerEnter(Collider collider)
     {
         if (collider.tag == "Player")
         {
-            if (winchimeUIShown)
-            {
-                ChallengeManager.instance.windChimes.lerpScaleToBig = false;
-                ChallengeManager.instance.windChimes.lerpScaleToSmall = true;
-            }
-            else
+            if (!windchimeUIShown)
             {
                 ChallengeManager.instance.windChimes.lerpScaleToBig = true;
                 ChallengeManager.instance.windChimes.lerpScaleToSmall = false;
+            }
+        }
+    }
+
+    void OnTriggerExit(Collider collider)
+    {
+        if (collider.tag == "Player")
+        {
+            if (windchimeUIShown)
+            {
+                ChallengeManager.instance.windChimes.lerpScaleToBig = false;
+                ChallengeManager.instance.windChimes.lerpScaleToSmall = true;
             }
         }
     }
