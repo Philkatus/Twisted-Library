@@ -14,6 +14,7 @@ public class ToggleVolcanoUI : MonoBehaviour
             {
                 ChallengeManager.instance.volcano.lerpScaleToBig = true;
                 ChallengeManager.instance.volcano.lerpScaleToSmall = false;
+                volcanoUIShown = true;
             }
         }
     }
@@ -26,6 +27,7 @@ public class ToggleVolcanoUI : MonoBehaviour
             {
                 ChallengeManager.instance.volcano.lerpScaleToBig = false;
                 ChallengeManager.instance.volcano.lerpScaleToSmall = true;
+                volcanoUIShown = false;
             }
         }
     }

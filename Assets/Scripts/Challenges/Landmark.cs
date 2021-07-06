@@ -26,7 +26,7 @@ public class Landmark : MonoBehaviour
         if (lerpScaleToSmall)
         {
             timer += Time.deltaTime;
-            ObjectManager.instance.uILogic.SetLandmarkScaleBackToSmall(firstLinkedUI, secondLinkedUI, thirdLinkedUI, groundUI, timer);
+            ObjectManager.instance.uILogic.SetLandmarkScaleToSmall(firstLinkedUI, secondLinkedUI, thirdLinkedUI, groundUI, timer);
             if (timer >= 1)
             {
                 lerpScaleToSmall = false;
@@ -36,7 +36,7 @@ public class Landmark : MonoBehaviour
         else if (lerpScaleToBig)
         {
             timer += Time.deltaTime;
-            ObjectManager.instance.uILogic.OnChallengeStartedLandmark(firstLinkedUI, secondLinkedUI, thirdLinkedUI, groundUI, timer);
+            ObjectManager.instance.uILogic.SetLandmarkScaleToBig(firstLinkedUI, secondLinkedUI, thirdLinkedUI, groundUI, timer);
             if (timer >= 1)
             {
                 lerpScaleToBig = false;
@@ -78,7 +78,6 @@ public class Landmark : MonoBehaviour
                 ObjectManager.instance.uILogic.OnChallengeCompleteLandmark(thirdLinkedUI);
                 break;
         }
-        lerpScaleToSmall = true;
     }
 
     public void ShowLandmarkUI()
