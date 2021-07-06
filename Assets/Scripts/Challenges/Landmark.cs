@@ -9,10 +9,10 @@ public class Landmark : MonoBehaviour
     public GameObject secondLinkedUI;
     public GameObject thirdLinkedUI;
     public GameObject groundUI;
-    public bool lerpScaleToBig;
+    [HideInInspector] public bool lerpScaleToBig;
+    [HideInInspector] public bool lerpScaleToSmall;
     float timer;
     bool landmarkComplete;
-    bool lerpScaleToSmall;
 
     // Start is called before the first frame update
     void Start()

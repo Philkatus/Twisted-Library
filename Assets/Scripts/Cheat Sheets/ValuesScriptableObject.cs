@@ -342,4 +342,10 @@ public class ValuesScriptableObject : ScriptableObject
 
     }
     #endregion
+    [Space]
+    #region visuals
+    [Header("Visuals")]
+    [Tooltip("The alpha value for UI images that are visible ingame, but not active, like switches that aren't turned on yet.")]
+    public float alphaForTransparentUI = 0.3f;
+    #endregion
 }
