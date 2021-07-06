@@ -91,6 +91,7 @@ public class AudioManager : MonoBehaviour
         if (s.source != null)
         {
             s.source.audioSource.Stop();
+            SetSoundSourceInactive(s.source);
         }
     }
 }

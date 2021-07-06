@@ -10,7 +10,7 @@ public class FootstepSoundManager : MonoBehaviour
     #region Variables
 
     [Header("References")]
-    public AudioSource audioSource;
+    public ResonanceAudioSource resonanceAudio;
     public PlayerMovementStateMachine movementScript;
     public AnimationStateController animScript;
     public Animator animator;
@@ -39,7 +39,7 @@ public class FootstepSoundManager : MonoBehaviour
 
     void Start()
     {
-        audioSource = this.GetComponent<AudioSource>();
+       
         animator = GetComponent<Animator>();
         animScript = GetComponent<AnimationStateController>();
         movementScript = GetComponent<PlayerMovementStateMachine>();
@@ -104,7 +104,7 @@ public class FootstepSoundManager : MonoBehaviour
         currentFrameFootstepLeft = animator.GetFloat("FootstepL");
         if(currentFrameFootstepLeft > 0 && lastFrameFootstepLeft < 0)
         {
-            audioSource.PlayOneShot((AudioClip)footsteps[Random.Range(0, 4)], audioVolume);
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footsteps[Random.Range(0, 4)], audioVolume);
         }
         lastFrameFootstepLeft = animator.GetFloat("FootstepL");
 
@@ -112,7 +112,7 @@ public class FootstepSoundManager : MonoBehaviour
         currentFrameFootstepRight = animator.GetFloat("FootstepR");
         if (currentFrameFootstepRight < 0 && lastFrameFootstepRight > 0)
         {
-            audioSource.PlayOneShot((AudioClip)footsteps[Random.Range(5, 9)], audioVolume);
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footsteps[Random.Range(5, 9)], audioVolume);
         }
         lastFrameFootstepRight = animator.GetFloat("FootstepR");
     }
@@ -122,7 +122,7 @@ public class FootstepSoundManager : MonoBehaviour
         currentFrameExhale = animator.GetFloat("Exhale");
         if (currentFrameExhale > 0 && lastFrameExhale < 0)
         {
-            audioSource.PlayOneShot(exhale, audioVolume);
+            resonanceAudio.audioSource.PlayOneShot(exhale, audioVolume);
         }
         lastFrameExhale = animator.GetFloat("Exhale");
     }

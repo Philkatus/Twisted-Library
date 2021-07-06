@@ -1750,6 +1750,7 @@ GameObject:
   - component: {fileID: 5224045387318095665}
   - component: {fileID: 6164259229910852116}
   - component: {fileID: 748540005}
+  - component: {fileID: 4761856323172733090}
   m_Layer: 0
   m_Name: YBot-TPose
   m_TagString: Untagged
@@ -2053,7 +2054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9c0edb2dc675124d889b59d81b3f036, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioSource: {fileID: 5224045387318095671}
+  resonanceAudio: {fileID: 4761856323172733090}
   movementScript: {fileID: 5224045388643823046}
   animScript: {fileID: 0}
   animator: {fileID: 0}
@@ -2186,6 +2187,29 @@ MonoBehaviour:
     pitch: 1
     loop: 0
     source: {fileID: 0}
+--- !u!114 &4761856323172733090
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4953643257122463468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef5e1719799ca4f9b9f5db81449517ca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bypassRoomEffects: 0
+  directivityAlpha: 0
+  directivitySharpness: 1
+  listenerDirectivityAlpha: 0
+  listenerDirectivitySharpness: 1
+  gainDb: 0
+  nearFieldEffectEnabled: 0
+  nearFieldEffectGain: 1
+  occlusionEnabled: 0
+  occlusionIntensity: 1
+  quality: 2
 --- !u!1 &5049071072645614280
 GameObject:
   m_ObjectHideFlags: 0
@@ -4925,8 +4949,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6164259229706539056}
-  m_LocalRotation: {x: -0.117706254, y: -0.7314484, z: 0.13068114, w: -0.6588254}
-  m_LocalPosition: {x: 40.45255, y: -20.587997, z: -172.58167}
+  m_LocalRotation: {x: -0.11768835, y: -0.7315387, z: 0.13069728, w: -0.65872514}
+  m_LocalPosition: {x: 59.512276, y: 15.052002, z: -278.84174}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6164259229316237293}
@@ -4958,7 +4982,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.1
-  far clip plane: 100
+  far clip plane: 1000
   field of view: 40
   orthographic: 0
   orthographic size: 5
