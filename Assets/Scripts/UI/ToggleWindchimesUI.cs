@@ -14,6 +14,7 @@ public class ToggleWindchimesUI : MonoBehaviour
             {
                 ChallengeManager.instance.windChimes.lerpScaleToBig = true;
                 ChallengeManager.instance.windChimes.lerpScaleToSmall = false;
+                windchimeUIShown = true;
             }
         }
     }
@@ -26,6 +27,7 @@ public class ToggleWindchimesUI : MonoBehaviour
             {
                 ChallengeManager.instance.windChimes.lerpScaleToBig = false;
                 ChallengeManager.instance.windChimes.lerpScaleToSmall = true;
+                windchimeUIShown = false;
             }
         }
     }
