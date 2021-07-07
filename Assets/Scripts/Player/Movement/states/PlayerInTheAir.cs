@@ -29,6 +29,7 @@ public class PlayerInTheAir : State
 
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
         CameraController.instance.SwitchToPlayerCam();
+        ObjectManager.instance.animationStateController.EnterAirborneState();
     }
 
     public override void Movement()
@@ -288,5 +289,11 @@ public class PlayerInTheAir : State
 
 
         return false;
+    }
+
+        public override IEnumerator Finish()
+    {
+        ObjectManager.instance.animationStateController.ExitAirborneState();
+        yield return null;
     }
 }

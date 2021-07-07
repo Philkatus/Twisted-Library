@@ -8,12 +8,11 @@ public class AnimationStateController : MonoBehaviour
 {
     #region variables
     [Header("References")]
-    public PlayerMovementStateMachine movementScript;
-    public LadderSizeStateMachine ladderScript;
+    public PlayerMovementStateMachine playerSM;
+    public LadderSizeStateMachine ladderSM;
     public CharacterController controller;
     public FootstepSoundManager soundManager;
     public AudioManager audioManager;
-    public Animator animator;
     public FootIK footIKScript;
 
     public ParticleSystem ladderPushSmoke;
@@ -84,9 +83,15 @@ public class AnimationStateController : MonoBehaviour
     bool slideAudioPlaying;
     #endregion
 
+    #region NEW VARS
+    [SerializeField] Animator animator;
 
+    private Vector2 velocity_vec;
+    #endregion
     void Start()
     {
+        ObjectManager.instance.animationStateController = this;
+        #region OLD
         animator = GetComponent<Animator>();
         footIKScript = GetComponent<FootIK>();
         soundManager = GetComponent<FootstepSoundManager>();
@@ -104,75 +109,165 @@ public class AnimationStateController : MonoBehaviour
         rigBuilder = GetComponent<RigBuilder>();
 
         // new Input System
-        playerControlsMap = movementScript.actionAsset.FindActionMap("PlayerControls");
-        stats = movementScript.stats;
+        playerControlsMap = playerSM.actionAsset.FindActionMap("PlayerControls");
+        stats = playerSM.stats;
         jumpAction = playerControlsMap.FindAction("Jump");
         jumpAction.performed += context => Jump();
+        #endregion
+
     }
 
     void Update()
     {
-        //ignoring the y velocity
-        velocity = new Vector2(movementScript.playerVelocity.x, movementScript.playerVelocity.z).magnitude;
-        //animator.SetFloat(VelocityHash, velocity);
+        #region OLD
+        // //ignoring the y velocity
+        velocity_vec = new Vector2(playerSM.sideWaysInput, playerSM.forwardInput);
+        // //animator.SetFloat(VelocityHash, velocity);
 
-        foldJump = movementScript.animationControllerisFoldingJumped;
-        wallJump = movementScript.isWallJumping;
-        animator.SetBool("isFoldjumping", foldJump);
-        animator.SetBool("isWalljumping", wallJump);
-        if (animator.GetBool("isFoldjumping") == true)
+        // foldJump = playerSM.animationControllerisFoldingJumped;
+        // wallJump = playerSM.isWallJumping;
+        // animator.SetBool("isFoldjumping", foldJump);
+        // animator.SetBool("isWalljumping", wallJump);
+        // if (animator.GetBool("isFoldjumping") == true)
+        // {
+        //     playerSM.animationControllerisFoldingJumped = false;
+        // }
+        // float forwardInput = playerSM.forwardInput;
+        // animator.SetFloat(ForwardInputHash, forwardInput);
+        // float slideInput = playerSM.slidingInput;
+        // animator.SetFloat(SlideInputHash, slideInput);
+
+        // if (animator.GetBool("isJumping") == true)
+        // {
+        //     jumpingTimer += Time.deltaTime;
+        //     if (jumpingTimer > 0.1f)
+        //     {
+        //         animator.SetBool("isJumping", false);
+        //         jumpingTimer = 0;
+        //     }
+        // }
+
+        // GroundedCheck();
+        // //Sliding();
+        // Swinging();
+        // Falling();
+        // HeadAim();
+        // FallImpact();
+        // DismountingTop();
+        // ladderStateChange();
+        AnimateMovement();
+        // LadderPush();
+
+        // if (useFeetIK && footIKScript != null)
+        // {
+        //     CheckIK();
+        // }
+        #endregion
+    }
+    float velocityZ = 0f;
+    float velocityX = 0f;
+    [SerializeField] float acceleration = 2f;
+    [SerializeField] float deceleration = 2f;
+    void AnimateMovement()
+    {
+        // run forward
+        if (Mathf.Abs(velocity_vec.y) > 0f && velocityZ < 2f)
         {
-            movementScript.animationControllerisFoldingJumped = false;
+            velocityZ += Time.deltaTime * acceleration;
         }
-        float forwardInput = movementScript.forwardInput;
-        animator.SetFloat(ForwardInputHash, forwardInput);
-        float slideInput = movementScript.slidingInput;
-        animator.SetFloat(SlideInputHash, slideInput);
 
-        if (animator.GetBool("isJumping") == true)
+        // run left
+        if (velocity_vec.x < 0 && velocityX > -1f)
         {
-            jumpingTimer += Time.deltaTime;
-            if (jumpingTimer > 0.1f)
-            {
-                animator.SetBool("isJumping", false);
-                jumpingTimer = 0;
-            }
+            velocityX -= Time.deltaTime * acceleration;
         }
 
-        GroundedCheck();
-        //Sliding();
-        Swinging();
-        Falling();
-        HeadAim();
-        FallImpact();
-        DismountingTop();
-        ladderStateChange();
-        MovementParameters();
-        LadderPush();
-
-        if (useFeetIK && footIKScript != null)
+        // run right
+        if (velocity_vec.x > 0 && velocityX < 1f)
         {
-            CheckIK();
+            velocityX += Time.deltaTime * acceleration;
+        }
+
+        // decrease velocityZ
+        if (velocity_vec.y == 0f && velocityZ > 0f)
+        {
+            velocityZ -= Time.deltaTime * deceleration;
+        }
+
+        // reset velocity Z
+        if (velocity_vec.y == 0f && velocityZ < 0f)
+        {
+            velocityZ = 0f;
+        }
+
+        // decrease velocityX
+        if (Mathf.Abs(velocity_vec.x) <= 0.4f && velocityX < 0f)
+        {
+            velocityX += Time.deltaTime * deceleration;
+        }
+
+        if (Mathf.Abs(velocity_vec.x) <= 0.4f && velocityX > 0f)
+        {
+            velocityX -= Time.deltaTime * deceleration;
+        }
+
+        if (Mathf.Abs(velocity_vec.x) <= 0.1f && velocityX != 0f && velocityX > -0.1f && velocityX < 0.1f)
+        {
+            velocityX = 0f;
+        }
+
+        animator.SetFloat("Velocity Z", velocityZ);
+        animator.SetFloat("Velocity X", velocityX);
+
+
+        // move = playerSM.playerVelocity;
+        // if (move.magnitude > 1f) move.Normalize();
+        // move = transform.InverseTransformDirection(move);
+
+        // forwardAmount = move.z * antiDrag;
+        // turnAmount = Mathf.Atan2(move.x, move.z);
+
+
+        // animator.SetFloat("Forward", forwardAmount, 0.1f, Time.deltaTime);
+        // animator.SetFloat("Turn", turnAmount, 0.1f, Time.deltaTime);
+        if(playerSM.playerState == PlayerMovementStateMachine.PlayerState.inTheAir){
+            SetJumpPhase();
         }
     }
-    void MovementParameters()
-    {
-        move = movementScript.playerVelocity;
-        if (move.magnitude > 1f) move.Normalize();
-        move = transform.InverseTransformDirection(move);
 
-        forwardAmount = move.z * antiDrag;
-        turnAmount = Mathf.Atan2(move.x, move.z);
+    public void TriggerTurn(){
+        animator.SetTrigger("Turn");
+    }
 
+    public void ExitWalkingState(){
+        animator.SetBool("Walking", false);
+    }
 
-        animator.SetFloat("Forward", forwardAmount, 0.1f, Time.deltaTime);
-        animator.SetFloat("Turn", turnAmount, 0.1f, Time.deltaTime);
+    public void EnterWalkingState(){
+        animator.SetBool("Walking", true);
+    }
+
+    public void EnterAirborneState(){
+        SetJumpPhase();
+        animator.SetBool("Airborne", true);
+    }
+
+    public void ExitAirborneState(){
+        animator.SetBool("Airborne", false);
+    }
+
+    public void SetJumpPhase(){
+        if(playerSM.playerVelocity.y > 0){
+            animator.SetBool("IsFalling", false);
+        } else{
+            animator.SetBool("IsFalling", true);
+        }
     }
 
     void CheckIK()
     {
         // Im sorry if i fucked this up? - Maria
-        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging || movementScript.playerState == PlayerMovementStateMachine.PlayerState.inTheAir)
+        if (playerSM.playerState == PlayerMovementStateMachine.PlayerState.swinging || playerSM.playerState == PlayerMovementStateMachine.PlayerState.inTheAir)
         {
             footIKScript.enabled = false;
         }
@@ -201,7 +296,7 @@ public class AnimationStateController : MonoBehaviour
 
     void LadderFold()
     {
-        if(movementScript.ladderState == PlayerMovementStateMachine.LadderState.LadderFold)
+        if (playerSM.ladderState == PlayerMovementStateMachine.LadderState.LadderFold)
         {
             //do smol ladder stuff e.g. climb in different pose
         }
@@ -239,7 +334,7 @@ public class AnimationStateController : MonoBehaviour
     void ladderStateChange()
     {
         //animations for retracting and extending ladder
-        if (ladderScript.isFoldingUp && movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging)
+        if (ladderSM.isFoldingUp && playerSM.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
             animator.SetBool("isFoldingUp", true);
             //Audio
@@ -318,7 +413,7 @@ public class AnimationStateController : MonoBehaviour
             animator.SetBool("isHardLanding", true);
             canHardLand = false;
             audioManager.Play("LandingAfterFall");
-            
+
             StartCoroutine(ImpactInput());
         }
         else
@@ -373,7 +468,7 @@ public class AnimationStateController : MonoBehaviour
 
     void Jump()
     {
-        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.walking || movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging)
+        if (playerSM.playerState == PlayerMovementStateMachine.PlayerState.walking || playerSM.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
             animator.SetBool("isJumping", true);
             animator.SetBool("isClimbingLadder", false);
@@ -387,11 +482,11 @@ public class AnimationStateController : MonoBehaviour
 
     void LadderPush()
     {
-        if (movementScript.didLadderPush && !isLadderPushing)
+        if (playerSM.didLadderPush && !isLadderPushing)
         {
             animator.SetBool("isRocketJumping", true);
             isLadderPushing = true;
-            if(ladderPushSmoke != null)
+            if (ladderPushSmoke != null)
             {
                 //ladderPushSmoke.Play();
             }
@@ -408,7 +503,7 @@ public class AnimationStateController : MonoBehaviour
 
         }
 
-        if (!movementScript.didLadderPush)
+        if (!playerSM.didLadderPush)
         {
             animator.SetBool("isRocketJumping", false);
             isLadderPushing = false;
@@ -417,23 +512,23 @@ public class AnimationStateController : MonoBehaviour
 
     void Swinging()
     {
-        if (movementScript.playerState == PlayerMovementStateMachine.PlayerState.swinging)
+        if (playerSM.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
             animator.SetBool("isSwingingLadder", true);
             armRig.weight = 0;
-            
+
             //Slide Audio
-            if (movementScript.slidingInput != 0 && !slideAudioPlaying)
+            if (playerSM.slidingInput != 0 && !slideAudioPlaying)
             {
                 audioManager.Play("Sliding");
                 slideAudioPlaying = true;
             }
-            if (movementScript.slidingInput == 0 && slideAudioPlaying)
+            if (playerSM.slidingInput == 0 && slideAudioPlaying)
             {
                 audioManager.StopSound("Sliding");
                 slideAudioPlaying = false;
             }
-            
+
             //Fall Audio
             if (fallAudioPlaying)
             {
@@ -441,14 +536,14 @@ public class AnimationStateController : MonoBehaviour
                 fallAudioPlaying = false;
             }
 
-            
+
             //Attach Audio
             if (!attachAudioPlaying)
             {
                 audioManager.Play("AttachLadder");
                 attachAudioPlaying = true;
             }
-            
+
         }
         else
         {
@@ -467,12 +562,12 @@ public class AnimationStateController : MonoBehaviour
 
             audioManager.StopSound("Sliding");
             slideAudioPlaying = false;
-        }        
+        }
     }
 
     void DismountingTop()
     {
-        if (movementScript.dismounting == true)
+        if (playerSM.dismounting == true)
         {
             animator.SetBool("isDismounting", true);
         }

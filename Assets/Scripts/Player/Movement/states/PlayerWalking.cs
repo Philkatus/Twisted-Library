@@ -36,6 +36,8 @@ public class PlayerWalking : State
         ladder.localRotation = PSM.ladderWalkingRotation;
         Debug.Log(ladder.localRotation.eulerAngles);
         stats = PSM.stats;
+
+        ObjectManager.instance.animationStateController.EnterWalkingState();
     }
 
     public override void Movement()
@@ -46,10 +48,15 @@ public class PlayerWalking : State
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
 
         Vector3 direction = (directionForward * PSM.forwardInput + directionRight * PSM.sideWaysInput).normalized;
-
+        float angle = 0;
         if (direction != Vector3.zero)
         {
-            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
+            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 10 * Time.fixedDeltaTime);
+            angle = Vector3.Angle(controller.transform.forward, direction);
+            if (angle > 90)
+            {
+                // ObjectManager.instance.animationStateController.TriggerTurn();
+            }
         }
         //controller.transform.up = Vector3.Lerp(controller.transform.up, Vector3.up, 20 * Time.fixedDeltaTime);
         PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.MovementAcceleration;
@@ -125,6 +132,7 @@ public class PlayerWalking : State
 
     public override IEnumerator Finish()
     {
+        ObjectManager.instance.animationStateController.ExitWalkingState();
         yield return null;
     }
 
