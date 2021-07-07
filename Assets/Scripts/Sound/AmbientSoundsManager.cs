@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class AmbientSoundsManager : MonoBehaviour
 {
-    List<Transform> oceanSoundPositions;
+    Transform[] oceanSoundPositions;
     private void Awake()
     {
-        
+        foreach(Transform trans in oceanSoundPositions)
+        {
+            AudioManager.Instance.PlayRandom("Ocean", trans.position);
+        }
     }
 }

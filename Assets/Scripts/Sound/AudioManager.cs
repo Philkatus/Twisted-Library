@@ -29,19 +29,18 @@ public class AudioManager : MonoBehaviour
 
     void ApplyValuesToSource(Sound s, AudioSource source)
     {
-        source.clip = s.clips[UnityEngine.Random.Range(0, s.clips.Length)];
-        source.volume = s.volume;
-        source.pitch = s.pitch;
-        source.loop = s.loop;
-        source.outputAudioMixerGroup = s.audioGroup;
-    }
-    void ApplyValuesToSource(Sound s, AudioSource source,int index)
-    {
-        source.clip = s.clips[index];
-        source.volume = s.volume;
-        source.pitch = s.pitch;
-        source.loop = s.loop;
-        source.outputAudioMixerGroup = s.audioGroup;
+        if (s.clips.Length > 0)
+        {
+            source.clip = s.clips[UnityEngine.Random.Range(0, s.clips.Length)];
+            source.volume = s.volume;
+            source.pitch = s.pitch;
+            source.loop = s.loop;
+            source.outputAudioMixerGroup = s.audioGroup;
+        }
+        else 
+        {
+            Debug.LogError("There is no sound clip applied to " + s.name);
+        }
     }
     ResonanceAudioSource GetInactiveSoundSource() 
     {
