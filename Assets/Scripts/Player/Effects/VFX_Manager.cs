@@ -86,7 +86,7 @@ public class VFX_Manager : MonoBehaviour
         {
             projector.enabled = false;
         }
-        if ((Vector3)railMat.GetVector("_SnappingPoint") == Vector3.zero)
+        if ((Vector3)railMat.GetVector("_SnappingPoint") != Vector3.zero)
             MoveSnappingFeedback();
 
         if (smokeOn)
