@@ -1,5 +1,52 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!244 &-6994664401486010432
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 0c7e7fedc900fa04fa8962f53950a144
+  m_EffectName: Attenuation
+  m_MixLevel: f79c8b635ac65d0488795c467b90d3c3
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
+--- !u!243 &-3001404409944463163
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Landmark round
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 6f58f7a8421e84e4c88acc42e71af09f
+  m_Children: []
+  m_Volume: 8eafdf72841a6fb42b81ca3548724921
+  m_Pitch: 7a2c90fb09f49c145955386baf79acae
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: -6994664401486010432}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
+--- !u!244 &-2151155492738271194
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: 2f71debefd2a4b848ae4d0e36e4b6aac
+  m_EffectName: Attenuation
+  m_MixLevel: abb0ab7a2e2f18b41a43dbc8c03e345a
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
 --- !u!241 &24100000
 AudioMixerController:
   m_ObjectHideFlags: 0
@@ -7,7 +54,7 @@ AudioMixerController:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Ambience Mixer
-  m_OutputGroup: {fileID: 0}
+  m_OutputGroup: {fileID: -5308868522701142726, guid: ba14cd0ab809dd84b815b36358b58677, type: 2}
   m_MasterGroup: {fileID: 24300002}
   m_Snapshots:
   - {fileID: 24500006}
@@ -16,7 +63,19 @@ AudioMixerController:
   m_EnableSuspend: 1
   m_UpdateMode: 0
   m_ExposedParameters: []
-  m_AudioMixerGroupViews: []
+  m_AudioMixerGroupViews:
+  - guids:
+    - 7907d80d3da64434cabeee52c7343b3d
+    - efd86acf853d6014eab720dde148a059
+    - 69e829dad646bd94fb7e393f1130a10a
+    - 6f58f7a8421e84e4c88acc42e71af09f
+    - 17c6e8b7ad59a1a43b4810539969e0fe
+    name: full view
+  - guids:
+    - 7907d80d3da64434cabeee52c7343b3d
+    - efd86acf853d6014eab720dde148a059
+    - 69e829dad646bd94fb7e393f1130a10a
+    name: view simple
   m_CurrentViewIndex: 0
   m_TargetSnapshot: {fileID: 24500006}
 --- !u!243 &24300002
@@ -28,7 +87,9 @@ AudioMixerGroupController:
   m_Name: Master
   m_AudioMixer: {fileID: 24100000}
   m_GroupID: 7907d80d3da64434cabeee52c7343b3d
-  m_Children: []
+  m_Children:
+  - {fileID: 8027405489847532693}
+  - {fileID: 2231770433549910635}
   m_Volume: ac3151812708821468acba6e0539b8ce
   m_Pitch: aafd96823fb79c748809504856870edd
   m_Send: 00000000000000000000000000000000
@@ -63,3 +124,90 @@ AudioMixerSnapshotController:
   m_SnapshotID: faa625a15dfb10a4dadc82035d482c4b
   m_FloatValues: {}
   m_TransitionOverrides: {}
+--- !u!244 &354045560243873441
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: e08ed5f485d9f4b47af7dfb217e7327f
+  m_EffectName: Attenuation
+  m_MixLevel: f4c6f364a60e7c34ea3fd8719c9e6b25
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
+--- !u!243 &2231770433549910635
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Landmark sounds
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 69e829dad646bd94fb7e393f1130a10a
+  m_Children:
+  - {fileID: -3001404409944463163}
+  - {fileID: 4074838461390953970}
+  m_Volume: e33f8ec94ad241a468a8a44b80807c39
+  m_Pitch: c1d850603c5f2df46bad6c832fb6b712
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: 354045560243873441}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
+--- !u!243 &4074838461390953970
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Landmark Tower
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: 17c6e8b7ad59a1a43b4810539969e0fe
+  m_Children: []
+  m_Volume: c667b4780646f7046b77b88175453f4c
+  m_Pitch: d32d436acee2b8642bd019e3df4b884c
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: -2151155492738271194}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0
+--- !u!244 &6853627350943700966
+AudioMixerEffectController:
+  m_ObjectHideFlags: 3
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_EffectID: e68b2a79f894ac94cad14c3571b465d2
+  m_EffectName: Attenuation
+  m_MixLevel: 79bf28ddcad8b6c4cb12c17b007f4332
+  m_Parameters: []
+  m_SendTarget: {fileID: 0}
+  m_EnableWetMix: 0
+  m_Bypass: 0
+--- !u!243 &8027405489847532693
+AudioMixerGroupController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Water and Wind
+  m_AudioMixer: {fileID: 24100000}
+  m_GroupID: efd86acf853d6014eab720dde148a059
+  m_Children: []
+  m_Volume: e754978748b3c0741945a22dc6db0a72
+  m_Pitch: 56514d4d41f120347a6a86d1dcf0b448
+  m_Send: 00000000000000000000000000000000
+  m_Effects:
+  - {fileID: 6853627350943700966}
+  m_UserColorIndex: 0
+  m_Mute: 0
+  m_Solo: 0
+  m_BypassEffects: 0

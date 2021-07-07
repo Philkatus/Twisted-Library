@@ -8,6 +8,7 @@ public class AudioManager : MonoBehaviour
     public Sound[] sounds;
     public List<ResonanceAudioSource> activeSoundSources = new List<ResonanceAudioSource>();
     public List<ResonanceAudioSource> inactiveSoundSources = new List<ResonanceAudioSource>();
+    [SerializeField] GameObject SoundSourcePrefab;
 
     public static AudioManager Instance;
     void Awake()
@@ -31,6 +32,7 @@ public class AudioManager : MonoBehaviour
         source.volume = s.volume;
         source.pitch = s.pitch;
         source.loop = s.loop;
+        source.outputAudioMixerGroup = s.audioGroup;
     }
     void ApplyValuesToSource(Sound s, AudioSource source,int index)
     {
@@ -38,6 +40,7 @@ public class AudioManager : MonoBehaviour
         source.volume = s.volume;
         source.pitch = s.pitch;
         source.loop = s.loop;
+        source.outputAudioMixerGroup = s.audioGroup;
     }
     ResonanceAudioSource GetInactiveSoundSource() 
     {
@@ -45,7 +48,8 @@ public class AudioManager : MonoBehaviour
         if (inactiveSoundSources.Count == 0) 
         {
 
-            soundSource = Instantiate(new GameObject()).AddComponent<ResonanceAudioSource>();
+            soundSource = Instantiate(SoundSourcePrefab).GetComponent<ResonanceAudioSource>();
+            activeSoundSources.Add(soundSource);
         }
         else 
         {

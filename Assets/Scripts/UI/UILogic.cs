@@ -292,6 +292,21 @@ public class UILogic : MonoBehaviour
         }
     }
 
+    public void OnChallengeComplete(GameObject linkedUI, string type)
+    {
+        // verstecke wieder alle switches und zahnräder, weil die challenge gefailt wurde
+        if (type == "switch")
+        {
+
+        }
+        if (type == "cogwheel")
+        {
+            linkedUI.GetComponent<Slider>().value = .83f;
+            linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", false);
+            Debug.Log("commmmmpleteeee");
+        }
+    }
+
     public void OnComponentComplete(GameObject linkedUI, string type)
     {
         // immer wenn ein hebel umgelegt wird, wird das im jeweiligen hebel aufgerufen mit dem jeweiligen ui objekt (linkedUI)
@@ -305,7 +320,7 @@ public class UILogic : MonoBehaviour
         {
             //Debug.Log("tiurn on");
 
-            linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", true);
+            //linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", true);
             linkedUI.GetComponent<Slider>().value = .83f;
         }
     }
@@ -339,8 +354,9 @@ public class UILogic : MonoBehaviour
         }
         if (type == "cogwheel")
         {
-            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 0.0f, 0.5f);
-            linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", false);
+            linkedUI.GetComponent<Slider>().value = .83f;
+            //ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 0.0f, 0.5f);
+            StartCoroutine(HideUI(linkedUI));
         }
     }
 
@@ -364,6 +380,9 @@ public class UILogic : MonoBehaviour
             linkedUI.GetComponent<RectTransform>().localScale = inactiveSize;
             linkedUI.GetComponent<Slider>().value = .49f;
 
+            linkedUI.transform.GetChild(0).GetComponent<Image>().enabled = false;
+            linkedUI.transform.GetChild(0).GetComponent<Image>().enabled = true;
+            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 0, 0f);
             ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, uiAlpha, .2f);
             ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).gameObject, 1f, .2f);
         }
@@ -378,11 +397,10 @@ public class UILogic : MonoBehaviour
         groundUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
     }
 
-    public void OnLandmarkComplete()
+    public void OnLandmarkComplete(GameObject groundUI)
     {
-
+        ExtensionMethods.CrossFadeAlphaFixed(groundUI, 1, .2f);
     }
-
 
     public void UpdateComponentVisual(GameObject linkedUI, string type, float timer, float timeToCompleteComponents, bool turnOn)
     {
@@ -452,5 +470,12 @@ public class UILogic : MonoBehaviour
             PlayerPrefs.SetInt("UseJumpForLadderPush", 0);
             ObjectManager.instance.pSM.stats.useJumpForLadderPush = value;
         }
+    }
+
+    IEnumerator HideUI(GameObject linkedUI)
+    {
+        yield return new WaitForSeconds(.1f);
+        ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 1f, 0f);
+        ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 0.0f, 0.5f);
     }
 }

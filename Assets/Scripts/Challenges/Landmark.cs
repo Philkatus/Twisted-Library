@@ -58,7 +58,7 @@ public class Landmark : MonoBehaviour
         }
         if (allChallengesComplete)
         {
-            ObjectManager.instance.uILogic.OnLandmarkComplete();
+            ObjectManager.instance.uILogic.OnLandmarkComplete(groundUI);
             landmarkComplete = true;
         }
     }
