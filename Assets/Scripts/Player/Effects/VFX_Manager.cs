@@ -45,7 +45,7 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] VisualEffect ladderPushLeft, ladderPushRight;
     [SerializeField] Material railMat;
     PlayerMovementStateMachine pSM;
-    DecalProjector projector;
+    
     GameObject cloud;
     Vector3 offset;
 
@@ -60,8 +60,7 @@ public class VFX_Manager : MonoBehaviour
     private void Start()
     {
         // Set all Effects
-        cloud = transform.GetChild(1).gameObject;
-        projector = transform.GetChild(0).GetComponent<DecalProjector>();
+        cloud = transform.GetChild(0).gameObject;
 
         offset = transform.position - player.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
@@ -77,15 +76,7 @@ public class VFX_Manager : MonoBehaviour
     void Update()
     {
         transform.position = player.transform.position + offset;
-        if (pSM.playerState == PlayerMovementStateMachine.PlayerState.inTheAir
-            || pSM.playerState == PlayerMovementStateMachine.PlayerState.walking)
-        {
-            projector.enabled = true;
-        }
-        else
-        {
-            projector.enabled = false;
-        }
+
         if ((Vector3)railMat.GetVector("_SnappingPoint") != Vector3.zero)
             MoveSnappingFeedback();
 
@@ -126,7 +117,7 @@ public class VFX_Manager : MonoBehaviour
     {
         DisableParticleEffect(swingingFeedback);
         SetProperty(railMat, "_SnappingPoint", Vector3.up);
-        projector.gameObject.SetActive(true);
+
         if (land)
         {
             PlayParticleEffect(cloud);
@@ -138,13 +129,13 @@ public class VFX_Manager : MonoBehaviour
     {
         DisableParticleEffect(swingingFeedback);
         SetProperty(railMat, "_SnappingPoint", Vector3.up);
-        projector.gameObject.SetActive(true);
+
     }
     public void OnStateChangedSwinging()
     {
         PlayParticleEffect(swingingFeedback);
         SetProperty(railMat, "_SnappingPoint", Vector3.zero);
-        projector.gameObject.SetActive(false);
+ 
     }
     public void OnStateChangedLadderPush()
     {
