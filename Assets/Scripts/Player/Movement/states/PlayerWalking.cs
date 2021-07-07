@@ -36,8 +36,6 @@ public class PlayerWalking : State
         ladder.localRotation = PSM.ladderWalkingRotation;
         Debug.Log(ladder.localRotation.eulerAngles);
         stats = PSM.stats;
-
-        ObjectManager.instance.animationStateController.EnterWalkingState();
     }
 
     public override void Movement()
@@ -132,7 +130,6 @@ public class PlayerWalking : State
 
     public override IEnumerator Finish()
     {
-        ObjectManager.instance.animationStateController.ExitWalkingState();
         yield return null;
     }
 
