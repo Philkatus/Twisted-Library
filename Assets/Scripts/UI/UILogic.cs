@@ -303,6 +303,8 @@ public class UILogic : MonoBehaviour
         }
         if (type == "cogwheel")
         {
+            //Debug.Log("tiurn on");
+
             linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", true);
             linkedUI.GetComponent<Slider>().value = .83f;
         }

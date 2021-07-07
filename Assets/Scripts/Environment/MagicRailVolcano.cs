@@ -7,6 +7,7 @@ public class MagicRailVolcano : MonoBehaviour
     [SerializeField] Vector3 endPosition, planeEndPos;
     [SerializeField] float travelTime;
     [SerializeField] GameObject bigPlate;
+    public bool noPlane;
     PlayerMovementStateMachine psm;
     bool done;
     Vector3 startingPos, planeStartPos;
@@ -31,7 +32,8 @@ public class MagicRailVolcano : MonoBehaviour
     }
     IEnumerator MoveUp(Vector3 currPos)
     {
-        StartCoroutine(MovePlateAway());
+        if (!noPlane)
+            StartCoroutine(MovePlateAway());
         float timer = 0;
         while (timer <= travelTime)
         {
@@ -46,11 +48,12 @@ public class MagicRailVolcano : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         StartCoroutine(ShortMoveUp());
-        StartCoroutine(MovePlateBack());
+        if (!noPlane)
+            StartCoroutine(MovePlateBack());
     }
     IEnumerator MoveDown()
     {
-        
+
         float timer = 0;
         while (timer <= 0.5f)
         {
@@ -59,15 +62,15 @@ public class MagicRailVolcano : MonoBehaviour
             transform.localPosition = Vector3.Lerp(startingPos, startingPos + Vector3.up * 1, t);
             yield return new WaitForEndOfFrame();
         }
-        
+
         StartCoroutine(MoveUp(transform.localPosition));
     }
     IEnumerator MoveBackDown(Vector3 currPos)
     {
         float timer = 0;
-        while (timer <= travelTime/2.5f)
+        while (timer <= travelTime / 2.5f)
         {
-            float t = timer / (travelTime/2.5f);
+            float t = timer / (travelTime / 2.5f);
             timer += Time.deltaTime;
             transform.localPosition = Vector3.Lerp(endPosition, startingPos, t);
             yield return new WaitForEndOfFrame();
@@ -89,9 +92,9 @@ public class MagicRailVolcano : MonoBehaviour
     IEnumerator MovePlateAway()
     {
         float timer = 0;
-        while (timer <= travelTime/2)
+        while (timer <= travelTime / 2)
         {
-            float t = timer / (travelTime*0.5f);
+            float t = timer / (travelTime * 0.5f);
             timer += Time.deltaTime;
             bigPlate.transform.localPosition = Vector3.Lerp(planeStartPos, planeEndPos, t);
             yield return new WaitForEndOfFrame();
