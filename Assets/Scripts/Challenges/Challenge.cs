@@ -14,12 +14,15 @@ public class Challenge : MonoBehaviour
     public LinkedLandmark linkedLandmark;
     public List<ChallengeComponent> components = new List<ChallengeComponent>();
     [HideInInspector] public float componentCompletionTime;
+    [HideInInspector] public float componentTimer;
     [HideInInspector] public bool challengeStarted;
+    [HideInInspector] public bool waitToHideComponentsUI;
     public float timeToCompleteComponents;
 
     Landmark landmark;
     Landmark otherLandmark;
     bool challengeCompleted;
+
     public bool ChallengeCompleted
     {
         get
@@ -34,10 +37,7 @@ public class Challenge : MonoBehaviour
                 gameObject.SendMessage("OnAllComponentsCompleted");
                 landmark.CheckIfAllChallengesComplete();
                 landmark.ShowChallengeCompletionInUI(this);
-                foreach (ChallengeComponent component in components)
-                {
-                    ObjectManager.instance.uILogic.OnHideChallengeComponent(component.linkedUI, component.type);
-                }
+                componentTimer = 0;
             }
             challengeCompleted = value;
         }
@@ -66,6 +66,19 @@ public class Challenge : MonoBehaviour
         if (componentCompletionTime != 0 && !challengeCompleted)
         {
             float timeSinceCompletion = Time.time - componentCompletionTime;
+
+            if (timeSinceCompletion >= timeToCompleteComponents)
+            {
+                foreach (ChallengeComponent component in components)
+                {
+                    component.Completed = false;
+                    ObjectManager.instance.uILogic.OnChallengeFailed(component.linkedUI, component.type);
+                }
+                componentCompletionTime = 0;
+                challengeStarted = false;
+                waitToHideComponentsUI = true;
+                Debug.Log("Challenge failed!");
+            }
             foreach (ChallengeComponent component in components)
             {
                 if (component.Completed)
@@ -73,17 +86,26 @@ public class Challenge : MonoBehaviour
                     ObjectManager.instance.uILogic.UpdateComponentVisual(component.linkedUI, component.type, timeSinceCompletion, timeToCompleteComponents, false);
                 }
             }
+        }
 
-            if (timeSinceCompletion >= timeToCompleteComponents)
+        if (componentCompletionTime != 0)
+        {
+            componentTimer = 0;
+            waitToHideComponentsUI = false;
+        }
+
+        if (waitToHideComponentsUI)
+        {
+            Debug.Log(componentTimer);
+            componentTimer += Time.deltaTime;
+            if (componentTimer >= 4)
             {
                 foreach (ChallengeComponent component in components)
                 {
-                    component.Completed = false;
                     ObjectManager.instance.uILogic.OnHideChallengeComponent(component.linkedUI, component.type);
                 }
-                componentCompletionTime = 0;
-                challengeStarted = false;
-                Debug.Log("Challenge failed!");
+                waitToHideComponentsUI = false;
+                componentTimer = 0;
             }
         }
     }
@@ -102,15 +124,12 @@ public class Challenge : MonoBehaviour
         if (allComponentsComplete)
         {
             ChallengeCompleted = true;
+            componentCompletionTime = 0;
             foreach (ChallengeComponent component in components)
             {
+                ObjectManager.instance.uILogic.OnChallengeComplete(component.linkedUI, component.type);
                 ObjectManager.instance.uILogic.OnHideChallengeComponent(component.linkedUI, component.type);
             }
         }
-    }
-
-    public void ShowCurrentLandmark()
-    {
-        landmark.lerpScaleToBig = true;
     }
 }

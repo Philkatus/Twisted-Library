@@ -9,10 +9,12 @@ public class RotateCogwheel : MonoBehaviour
     float tWheelAcceleration = 1;
     float currentRotationDirection;
     float turnOnTimer;
+    float timeToCompleteComponents;
     bool turnOn;
     bool changeDirection;
     bool stopWheel;
     bool doOncePerAttempt;
+    bool rotateWheel;
 
     void Start()
     {
@@ -24,6 +26,7 @@ public class RotateCogwheel : MonoBehaviour
 
     void Update()
     {
+        var challenge = challengeComponent.challenge;
         if (changeDirection)
         {
             if (tWheelAcceleration > 0)
@@ -46,18 +49,28 @@ public class RotateCogwheel : MonoBehaviour
             else
             {
                 stopWheel = false;
+                currentRotationDirection = 0;
+                tWheelAcceleration = 0;
             }
         }
         if (turnOn)
         {
             turnOnTimer += Time.deltaTime;
-            ObjectManager.instance.uILogic.UpdateComponentVisual(challengeComponent.linkedUI, challengeComponent.type, turnOnTimer, challengeComponent.challenge.timeToCompleteComponents, true);
+            ObjectManager.instance.uILogic.UpdateComponentVisual(challengeComponent.linkedUI, challengeComponent.type, turnOnTimer, challenge.timeToCompleteComponents, true);
             if (turnOnTimer >= 1)
             {
                 challengeComponent.Completed = true;
                 turnOnTimer = 0;
                 turnOn = false;
             }
+        }
+        if (!turnOn && !stopWheel && !changeDirection && rotateWheel)
+        {
+            float timeSinceCompletion = Time.time - challenge.componentCompletionTime;
+            tWheelAcceleration = ExtensionMethods.Remap(timeSinceCompletion, 0, challenge.timeToCompleteComponents, 1, 0);
+            Mathf.Clamp(tWheelAcceleration, 0f, 1f);
+            float angleDelta = Mathf.Lerp(0, 1f, tWheelAcceleration) * currentRotationDirection;
+            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y - angleDelta, transform.eulerAngles.z);
         }
     }
 
@@ -76,7 +89,6 @@ public class RotateCogwheel : MonoBehaviour
                     {
                         ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, challengeComponent.type);
                     }
-                    challengeComponent.challenge.ShowCurrentLandmark();
                 }
                 if (!doOncePerAttempt)
                 {
@@ -91,10 +103,14 @@ public class RotateCogwheel : MonoBehaviour
                 }
                 else if (currentRotationDirection != slidingInput)
                 {
+                    StopAllCoroutines();
                     currentRotationDirection = slidingInput;
                     tWheelAcceleration = 1;
                     changeDirection = true;
-                    StopAllCoroutines();
+                }
+                else if (rotateWheel)
+                {
+                    challengeComponent.Completed = true;
                 }
             }
         }
@@ -102,12 +118,16 @@ public class RotateCogwheel : MonoBehaviour
 
     IEnumerator RotateWheel()
     {
-        while (true)
+        while (tWheelAcceleration < 1)
         {
             tWheelAcceleration += Time.deltaTime / 1.3f;
-            Mathf.Clamp(tWheelAcceleration, 0f, 1f);
             float angleDelta = Mathf.Lerp(0, 1f, tWheelAcceleration) * currentRotationDirection;
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y - angleDelta, transform.eulerAngles.z);
+            if (tWheelAcceleration >= 1)
+            {
+                rotateWheel = true;
+                yield return null;
+            }
             yield return new WaitForEndOfFrame();
         }
     }
@@ -122,6 +142,7 @@ public class RotateCogwheel : MonoBehaviour
     void SetStopWheelTrue()
     {
         stopWheel = true;
+        rotateWheel = false;
         doOncePerAttempt = false;
     }
 }

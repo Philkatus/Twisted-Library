@@ -17,7 +17,19 @@ public class FootstepSoundManager : MonoBehaviour
 
     [Header("Sound Lists")]
     [SerializeField]
-    private AudioClip[] footsteps;
+    private AudioClip[] footstepsLeft;
+    [SerializeField]
+    private AudioClip[] footstepsRight;
+    [SerializeField]
+    private AudioClip[] footstepsLeftGras;
+    [SerializeField]
+    private AudioClip[] footstepsRightGras;
+    [SerializeField]
+    private AudioClip[] footstepsLeftWater;
+    [SerializeField]
+    private AudioClip[] footstepsRightWater;
+
+
     [SerializeField]
     private AudioClip exhale;
 
@@ -27,6 +39,10 @@ public class FootstepSoundManager : MonoBehaviour
     [Header("Movement Particle Systems")]
     public ParticleSystem footstepLFX;
     public ParticleSystem footstepRFX;
+
+
+    private bool isOnWater;
+    private bool isOnGras;
 
 
     private float currentFrameFootstepLeft;
@@ -99,12 +115,15 @@ public class FootstepSoundManager : MonoBehaviour
         */
     }
     
+   
+
+
     public void Footsteps()
     {
         currentFrameFootstepLeft = animator.GetFloat("FootstepL");
         if(currentFrameFootstepLeft > 0 && lastFrameFootstepLeft < 0)
         {
-            resonanceAudio.audioSource.PlayOneShot((AudioClip)footsteps[Random.Range(0, 4)], audioVolume);
+            PlayLeftStep();
         }
         lastFrameFootstepLeft = animator.GetFloat("FootstepL");
 
@@ -112,9 +131,41 @@ public class FootstepSoundManager : MonoBehaviour
         currentFrameFootstepRight = animator.GetFloat("FootstepR");
         if (currentFrameFootstepRight < 0 && lastFrameFootstepRight > 0)
         {
-            resonanceAudio.audioSource.PlayOneShot((AudioClip)footsteps[Random.Range(5, 9)], audioVolume);
+            PlayRightStep();
         }
         lastFrameFootstepRight = animator.GetFloat("FootstepR");
+    }
+
+    private void PlayLeftStep() 
+    {
+        if (isOnGras) 
+        {
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeftGras[Random.Range(0, footstepsLeft.Length)], audioVolume);
+        }
+        else if (isOnWater) 
+        {
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeftWater[Random.Range(0, footstepsLeft.Length)], audioVolume);
+        }
+        else 
+        {
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeft[Random.Range(0, footstepsLeft.Length)], audioVolume);
+        }
+    }
+
+    private void PlayRightStep()
+    {
+        if (isOnGras)
+        {
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRightGras[Random.Range(0, footstepsLeft.Length)], audioVolume);
+        }
+        else if (isOnWater)
+        {
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRightWater[Random.Range(0, footstepsLeft.Length)], audioVolume);
+        }
+        else
+        {
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRight[Random.Range(0, footstepsLeft.Length)], audioVolume);
+        }
     }
 
     public void Exhale()
@@ -125,5 +176,14 @@ public class FootstepSoundManager : MonoBehaviour
             resonanceAudio.audioSource.PlayOneShot(exhale, audioVolume);
         }
         lastFrameExhale = animator.GetFloat("Exhale");
+    }
+
+    public void SetGras(bool setTo)
+    {
+        isOnGras = setTo;
+    }
+    public void SetWater(bool setTo)
+    {
+        isOnWater = setTo;
     }
 }

@@ -8,6 +8,7 @@ public class AudioManager : MonoBehaviour
     public Sound[] sounds;
     public List<ResonanceAudioSource> activeSoundSources = new List<ResonanceAudioSource>();
     public List<ResonanceAudioSource> inactiveSoundSources = new List<ResonanceAudioSource>();
+    [SerializeField] GameObject SoundSourcePrefab;
 
     public static AudioManager Instance;
     void Awake()
@@ -25,12 +26,21 @@ public class AudioManager : MonoBehaviour
         
     }
 
-    void ApplyValuesToSource(Sound s,AudioSource source)
-    { 
-        source.clip = s.clip;
+    void ApplyValuesToSource(Sound s, AudioSource source)
+    {
+        source.clip = s.clips[UnityEngine.Random.Range(0, s.clips.Length)];
         source.volume = s.volume;
         source.pitch = s.pitch;
         source.loop = s.loop;
+        source.outputAudioMixerGroup = s.audioGroup;
+    }
+    void ApplyValuesToSource(Sound s, AudioSource source,int index)
+    {
+        source.clip = s.clips[index];
+        source.volume = s.volume;
+        source.pitch = s.pitch;
+        source.loop = s.loop;
+        source.outputAudioMixerGroup = s.audioGroup;
     }
     ResonanceAudioSource GetInactiveSoundSource() 
     {
@@ -38,7 +48,8 @@ public class AudioManager : MonoBehaviour
         if (inactiveSoundSources.Count == 0) 
         {
 
-            soundSource = Instantiate(new GameObject()).AddComponent<ResonanceAudioSource>();
+            soundSource = Instantiate(SoundSourcePrefab).GetComponent<ResonanceAudioSource>();
+            activeSoundSources.Add(soundSource);
         }
         else 
         {
@@ -59,8 +70,12 @@ public class AudioManager : MonoBehaviour
         source.gameObject.SetActive(false);
     }
 
+    public void Play() 
+    {
 
-    public void Play(string name)
+
+    }
+    public void PlayRandom(string name)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if(s == null)
@@ -72,9 +87,62 @@ public class AudioManager : MonoBehaviour
         {
             s.source = GetInactiveSoundSource();
             ApplyValuesToSource(s, s.source.audioSource);
+            
+        }
+        s.source.transform.position = transform.position;
+        s.source.transform.parent = transform;
+        s.source.audioSource.Play();
+    }
+    public void PlayRandom(string name,Vector3 position)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        if (s.source == null)
+        {
+            s.source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.source.audioSource);
+        }
+        s.source.transform.position = position;
+        s.source.audioSource.Play();
+    }
+    public void PlaySpecific(string name, int index)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        if (s.source == null)
+        {
+            s.source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.source.audioSource, index);
         }
         s.source.audioSource.Play();
     }
+    public void PlaySpecific(string name,int index, Vector3 position)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        if (s.source == null)
+        {
+            s.source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.source.audioSource,index);
+        }
+        s.source.transform.position = position;
+        s.source.audioSource.Play();
+    }
+   
+
+
 
     public void StopSound(string name)
     {

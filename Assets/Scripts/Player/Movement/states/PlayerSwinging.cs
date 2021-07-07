@@ -1027,8 +1027,13 @@ public class PlayerSwinging : State
                     }
                 }
             }
+            else 
+            {
+                PSM.ladder.position = path.GetPointAtDistance(PSM.currentDistance, EndOfPathInstruction.Stop);
+                PSM.transform.localPosition = new Vector3(0, ladderSizeState.ladderLength * PSM.HeightOnLadder, -0.38f);
+            }
             #endregion
-            if (railType != Rail.RailType.TwoSided)
+            if (railType != Rail.RailType.TwoSided && railType != Rail.RailType.FreeHanging)
                 CheckIfReadyToDismount();
         }
         else

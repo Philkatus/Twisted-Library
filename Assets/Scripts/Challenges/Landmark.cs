@@ -9,10 +9,10 @@ public class Landmark : MonoBehaviour
     public GameObject secondLinkedUI;
     public GameObject thirdLinkedUI;
     public GameObject groundUI;
-    public bool lerpScaleToBig;
+    [HideInInspector] public bool lerpScaleToBig;
+    [HideInInspector] public bool lerpScaleToSmall;
     float timer;
     bool landmarkComplete;
-    bool lerpScaleToSmall;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +26,7 @@ public class Landmark : MonoBehaviour
         if (lerpScaleToSmall)
         {
             timer += Time.deltaTime;
-            ObjectManager.instance.uILogic.SetLandmarkScaleBackToSmall(firstLinkedUI, secondLinkedUI, thirdLinkedUI, groundUI, timer);
+            ObjectManager.instance.uILogic.SetLandmarkScaleToSmall(firstLinkedUI, secondLinkedUI, thirdLinkedUI, groundUI, timer);
             if (timer >= 1)
             {
                 lerpScaleToSmall = false;
@@ -36,7 +36,7 @@ public class Landmark : MonoBehaviour
         else if (lerpScaleToBig)
         {
             timer += Time.deltaTime;
-            ObjectManager.instance.uILogic.OnChallengeStartedLandmark(firstLinkedUI, secondLinkedUI, thirdLinkedUI, groundUI, timer);
+            ObjectManager.instance.uILogic.SetLandmarkScaleToBig(firstLinkedUI, secondLinkedUI, thirdLinkedUI, groundUI, timer);
             if (timer >= 1)
             {
                 lerpScaleToBig = false;
@@ -58,7 +58,7 @@ public class Landmark : MonoBehaviour
         }
         if (allChallengesComplete)
         {
-            ObjectManager.instance.uILogic.OnLandmarkComplete();
+            ObjectManager.instance.uILogic.OnLandmarkComplete(groundUI);
             landmarkComplete = true;
         }
     }
@@ -78,7 +78,6 @@ public class Landmark : MonoBehaviour
                 ObjectManager.instance.uILogic.OnChallengeCompleteLandmark(thirdLinkedUI);
                 break;
         }
-        lerpScaleToSmall = true;
     }
 
     public void ShowLandmarkUI()
