@@ -60,7 +60,7 @@ public class VFX_Manager : MonoBehaviour
     private void Start()
     {
         // Set all Effects
-        cloud = transform.GetChild(2).gameObject;
+        cloud = transform.GetChild(1).gameObject;
         projector = transform.GetChild(0).GetComponent<DecalProjector>();
 
         offset = transform.position - player.transform.position;
