@@ -245,8 +245,12 @@ public class AnimationStateController : MonoBehaviour
             //Audio
             if (!foldAudioPlaying)
             {
+            //Audio
+            if (!foldAudioPlaying)
+            {
                 audioManager.PlayRandom("FoldLadder",ladderScript.transform.position);
                 foldAudioPlaying = true;
+            }
             }
         }
         else
