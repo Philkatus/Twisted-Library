@@ -17,11 +17,11 @@ public class VFX_Manager : MonoBehaviour
             CurrentRail = value;
             if (value == null)
             {
-                DisableParticleEffect(snappingFeedback);
+                SetProperty(railMat, "_SnappingPoint", Vector3.zero);
             }
-            else if (!snappingFeedback.activeInHierarchy && pSM.playerState != PlayerMovementStateMachine.PlayerState.swinging)
+            else if ((Vector3)railMat.GetVector("_SnappingPoint") == Vector3.zero && pSM.playerState != PlayerMovementStateMachine.PlayerState.swinging)
             {
-                snappingFeedback.SetActive(true);
+                SetProperty(railMat, "_SnappingPoint", Vector3.up);
             }
 
         }
@@ -43,10 +43,10 @@ public class VFX_Manager : MonoBehaviour
     #region PRIVATE
     [SerializeField] GameObject player, swingingFeedback, sparkleBurstL, sparkleBurstR, speedLinesS;
     [SerializeField] VisualEffect ladderPushLeft, ladderPushRight;
-
+    [SerializeField] Material railMat;
     PlayerMovementStateMachine pSM;
     DecalProjector projector;
-    GameObject cloud, snappingFeedback;
+    GameObject cloud;
     Vector3 offset;
 
     bool smokeOn = false;
@@ -60,18 +60,12 @@ public class VFX_Manager : MonoBehaviour
     private void Start()
     {
         // Set all Effects
-        cloud = transform.GetChild(2).gameObject;
-        snappingFeedback = transform.GetChild(1).gameObject;
+        cloud = transform.GetChild(1).gameObject;
         projector = transform.GetChild(0).GetComponent<DecalProjector>();
-
-
 
         offset = transform.position - player.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
         cloud.SetActive(false);
-
-        //unparent the snapping Feedback
-        snappingFeedback.transform.SetParent(pSM.transform.parent);
 
         //Set Burst Visual Effect
         sparkleBurstLeft = sparkleBurstL.GetComponent<VisualEffect>();
@@ -92,7 +86,7 @@ public class VFX_Manager : MonoBehaviour
         {
             projector.enabled = false;
         }
-        if (snappingFeedback.activeInHierarchy)
+        if ((Vector3)railMat.GetVector("_SnappingPoint") != Vector3.zero)
             MoveSnappingFeedback();
 
         if (smokeOn)
@@ -131,7 +125,7 @@ public class VFX_Manager : MonoBehaviour
     public void OnStateChangedWalking(bool land)
     {
         DisableParticleEffect(swingingFeedback);
-        PlayParticleEffect(snappingFeedback);
+        SetProperty(railMat, "_SnappingPoint", Vector3.up);
         projector.gameObject.SetActive(true);
         if (land)
         {
@@ -143,13 +137,13 @@ public class VFX_Manager : MonoBehaviour
     public void OnStateChangedInAir()
     {
         DisableParticleEffect(swingingFeedback);
-        PlayParticleEffect(snappingFeedback);
+        SetProperty(railMat, "_SnappingPoint", Vector3.up);
         projector.gameObject.SetActive(true);
     }
     public void OnStateChangedSwinging()
     {
         PlayParticleEffect(swingingFeedback);
-        DisableParticleEffect(snappingFeedback);
+        SetProperty(railMat, "_SnappingPoint", Vector3.zero);
         projector.gameObject.SetActive(false);
     }
     public void OnStateChangedLadderPush()
@@ -187,7 +181,11 @@ public class VFX_Manager : MonoBehaviour
     void MoveSnappingFeedback()
     {
         if (currentRail != null)
-            snappingFeedback.transform.position = currentRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+        {
+            Vector3 snappingPoint = currentRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+            SetProperty(railMat, "_SnappingPoint", snappingPoint);
+        }
+
     }
     void StartLadderPushVFX(VisualEffect vfx)
     {
@@ -215,16 +213,6 @@ public class VFX_Manager : MonoBehaviour
             vfx.SetInt("_FlameIntensity", 0);
             speedLinesSliding.SetFloat("_SpeedIntensity", 0);
         }
-        /*if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .2 && pSM.currentSlidingSpeed > 0)
-        {
-            vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 0));
-            vfx.SetInt("_FlameIntensity", 1);
-        }
-        if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .5 && pSM.currentSlidingSpeed > pSM.stats.maxSlidingSpeed * .2)
-        {
-            vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 2));
-            vfx.SetInt("_FlameIntensity", 5);
-        }*/
         if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .7 && pSM.currentSlidingSpeed > pSM.stats.maxSlidingSpeed * .5)
         {
             vfx.SetVector2("_SparkleSpawnCount", new Vector2(0.01f, .1f));
@@ -260,19 +248,15 @@ public class VFX_Manager : MonoBehaviour
         }
         if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) < -.75f)
         {
-            //speedLinesS.transform.forward = (directon * pSM.slidingInput) * -1f;//* cameraOffset 
             speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward, Camera.main.transform.forward * -1, lerpSpeed);
         }
-        /*if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) < -.75f)
-        {
-            speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward,(directon *-1 * pSM.slidingInput) * -1f, .2f);
-            Debug.Log("Entgegengesetzt und so");
-        }
-        else
-        {
-            //speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward, (directon * pSM.slidingInput) * -1f, lerpSpeed);
-            //speedLinesS.transform.forward = (directon * pSM.slidingInput)*-1f;
-            //speedLinesS.transform.forward = Camera.main.transform.forward * -1f;
-        }*/
+    }
+    private void OnApplicationQuit()
+    {
+        SetProperty(railMat, "_SnappingPoint", Vector3.zero);
+    }
+    void SetProperty(Material mat, string propertyName, Vector3 value)
+    {
+        mat.SetVector(propertyName, value);
     }
 }
