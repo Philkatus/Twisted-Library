@@ -1027,6 +1027,10 @@ public class PlayerSwinging : State
                     }
                 }
             }
+            else 
+            {
+                PSM.ladder.position = path.GetPointAtDistance(PSM.currentDistance, EndOfPathInstruction.Stop);
+            }
             #endregion
             if (railType != Rail.RailType.TwoSided)
                 CheckIfReadyToDismount();
