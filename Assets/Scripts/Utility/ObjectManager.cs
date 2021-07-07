@@ -8,6 +8,8 @@ public class ObjectManager : MonoBehaviour
     public PlayerMovementStateMachine pSM;
     public UILogic uILogic;
 
+    public AnimationStateController animationStateController;
+
     private void Awake()
     {
         if (instance == null)
