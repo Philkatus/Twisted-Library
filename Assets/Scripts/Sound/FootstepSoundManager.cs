@@ -138,15 +138,15 @@ public class FootstepSoundManager : MonoBehaviour
 
     private void PlayLeftStep() 
     {
-        if (isOnGras) 
+        if (isOnGras &&footstepsLeftGras.Length>0) 
         {
             resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeftGras[Random.Range(0, footstepsLeft.Length)], audioVolume);
         }
-        else if (isOnWater) 
+        else if (isOnWater && footstepsLeftGras.Length > 0) 
         {
             resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeftWater[Random.Range(0, footstepsLeft.Length)], audioVolume);
         }
-        else 
+        else if(footstepsLeftGras.Length > 0)
         {
             resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeft[Random.Range(0, footstepsLeft.Length)], audioVolume);
         }
@@ -154,15 +154,15 @@ public class FootstepSoundManager : MonoBehaviour
 
     private void PlayRightStep()
     {
-        if (isOnGras)
+        if (isOnGras && footstepsLeftGras.Length > 0)
         {
             resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRightGras[Random.Range(0, footstepsLeft.Length)], audioVolume);
         }
-        else if (isOnWater)
+        else if (isOnWater && footstepsLeftGras.Length > 0)
         {
             resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRightWater[Random.Range(0, footstepsLeft.Length)], audioVolume);
         }
-        else
+        else if(footstepsLeftGras.Length > 0)
         {
             resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRight[Random.Range(0, footstepsLeft.Length)], audioVolume);
         }
