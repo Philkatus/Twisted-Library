@@ -85,10 +85,6 @@ public class Challenge : MonoBehaviour
                 {
                     ObjectManager.instance.uILogic.UpdateComponentVisual(component.linkedUI, component.type, timeSinceCompletion, timeToCompleteComponents, false);
                 }
-                else
-                {
-                    component.linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", false);
-                }
             }
         }
 
@@ -131,6 +127,7 @@ public class Challenge : MonoBehaviour
             componentCompletionTime = 0;
             foreach (ChallengeComponent component in components)
             {
+                ObjectManager.instance.uILogic.OnChallengeComplete(component.linkedUI, component.type);
                 ObjectManager.instance.uILogic.OnHideChallengeComponent(component.linkedUI, component.type);
             }
         }
