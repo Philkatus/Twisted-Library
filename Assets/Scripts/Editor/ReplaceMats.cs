@@ -27,8 +27,9 @@ public class ReplaceMats : EditorWindow
         //EditorGUILayout.PropertyField(stringsProperty, true);
         //so.ApplyModifiedProperties();
 
-        if (GUILayout.Button("Replace Missing Rails"))
+        if (GUILayout.Button("DO NOT CLICK THIS BUTTON, UNDER ANY CIRCUMSTANCES"))
         {
+            Debug.Log("DO NOT CLICK THIS BUTTON, UNDER ANY CIRCUMSTANCES");
             int meshIndex = 0;
             MeshRenderer[] allMeshRenderers = FindObjectsOfType<MeshRenderer>();
             List<int> meshIndices = new List<int>();
