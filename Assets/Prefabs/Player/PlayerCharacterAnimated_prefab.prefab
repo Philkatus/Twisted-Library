@@ -1749,6 +1749,7 @@ GameObject:
   - component: {fileID: 5224045387318095665}
   - component: {fileID: 6164259229910852116}
   - component: {fileID: 4761856323172733090}
+  - component: {fileID: 7318058221670997345}
   m_Layer: 0
   m_Name: YBot-TPose
   m_TagString: Untagged
@@ -1785,15 +1786,15 @@ AudioSource:
   m_GameObject: {fileID: 4953643257122463468}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 2475926329320966537, guid: ba14cd0ab809dd84b815b36358b58677, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
+  Spatialize: 1
+  SpatializePostEffects: 1
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
@@ -2122,6 +2123,37 @@ MonoBehaviour:
   occlusionEnabled: 0
   occlusionIntensity: 1
   quality: 2
+--- !u!114 &7318058221670997345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4953643257122463468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9c0edb2dc675124d889b59d81b3f036, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  resonanceAudio: {fileID: 4761856323172733090}
+  movementScript: {fileID: 5224045388643823046}
+  animScript: {fileID: 0}
+  animator: {fileID: 0}
+  footsteps:
+  - {fileID: 8300000, guid: 61c966488b611934ea3a9b3b6435ed07, type: 3}
+  - {fileID: 8300000, guid: 3f41ec6ab90687f419ed9eebe2da065f, type: 3}
+  - {fileID: 8300000, guid: 4d1da07c1b522304c806869a99b8f0e0, type: 3}
+  - {fileID: 8300000, guid: 2d86700afaeef8745bb1e8298c31d4e5, type: 3}
+  - {fileID: 8300000, guid: 43c8aafcc9c45cc41a6f82d148da8f46, type: 3}
+  - {fileID: 8300000, guid: d39f21e71cfed2044bd1a509a49474a8, type: 3}
+  - {fileID: 8300000, guid: 98920857a2c38ca41a2de906f1b6cf53, type: 3}
+  - {fileID: 8300000, guid: 3c7258485d1f72e4f8fdb48c4a1140df, type: 3}
+  - {fileID: 8300000, guid: 92f09c7ac509d1143bbb1e3f5452c257, type: 3}
+  - {fileID: 8300000, guid: 4ce545021b6ba6846a4f8191aff72ee1, type: 3}
+  exhale: {fileID: 8300000, guid: 9483260dfb48566448f11f347783e890, type: 3}
+  audioVolume: 1.5
+  footstepLFX: {fileID: 0}
+  footstepRFX: {fileID: 0}
 --- !u!1 &5049071072645614280
 GameObject:
   m_ObjectHideFlags: 0
@@ -4861,7 +4893,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6164259229706539056}
   m_LocalRotation: {x: -0.117688335, y: -0.7315387, z: 0.13069727, w: -0.65872514}
-  m_LocalPosition: {x: 59.512276, y: 15.052002, z: -278.84174}
+  m_LocalPosition: {x: 111.6418, y: 115.032, z: -480.64188}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6164259229316237293}
@@ -7471,7 +7503,6 @@ GameObject:
   - component: {fileID: 7511473034388439080}
   - component: {fileID: 5224045388643823046}
   - component: {fileID: 1156704532426852122}
-  - component: {fileID: 3233973029445454205}
   - component: {fileID: 5864969124257482289}
   - component: {fileID: 2130404036128119178}
   - component: {fileID: 1767529188072588637}
@@ -7638,6 +7669,7 @@ MonoBehaviour:
     clips:
     - {fileID: 8300000, guid: 27e1bffeb8042d0419d765c7a92eebcd, type: 3}
     - {fileID: 8300000, guid: 9483260dfb48566448f11f347783e890, type: 3}
+    audioGroup: {fileID: 0}
     volume: 1
     pitch: 1
     loop: 0
@@ -7645,6 +7677,7 @@ MonoBehaviour:
   - name: Falling
     clips:
     - {fileID: 8300000, guid: 46300e4df286c1d449aea9a26cc30594, type: 3}
+    audioGroup: {fileID: 0}
     volume: 0.1
     pitch: 1
     loop: 1
@@ -7656,6 +7689,7 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 7a315372415a4a749bf92d90a489d287, type: 3}
     - {fileID: 8300000, guid: 5932356908bfad84296883415f2e40a2, type: 3}
     - {fileID: 8300000, guid: 1e7efacf42268994a91b88813a8a67c2, type: 3}
+    audioGroup: {fileID: 0}
     volume: 0.368
     pitch: 1
     loop: 0
@@ -7663,6 +7697,7 @@ MonoBehaviour:
   - name: LandingAfterFall
     clips:
     - {fileID: 8300000, guid: 99b8a2b4a64f00648a2ad7a2b61a6142, type: 3}
+    audioGroup: {fileID: 0}
     volume: 0.1
     pitch: 1
     loop: 0
@@ -7671,6 +7706,7 @@ MonoBehaviour:
     clips:
     - {fileID: 8300000, guid: 99d27deaf40da014380a084c02b3ea3d, type: 3}
     - {fileID: 8300000, guid: 78bf672bed656674c8e4d227038f3ccf, type: 3}
+    audioGroup: {fileID: 0}
     volume: 0.5
     pitch: 1
     loop: 0
@@ -7678,43 +7714,13 @@ MonoBehaviour:
   - name: Sliding
     clips:
     - {fileID: 8300000, guid: 3bf6c301744e1f84c99cfa862cc6cd10, type: 3}
+    audioGroup: {fileID: 0}
     volume: 0.5
     pitch: 1
     loop: 1
     source: {fileID: 0}
   activeSoundSources: []
   inactiveSoundSources: []
---- !u!114 &3233973029445454205
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7511473034388439085}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9c0edb2dc675124d889b59d81b3f036, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  resonanceAudio: {fileID: 4761856323172733090}
-  movementScript: {fileID: 5224045388643823046}
-  animScript: {fileID: 0}
-  animator: {fileID: 0}
-  footsteps:
-  - {fileID: 8300000, guid: 61c966488b611934ea3a9b3b6435ed07, type: 3}
-  - {fileID: 8300000, guid: 3f41ec6ab90687f419ed9eebe2da065f, type: 3}
-  - {fileID: 8300000, guid: 4d1da07c1b522304c806869a99b8f0e0, type: 3}
-  - {fileID: 8300000, guid: 2d86700afaeef8745bb1e8298c31d4e5, type: 3}
-  - {fileID: 8300000, guid: 43c8aafcc9c45cc41a6f82d148da8f46, type: 3}
-  - {fileID: 8300000, guid: d39f21e71cfed2044bd1a509a49474a8, type: 3}
-  - {fileID: 8300000, guid: 98920857a2c38ca41a2de906f1b6cf53, type: 3}
-  - {fileID: 8300000, guid: 3c7258485d1f72e4f8fdb48c4a1140df, type: 3}
-  - {fileID: 8300000, guid: 92f09c7ac509d1143bbb1e3f5452c257, type: 3}
-  - {fileID: 8300000, guid: 4ce545021b6ba6846a4f8191aff72ee1, type: 3}
-  exhale: {fileID: 8300000, guid: 9483260dfb48566448f11f347783e890, type: 3}
-  audioVolume: 1.5
-  footstepLFX: {fileID: 0}
-  footstepRFX: {fileID: 0}
 --- !u!81 &5864969124257482289
 AudioListener:
   m_ObjectHideFlags: 0
