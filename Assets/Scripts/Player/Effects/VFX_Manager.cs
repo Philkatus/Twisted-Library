@@ -4,9 +4,11 @@ using UnityEngine;
 using UnityEngine.Rendering.HighDefinition;
 using PathCreation;
 using UnityEngine.VFX;
+using System.Threading;
 
 public class VFX_Manager : MonoBehaviour
 {
+
     #region GET/SET
     Rail CurrentRail;
     public Rail currentRail
@@ -17,11 +19,11 @@ public class VFX_Manager : MonoBehaviour
             CurrentRail = value;
             if (value == null)
             {
-                DisableParticleEffect(snappingFeedback);
+                StartCoroutine(FadeOutRail());
             }
-            else if (!snappingFeedback.activeInHierarchy && pSM.playerState != PlayerMovementStateMachine.PlayerState.swinging)
+            else if (railMat.GetFloat("_Multiplicator") == noIntensity && pSM.playerState != PlayerMovementStateMachine.PlayerState.swinging)
             {
-                snappingFeedback.SetActive(true);
+                StartCoroutine(ReLightRail());
             }
 
         }
@@ -43,10 +45,14 @@ public class VFX_Manager : MonoBehaviour
     #region PRIVATE
     [SerializeField] GameObject player, swingingFeedback, sparkleBurstL, sparkleBurstR, speedLinesS;
     [SerializeField] VisualEffect ladderPushLeft, ladderPushRight;
-
+    [SerializeField] Material railMat;
+    [Header("Snapping Light Up")]
+    [SerializeField] float lightUpTime;
+    [SerializeField] float fadeTime;
+    [SerializeField] int noIntensity, normalIntensity, lightUpIntensity;
     PlayerMovementStateMachine pSM;
-    DecalProjector projector;
-    GameObject cloud, snappingFeedback;
+
+    GameObject cloud;
     Vector3 offset;
 
     bool smokeOn = false;
@@ -60,18 +66,11 @@ public class VFX_Manager : MonoBehaviour
     private void Start()
     {
         // Set all Effects
-        cloud = transform.GetChild(2).gameObject;
-        snappingFeedback = transform.GetChild(1).gameObject;
-        projector = transform.GetChild(0).GetComponent<DecalProjector>();
-
-
+        cloud = transform.GetChild(0).gameObject;
 
         offset = transform.position - player.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
         cloud.SetActive(false);
-
-        //unparent the snapping Feedback
-        snappingFeedback.transform.SetParent(pSM.transform.parent);
 
         //Set Burst Visual Effect
         sparkleBurstLeft = sparkleBurstL.GetComponent<VisualEffect>();
@@ -83,17 +82,8 @@ public class VFX_Manager : MonoBehaviour
     void Update()
     {
         transform.position = player.transform.position + offset;
-        if (pSM.playerState == PlayerMovementStateMachine.PlayerState.inTheAir
-            || pSM.playerState == PlayerMovementStateMachine.PlayerState.walking)
-        {
-            projector.enabled = true;
-        }
-        else
-        {
-            projector.enabled = false;
-        }
-        if (snappingFeedback.activeInHierarchy)
-            MoveSnappingFeedback();
+
+        MoveSnappingFeedback();
 
         if (smokeOn)
         {
@@ -131,8 +121,8 @@ public class VFX_Manager : MonoBehaviour
     public void OnStateChangedWalking(bool land)
     {
         DisableParticleEffect(swingingFeedback);
-        PlayParticleEffect(snappingFeedback);
-        projector.gameObject.SetActive(true);
+        StartCoroutine(ReLightRail());
+
         if (land)
         {
             PlayParticleEffect(cloud);
@@ -143,14 +133,14 @@ public class VFX_Manager : MonoBehaviour
     public void OnStateChangedInAir()
     {
         DisableParticleEffect(swingingFeedback);
-        PlayParticleEffect(snappingFeedback);
-        projector.gameObject.SetActive(true);
+        StartCoroutine(ReLightRail());
+
     }
     public void OnStateChangedSwinging()
     {
         PlayParticleEffect(swingingFeedback);
-        DisableParticleEffect(snappingFeedback);
-        projector.gameObject.SetActive(false);
+        StartCoroutine(LightRailUp());
+
     }
     public void OnStateChangedLadderPush()
     {
@@ -180,14 +170,15 @@ public class VFX_Manager : MonoBehaviour
         particleGameObject.SetActive(false);
     }
 
-    public void PlaceSwingingFeedback()
-    {
-
-    }
     void MoveSnappingFeedback()
     {
         if (currentRail != null)
-            snappingFeedback.transform.position = currentRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+        {
+            Vector3 snappingPoint = currentRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+            SetProperty(railMat, "_SnappingPoint", snappingPoint);
+        }
+        else
+            StartCoroutine(FadeOutRail());
     }
     void StartLadderPushVFX(VisualEffect vfx)
     {
@@ -215,16 +206,6 @@ public class VFX_Manager : MonoBehaviour
             vfx.SetInt("_FlameIntensity", 0);
             speedLinesSliding.SetFloat("_SpeedIntensity", 0);
         }
-        /*if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .2 && pSM.currentSlidingSpeed > 0)
-        {
-            vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 0));
-            vfx.SetInt("_FlameIntensity", 1);
-        }
-        if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .5 && pSM.currentSlidingSpeed > pSM.stats.maxSlidingSpeed * .2)
-        {
-            vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 2));
-            vfx.SetInt("_FlameIntensity", 5);
-        }*/
         if (pSM.currentSlidingSpeed <= pSM.stats.maxSlidingSpeed * .7 && pSM.currentSlidingSpeed > pSM.stats.maxSlidingSpeed * .5)
         {
             vfx.SetVector2("_SparkleSpawnCount", new Vector2(0.01f, .1f));
@@ -260,19 +241,54 @@ public class VFX_Manager : MonoBehaviour
         }
         if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) < -.75f)
         {
-            //speedLinesS.transform.forward = (directon * pSM.slidingInput) * -1f;//* cameraOffset 
             speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward, Camera.main.transform.forward * -1, lerpSpeed);
         }
-        /*if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) < -.75f)
-        {
-            speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward,(directon *-1 * pSM.slidingInput) * -1f, .2f);
-            Debug.Log("Entgegengesetzt und so");
-        }
-        else
-        {
-            //speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward, (directon * pSM.slidingInput) * -1f, lerpSpeed);
-            //speedLinesS.transform.forward = (directon * pSM.slidingInput)*-1f;
-            //speedLinesS.transform.forward = Camera.main.transform.forward * -1f;
-        }*/
     }
+    private void OnApplicationQuit()
+    {
+        SetProperty(railMat, "_SnappingPoint", Vector3.zero);
+    }
+    void SetProperty(Material mat, string propertyName, Vector3 value)
+    {
+        mat.SetVector(propertyName, value);
+    }
+    void SetProperty(Material mat, string propertyName, float value)
+    {
+        mat.SetFloat(propertyName, value);
+    }
+
+    #region LIGHT RAIL UP
+    IEnumerator LightRailUp()
+    {
+        StartCoroutine(LightUp(normalIntensity, lightUpIntensity, lightUpTime));
+        yield return new WaitForSeconds(lightUpTime);
+        //possibly play a particle effect here
+        StartCoroutine(LightUp(lightUpIntensity, noIntensity, fadeTime));
+    }
+    IEnumerator ReLightRail()
+    {
+        StartCoroutine(LightUp(noIntensity, lightUpIntensity, lightUpTime));
+        yield return new WaitForSeconds(lightUpTime);
+        StartCoroutine(LightUp(lightUpIntensity, normalIntensity, fadeTime));
+    }
+    IEnumerator FadeOutRail()
+    {
+        StartCoroutine(LightUp(normalIntensity, noIntensity, fadeTime));
+        yield return new WaitForSeconds(lightUpTime);
+        SetProperty(railMat, "_SnappingPoint", Vector3.zero);
+    }
+    private IEnumerator LightUp(float fromIntensity, float toIntensity, float time)
+    {
+        float timer = 0;
+        while (timer < time)
+        {
+            float t = timer / time;
+            float intensityValue = Mathf.Lerp(fromIntensity, toIntensity, t);
+            SetProperty(railMat, "_Multiplicator", intensityValue);
+            timer += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        SetProperty(railMat, "_Multiplicator", toIntensity);
+    }
+    #endregion
 }
