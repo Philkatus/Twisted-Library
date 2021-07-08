@@ -20,8 +20,9 @@ public class PlayerWalking : State
     public override void Initialize()
     {
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
-        // PlayerFollowTarget.instance.FollowPlayer();
+        PlayerFollowTarget.instance.FollowPlayer();
         PlayerFollowTarget.instance.DoAdjustY(false);
+        ObjectManager.instance.animationStateController.EnterWalkingState();
 
         ladder = PSM.ladder;
         controller = PSM.controller;
@@ -130,7 +131,7 @@ public class PlayerWalking : State
 
     public override IEnumerator Finish()
     {
+        ObjectManager.instance.animationStateController.ExitWalkingState();
         yield return null;
     }
-
 }
