@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Cinemachine;
 
 public class UILogic : MonoBehaviour
 {
@@ -309,7 +308,6 @@ public class UILogic : MonoBehaviour
         {
             linkedUI.GetComponent<Slider>().value = .83f;
             linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", false);
-            Debug.Log("commmmmpleteeee");
         }
     }
 
@@ -385,7 +383,6 @@ public class UILogic : MonoBehaviour
         {
             linkedUI.GetComponent<RectTransform>().localScale = inactiveSize;
             linkedUI.GetComponent<Slider>().value = .49f;
-
             linkedUI.transform.GetChild(0).GetComponent<Image>().enabled = false;
             linkedUI.transform.GetChild(0).GetComponent<Image>().enabled = true;
             ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 0, 0f);
