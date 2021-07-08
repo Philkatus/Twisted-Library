@@ -158,6 +158,7 @@ public class PlayerSwinging : State
 
     public override void Initialize()
     {
+        PSM.jumpInputBool = false;
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
         CameraController.instance.SwitchToLadderCam();
         if (!PSM.useRelativeBobPosition)
