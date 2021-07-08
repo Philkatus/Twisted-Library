@@ -73,11 +73,13 @@ public class PlayerWalking : State
         }
         if (PSM.forwardInput == 0 && PSM.sideWaysInput == 0)
         {
+            if(VoiceManager.Instance!=null)
             VoiceManager.Instance.TryToIdle();
         }
         else 
         {
-            VoiceManager.Instance.resetIdleTimer();
+            if (VoiceManager.Instance != null)
+                VoiceManager.Instance.resetIdleTimer();
         }
         #endregion
 
