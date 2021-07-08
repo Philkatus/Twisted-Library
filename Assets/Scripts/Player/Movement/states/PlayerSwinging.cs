@@ -735,6 +735,11 @@ public class PlayerSwinging : State
 
             inputGiven = true;
             inputTimer = 0;
+
+            if (VoiceManager.Instance != null) 
+            {
+                VoiceManager.Instance.TryToSwigningSound();
+            }
         }
     }
 
@@ -1015,12 +1020,12 @@ public class PlayerSwinging : State
                             {
                                 PSM.coyoteTimer = 0;
                                 PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed * pathDirection * PSM.slidingInput;
-                                if (PSM.slidingInput * relativePathDirection == 1 && PSM.slideRightInput != 0)
+                                if (PSM.slidingInput * relativePathDirection == -1 && PSM.slideRightInput != 0)
                                 {
                                     PSM.SaveInput(1, 1, closestRail);
                                     Debug.Log("right");
                                 }
-                                if (PSM.slidingInput * relativePathDirection == -1 && PSM.slideLeftInput != 0)
+                                if (PSM.slidingInput * relativePathDirection == 1 && PSM.slideLeftInput != 0)
                                 {
                                     PSM.SaveInput(1, 1, closestRail);
                                     Debug.Log("left");
