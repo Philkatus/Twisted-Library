@@ -71,6 +71,14 @@ public class PlayerWalking : State
             Vector3 currentDragSideways = stats.MovementDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
             PSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
+        if (PSM.forwardInput == 0 && PSM.sideWaysInput == 0)
+        {
+            VoiceManager.Instance.TryToIdle();
+        }
+        else 
+        {
+            VoiceManager.Instance.resetIdleTimer();
+        }
         #endregion
 
         #region Speed Deadzone
