@@ -155,7 +155,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void Update()
     {
         coyoteTimer += Time.deltaTime;
-        if (playerState != PlayerState.swinging)
+        //if (playerState != PlayerState.swinging)
             UpdateRailTimer();
         CheckForInputBools();
         if (playerState == PlayerState.swinging&&currentSlidingSpeed>=stats.maxSlidingSpeed*.8f) 
@@ -188,7 +188,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void UpdateRailTimer()
     {
         railCheckTimer += Time.deltaTime;
-        if (railCheckTimer >= 0.1f)
+        if (railCheckTimer >= 0.07f)
         {
             CheckForRail();
             railCheckTimer = 0;
