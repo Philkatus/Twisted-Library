@@ -246,7 +246,7 @@ public class PlayerInTheAir : State
                         tempDirection2 = directionToWall;
                     }
                     Vector3 targetDirection = (directionToWall + tempDirection2.normalized * stats.ladderPushCurrentVelocityFactor).normalized;
-                    Vector3 targetVelocity = targetDirection * acceleration * ExtensionMethods.Remap(Mathf.Clamp( Vector3.Dot(targetDirection,Vector3.up),0,1),0,1,.5f,1);
+                    Vector3 targetVelocity = targetDirection * acceleration * ExtensionMethods.Remap(Mathf.Clamp(Vector3.Dot(targetDirection, Vector3.up), 0, 1), 0, 1, .5f, 1);
                     /*
                     Vector3 targetVelocityXZ = new Vector3(targetVelocity.x, 0, targetVelocity.z);
                     float y = targetVelocity.normalized.y * Mathf.Clamp(targetVelocity.y, 0, stats.maxJumpingSpeed);
@@ -288,5 +288,10 @@ public class PlayerInTheAir : State
 
 
         return false;
+    }
+
+    public override IEnumerator Finish()
+    {
+        yield return null;
     }
 }
