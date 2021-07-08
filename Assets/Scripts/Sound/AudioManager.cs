@@ -2,7 +2,6 @@ using UnityEngine.Audio;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Collections;
 
 public class AudioManager : MonoBehaviour
 {
@@ -29,18 +28,19 @@ public class AudioManager : MonoBehaviour
 
     void ApplyValuesToSource(Sound s, AudioSource source)
     {
-        if (s.clips.Length > 0)
-        {
-            source.clip = s.clips[UnityEngine.Random.Range(0, s.clips.Length)];
-            source.volume = s.volume;
-            source.pitch = s.pitch;
-            source.loop = s.loop;
-            source.outputAudioMixerGroup = s.audioGroup;
-        }
-        else 
-        {
-            Debug.LogError("There is no sound clip applied to " + s.name);
-        }
+        source.clip = s.clips[UnityEngine.Random.Range(0, s.clips.Length)];
+        source.volume = s.volume;
+        source.pitch = s.pitch;
+        source.loop = s.loop;
+        source.outputAudioMixerGroup = s.audioGroup;
+    }
+    void ApplyValuesToSource(Sound s, AudioSource source,int index)
+    {
+        source.clip = s.clips[index];
+        source.volume = s.volume;
+        source.pitch = s.pitch;
+        source.loop = s.loop;
+        source.outputAudioMixerGroup = s.audioGroup;
     }
     ResonanceAudioSource GetInactiveSoundSource() 
     {
@@ -70,15 +70,10 @@ public class AudioManager : MonoBehaviour
         source.gameObject.SetActive(false);
     }
 
-    public IEnumerator SetInactiveWhenNotPlaying(ResonanceAudioSource source)
+    public void Play() 
     {
-        WaitForEndOfFrame delay = new WaitForEndOfFrame();
-        while (source.audioSource.isPlaying) 
-        {
-            yield return delay;
-        }
-        SetSoundSourceInactive(source);
-        
+
+
     }
     public void PlayRandom(string name)
     {
@@ -97,7 +92,6 @@ public class AudioManager : MonoBehaviour
         s.source.transform.position = transform.position;
         s.source.transform.parent = transform;
         s.source.audioSource.Play();
-        StartCoroutine(SetInactiveWhenNotPlaying(s.source));
     }
     public void PlayRandom(string name,Vector3 position)
     {
@@ -114,9 +108,42 @@ public class AudioManager : MonoBehaviour
         }
         s.source.transform.position = position;
         s.source.audioSource.Play();
-
-        StartCoroutine(SetInactiveWhenNotPlaying(s.source));
     }
+    public void PlaySpecific(string name, int index)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        if (s.source == null)
+        {
+            s.source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.source.audioSource, index);
+        }
+        s.source.audioSource.Play();
+    }
+    public void PlaySpecific(string name,int index, Vector3 position)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        if (s.source == null)
+        {
+            s.source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.source.audioSource,index);
+        }
+        s.source.transform.position = position;
+        s.source.audioSource.Play();
+    }
+   
+
+
+
     public void StopSound(string name)
     {
         Sound s = Array.Find(sounds, item => item.name == name);
