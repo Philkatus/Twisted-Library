@@ -23,6 +23,7 @@ public class PlayerWalking : State
         PlayerFollowTarget.instance.FollowPlayer();
         PlayerFollowTarget.instance.DoAdjustY(false);
         ObjectManager.instance.animationStateController.EnterWalkingState();
+        PSM.lastRail = null;
 
         ladder = PSM.ladder;
         controller = PSM.controller;
@@ -70,6 +71,24 @@ public class PlayerWalking : State
         {
             Vector3 currentDragSideways = stats.MovementDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
             PSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
+        }
+        if (PSM.forwardInput == 0 && PSM.sideWaysInput == 0)
+        {
+            if (VoiceManager.Instance != null)
+            {
+                VoiceManager.Instance.resetWalkTimer();
+                VoiceManager.Instance.TryToIdle();
+            }
+
+        }
+        else 
+        {
+            if (VoiceManager.Instance != null)
+            {
+                VoiceManager.Instance.resetIdleTimer();
+                VoiceManager.Instance.TryToWalkSound();
+            }
+
         }
         #endregion
 
@@ -121,6 +140,8 @@ public class PlayerWalking : State
         }
         PSM.baseVelocity.y = stats.JumpHeight;
         PSM.jumpInputBool = false;
+        if (VoiceManager.Instance != null)
+            VoiceManager.Instance.TryToJumpSound();
         PSM.OnFall();
     }
 

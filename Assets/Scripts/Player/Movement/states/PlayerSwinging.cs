@@ -158,6 +158,7 @@ public class PlayerSwinging : State
 
     public override void Initialize()
     {
+        PSM.jumpInputBool = false;
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
         CameraController.instance.SwitchToLadderCam();
         if (!PSM.useRelativeBobPosition)
@@ -734,6 +735,11 @@ public class PlayerSwinging : State
 
             inputGiven = true;
             inputTimer = 0;
+
+            if (VoiceManager.Instance != null) 
+            {
+                VoiceManager.Instance.TryToSwigningSound();
+            }
         }
     }
 
@@ -810,6 +816,8 @@ public class PlayerSwinging : State
             Vector3 direction = (-PSM.ladderDirection + Vector3.up * offSet).normalized; ;
             PSM.bonusVelocity = direction * (2.5f * stats.ReversedRailCatapultJumpMultiplier);
             shouldRetainSwingVelocity = false;
+            if (VoiceManager.Instance != null)
+                VoiceManager.Instance.TryToJumpSound();
             PSM.OnFall();
             PSM.animationControllerisFoldingJumped = true;
         }
@@ -821,6 +829,8 @@ public class PlayerSwinging : State
             Vector3 direction = (PSM.ladderDirection + Vector3.up * offSet).normalized;
             PSM.bonusVelocity = direction * (2.5f * stats.RailCatapultJumpMultiplier) * heightOnLadderRemapped;
             shouldRetainSwingVelocity = false;
+            if (VoiceManager.Instance != null)
+                VoiceManager.Instance.TryToJumpSound();
             PSM.OnFall();
             PSM.animationControllerisFoldingJumped = true;
         }
@@ -840,6 +850,8 @@ public class PlayerSwinging : State
             {
                 PSM.baseVelocity.y += stats.JumpHeight;
             }
+            if (VoiceManager.Instance != null)
+                VoiceManager.Instance.TryToJumpSound();
             shouldRetainSwingVelocity = true;
             PSM.OnFall();
             PSM.animationControllerisFoldingJumped = false;
@@ -1008,12 +1020,12 @@ public class PlayerSwinging : State
                             {
                                 PSM.coyoteTimer = 0;
                                 PSM.bonusVelocity += stats.fallingMomentumPercentage * PSM.currentSlidingSpeed * pathDirection * PSM.slidingInput;
-                                if (PSM.slidingInput * relativePathDirection == 1 && PSM.slideRightInput != 0)
+                                if (PSM.slidingInput * relativePathDirection == -1 && PSM.slideRightInput != 0)
                                 {
                                     PSM.SaveInput(1, 1, closestRail);
                                     Debug.Log("right");
                                 }
-                                if (PSM.slidingInput * relativePathDirection == -1 && PSM.slideLeftInput != 0)
+                                if (PSM.slidingInput * relativePathDirection == 1 && PSM.slideLeftInput != 0)
                                 {
                                     PSM.SaveInput(1, 1, closestRail);
                                     Debug.Log("left");
@@ -1253,6 +1265,8 @@ public class PlayerSwinging : State
         PSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
         PSM.effects.OnStateChangedSlideEnd();
+        if (VoiceManager.Instance != null)
+            VoiceManager.Instance.resetHighSpeedTimer();
         #endregion
 
         yield break;
