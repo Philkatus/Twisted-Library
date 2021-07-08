@@ -21,7 +21,7 @@ public class VFX_Manager : MonoBehaviour
             {
                 StartCoroutine(FadeOutRail());
             }
-            else if (railMat.GetFloat("_Multiplicator") == noIntensity && pSM.playerState != PlayerMovementStateMachine.PlayerState.swinging)
+            else if (railMats[0].GetFloat("_Multiplicator") == noIntensity && pSM.playerState != PlayerMovementStateMachine.PlayerState.swinging)
             {
                 StartCoroutine(ReLightRail());
             }
@@ -45,7 +45,7 @@ public class VFX_Manager : MonoBehaviour
     #region PRIVATE
     [SerializeField] GameObject player, swingingFeedback, sparkleBurstL, sparkleBurstR, speedLinesS;
     [SerializeField] VisualEffect ladderPushLeft, ladderPushRight;
-    [SerializeField] Material railMat;
+    [SerializeField] Material[] railMats;
     [Header("Snapping Light Up")]
     [SerializeField] float lightUpTime;
     [SerializeField] float fadeTime;
@@ -175,7 +175,7 @@ public class VFX_Manager : MonoBehaviour
         if (currentRail != null)
         {
             Vector3 snappingPoint = currentRail.pathCreator.path.GetClosestPointOnPath(transform.position);
-            SetProperty(railMat, "_SnappingPoint", snappingPoint);
+            SetProperty(railMats, "_SnappingPoint", snappingPoint);
         }
         else
             StartCoroutine(FadeOutRail());
@@ -246,17 +246,18 @@ public class VFX_Manager : MonoBehaviour
     }
     private void OnApplicationQuit()
     {
-        SetProperty(railMat, "_SnappingPoint", Vector3.zero);
+            SetProperty(railMats, "_SnappingPoint", Vector3.zero);
     }
-    void SetProperty(Material mat, string propertyName, Vector3 value)
+    void SetProperty(Material[] railMats, string propertyName, Vector3 value)
     {
-        mat.SetVector(propertyName, value);
+        foreach (Material railMat in railMats)
+            railMat.SetVector(propertyName, value);
     }
-    void SetProperty(Material mat, string propertyName, float value)
+    void SetProperty(Material[] railMats, string propertyName, float value)
     {
-        mat.SetFloat(propertyName, value);
+        foreach (Material railMat in railMats)
+            railMat.SetFloat(propertyName, value);
     }
-
     #region LIGHT RAIL UP
     IEnumerator LightRailUp()
     {
@@ -275,7 +276,7 @@ public class VFX_Manager : MonoBehaviour
     {
         StartCoroutine(LightUp(normalIntensity, noIntensity, fadeTime));
         yield return new WaitForSeconds(lightUpTime);
-        SetProperty(railMat, "_SnappingPoint", Vector3.zero);
+        SetProperty(railMats, "_SnappingPoint", Vector3.zero);
     }
     private IEnumerator LightUp(float fromIntensity, float toIntensity, float time)
     {
@@ -284,11 +285,11 @@ public class VFX_Manager : MonoBehaviour
         {
             float t = timer / time;
             float intensityValue = Mathf.Lerp(fromIntensity, toIntensity, t);
-            SetProperty(railMat, "_Multiplicator", intensityValue);
+            SetProperty(railMats, "_Multiplicator", intensityValue);
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        SetProperty(railMat, "_Multiplicator", toIntensity);
+        SetProperty(railMats, "_Multiplicator", toIntensity);
     }
     #endregion
 }
