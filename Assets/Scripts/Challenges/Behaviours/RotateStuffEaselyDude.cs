@@ -5,7 +5,7 @@ using UnityEngine;
 public class RotateStuffEaselyDude : MonoBehaviour
 {
     [SerializeField] float rotationSpeed;
-    [SerializeField] bool isPlaying;
+    public bool isPlaying;
     [SerializeField] bool rotateThisTransform;
     [SerializeField] Transform transformToRotate;
 

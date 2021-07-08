@@ -507,12 +507,12 @@ public class PlayerMovementStateMachine : StateMachine
             
             if (nextClosestRail != null)
             {
-                float pathlength = closestRail.pathCreator.path.cumulativeLengthAtEachVertex[closestRail.pathCreator.path.cumulativeLengthAtEachVertex.Length - 1];
-                if (currentDistance >= pathlength)
-                    currentDistance -= pathlength;
-                else
-                    currentDistance = pathlength + currentDistance;
+               
                 closestRail = nextClosestRail;
+
+                currentDistance = closestRail.pathCreator.path.GetClosestDistanceAlongPath(ladder.transform.position);
+
+
                 return true;
             }
             else
