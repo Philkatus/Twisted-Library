@@ -811,6 +811,8 @@ public class PlayerSwinging : State
             Vector3 direction = (-PSM.ladderDirection + Vector3.up * offSet).normalized; ;
             PSM.bonusVelocity = direction * (2.5f * stats.ReversedRailCatapultJumpMultiplier);
             shouldRetainSwingVelocity = false;
+            if (VoiceManager.Instance != null)
+                VoiceManager.Instance.TryToJumpSound();
             PSM.OnFall();
             PSM.animationControllerisFoldingJumped = true;
         }
@@ -822,6 +824,8 @@ public class PlayerSwinging : State
             Vector3 direction = (PSM.ladderDirection + Vector3.up * offSet).normalized;
             PSM.bonusVelocity = direction * (2.5f * stats.RailCatapultJumpMultiplier) * heightOnLadderRemapped;
             shouldRetainSwingVelocity = false;
+            if (VoiceManager.Instance != null)
+                VoiceManager.Instance.TryToJumpSound();
             PSM.OnFall();
             PSM.animationControllerisFoldingJumped = true;
         }
@@ -841,6 +845,8 @@ public class PlayerSwinging : State
             {
                 PSM.baseVelocity.y += stats.JumpHeight;
             }
+            if (VoiceManager.Instance != null)
+                VoiceManager.Instance.TryToJumpSound();
             shouldRetainSwingVelocity = true;
             PSM.OnFall();
             PSM.animationControllerisFoldingJumped = false;
@@ -1254,6 +1260,8 @@ public class PlayerSwinging : State
         PSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
         PSM.effects.OnStateChangedSlideEnd();
+        if (VoiceManager.Instance != null)
+            VoiceManager.Instance.resetHighSpeedTimer();
         #endregion
 
         yield break;

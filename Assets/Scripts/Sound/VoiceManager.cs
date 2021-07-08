@@ -36,11 +36,11 @@ public class VoiceManager : MonoBehaviour
 
     public void TryToIdle() 
     {
-        Debug.Log("tryToIdle");
+       
         Idle.timer += Time.deltaTime;
         if (soundTimerandChance(Idle,false)) 
         {
-            Debug.Log("imGonnaIdle");
+            
             Idle.timer = 0;
             Idle.cooldown = UnityEngine.Random.Range(Idle.minCooldown, Idle.maxCooldown);
             AudioManager.Instance.PlayRandom("idleVoice");
@@ -121,7 +121,6 @@ public class VoiceManager : MonoBehaviour
         {
             if (sound.coroutine == null)
             {
-                Debug.Log("start coroutine");
                 if (withCoolDown)
                 {
                     sound.coroutine = StartCoroutine(startCoolDown(sound));
@@ -130,6 +129,10 @@ public class VoiceManager : MonoBehaviour
             if (sound.timer >= sound.cooldown)
             {
                 sound.timer = 0;
+                if (sound.coroutine == null&&withCoolDown)
+                {
+                    sound.coroutine = StartCoroutine(startCoolDown(sound));
+                }
                 return true;
             }
         }

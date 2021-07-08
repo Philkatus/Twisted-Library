@@ -139,7 +139,7 @@ public class PlayerMovementStateMachine : StateMachine
     InputAction jumpAction;
     InputAction moveAction;
     InputAction foldAction;
-    Rail lastRail;
+    public Rail lastRail;
 
     Coroutine[] inputTimer = new Coroutine[4];
     #endregion
@@ -158,6 +158,13 @@ public class PlayerMovementStateMachine : StateMachine
         if (playerState != PlayerState.swinging)
             UpdateRailTimer();
         CheckForInputBools();
+        if (playerState == PlayerState.swinging&&currentSlidingSpeed>=stats.maxSlidingSpeed*.8f) 
+        {
+            if (VoiceManager.Instance != null) 
+            {
+                VoiceManager.Instance.TryToHighSpeedSound();
+            }
+        }
     }
 
     private void FixedUpdate()
