@@ -268,8 +268,8 @@ public class VFX_Manager : MonoBehaviour
     }
     IEnumerator ReLightRail()
     {
-        StartCoroutine(LightUp(noIntensity, lightUpIntensity, lightUpTime));
-        yield return new WaitForSeconds(lightUpTime);
+        StartCoroutine(LightUp(noIntensity, lightUpIntensity, fadeTime));
+        yield return new WaitForSeconds(fadeTime);
         StartCoroutine(LightUp(lightUpIntensity, normalIntensity, fadeTime));
     }
     IEnumerator FadeOutRail()
