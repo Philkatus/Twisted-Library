@@ -4,39 +4,12 @@ using UnityEngine;
 
 public class WindLandmarkChallengeBehaviour : MonoBehaviour
 {
-    [SerializeField] List<Animation> anims;
 
-    public bool play;
+    [SerializeField] RotateStuffEaselyDude rotateScript;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        foreach (var anim in anims)
-        {
-            anim.Stop();
-        }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //Debug
-        if (play)
-        {
-            foreach (var anim in anims)
-            {
-                anim.Play();
-            }
-
-            play = false;
-        }
-    }
 
     public void OnAllComponentsCompleted()
     {
-        foreach (var anim in anims)
-        {
-            anim.Play();
-        }
+        rotateScript.isPlaying = true;
     }
 }
