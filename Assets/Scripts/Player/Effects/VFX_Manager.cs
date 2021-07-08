@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.HighDefinition;
 using PathCreation;
 using UnityEngine.VFX;
 using System.Threading;
@@ -246,7 +245,7 @@ public class VFX_Manager : MonoBehaviour
     }
     private void OnApplicationQuit()
     {
-            SetProperty(railMats, "_SnappingPoint", Vector3.zero);
+        SetProperty(railMats, "_SnappingPoint", Vector3.zero);
     }
     void SetProperty(Material[] railMats, string propertyName, Vector3 value)
     {

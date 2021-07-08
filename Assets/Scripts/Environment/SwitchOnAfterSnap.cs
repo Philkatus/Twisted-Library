@@ -28,7 +28,7 @@ public class SwitchOnAfterSnap : MonoBehaviour
         GetComponent<Rail>().isASwitch = true;
         offRotation = pivot.rotation;
         onRotation = pivotEnd.rotation;
-        railOnRotation = railParentEnd.rotation;
+        //railOnRotation = railParentEnd.rotation;
         railOffRotation = railParent.rotation;
         challengeComponent.onResetChallenge += new ChallengeComponent.EventHandler(SwitchOff);
         challengeComponent.type = "switch";
@@ -43,9 +43,10 @@ public class SwitchOnAfterSnap : MonoBehaviour
             {
                 if (!challengeComponent.challenge.challengeStarted && !doOncePerAttempt)
                 {
+                    Debug.Log(this.gameObject.name);
                     foreach (ChallengeComponent component in challengeComponent.challenge.components)
                     {
-                        ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, challengeComponent.type);
+                        ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, component.type);
                     }
                     doOncePerAttempt = true;
                 }

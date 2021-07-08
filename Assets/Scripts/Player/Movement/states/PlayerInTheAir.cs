@@ -235,6 +235,8 @@ public class PlayerInTheAir : State
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
                     PlayerFollowTarget.instance.DoAdjustY(true);
+                    if (VoiceManager.Instance != null)
+                        VoiceManager.Instance.TryToJumpSound();
 
                 }
                 else if (Vector3.Angle(directionToWall, Vector3.up) >= 45)
@@ -264,6 +266,8 @@ public class PlayerInTheAir : State
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
                     PlayerFollowTarget.instance.DoAdjustY(true);
+                    if (VoiceManager.Instance != null)
+                        VoiceManager.Instance.TryToJumpSound();
                 }
             }
         }
