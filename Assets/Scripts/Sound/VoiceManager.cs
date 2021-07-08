@@ -11,6 +11,8 @@ public class VoiceManager : MonoBehaviour
     [SerializeField] SoundType Jumping;
     [SerializeField] SoundType HighSpeedSliding;
     [SerializeField] SoundType Achievement;
+    [SerializeField] SoundType smallAchievement;
+    [SerializeField] SoundType swinging;
     private void Awake()
     {
         if (Instance == null)
@@ -92,6 +94,28 @@ public class VoiceManager : MonoBehaviour
             AudioManager.Instance.PlayRandom("AchievementVoice");
         }
     }
+    public void TryToSmallAchievementSound()
+    {
+        Debug.Log("tryToSmallAchievement");
+        if (soundTimerandChance(Achievement, true))
+        {
+            Debug.Log("ImGonnaSmallAchievementSound");
+            smallAchievement.timer = 0;
+            smallAchievement.cooldown = UnityEngine.Random.Range(smallAchievement.minCooldown, smallAchievement.maxCooldown);
+            AudioManager.Instance.PlayRandom("SmallAchievementVoice");
+        }
+    }
+    public void TryToSwigningSound()
+    {
+        Debug.Log("tryToSwinging");
+        if (soundTimerandChance(Achievement, true))
+        {
+            Debug.Log("ImGonnaSwingingSound");
+            swinging.timer = 0;
+            swinging.cooldown = UnityEngine.Random.Range(swinging.minCooldown, swinging.maxCooldown);
+            AudioManager.Instance.PlayRandom("swingingVoice");
+        }
+    }
 
     public void resetIdleTimer()
     {
@@ -113,6 +137,15 @@ public class VoiceManager : MonoBehaviour
     {
         Achievement.timer = 0;
     }
+    public void resetSmallAchievementTimer()
+    {
+        smallAchievement.timer = 0;
+    }
+    public void resetSwingingTimer()
+    {
+        swinging.timer = 0;
+    }
+
     bool soundTimerandChance(SoundType sound,bool withCoolDown) 
     {
       
