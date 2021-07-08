@@ -20,6 +20,7 @@ public class LadderFold : State
         isLerpGoing = true;
         PSM.effects.OnStateChangedLadderPush();
         LadderSizeStateMachine.isFoldingUp = true;
+        AudioManager.Instance.PlayRandom("LadderFold",LadderSizeStateMachine.transform.position+PSM.ladderDirection*stats.ladderLengthBig);
     }
 
     public override void Fold()

@@ -96,7 +96,6 @@ public class Challenge : MonoBehaviour
 
         if (waitToHideComponentsUI)
         {
-            Debug.Log(componentTimer);
             componentTimer += Time.deltaTime;
             if (componentTimer >= 4)
             {
