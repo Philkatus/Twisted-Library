@@ -2080,12 +2080,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70293c1fee63c8245ae27d829312f7a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementScript: {fileID: 0}
-  ladderScript: {fileID: 0}
+  playerSM: {fileID: 0}
+  ladderSM: {fileID: 0}
   controller: {fileID: 7511473034388439087}
   soundManager: {fileID: 0}
   audioManager: {fileID: 0}
-  animator: {fileID: 5224045387318095670}
   footIKScript: {fileID: 0}
   ladderPushSmoke: {fileID: 0}
   antiDrag: 1.65
@@ -2099,6 +2098,9 @@ MonoBehaviour:
   headAimTarget: {fileID: 6164259229316237293}
   headRotationValue: -0.65
   spine: {fileID: 562277038417729361}
+  animator: {fileID: 5224045387318095670}
+  acceleration: 2
+  deceleration: 2
 --- !u!114 &6164259229910852116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8681,8 +8683,10 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 94d7169466003b44abbf8b7db4a06451, type: 2}
   - {fileID: 2100000, guid: 688f1679209b5aa4f9ab417833c4c2bf, type: 2}
   - {fileID: 2100000, guid: 97b5f72b71b5c6b40890b3da0b1518ed, type: 2}
-  lightUpTime: 1
-  fadeTime: 0.4
+  lightUpTime: 0.1
+  fadeTime: 0.01
+  normalWidth: 0.54
+  broadWidth: 1.42
   noIntensity: 1000000
   normalIntensity: 4000000
   lightUpIntensity: 9000000
