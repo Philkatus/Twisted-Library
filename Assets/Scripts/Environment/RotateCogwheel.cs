@@ -87,7 +87,7 @@ public class RotateCogwheel : MonoBehaviour
                 {
                     foreach (ChallengeComponent component in challengeComponent.challenge.components)
                     {
-                        ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, challengeComponent.type);
+                        ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, component.type);
                     }
                 }
                 if (!doOncePerAttempt)
