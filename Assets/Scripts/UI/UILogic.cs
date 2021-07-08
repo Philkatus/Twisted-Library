@@ -15,7 +15,6 @@ public class UILogic : MonoBehaviour
     InputActionMap UIControlsMap;
     InputAction escape;
     InputAction escapeUI;
-    InputAction quitGame;
     InputAction showMoreOptions;
     InputAction back;
 
@@ -55,13 +54,11 @@ public class UILogic : MonoBehaviour
         UIControlsMap = inputActionAsset.FindActionMap("UIControls");
         //escape.performed += context => ShowControls();
         escapeUI = UIControlsMap.FindAction("Escape");
-        quitGame = UIControlsMap.FindAction("Quit");
         back = UIControlsMap.FindAction("Back");
         showMoreOptions = UIControlsMap.FindAction("MoreOptions");
         showMoreOptions.performed += context => ShowMoreOptions();
         back.performed += context => Back();
         escapeUI.performed += context => Options();
-        quitGame.performed += context => QuitGame();
         playerControlsMap.Disable();
         UIControlsMap.Enable();
         uiAlpha = ObjectManager.instance.pSM.stats.alphaForTransparentUI;
@@ -156,10 +153,7 @@ public class UILogic : MonoBehaviour
 
     public void QuitGame()
     {
-        if (options.activeSelf || startCanvas.activeSelf)
-        {
-            Application.Quit();
-        }
+        Application.Quit();
     }
 
     public void Options()

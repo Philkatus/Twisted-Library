@@ -177,7 +177,6 @@ public class ZRowList
     public List<XRowList> xRows = new List<XRowList>();
 }
 
-#if UNITY_EDITOR
 [CustomEditor(typeof(RailSearchManager))]
 public class RailSearchManagerEditor : Editor
 {
@@ -192,4 +191,3 @@ public class RailSearchManagerEditor : Editor
         }
     }
 }
-#endif

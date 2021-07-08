@@ -47,15 +47,10 @@ public class PlayerWalking : State
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
 
         Vector3 direction = (directionForward * PSM.forwardInput + directionRight * PSM.sideWaysInput).normalized;
-        float angle = 0;
+
         if (direction != Vector3.zero)
         {
-            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 10 * Time.fixedDeltaTime);
-            angle = Vector3.Angle(controller.transform.forward, direction);
-            if (angle > 90)
-            {
-                // ObjectManager.instance.animationStateController.TriggerTurn();
-            }
+            controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
         }
         //controller.transform.up = Vector3.Lerp(controller.transform.up, Vector3.up, 20 * Time.fixedDeltaTime);
         PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.MovementAcceleration;
