@@ -7,7 +7,6 @@ public class Sound
     public string name;
     public AudioClip[] clips;
     public AudioMixerGroup audioGroup;
-    
 
     [Range(0, 1)]
     public float volume;
@@ -18,11 +17,12 @@ public class Sound
 
     [HideInInspector]
     public ResonanceAudioSource source;
-    Coroutine currentSoundPlaying;
-    public enum typeOfAudioSource
+    public enum typeOfAudioSource 
     {
         Burst,
         Ambience,
-        Stoppable
+        Stoppable,
+        Variance
     }
+    
 }
