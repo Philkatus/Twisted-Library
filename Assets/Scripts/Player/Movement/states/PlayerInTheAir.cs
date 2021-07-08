@@ -29,6 +29,8 @@ public class PlayerInTheAir : State
 
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
         CameraController.instance.SwitchToPlayerCam();
+        ObjectManager.instance.animationStateController.EnterAirborneState();
+
     }
 
     public override void Movement()
@@ -110,6 +112,10 @@ public class PlayerInTheAir : State
                 PSM.bonusVelocity.y = 0;
                 PSM.baseVelocity.y = 0;
                 floatingTimer += Time.deltaTime;
+                if (floatingTimer >= stats.floatTime)
+                {
+                    ObjectManager.instance.animationStateController.SetFallPhase();
+                }
             }
         }
 
@@ -258,7 +264,6 @@ public class PlayerInTheAir : State
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     PSM.ladderSizeStateMachine.OnLadderPush();
                     PlayerFollowTarget.instance.DoAdjustY(true);
-
                 }
             }
         }
@@ -285,13 +290,12 @@ public class PlayerInTheAir : State
         {
             return true;
         }
-
-
         return false;
     }
 
     public override IEnumerator Finish()
     {
+        ObjectManager.instance.animationStateController.ExitAirborneState();
         yield return null;
     }
 }
