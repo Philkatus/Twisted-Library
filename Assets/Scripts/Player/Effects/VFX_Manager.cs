@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.HighDefinition;
 using PathCreation;
 using UnityEngine.VFX;
 using System.Threading;
@@ -59,6 +60,11 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] float fadeTime, normalWidth, broadWidth, normalGD, broadGD;
     [SerializeField] int noIntensity, normalIntensity, lightUpIntensity;
     [SerializeField] Color[] normalColor, swingingColor;
+    [Header("Decal Shadow")]
+    [SerializeField] DecalProjector shadow;
+    [SerializeField] AnimationCurve shadowSize, impactCurve;
+    [SerializeField] float shadowRemapMin, shadowRemapMax;
+
     PlayerMovementStateMachine pSM;
 
     GameObject cloud;
@@ -66,6 +72,7 @@ public class VFX_Manager : MonoBehaviour
 
     bool smokeOn = false;
     float smokeTimer = .5f;
+
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
     bool inStage = false;
@@ -91,7 +98,10 @@ public class VFX_Manager : MonoBehaviour
     {
         transform.position = player.transform.position + offset;
         MoveSnappingFeedback();
-
+        if (PlayerMovementStateMachine.PlayerState.inTheAir == pSM.playerState)
+        {
+            UpdateShadowSize();
+        }
         if (smokeOn)
         {
             smokeTimer -= Time.deltaTime;
@@ -137,8 +147,8 @@ public class VFX_Manager : MonoBehaviour
         {
             PlayParticleEffect(cloud);
             speedLinesSliding.SetFloat("_SpeedIntensity", 0);
+            UpdateShadowSize(true);
         }
-
     }
     public void OnStateChangedInAir()
     {
@@ -150,6 +160,7 @@ public class VFX_Manager : MonoBehaviour
     }
     public void OnStateChangedSwinging()
     {
+        UpdateShadowSize(true);
         StartCoroutine(LightRailUp());
         SetProperty(railMats, "_EmissionColor", swingingColor, lightUpTime);
     }
@@ -183,7 +194,7 @@ public class VFX_Manager : MonoBehaviour
         particleGameObject.GetComponent<ParticleSystem>().Stop();
         particleGameObject.SetActive(false);
     }
-
+    #region UPDATE
     void MoveSnappingFeedback()
     {
         if (PlayerMovementStateMachine.PlayerState.swinging == pSM.playerState && pSM.lastRail != null)
@@ -199,6 +210,36 @@ public class VFX_Manager : MonoBehaviour
         else
             StartCoroutine(FadeOutRail());
     }
+    void UpdateShadowSize(bool end = false)
+    {
+        if (!end)
+        {
+            Vector3 groundPoint = Vector3.zero;
+            RaycastHit[] hits = Physics.RaycastAll(transform.position, Vector3.down, shadowRemapMax);
+            foreach (RaycastHit hit in hits)
+            {
+                if (hit.transform.gameObject.layer == 6)
+                {
+                    groundPoint = hit.point;
+                    break;
+                }
+            }
+            if (groundPoint != Vector3.zero)
+            {
+                float distance = Vector3.Distance(groundPoint, shadow.transform.position);
+                distance = Mathf.Clamp(distance, shadowRemapMin, shadowRemapMax);
+                ExtensionMethods.Remap(distance, shadowRemapMin, shadowRemapMax, 0, 1);
+                float curvepoint = shadowSize.Evaluate(distance);
+                shadow.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
+            }
+        }
+        else
+        {
+            shadow.size = new Vector3(0, 0, shadowRemapMax);
+        }
+    }
+    #endregion
+
     #region Namin's VFX
     void StartLadderPushVFX(VisualEffect vfx)
     {
@@ -306,6 +347,7 @@ public class VFX_Manager : MonoBehaviour
     {
         if (other.tag == "Cogwheel")
         {
+            Debug.Log("A");
             VisualEffect vE = other.transform.parent.GetComponentInChildren<VisualEffect>();
             vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
             vE.SendEvent("_Start");
@@ -316,7 +358,17 @@ public class VFX_Manager : MonoBehaviour
         }
     }
     #endregion
-
+    #region SHADOW
+    IEnumerator OnImpact()
+    {
+        float timer = 0;
+        float time = impactCurve.keys[impactCurve.length].time;
+        while (timer < time)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+    }
+    #endregion
     #region LIGHT RAIL UP
     IEnumerator LightRailUp()
     {
