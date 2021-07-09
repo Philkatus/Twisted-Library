@@ -8,7 +8,9 @@ using System.Threading;
 
 public class VFX_Manager : MonoBehaviour
 {
-
+    #region PUBLIC
+    public float lerpSpeed = .01f;
+    #endregion
     #region GET/SET
     Rail CurrentRail;
     public Rail currentRail
@@ -62,30 +64,27 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] Color[] normalColor, swingingColor;
     [Header("Decal Shadow")]
     [SerializeField] DecalProjector shadow;
-    [SerializeField] AnimationCurve shadowSize, impactCurve;
-    [SerializeField] float shadowRemapMin, shadowRemapMax, decalScale;
+    [SerializeField] VisualEffect landingBubbles;
+    [SerializeField] AnimationCurve shadowSize, impactCurve, hardImpactCurve;
+    [SerializeField] float shadowRemapMin, shadowRemapMax, decalScale, minJumpTime, maxJumpTime;
 
     PlayerMovementStateMachine pSM;
 
-    GameObject cloud;
     Vector3 offset;
 
     bool smokeOn = false;
-    float smokeTimer = .5f;
+    float smokeTimer = .5f, inAirTimer = 0;
 
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
-    bool inStage = false;
+    bool inStage = false, inAir;
 
-    public float lerpSpeed = .01f;
     #endregion
     private void Start()
     {
         // Set all Effects
-        cloud = transform.GetChild(0).gameObject;
         offset = transform.position - player.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
-        cloud.SetActive(false);
 
         //Set Burst Visual Effect
         sparkleBurstLeft = sparkleBurstL.GetComponent<VisualEffect>();
@@ -137,6 +136,7 @@ public class VFX_Manager : MonoBehaviour
     #region OnStateChanged
     public void OnStateChangedWalking(bool land)
     {
+        inAir = false;
         SetProperty(railMats, "_EmissionColor", normalColor, fadeTime);
         if (currentRail != null)
         {
@@ -145,13 +145,14 @@ public class VFX_Manager : MonoBehaviour
 
         if (land)
         {
-            PlayParticleEffect(cloud);
             speedLinesSliding.SetFloat("_SpeedIntensity", 0);
             UpdateShadowSize(true);
         }
     }
     public void OnStateChangedInAir()
     {
+        inAir = true;
+        StartCoroutine(InAirTime());
         SetProperty(railMats, "_EmissionColor", normalColor, fadeTime);
         if (currentRail != null)
         {
@@ -160,7 +161,8 @@ public class VFX_Manager : MonoBehaviour
     }
     public void OnStateChangedSwinging()
     {
-        StartCoroutine(OnImpact(impactCurve));
+        inAir = false;
+        shadow.size = new Vector3(0, 0, shadowRemapMax);
         StartCoroutine(LightRailUp());
         SetProperty(railMats, "_EmissionColor", swingingColor, lightUpTime);
     }
@@ -184,16 +186,6 @@ public class VFX_Manager : MonoBehaviour
     }
     #endregion
 
-    void PlayParticleEffect(GameObject particleGameObject)
-    {
-        particleGameObject.SetActive(true);
-        particleGameObject.GetComponent<ParticleSystem>().Play();
-    }
-    void DisableParticleEffect(GameObject particleGameObject)
-    {
-        particleGameObject.GetComponent<ParticleSystem>().Stop();
-        particleGameObject.SetActive(false);
-    }
     #region UPDATE
     void MoveSnappingFeedback()
     {
@@ -235,7 +227,7 @@ public class VFX_Manager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(OnImpact(impactCurve));
+            StartCoroutine(OnImpact(inAirTimer));
         }
     }
     #endregion
@@ -359,20 +351,44 @@ public class VFX_Manager : MonoBehaviour
     }
     #endregion
     #region SHADOW
-    IEnumerator OnImpact(AnimationCurve curve)
+    IEnumerator OnImpact(float inAirTime)
     {
-        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        float jumpIntensity = Mathf.Clamp(inAirTime, minJumpTime, maxJumpTime);
+        jumpIntensity = ExtensionMethods.Remap(jumpIntensity, minJumpTime, maxJumpTime, 0, 1);
+
         float timer = 0;
-        float time = curve.keys[impactCurve.length - 1].time;
+        float time = impactCurve.keys[impactCurve.length - 1].time;
+        bool castEffect = false;
         while (timer < time)
         {
             float t = timer / time;
-            float curvepoint = curve.Evaluate(t) * decalScale;
+
+            float curvepoint = impactCurve.Evaluate(t) * decalScale;
+            float curvepoint2 = hardImpactCurve.Evaluate(t) * decalScale;
+            curvepoint = Mathf.Lerp(curvepoint, curvepoint2, jumpIntensity);
+
             shadow.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
+
+            if (t >= 0.2f && !castEffect)
+            {
+                landingBubbles.SetFloat("_Radius", curvepoint);
+                landingBubbles.SendEvent("_Start");
+                castEffect = true;
+            }
+
             timer += Time.deltaTime;
-            yield return delay;
+            yield return new WaitForEndOfFrame();
         }
         shadow.size = new Vector3(0, 0, shadowRemapMax);
+    }
+    IEnumerator InAirTime()
+    {
+        inAirTimer = 0;
+        while (inAir)
+        {
+            inAirTimer += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
     }
     #endregion
     #region LIGHT RAIL UP
