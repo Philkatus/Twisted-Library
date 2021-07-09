@@ -172,8 +172,6 @@ public class PlayerMovementStateMachine : StateMachine
         GetInput();
         //LooseBonusVelocity(stats.bonusVelocityDrag,Vector3.up);
         State.Movement();
-        Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
-        Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
     }
 
     private void InitializeVariables()

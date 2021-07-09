@@ -126,6 +126,7 @@ public class RotateCogwheel : MonoBehaviour
 
     IEnumerator RotateWheel()
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
         while (tWheelAcceleration < 1)
         {
             tWheelAcceleration += Time.deltaTime / 1.3f;
@@ -139,19 +140,20 @@ public class RotateCogwheel : MonoBehaviour
                 rotateWheel = true;
                 yield return null;
             }
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
     }
 
     IEnumerator RotateWheelNoEnd()
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
         while (doOnce)
         {
             foreach (Transform wheel in wheels)
             {
                 wheel.transform.Rotate(0, 1, 0, Space.Self);
             }
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
     }
 

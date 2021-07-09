@@ -230,7 +230,7 @@ public class VFX_Manager : MonoBehaviour
                 distance = Mathf.Clamp(distance, shadowRemapMin, shadowRemapMax);
                 distance = ExtensionMethods.Remap(distance, shadowRemapMin, shadowRemapMax, 0, 1);
                 float curvepoint = shadowSize.Evaluate(distance);
-                shadow.size = new Vector3(curvepoint*decalScale, curvepoint * decalScale, shadowRemapMax);
+                shadow.size = new Vector3(curvepoint * decalScale, curvepoint * decalScale, shadowRemapMax);
             }
         }
         else
@@ -330,6 +330,7 @@ public class VFX_Manager : MonoBehaviour
     }
     IEnumerator ChangePropertyColor(Material mat, string propertyName, Color fromColor, Color toColor, float time)
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
         float timer = 0;
         while (timer < time)
         {
@@ -337,7 +338,7 @@ public class VFX_Manager : MonoBehaviour
             Color intensityValue = Color.Lerp(fromColor, toColor, t);
             mat.SetColor(propertyName, intensityValue);
             timer += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
         mat.SetColor(propertyName, toColor);
     }
@@ -347,7 +348,6 @@ public class VFX_Manager : MonoBehaviour
     {
         if (other.tag == "Cogwheel")
         {
-            Debug.Log("A");
             VisualEffect vE = other.transform.parent.GetComponentInChildren<VisualEffect>();
             vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
             vE.SendEvent("_Start");
@@ -361,16 +361,16 @@ public class VFX_Manager : MonoBehaviour
     #region SHADOW
     IEnumerator OnImpact()
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
         float timer = 0;
-        float time = impactCurve.keys[impactCurve.length-1].time;
+        float time = impactCurve.keys[impactCurve.length - 1].time;
         while (timer < time)
         {
-            Debug.Log("A");
             float t = timer / time;
             float curvepoint = impactCurve.Evaluate(t) * decalScale;
             shadow.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
             timer += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
         shadow.size = new Vector3(0, 0, shadowRemapMax);
     }
@@ -406,6 +406,8 @@ public class VFX_Manager : MonoBehaviour
     private IEnumerator LightUp(float fromIntensity, float toIntensity, float fromWidth, float toWidth, float fromWidth2, float toWidth2, float time)
     {
         float timer = 0;
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+
         while (timer < time)
         {
             float t = timer / time;
@@ -416,7 +418,7 @@ public class VFX_Manager : MonoBehaviour
             SetProperty(railMats, "_VD", widthValue);
             SetProperty(railMats, "_GD", widthValue2);
             timer += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
         SetProperty(railMats, "_Multiplicator", toIntensity);
         SetProperty(railMats, "_VD", toWidth);
