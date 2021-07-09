@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8162649575433495703}
   - component: {fileID: 1416269163557501985}
   - component: {fileID: 513739057940057885}
+  - component: {fileID: 8950455987782865107}
   m_Layer: 6
   m_Name: BasicCubeAngled10x5_LOD1
   m_TagString: Untagged
@@ -81,6 +82,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8950455987782865107
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 725274650411795686}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6345890671916085948, guid: 439b25f900e709245ba646bfae347f61, type: 3}
 --- !u!1 &5107264346159376971
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,7 +106,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5596696092753834225}
   - component: {fileID: 860586483099502464}
-  - component: {fileID: 4915473355011573334}
   m_Layer: 6
   m_Name: BasicCubeAngled_10x10x10
   m_TagString: Untagged
@@ -106,7 +120,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5107264346159376971}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 49.769016, y: -3.1877413, z: -31.980736}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -138,20 +152,6 @@ LODGroup:
     renderers:
     - renderer: {fileID: 513739057940057885}
   m_Enabled: 1
---- !u!64 &4915473355011573334
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5107264346159376971}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!1 &7446880825641115796
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 5480553920929539653}
   - component: {fileID: 4277060741419623361}
   - component: {fileID: 1544650093437110446}
+  - component: {fileID: 7565532953094674545}
   m_Layer: 6
   m_Name: BasicCubeAngled10x5_LOD0
   m_TagString: Untagged
@@ -233,3 +234,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7565532953094674545
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7446880825641115796}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -5610580333408285671, guid: 439b25f900e709245ba646bfae347f61, type: 3}

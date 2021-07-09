@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2190415132152123702}
   - component: {fileID: 6155640066192237587}
   - component: {fileID: 8937381947806001043}
+  - component: {fileID: 9064793548360330949}
   m_Layer: 6
   m_Name: TrimBasicWall1x5A_LOD0
   m_TagString: Untagged
@@ -81,6 +82,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &9064793548360330949
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 301343311642867233}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.049999997, y: 0.009999998, z: 0.009999998}
+  m_Center: {x: 0.024999999, y: 0.004999995, z: 0.0049999994}
 --- !u!1 &3922356221822845688
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,7 +105,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4405877917410334786}
   - component: {fileID: 8898775545630011187}
-  - component: {fileID: 698702766140301556}
   m_Layer: 6
   m_Name: TrimBasicWall1x5A
   m_TagString: Untagged
@@ -106,7 +119,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3922356221822845688}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 74.48837, y: -3.1877441, z: -36.030514}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -138,19 +151,6 @@ LODGroup:
     renderers:
     - renderer: {fileID: 8937363242430523192}
   m_Enabled: 1
---- !u!65 &698702766140301556
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3922356221822845688}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 5.029663, y: 1.0405765, z: 1.0414009}
-  m_Center: {x: 2.497841, y: 0.50329566, z: -0.503706}
 --- !u!1 &6012177331617032367
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,6 +162,7 @@ GameObject:
   - component: {fileID: 5907357670865574107}
   - component: {fileID: 5148819198416264237}
   - component: {fileID: 8937363242430523192}
+  - component: {fileID: 6232831764568836140}
   m_Layer: 6
   m_Name: TrimBasicWall1x5A_LOD1
   m_TagString: Untagged
@@ -232,3 +233,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &6232831764568836140
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6012177331617032367}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.049999997, y: 0.009999998, z: 0.009999998}
+  m_Center: {x: 0.024999999, y: 0.004999995, z: 0.0049999994}

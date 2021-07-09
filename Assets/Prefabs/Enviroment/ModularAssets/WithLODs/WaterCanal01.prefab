@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 803626585238448887}
   - component: {fileID: 5583638587514822022}
-  - component: {fileID: 4322303872565545457}
   m_Layer: 6
   m_Name: WaterCanal01
   m_TagString: Untagged
@@ -57,20 +56,6 @@ LODGroup:
     renderers:
     - renderer: {fileID: 1197388466145893757}
   m_Enabled: 1
---- !u!64 &4322303872565545457
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 30644160071659597}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!1 &4408976482944289304
 GameObject:
   m_ObjectHideFlags: 0
@@ -82,6 +67,7 @@ GameObject:
   - component: {fileID: 2950301429919492594}
   - component: {fileID: 7875993442635773838}
   - component: {fileID: 248842049482356764}
+  - component: {fileID: 8256659141204285933}
   m_Layer: 6
   m_Name: WaterCanal01_LOD0
   m_TagString: Untagged
@@ -152,6 +138,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &8256659141204285933
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4408976482944289304}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -6182539586004821513, guid: 95b236d8ae89bb046b62b694f52031f0, type: 3}
 --- !u!1 &6314966651321836623
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 225696072915178501}
   - component: {fileID: 3457135037183539490}
   - component: {fileID: 1197388466145893757}
+  - component: {fileID: 6545958723433775817}
   m_Layer: 6
   m_Name: WaterCanal01_LOD1
   m_TagString: Untagged
@@ -233,3 +234,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &6545958723433775817
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6314966651321836623}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1191052754601777823, guid: 95b236d8ae89bb046b62b694f52031f0, type: 3}
