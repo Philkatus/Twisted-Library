@@ -32,6 +32,7 @@ public class MagicRailVolcano : MonoBehaviour
     }
     IEnumerator MoveUp(Vector3 currPos)
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
         if (!noPlane)
             StartCoroutine(MovePlateAway());
         float timer = 0;
@@ -40,12 +41,12 @@ public class MagicRailVolcano : MonoBehaviour
             float t = timer / travelTime;
             timer += Time.deltaTime;
             transform.localPosition = Vector3.Lerp(currPos, endPosition, t);
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
         psm.Jump();
         while (psm.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
         StartCoroutine(ShortMoveUp());
         if (!noPlane)
@@ -53,6 +54,7 @@ public class MagicRailVolcano : MonoBehaviour
     }
     IEnumerator MoveDown()
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
 
         float timer = 0;
         while (timer <= 0.5f)
@@ -60,20 +62,21 @@ public class MagicRailVolcano : MonoBehaviour
             float t = timer / 0.5f;
             timer += Time.deltaTime;
             transform.localPosition = Vector3.Lerp(startingPos, startingPos + Vector3.up * 1, t);
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
 
         StartCoroutine(MoveUp(transform.localPosition));
     }
     IEnumerator MoveBackDown(Vector3 currPos)
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
         float timer = 0;
         while (timer <= travelTime / 2.5f)
         {
             float t = timer / (travelTime / 2.5f);
             timer += Time.deltaTime;
             transform.localPosition = Vector3.Lerp(endPosition, startingPos, t);
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
         done = false;
     }
@@ -91,24 +94,26 @@ public class MagicRailVolcano : MonoBehaviour
     }
     IEnumerator MovePlateAway()
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
         float timer = 0;
         while (timer <= travelTime / 2)
         {
             float t = timer / (travelTime * 0.5f);
             timer += Time.deltaTime;
             bigPlate.transform.localPosition = Vector3.Lerp(planeStartPos, planeEndPos, t);
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
     }
     IEnumerator MovePlateBack()
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
         float timer = 0;
         while (timer <= travelTime / 2)
         {
             float t = timer / (travelTime * 0.5f);
             timer += Time.deltaTime;
             bigPlate.transform.localPosition = Vector3.Lerp(planeEndPos, planeStartPos, t);
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
     }
 }

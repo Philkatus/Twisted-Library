@@ -330,6 +330,7 @@ public class VFX_Manager : MonoBehaviour
     }
     IEnumerator ChangePropertyColor(Material mat, string propertyName, Color fromColor, Color toColor, float time)
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
         float timer = 0;
         while (timer < time)
         {
@@ -337,7 +338,7 @@ public class VFX_Manager : MonoBehaviour
             Color intensityValue = Color.Lerp(fromColor, toColor, t);
             mat.SetColor(propertyName, intensityValue);
             timer += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
         mat.SetColor(propertyName, toColor);
     }
@@ -347,7 +348,6 @@ public class VFX_Manager : MonoBehaviour
     {
         if (other.tag == "Cogwheel")
         {
-            Debug.Log("A");
             VisualEffect vE = other.transform.parent.GetComponentInChildren<VisualEffect>();
             vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
             vE.SendEvent("_Start");
@@ -361,11 +361,12 @@ public class VFX_Manager : MonoBehaviour
     #region SHADOW
     IEnumerator OnImpact()
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
         float timer = 0;
         float time = impactCurve.keys[impactCurve.length].time;
         while (timer < time)
         {
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
     }
     #endregion
@@ -400,6 +401,8 @@ public class VFX_Manager : MonoBehaviour
     private IEnumerator LightUp(float fromIntensity, float toIntensity, float fromWidth, float toWidth, float fromWidth2, float toWidth2, float time)
     {
         float timer = 0;
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+
         while (timer < time)
         {
             float t = timer / time;
@@ -410,7 +413,7 @@ public class VFX_Manager : MonoBehaviour
             SetProperty(railMats, "_VD", widthValue);
             SetProperty(railMats, "_GD", widthValue2);
             timer += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
         SetProperty(railMats, "_Multiplicator", toIntensity);
         SetProperty(railMats, "_VD", toWidth);

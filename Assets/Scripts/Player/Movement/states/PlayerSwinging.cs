@@ -470,9 +470,6 @@ public class PlayerSwinging : State
         else
         {
             Vector3 axis = PSM.Bob_Pivot.right;
-            Debug.DrawRay(PSM.Bob_Pivot.transform.position, -PSM.Bob_Pivot.up, Color.red);
-            Debug.DrawRay(PSM.Bob_Pivot.transform.position, -PSM.Bob_Pivot.right, Color.red);
-            Debug.DrawRay(PSM.Bob_Pivot.transform.position, newPosition, Color.green);
             float rotateByAngle = (Vector3.SignedAngle(-PSM.Bob_Pivot.up, newPosition, axis));
             Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
             PSM.Bob_Pivot.rotation = targetRotation * PSM.Bob_Pivot.rotation;
@@ -582,8 +579,6 @@ public class PlayerSwinging : State
         // Get only the forward/backward force
         playerVelocity = bobForward * ExtensionMethods.resultingSpeed(currentVelocity, bobForward);
         SetCurrentPlayerVelocity(ladder.transform.position);
-        //Debug.DrawRay(PSM.transform.position, currentVelocity, Color.red, dt);
-        Debug.DrawRay(PSM.transform.position, playerVelocity, Color.blue, dt);
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
         movementDelta += playerVelocity * dt;
@@ -1031,12 +1026,10 @@ public class PlayerSwinging : State
                                 if (PSM.slidingInput * relativePathDirection == -1 && PSM.slideRightInput != 0)
                                 {
                                     PSM.SaveInput(1, 1, closestRail);
-                                    Debug.Log("right");
                                 }
                                 if (PSM.slidingInput * relativePathDirection == 1 && PSM.slideLeftInput != 0)
                                 {
                                     PSM.SaveInput(1, 1, closestRail);
-                                    Debug.Log("left");
                                 }
 
 
@@ -1046,7 +1039,7 @@ public class PlayerSwinging : State
                         }
                     }
                 }
-                else 
+                else
                 {
                     AudioManager.Instance.SlidingSoundCalculation(PSM.currentSlidingSpeed);
                 }
@@ -1180,27 +1173,27 @@ public class PlayerSwinging : State
 
     protected bool CheckForCollisionCharacter(Vector3 moveDirection)
     {
-        RaycastHit hit;
-        Vector3 p1 = PSM.transform.position + controller.center + Vector3.up * -controller.height / 2f;
-        Vector3 p2 = p1 + Vector3.up * controller.height;
+        // RaycastHit hit;
+        // Vector3 p1 = PSM.transform.position + controller.center + Vector3.up * -controller.height / 2f;
+        // Vector3 p2 = p1 + Vector3.up * controller.height;
 
-        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
-        {
-            return true;
-        }
+        // if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
+        // {
+        //     return true;
+        // }
         return false;
     }
 
     protected bool CheckForCollisionLadder(Vector3 moveDirection)
     {
-        RaycastHit hit;
-        LadderSizeStateMachine lSM = PSM.ladderSizeStateMachine;
-        Vector3 boxExtents = new Vector3(0.25f, 2, 0.025f);
+        // RaycastHit hit;
+        // LadderSizeStateMachine lSM = PSM.ladderSizeStateMachine;
+        // Vector3 boxExtents = new Vector3(0.25f, 2, 0.025f);
 
-        if (Physics.BoxCast(PSM.ladder.position + PSM.ladder.transform.up * -2f, boxExtents, moveDirection.normalized, out hit, PSM.ladder.rotation, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
-        {
-            return true;
-        }
+        // if (Physics.BoxCast(PSM.ladder.position + PSM.ladder.transform.up * -2f, boxExtents, moveDirection.normalized, out hit, PSM.ladder.rotation, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
+        // {
+        //     return true;
+        // }
         return false;
     }
 

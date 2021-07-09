@@ -23,12 +23,12 @@ public class MarbelRun : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
         rightPath = rightPathCreator.path;
         wrongPath = wrongPathCreator.path;
         path = wrongPath;
         marbel.transform.position = path.GetPointAtDistance(0);
-        
+
     }
 
     // Update is called once per frame
@@ -43,47 +43,44 @@ public class MarbelRun : MonoBehaviour
 
     }
 
-    public void StartRolling() 
+    public void StartRolling()
     {
         rolling = true;
-        Debug.Log("startRolling");
     }
 
-    public void OpenGate() 
+    public void OpenGate()
     {
         finishIsOpen = true;
-        Debug.Log("openGate");
     }
 
-    public void ChoosePath() 
+    public void ChoosePath()
     {
-        if (finishIsOpen&&currentDistance<path.GetClosestDistanceAlongPath(Gate.position))
+        if (finishIsOpen && currentDistance < path.GetClosestDistanceAlongPath(Gate.position))
         {
             path = rightPath;
         }
-        
+
     }
 
-    void Rotate() 
+    void Rotate()
     {
         marbel.transform.forward = path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
-        marbel.transform.Rotate(rollingSpeed*Mathf.PI*marbel.transform.localScale.x*Time.deltaTime, 0, 0,Space.Self);
+        marbel.transform.Rotate(rollingSpeed * Mathf.PI * marbel.transform.localScale.x * Time.deltaTime, 0, 0, Space.Self);
     }
 
-    void Move() 
+    void Move()
     {
         currentDistance += rollingSpeed * Time.deltaTime;
-        marbel.transform.position = path.GetPointAtDistance(currentDistance,EndOfPathInstruction.Stop);
-        if (currentDistance >= path.length) 
+        marbel.transform.position = path.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop);
+        if (currentDistance >= path.length)
         {
-            if (path == wrongPath) 
+            if (path == wrongPath)
             {
                 marbel.transform.position = path.GetPointAtDistance(0);
                 rolling = false;
             }
             else
             {
-                Debug.Log("you did it");
             }
         }
     }

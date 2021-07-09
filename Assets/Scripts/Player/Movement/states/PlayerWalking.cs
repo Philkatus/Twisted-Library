@@ -36,7 +36,6 @@ public class PlayerWalking : State
         controller.transform.rotation = Quaternion.AngleAxis(Vector3.SignedAngle(controller.transform.up, Vector3.up, controller.transform.right), controller.transform.right) * controller.transform.rotation;
         ladder.localPosition = PSM.ladderWalkingPosition;
         ladder.localRotation = PSM.ladderWalkingRotation;
-        Debug.Log(ladder.localRotation.eulerAngles);
         stats = PSM.stats;
     }
 
@@ -81,7 +80,7 @@ public class PlayerWalking : State
             }
 
         }
-        else 
+        else
         {
             if (VoiceManager.Instance != null)
             {
