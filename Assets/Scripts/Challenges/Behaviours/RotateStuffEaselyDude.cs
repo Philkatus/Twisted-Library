@@ -25,11 +25,11 @@ public class RotateStuffEaselyDude : MonoBehaviour
         {
             if(rotateThisTransform)
             {
-                this.transform.Rotate(new Vector3(0, rotationSpeed, 0), Space.World);
+                this.transform.Rotate(new Vector3(0, rotationSpeed * Time.deltaTime, 0), Space.World);
             }
             else
             {
-                transformToRotate.Rotate(new Vector3(0, rotationSpeed, 0), Space.World);
+                transformToRotate.Rotate(new Vector3(0, rotationSpeed * Time.deltaTime, 0), Space.World);
             }
 
             if(objectsToSyncWith.Count != 0)
