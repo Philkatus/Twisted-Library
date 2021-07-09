@@ -653,7 +653,7 @@ public class PlayerSwinging : State
                     return GetPointOnLine(Vector3.zero, wallDirection * 100, ropeLength);
                 else
                     return GetPointOnLine(PSM.Bob_Pivot.position, wallDirection * 100, ropeLength);
-                
+
             }
         }
         if (onWall)
@@ -1046,8 +1046,11 @@ public class PlayerSwinging : State
                         }
                     }
                 }
+                else 
+                {
+                    AudioManager.Instance.SlidingSoundCalculation(PSM.currentSlidingSpeed);
+                }
 
-                AudioManager.Instance.SlidingSoundCalculation(PSM.currentSlidingSpeed);
             }
             else
             {
@@ -1275,6 +1278,7 @@ public class PlayerSwinging : State
         PSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
         PSM.effects.OnStateChangedSlideEnd();
+        AudioManager.Instance.StopSlidingSound();
         if (VoiceManager.Instance != null)
             VoiceManager.Instance.resetHighSpeedTimer();
         #endregion

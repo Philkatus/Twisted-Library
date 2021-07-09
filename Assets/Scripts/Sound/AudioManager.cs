@@ -64,15 +64,17 @@ public class AudioManager : MonoBehaviour
         return soundSource;
     }
 
-    void SetSoundSourceInactive(ResonanceAudioSource source) 
+    void SetSoundSourceInactive(ResonanceAudioSource source, bool sourceToNull)
     {
-        Sound s = Array.Find(sounds, sound => sound.source == source);
-        s.source = null;
+        Sound s = Array.Find(sounds, sound => sound.Source == source);
+        if (sourceToNull)
+        {
+            s.Source = null;
+        }
         activeSoundSources.Remove(source);
         inactiveSoundSources.Add(source);
         source.gameObject.SetActive(false);
     }
-
     public IEnumerator SetInactiveWhenNotPlaying(ResonanceAudioSource source)
     {
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
@@ -80,7 +82,7 @@ public class AudioManager : MonoBehaviour
         {
             yield return delay;
         }
-        SetSoundSourceInactive(source);
+        SetSoundSourceInactive(source,true);
         
     }
     public void PlayRandom(string name)
@@ -91,16 +93,16 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.source == null) 
+        if (s.Source == null) 
         {
-            s.source = GetInactiveSoundSource();
-            ApplyValuesToSource(s, s.source.audioSource);
+            s.Source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.Source.audioSource);
             
         }
-        s.source.transform.position = transform.position;
-        s.source.transform.parent = ObjectManager.instance.pSM.transform;
-        s.source.audioSource.Play();
-        StartCoroutine(SetInactiveWhenNotPlaying(s.source));
+        s.Source.transform.position = ObjectManager.instance.pSM.transform.position;
+        s.Source.transform.parent = ObjectManager.instance.pSM.transform;
+        s.Source.audioSource.Play();
+        StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
     }
     void PlayRandom(Sound s)
     {
@@ -110,16 +112,16 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.source == null)
+        if (s.Source == null)
         {
-            s.source = GetInactiveSoundSource();
-            ApplyValuesToSource(s, s.source.audioSource);
+            s.Source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.Source.audioSource);
 
         }
-        s.source.transform.position = transform.position;
-        s.source.transform.parent = ObjectManager.instance.pSM.transform;
-        s.source.audioSource.Play();
-        StartCoroutine(SetInactiveWhenNotPlaying(s.source));
+        s.Source.transform.position = ObjectManager.instance.pSM.transform.position;
+        s.Source.transform.parent = ObjectManager.instance.pSM.transform;
+        s.Source.audioSource.Play();
+        StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
     }
     public void PlayRandom(string name,Vector3 position)
     {
@@ -129,15 +131,15 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.source == null)
+        if (s.Source == null)
         {
-            s.source = GetInactiveSoundSource();
-            ApplyValuesToSource(s, s.source.audioSource);
+            s.Source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.Source.audioSource);
         }
-        s.source.transform.position = position;
-        s.source.audioSource.Play();
+        s.Source.transform.position = position;
+        s.Source.audioSource.Play();
 
-        StartCoroutine(SetInactiveWhenNotPlaying(s.source));
+        StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
     }
     void PlayRandom(Sound s, Vector3 position)
     {
@@ -147,17 +149,17 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.source == null)
+        if (s.Source == null)
         {
-            s.source = GetInactiveSoundSource();
-            ApplyValuesToSource(s, s.source.audioSource);
+            s.Source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.Source.audioSource);
         }
-        s.source.transform.position = position;
-        s.source.audioSource.Play();
+        s.Source.transform.position = position;
+        s.Source.audioSource.Play();
 
-        StartCoroutine(SetInactiveWhenNotPlaying(s.source));
+        StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
     }
-    public void StopSound(string name)
+    public void StopSound(string name,bool sourceToNull =true)
     {
         Sound s = Array.Find(sounds, item => item.name == name);
         if (s == null)
@@ -165,13 +167,14 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.source != null)
+        if (s.Source != null)
         {
-            s.source.audioSource.Stop();
-            SetSoundSourceInactive(s.source);
+            s.Source.audioSource.Stop();
+            SetSoundSourceInactive(s.Source,sourceToNull);
         }
     }
-    void StopSound(Sound s)
+
+    public void StopSound(Sound s, bool sourceToNull = true)
     {
        
         if (s == null)
@@ -179,10 +182,10 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.source != null)
+        if (s.Source != null)
         {
-            s.source.audioSource.Stop();
-            SetSoundSourceInactive(s.source);
+            s.Source.audioSource.Stop();
+            SetSoundSourceInactive(s.Source,sourceToNull);
         }
     }
     public void BlendSoundIn(string name)
@@ -193,7 +196,7 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.source != null)
+        if (s.Source != null)
         {
             StartCoroutine(blendSoundIn(s));
         }
@@ -205,22 +208,25 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.source != null)
+        if (s.Source != null)
         {
             StartCoroutine(blendSoundIn(s));
         }
     }
     IEnumerator blendSoundIn(Sound sound) 
     {
-        float timer = 0;
-        if(sound.source.audioSource.volume==sound.volume)
-            sound.source.audioSource.volume = 0;
-        WaitForEndOfFrame delay = new WaitForEndOfFrame();
-        while (sound.source.audioSource.volume<sound.volume) 
+        if (sound.Source != null)
         {
-            timer += Time.deltaTime;
-            sound.source.audioSource.volume = Mathf.Lerp(0, sound.volume,timer/sound.blendDuration);
-            yield return delay;
+            float timer = 0;
+            if (sound.Source.audioSource.volume == sound.volume)
+                sound.Source.audioSource.volume = 0;
+            WaitForEndOfFrame delay = new WaitForEndOfFrame();
+            while (sound.Source.audioSource.volume < sound.volume)
+            {
+                timer += Time.deltaTime;
+                sound.Source.audioSource.volume = Mathf.Lerp(0, sound.volume, timer / sound.blendDuration);
+                yield return delay;
+            }
         }
     }
     public void BlendSoundOut(string name)
@@ -231,7 +237,7 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.source != null) 
+        if (s.Source != null) 
         {
             StartCoroutine(blendSoundOut(s));
         }
@@ -243,23 +249,34 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.source != null)
+        if (s.Source != null)
         {
             StartCoroutine(blendSoundOut(s));
         }
     }
     IEnumerator blendSoundOut(Sound sound)
     {
-        float timer = 0;
-        sound.source.audioSource.volume = sound.volume;
-        WaitForEndOfFrame delay = new WaitForEndOfFrame();
-        while (sound.source.audioSource.volume < sound.volume)
+        if (sound.Source != null)
         {
-            timer += Time.deltaTime;
-            sound.source.audioSource.volume = Mathf.Lerp( sound.volume,0, timer / sound.blendDuration);
-            yield return delay;
+            float timer = 0;
+            sound.Source.audioSource.volume = sound.volume;
+            WaitForEndOfFrame delay = new WaitForEndOfFrame();
+            while (sound.Source.audioSource.volume < sound.volume)
+            {
+                timer += Time.deltaTime;
+                sound.Source.audioSource.volume = Mathf.Lerp(sound.volume, 0, timer / sound.blendDuration);
+                yield return delay;
+            }
+            StopSound(sound);
         }
-        StopSound(sound);
+    }
+
+    public void StopSlidingSound() 
+    {
+        StopSound("slidingSlow");
+        StopSound("slidingMedium");
+        StopSound("slidingFast");
+        Debug.Log("StopSound");
     }
     public void SlidingSoundCalculation(float slidingSpeed)
     {
@@ -274,15 +291,17 @@ public class AudioManager : MonoBehaviour
         {
             if (slidingSpeed == 0) 
             {
-                StopSound("slidingSlow");
-                StopSound("slidingMedium");
-                StopSound("slidingFast");
 
+                StopSlidingSound();
             }
 
             if (slidingSpeed < mediumSpeed)
             {
                 s = Array.Find(sounds, sound => sound.name == "slidingSlow");
+                if (s.Source == null) 
+                {
+                    PlayRandom(s);
+                }
                 speed1 = 0;
                 speed2 = mediumSpeed;
                 if (currentSlidingMode == 1)
@@ -306,6 +325,10 @@ public class AudioManager : MonoBehaviour
                 s = Array.Find(sounds, sound => sound.name == "slidingFast");
                 speed1 = highSpeed;
                 speed2 = maxSlidingSpeed;
+                if (s.Source == null)
+                {
+                    PlayRandom(s);
+                }
                 if (currentSlidingMode == 0)
                 {
                     BlendSoundOut("slidingSlow");
@@ -328,6 +351,10 @@ public class AudioManager : MonoBehaviour
                 s = Array.Find(sounds, sound => sound.name == "slidingMedium");
                 speed1 = mediumSpeed;
                 speed2 = highSpeed;
+                if (s.Source == null)
+                {
+                    PlayRandom(s);
+                }
                 if (currentSlidingMode == 0)
                 {
                     BlendSoundOut("slidingSlow");
@@ -345,7 +372,10 @@ public class AudioManager : MonoBehaviour
                 }
             }
             //Adjust Pitch 
-            //s.source.audioSource.pitch = Mathf.Lerp(-1, 1, slidingSpeed / maxSlidingSpeed);
+            if (s != null && s.Source!=null)
+            {
+                s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.2f, slidingSpeed / maxSlidingSpeed);
+            }
         }
         else 
         {
