@@ -2080,12 +2080,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70293c1fee63c8245ae27d829312f7a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementScript: {fileID: 0}
-  ladderScript: {fileID: 0}
+  playerSM: {fileID: 0}
+  ladderSM: {fileID: 0}
   controller: {fileID: 7511473034388439087}
   soundManager: {fileID: 0}
   audioManager: {fileID: 0}
-  animator: {fileID: 5224045387318095670}
   footIKScript: {fileID: 0}
   ladderPushSmoke: {fileID: 0}
   antiDrag: 1.65
@@ -2099,6 +2098,9 @@ MonoBehaviour:
   headAimTarget: {fileID: 6164259229316237293}
   headRotationValue: -0.65
   spine: {fileID: 562277038417729361}
+  animator: {fileID: 5224045387318095670}
+  acceleration: 2
+  deceleration: 2
 --- !u!114 &6164259229910852116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4898,7 +4900,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6164259229706539056}
-  m_LocalRotation: {x: -0.117740154, y: -0.7312774, z: 0.13065057, w: -0.65901524}
+  m_LocalRotation: {x: -0.11755818, y: -0.732194, z: 0.13081434, w: -0.65799665}
   m_LocalPosition: {x: 106.44183, y: 111.592, z: -466.47186}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -9423,10 +9425,6 @@ PrefabInstance:
     m_TransformParent: {fileID: 5224045388008558921}
     m_Modifications:
     - target: {fileID: 808403491053365511, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: ladderSM
-      value: 
-      objectReference: {fileID: 4128462683772201559}
-    - target: {fileID: 808403491053365511, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
       propertyPath: playerSM
       value: 
       objectReference: {fileID: 5224045388643823046}
@@ -9435,69 +9433,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7511473034388439087}
     - target: {fileID: 808403491053365511, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: acceleration
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 808403491053365511, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: deceleration
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 808403491053365511, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
       propertyPath: headAimTarget
       value: 
       objectReference: {fileID: 6164259229316237293}
-    - target: {fileID: 808403491053365511, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: movementScript
-      value: 
-      objectReference: {fileID: 5224045388643823046}
-    - target: {fileID: 1219713179535482570, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: m_Controller
-      value: 
-      objectReference: {fileID: 9100000, guid: b58d4597b01d38f48a5f955d39b69b01, type: 2}
-    - target: {fileID: 3198001844949855576, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 3198001844949855576, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 3198001844949855576, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3198001844949855576, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3198001844949855576, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 3419703892919098831, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3419703892919098831, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3419703892919098831, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3419703892919098831, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3419703892919098831, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 4317245394822236213, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: m_Data.m_SourceObjects.m_Item0.transform
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 4539148673259914272, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
       propertyPath: controller
       value: 
@@ -9578,10 +9516,6 @@ PrefabInstance:
       propertyPath: movementScript
       value: 
       objectReference: {fileID: 5224045388643823046}
-    - target: {fileID: 7454897085171358231, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
-      propertyPath: m_Data.m_SourceObjects.m_Item0.transform
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 7774656082702885195, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 

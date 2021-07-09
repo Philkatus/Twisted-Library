@@ -117,7 +117,7 @@ public class AnimationStateController : MonoBehaviour
         playerControlsMap = playerSM.actionAsset.FindActionMap("PlayerControls");
         stats = playerSM.stats;
         jumpAction = playerControlsMap.FindAction("Jump");
-        jumpAction.performed += context => Jump();
+        // jumpAction.performed += context => Jump();
         #endregion
 
     }
@@ -276,6 +276,14 @@ public class AnimationStateController : MonoBehaviour
     public void SetFallPhase()
     {
         animator.SetBool("IsFalling", true);
+    }
+
+    public void SetJump(){
+        animator.SetBool("Jump", true);
+    }
+
+        public void UnsetJump(){
+        animator.SetBool("Jump", false);
     }
 
     void CheckIK()

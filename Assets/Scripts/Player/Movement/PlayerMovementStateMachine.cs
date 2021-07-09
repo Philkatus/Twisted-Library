@@ -158,6 +158,8 @@ public class PlayerMovementStateMachine : StateMachine
         if (playerState != PlayerState.swinging)
             UpdateRailTimer();
         CheckForInputBools();
+
+        Time.timeScale = 0.3f;
     }
 
     private void FixedUpdate()
@@ -221,25 +223,20 @@ public class PlayerMovementStateMachine : StateMachine
         }
         inputTimer[index] = StartCoroutine(InputTimer(index, duration));
     }
-    public void SaveInput(int index, float duration,Rail rail)
+    public void SaveInput(int index, float duration, Rail rail)
     {
         if (inputTimer[index] != null)
         {
             StopCoroutine(inputTimer[index]);
         }
-        inputTimer[index] = StartCoroutine(InputTimer(index, duration,rail));
+        inputTimer[index] = StartCoroutine(InputTimer(index, duration, rail));
     }
 
     private void CheckForInputBools()
     {
         if (jumpInputBool)
         {
-            State.Jump();
-            if (stats.useJumpForLadderPush && jumpInputBool)
-            {
-                State.LadderPush();
-            }
-            
+            StartCoroutine(JumpDelay());
         }
         if (snapInputBool && playerState != PlayerState.swinging)
         {
@@ -465,7 +462,7 @@ public class PlayerMovementStateMachine : StateMachine
 
         if (possibleRails.Count == 1)
         {
-           
+
             return false;
         }
         else
@@ -493,11 +490,11 @@ public class PlayerMovementStateMachine : StateMachine
                         closestDistance = distance;
                         nextClosestRail = possibleRails[i];
                     }
-                    
+
                 }
-               
+
             }
-            
+
             if (nextClosestRail != null)
             {
                 float pathlength = closestRail.pathCreator.path.cumulativeLengthAtEachVertex[closestRail.pathCreator.path.cumulativeLengthAtEachVertex.Length - 1];
@@ -510,7 +507,7 @@ public class PlayerMovementStateMachine : StateMachine
             }
             else
             {
-               
+
                 return false;
             }
         }
@@ -556,7 +553,7 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnSnap()
     {
-       
+
         snapInputBool = false;
         effects.OnStateChangedSwinging();
         playerState = PlayerState.swinging;
@@ -592,6 +589,19 @@ public class PlayerMovementStateMachine : StateMachine
         State.Jump();
     }
     #endregion
+
+    public IEnumerator JumpDelay()
+    {
+        ObjectManager.instance.animationStateController.SetJump();
+        yield return new WaitForSeconds(0.2f);
+        State.Jump();
+        if (stats.useJumpForLadderPush && jumpInputBool)
+        {
+            State.LadderPush();
+        }
+        yield return null;
+        ObjectManager.instance.animationStateController.UnsetJump();
+    }
 
     public enum PlayerState
     {
