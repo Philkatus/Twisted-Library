@@ -185,7 +185,13 @@ public class VFX_Manager : MonoBehaviour
 
     void MoveSnappingFeedback()
     {
-        if (currentRail != null)
+        if (PlayerMovementStateMachine.PlayerState.swinging == pSM.playerState && pSM.lastRail != null)
+        {
+            Vector3 snappingPoint = currentRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+            snappingPoint = pSM.lastRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+            SetProperty(railMats, "_SnappingPoint", snappingPoint);
+        }
+        else if (pSM.closestRail != null)
         {
             Vector3 snappingPoint = currentRail.pathCreator.path.GetClosestPointOnPath(transform.position);
             snappingPoint = pSM.closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
@@ -277,7 +283,9 @@ public class VFX_Manager : MonoBehaviour
     {
         if (other.tag == "Cogwheel")
         {
-            other.GetComponentInChildren<VisualEffect>();
+            VisualEffect vE = other.GetComponentInChildren<VisualEffect>();
+            vE.SetVector3("currentSpeed", pSM.playerVelocity.normalized);
+            vE.SendEvent("_Start");
         }
     }
     #endregion
