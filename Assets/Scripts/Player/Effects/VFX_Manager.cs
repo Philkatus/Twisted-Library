@@ -27,38 +27,48 @@ public class VFX_Manager : MonoBehaviour
 
         }
     }
-    bool CanSwing = true;
+    bool CanSwing = false;
     public bool canSwing
     {
         get { return CanSwing; }
         set
         {
+            if (CanSwing != value)
+            {
+                if (value)
+                {
+                    StartCoroutine(ReLightRail());
+                }
+
+                else if (!value)
+                {
+                    StartCoroutine(FadeOutRail());
+                }
+
+            }
             CanSwing = value;
-            if (value && !swingingFeedback.activeInHierarchy)
-                swingingFeedback.SetActive(true);
-            else if (!value && swingingFeedback.activeInHierarchy)
-                swingingFeedback.SetActive(false);
         }
     }
     #endregion
     #region PRIVATE
-    [SerializeField] GameObject player, swingingFeedback, sparkleBurstL, sparkleBurstR, speedLinesS;
+    [SerializeField] GameObject player, sparkleBurstL, sparkleBurstR, speedLinesS;
     [SerializeField] VisualEffect ladderPushLeft, ladderPushRight;
     [SerializeField] Material[] railMats;
     [Header("Snapping Light Up")]
     [SerializeField] float lightUpTime;
-    [SerializeField] float fadeTime, normalWidth, broadWidth;
+    [SerializeField] float fadeTime, normalWidth, broadWidth, normalGD, broadGD;
     [SerializeField] int noIntensity, normalIntensity, lightUpIntensity;
+    [SerializeField] Color[] normalColor, swingingColor;
     PlayerMovementStateMachine pSM;
 
     GameObject cloud;
     Vector3 offset;
 
     bool smokeOn = false;
-    float smokeTimer = .5f, widthMultiplicator = 2.63f;
-
+    float smokeTimer = .5f;
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
+    bool inStage = false;
 
     public float lerpSpeed = .01f;
     #endregion
@@ -66,7 +76,6 @@ public class VFX_Manager : MonoBehaviour
     {
         // Set all Effects
         cloud = transform.GetChild(0).gameObject;
-
         offset = transform.position - player.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
         cloud.SetActive(false);
@@ -82,7 +91,7 @@ public class VFX_Manager : MonoBehaviour
     {
         transform.position = player.transform.position + offset;
 
-        //MoveSnappingFeedback();
+        MoveSnappingFeedback();
 
         if (smokeOn)
         {
@@ -119,8 +128,10 @@ public class VFX_Manager : MonoBehaviour
     #region OnStateChanged
     public void OnStateChangedWalking(bool land)
     {
-        DisableParticleEffect(swingingFeedback);
-        StartCoroutine(ReLightRail());
+        if (currentRail != null)
+        {
+            StartCoroutine(FadeOutRail());
+        }
 
         if (land)
         {
@@ -131,15 +142,17 @@ public class VFX_Manager : MonoBehaviour
     }
     public void OnStateChangedInAir()
     {
-        DisableParticleEffect(swingingFeedback);
-        StartCoroutine(ReLightRail());
-
+        if (currentRail != null)
+        {
+            StartCoroutine(FadeOutRail());
+        }
     }
     public void OnStateChangedSwinging()
     {
-        PlayParticleEffect(swingingFeedback);
         StartCoroutine(LightRailUp());
-
+    }
+    public void OnResnap()
+    {
     }
     public void OnStateChangedLadderPush()
     {
@@ -171,9 +184,14 @@ public class VFX_Manager : MonoBehaviour
 
     void MoveSnappingFeedback()
     {
-        if (currentRail != null)
+        if (PlayerMovementStateMachine.PlayerState.swinging == pSM.playerState && pSM.lastRail != null)
         {
-            Vector3 snappingPoint = currentRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+            Vector3 snappingPoint = pSM.lastRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+            SetProperty(railMats, "_SnappingPoint", snappingPoint);
+        }
+        else if (pSM.closestRail != null)
+        {
+            Vector3 snappingPoint = pSM.closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
             SetProperty(railMats, "_SnappingPoint", snappingPoint);
         }
         else
@@ -257,27 +275,49 @@ public class VFX_Manager : MonoBehaviour
         foreach (Material railMat in railMats)
             railMat.SetFloat(propertyName, value);
     }
+    #region ON TRIGGER
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Cogwheel")
+        {
+
+            VisualEffect vE = other.transform.parent.GetComponentInChildren<VisualEffect>();
+            if (vE == null)
+                Debug.Log("A");
+            vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
+            vE.SendEvent("_Start");
+        }
+    }
+    #endregion
     #region LIGHT RAIL UP
     IEnumerator LightRailUp()
     {
-        StartCoroutine(LightUp(normalIntensity, lightUpIntensity, normalWidth, broadWidth, lightUpTime));
+        inStage = true;
+        StartCoroutine(LightUp(normalIntensity, lightUpIntensity, normalWidth, broadWidth, normalGD, broadGD, lightUpTime));
         yield return new WaitForSeconds(lightUpTime);
         //possibly play a particle effect here
-        StartCoroutine(LightUp(lightUpIntensity, noIntensity, broadWidth, normalWidth, fadeTime));
+        StartCoroutine(LightUp(lightUpIntensity, noIntensity, broadWidth, normalWidth, broadGD, normalGD, lightUpTime / 2));
+        inStage = false;
     }
     IEnumerator ReLightRail()
     {
-        StartCoroutine(LightUp(noIntensity, lightUpIntensity, normalWidth, broadWidth, fadeTime));
-        yield return new WaitForSeconds(fadeTime);
-        StartCoroutine(LightUp(lightUpIntensity, normalIntensity, broadWidth, normalWidth, fadeTime));
+        if (!inStage)
+        {
+            inStage = true;
+            StartCoroutine(LightUp(noIntensity, normalIntensity, normalWidth, normalWidth, normalGD, normalGD, lightUpTime));
+            yield return new WaitForSeconds(fadeTime);
+            inStage = false;
+        }
     }
     IEnumerator FadeOutRail()
     {
-        StartCoroutine(LightUp(normalIntensity, noIntensity, normalWidth, normalWidth, fadeTime));
+        inStage = true;
+        StartCoroutine(LightUp(normalIntensity, noIntensity, normalWidth, normalWidth, normalGD, normalGD, lightUpTime / 2));
         yield return new WaitForSeconds(lightUpTime);
         SetProperty(railMats, "_SnappingPoint", Vector3.zero);
+        inStage = false;
     }
-    private IEnumerator LightUp(float fromIntensity, float toIntensity, float fromWidth, float toWidth, float time)
+    private IEnumerator LightUp(float fromIntensity, float toIntensity, float fromWidth, float toWidth, float fromWidth2, float toWidth2, float time)
     {
         float timer = 0;
         while (timer < time)
@@ -285,15 +325,16 @@ public class VFX_Manager : MonoBehaviour
             float t = timer / time;
             float intensityValue = Mathf.Lerp(fromIntensity, toIntensity, t);
             float widthValue = Mathf.Lerp(fromWidth, toWidth, t);
+            float widthValue2 = Mathf.Lerp(fromWidth2, toWidth2, t);
             SetProperty(railMats, "_Multiplicator", intensityValue);
             SetProperty(railMats, "_VD", widthValue);
-            SetProperty(railMats, "_GD", widthValue*widthMultiplicator);
+            SetProperty(railMats, "_GD", widthValue2);
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
         SetProperty(railMats, "_Multiplicator", toIntensity);
         SetProperty(railMats, "_VD", toWidth);
-        SetProperty(railMats, "_GD", toWidth*widthMultiplicator);
+        SetProperty(railMats, "_GD", toWidth2);
     }
     #endregion
 }

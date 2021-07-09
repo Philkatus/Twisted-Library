@@ -156,11 +156,11 @@ public class PlayerMovementStateMachine : StateMachine
     {
         coyoteTimer += Time.deltaTime;
         //if (playerState != PlayerState.swinging)
-            UpdateRailTimer();
+        UpdateRailTimer();
         CheckForInputBools();
-        if (playerState == PlayerState.swinging&&currentSlidingSpeed>=stats.maxSlidingSpeed*.8f) 
+        if (playerState == PlayerState.swinging && currentSlidingSpeed >= stats.maxSlidingSpeed * .8f)
         {
-            if (VoiceManager.Instance != null) 
+            if (VoiceManager.Instance != null)
             {
                 VoiceManager.Instance.TryToHighSpeedSound();
             }
@@ -228,13 +228,13 @@ public class PlayerMovementStateMachine : StateMachine
         }
         inputTimer[index] = StartCoroutine(InputTimer(index, duration));
     }
-    public void SaveInput(int index, float duration,Rail rail)
+    public void SaveInput(int index, float duration, Rail rail)
     {
         if (inputTimer[index] != null)
         {
             StopCoroutine(inputTimer[index]);
         }
-        inputTimer[index] = StartCoroutine(InputTimer(index, duration,rail));
+        inputTimer[index] = StartCoroutine(InputTimer(index, duration, rail));
     }
 
     private void CheckForInputBools()
@@ -246,7 +246,7 @@ public class PlayerMovementStateMachine : StateMachine
             {
                 State.LadderPush();
             }
-            
+
         }
         if (snapInputBool && playerState != PlayerState.swinging)
         {
@@ -472,7 +472,7 @@ public class PlayerMovementStateMachine : StateMachine
 
         if (possibleRails.Count == 1)
         {
-           
+
             return false;
         }
         else
@@ -500,24 +500,25 @@ public class PlayerMovementStateMachine : StateMachine
                         closestDistance = distance;
                         nextClosestRail = possibleRails[i];
                     }
-                    
+
                 }
-               
+
             }
-            
+
             if (nextClosestRail != null)
             {
-               
+
                 closestRail = nextClosestRail;
 
                 currentDistance = closestRail.pathCreator.path.GetClosestDistanceAlongPath(ladder.transform.position);
-
+                //VFX-Snapping
+                effects.currentRail = closestRail;
 
                 return true;
             }
             else
             {
-               
+
                 return false;
             }
         }
@@ -563,7 +564,7 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnSnap()
     {
-       
+
         snapInputBool = false;
         effects.OnStateChangedSwinging();
         playerState = PlayerState.swinging;
@@ -577,7 +578,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnResnap()
     {
         SetState(this.State);
-        effects.OnStateChangedSwinging();
+        effects.OnResnap();
         playerState = PlayerState.swinging;
     }
 

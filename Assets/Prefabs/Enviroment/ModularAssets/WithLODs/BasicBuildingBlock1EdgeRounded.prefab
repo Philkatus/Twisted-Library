@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2311882731088540413}
   - component: {fileID: 5698927535239596122}
   - component: {fileID: 2508540992758049498}
+  - component: {fileID: 607693744753649207}
   m_Layer: 6
   m_Name: BasicBuildingBlock1EdgeRounded_LOD0
   m_TagString: Untagged
@@ -81,6 +82,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &607693744753649207
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 273817561515006762}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 6582938667450543791, guid: 1b163ce4309ba0141a06f2eba9771e72, type: 3}
 --- !u!1 &3903317588379970815
 GameObject:
   m_ObjectHideFlags: 0
@@ -91,7 +106,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4422690994363594309}
   - component: {fileID: 8879569799300170036}
-  - component: {fileID: 4326666865550324739}
   m_Layer: 6
   m_Name: BasicBuildingBlock1EdgeRounded
   m_TagString: Untagged
@@ -106,7 +120,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3903317588379970815}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 43.133663, y: -3.1877422, z: -32.211678}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -138,20 +152,6 @@ LODGroup:
     renderers:
     - renderer: {fileID: 89102121768713341}
   m_Enabled: 1
---- !u!64 &4326666865550324739
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3903317588379970815}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!1 &7114919067087209003
 GameObject:
   m_ObjectHideFlags: 0
@@ -163,6 +163,7 @@ GameObject:
   - component: {fileID: 2350754028428763525}
   - component: {fileID: 2146321490890752855}
   - component: {fileID: 89102121768713341}
+  - component: {fileID: 7933994404188970419}
   m_Layer: 6
   m_Name: BasicBuildingBlock1EdgeRounded_LOD1
   m_TagString: Untagged
@@ -233,3 +234,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7933994404188970419
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7114919067087209003}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -591506297289554196, guid: 1b163ce4309ba0141a06f2eba9771e72, type: 3}
