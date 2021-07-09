@@ -62,7 +62,7 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] Color[] normalColor, swingingColor;
     [Header("Decal Shadow")]
     [SerializeField] DecalProjector shadow;
-    [SerializeField] AnimationCurve shadowSize;
+    [SerializeField] AnimationCurve shadowSize, impactCurve;
     [SerializeField] float shadowRemapMin, shadowRemapMax;
 
     PlayerMovementStateMachine pSM;
@@ -358,7 +358,17 @@ public class VFX_Manager : MonoBehaviour
         }
     }
     #endregion
-
+    #region SHADOW
+    IEnumerator OnImpact()
+    {
+        float timer = 0;
+        float time = impactCurve.keys[impactCurve.length].time;
+        while (timer < time)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+    }
+    #endregion
     #region LIGHT RAIL UP
     IEnumerator LightRailUp()
     {
