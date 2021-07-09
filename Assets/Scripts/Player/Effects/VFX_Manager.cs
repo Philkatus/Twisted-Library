@@ -58,7 +58,7 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] float lightUpTime;
     [SerializeField] float fadeTime, normalWidth, broadWidth, normalGD, broadGD;
     [SerializeField] int noIntensity, normalIntensity, lightUpIntensity;
-    [SerializeField] Color normalColor, swingingColor;
+    [SerializeField] Color[] normalColor, swingingColor;
     PlayerMovementStateMachine pSM;
 
     GameObject cloud;
@@ -66,7 +66,6 @@ public class VFX_Manager : MonoBehaviour
 
     bool smokeOn = false;
     float smokeTimer = .5f;
-
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
     bool inStage = false;
@@ -77,7 +76,6 @@ public class VFX_Manager : MonoBehaviour
     {
         // Set all Effects
         cloud = transform.GetChild(0).gameObject;
-
         offset = transform.position - player.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
         cloud.SetActive(false);
@@ -282,8 +280,11 @@ public class VFX_Manager : MonoBehaviour
     {
         if (other.tag == "Cogwheel")
         {
-            VisualEffect vE = other.GetComponentInChildren<VisualEffect>();
-            vE.SetVector3("currentSpeed", pSM.playerVelocity.normalized);
+
+            VisualEffect vE = other.transform.parent.GetComponentInChildren<VisualEffect>();
+            if (vE == null)
+                Debug.Log("A");
+            vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
             vE.SendEvent("_Start");
         }
     }
