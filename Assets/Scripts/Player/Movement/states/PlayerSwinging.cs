@@ -647,10 +647,13 @@ public class PlayerSwinging : State
             {
                 PSM.effects.canSwing = true;
                 onWall = true;
+                AudioManager.Instance.PlayRandom("impactFront");
+
                 if (PSM.useRelativeBobPosition)
                     return GetPointOnLine(Vector3.zero, wallDirection * 100, ropeLength);
                 else
                     return GetPointOnLine(PSM.Bob_Pivot.position, wallDirection * 100, ropeLength);
+                
             }
         }
         if (onWall)
@@ -918,6 +921,7 @@ public class PlayerSwinging : State
                     {
                         slidingDirection = pathDirection;
                     }
+                    AudioManager.Instance.PlayRandom("impactSide");
                 }
 
                 if (!CheckForCollisionCharacter(slidingDirection) && !CheckForCollisionLadder(slidingDirection))
@@ -1042,6 +1046,8 @@ public class PlayerSwinging : State
                         }
                     }
                 }
+
+                AudioManager.Instance.SlidingSoundCalculation(PSM.currentSlidingSpeed);
             }
             else
             {
