@@ -160,7 +160,7 @@ public class VFX_Manager : MonoBehaviour
     }
     public void OnStateChangedSwinging()
     {
-        UpdateShadowSize(true);
+        StartCoroutine(OnImpact(impactCurve));
         StartCoroutine(LightRailUp());
         SetProperty(railMats, "_EmissionColor", swingingColor, lightUpTime);
     }
@@ -235,7 +235,7 @@ public class VFX_Manager : MonoBehaviour
         }
         else
         {
-            StartCoroutine(OnImpact());
+            StartCoroutine(OnImpact(impactCurve));
         }
     }
     #endregion
@@ -359,15 +359,15 @@ public class VFX_Manager : MonoBehaviour
     }
     #endregion
     #region SHADOW
-    IEnumerator OnImpact()
+    IEnumerator OnImpact(AnimationCurve curve)
     {
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
         float timer = 0;
-        float time = impactCurve.keys[impactCurve.length - 1].time;
+        float time = curve.keys[impactCurve.length - 1].time;
         while (timer < time)
         {
             float t = timer / time;
-            float curvepoint = impactCurve.Evaluate(t) * decalScale;
+            float curvepoint = curve.Evaluate(t) * decalScale;
             shadow.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
             timer += Time.deltaTime;
             yield return delay;
