@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 8162194505085378299}
   - component: {fileID: 2152449878301074992}
   - component: {fileID: 8472329678731997625}
+  - component: {fileID: 1778130155797727438}
   m_Layer: 6
   m_Name: BasicWall1x5CornerRounded_LOD1
   m_TagString: Untagged
@@ -81,6 +82,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1778130155797727438
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1109209639505317678}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 4784556166202807986, guid: 24e5b3ac306365a4c89d6861680151e2, type: 3}
 --- !u!1 &1307765744723791886
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,6 +107,7 @@ GameObject:
   - component: {fileID: 6883283692121294169}
   - component: {fileID: 6498710576522585867}
   - component: {fileID: 6354916738017996578}
+  - component: {fileID: 4697679746875965985}
   m_Layer: 6
   m_Name: BasicWall1x5CornerRounded_LOD0
   m_TagString: Untagged
@@ -162,6 +178,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &4697679746875965985
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1307765744723791886}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -1543892852048822349, guid: 24e5b3ac306365a4c89d6861680151e2, type: 3}
 --- !u!1 &7451115257103527654
 GameObject:
   m_ObjectHideFlags: 0
@@ -172,7 +202,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7794743000203424860}
   - component: {fileID: 3059741696047235885}
-  - component: {fileID: 6227934929337379236}
   m_Layer: 6
   m_Name: BasicWall1x5CornerRounded
   m_TagString: Untagged
@@ -187,7 +216,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7451115257103527654}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 65.40352, y: -3.1877432, z: -34.52304}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -224,20 +253,6 @@ LODGroup:
     renderers:
     - renderer: {fileID: 7369097773193408652}
   m_Enabled: 1
---- !u!64 &6227934929337379236
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7451115257103527654}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
 --- !u!1 &8659274783137534482
 GameObject:
   m_ObjectHideFlags: 0
@@ -249,6 +264,7 @@ GameObject:
   - component: {fileID: 2225699188489096456}
   - component: {fileID: 616926870006044806}
   - component: {fileID: 7369097773193408652}
+  - component: {fileID: 7048626773055312229}
   m_Layer: 6
   m_Name: BasicWall1x5CornerRounded_LOD2
   m_TagString: Untagged
@@ -319,3 +335,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &7048626773055312229
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8659274783137534482}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: -8369929284525103452, guid: 24e5b3ac306365a4c89d6861680151e2, type: 3}
