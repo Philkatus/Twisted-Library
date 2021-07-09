@@ -347,6 +347,7 @@ public class VFX_Manager : MonoBehaviour
     {
         if (other.tag == "Cogwheel")
         {
+            Debug.Log("A");
             VisualEffect vE = other.transform.parent.GetComponentInChildren<VisualEffect>();
             vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
             vE.SendEvent("_Start");
