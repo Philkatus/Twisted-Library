@@ -1046,6 +1046,8 @@ public class PlayerSwinging : State
                         }
                     }
                 }
+
+                AudioManager.Instance.SlidingSoundCalculation(PSM.currentSlidingSpeed);
             }
             else
             {
