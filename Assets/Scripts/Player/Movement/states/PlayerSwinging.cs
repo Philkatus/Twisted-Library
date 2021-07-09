@@ -1173,27 +1173,27 @@ public class PlayerSwinging : State
 
     protected bool CheckForCollisionCharacter(Vector3 moveDirection)
     {
-        // RaycastHit hit;
-        // Vector3 p1 = PSM.transform.position + controller.center + Vector3.up * -controller.height / 2f;
-        // Vector3 p2 = p1 + Vector3.up * controller.height;
+        RaycastHit hit;
+        Vector3 p1 = PSM.transform.position + controller.center + Vector3.up * -controller.height / 2f;
+        Vector3 p2 = p1 + Vector3.up * controller.height;
 
-        // if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
-        // {
-        //     return true;
-        // }
+        if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
+        {
+            return true;
+        }
         return false;
     }
 
     protected bool CheckForCollisionLadder(Vector3 moveDirection)
     {
-        // RaycastHit hit;
-        // LadderSizeStateMachine lSM = PSM.ladderSizeStateMachine;
-        // Vector3 boxExtents = new Vector3(0.25f, 2, 0.025f);
+        RaycastHit hit;
+        LadderSizeStateMachine lSM = PSM.ladderSizeStateMachine;
+        Vector3 boxExtents = new Vector3(0.25f, 2, 0.025f);
 
-        // if (Physics.BoxCast(PSM.ladder.position + PSM.ladder.transform.up * -2f, boxExtents, moveDirection.normalized, out hit, PSM.ladder.rotation, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
-        // {
-        //     return true;
-        // }
+        if (Physics.BoxCast(PSM.ladder.position + PSM.ladder.transform.up * -2f, boxExtents, moveDirection.normalized, out hit, PSM.ladder.rotation, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
+        {
+            return true;
+        }
         return false;
     }
 
