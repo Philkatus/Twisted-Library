@@ -272,6 +272,15 @@ public class VFX_Manager : MonoBehaviour
         foreach (Material railMat in railMats)
             railMat.SetFloat(propertyName, value);
     }
+    #region ON TRIGGER
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Cogwheel")
+        {
+            other.GetComponentInChildren<VisualEffect>();
+        }
+    }
+    #endregion
     #region LIGHT RAIL UP
     IEnumerator LightRailUp()
     {
