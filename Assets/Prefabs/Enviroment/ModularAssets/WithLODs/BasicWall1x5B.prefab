@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7261725296464076528}
   - component: {fileID: 3940318278733032604}
   - component: {fileID: 6120407166675048688}
+  - component: {fileID: 2879616160746239140}
   m_Layer: 6
   m_Name: BasicWall1x5B_LOD0
   m_TagString: Untagged
@@ -81,6 +82,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &2879616160746239140
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1288181208382064240}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.049999997, y: 0.009999998, z: 0.04999999}
+  m_Center: {x: 0.024999999, y: 0.004999999, z: 0.024999997}
 --- !u!1 &1721367183962260089
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,6 +106,7 @@ GameObject:
   - component: {fileID: 3135723688222468164}
   - component: {fileID: 6194975028354621605}
   - component: {fileID: 6194157426374515303}
+  - component: {fileID: 8874153296202422484}
   m_Layer: 6
   m_Name: BasicWall1x5B_LOD1
   m_TagString: Untagged
@@ -162,6 +177,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &8874153296202422484
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721367183962260089}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.049999997, y: 0.009999998, z: 0.04999999}
+  m_Center: {x: 0.024999999, y: 0.004999999, z: 0.024999997}
 --- !u!1 &2953572114567801218
 GameObject:
   m_ObjectHideFlags: 0
@@ -172,7 +200,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2573493397165732664}
   - component: {fileID: 7344523497519891529}
-  - component: {fileID: 3371062631812666584}
   m_Layer: 6
   m_Name: BasicWall1x5B
   m_TagString: Untagged
@@ -219,16 +246,3 @@ LODGroup:
     renderers:
     - renderer: {fileID: 6194157426374515303}
   m_Enabled: 1
---- !u!65 &3371062631812666584
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2953572114567801218}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 5.047718, y: 5.037845, z: 1.0394859}
-  m_Center: {x: 2.5076103, y: 2.482929, z: -0.5133686}

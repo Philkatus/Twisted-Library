@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class RotateCogwheel : MonoBehaviour
 {
-    Animator anim;
     ChallengeComponent challengeComponent;
     float tWheelAcceleration = 1;
     float currentRotationDirection;
     float turnOnTimer;
-    float timeToCompleteComponents;
     bool turnOn;
     bool changeDirection;
     bool stopWheel;
     bool doOncePerAttempt;
     bool rotateWheel;
+    bool doOnce;
+
+    [SerializeField] List<Transform> wheels = new List<Transform>();
 
     void Start()
     {
-        anim = GetComponent<Animator>();
         challengeComponent = GetComponent<ChallengeComponent>();
         challengeComponent.onResetChallenge += new ChallengeComponent.EventHandler(SetStopWheelTrue);
         challengeComponent.type = "cogwheel";
@@ -70,13 +70,21 @@ public class RotateCogwheel : MonoBehaviour
             tWheelAcceleration = ExtensionMethods.Remap(timeSinceCompletion, 0, challenge.timeToCompleteComponents, 1, 0);
             Mathf.Clamp(tWheelAcceleration, 0f, 1f);
             float angleDelta = Mathf.Lerp(0, 1f, tWheelAcceleration) * currentRotationDirection;
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y - angleDelta, transform.eulerAngles.z);
+            foreach (Transform wheel in wheels)
+            {
+                wheel.transform.Rotate(0, angleDelta, 0, Space.Self);
+            }
+        }
+        if (challenge.ChallengeCompleted && !doOnce)
+        {
+            doOnce = true;
+            StartCoroutine(RotateWheelNoEnd());
         }
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "Player" && !challengeComponent.challenge.ChallengeCompleted)
         {
             var psm = other.gameObject.GetComponent<PlayerMovementStateMachine>();
             bool isSliding = psm.playerState == PlayerMovementStateMachine.PlayerState.swinging;
@@ -122,7 +130,10 @@ public class RotateCogwheel : MonoBehaviour
         {
             tWheelAcceleration += Time.deltaTime / 1.3f;
             float angleDelta = Mathf.Lerp(0, 1f, tWheelAcceleration) * currentRotationDirection;
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y - angleDelta, transform.eulerAngles.z);
+            foreach (Transform wheel in wheels)
+            {
+                wheel.transform.Rotate(0, angleDelta, 0, Space.Self);
+            }
             if (tWheelAcceleration >= 1)
             {
                 rotateWheel = true;
@@ -132,11 +143,26 @@ public class RotateCogwheel : MonoBehaviour
         }
     }
 
+    IEnumerator RotateWheelNoEnd()
+    {
+        while (doOnce)
+        {
+            foreach (Transform wheel in wheels)
+            {
+                wheel.transform.Rotate(0, 1, 0, Space.Self);
+            }
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
     void StopWheel()
     {
         tWheelAcceleration -= Time.deltaTime / 0.7f;
         float angleDelta = Mathf.Lerp(0, 1f, tWheelAcceleration) * currentRotationDirection;
-        transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + angleDelta, transform.eulerAngles.z);
+        foreach (Transform wheel in wheels)
+        {
+            wheel.transform.Rotate(0, angleDelta, 0, Space.Self);
+        }
     }
 
     void SetStopWheelTrue()

@@ -58,6 +58,7 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] float lightUpTime;
     [SerializeField] float fadeTime, normalWidth, broadWidth, normalGD, broadGD;
     [SerializeField] int noIntensity, normalIntensity, lightUpIntensity;
+    [SerializeField] Color[] normalColor, swingingColor;
     PlayerMovementStateMachine pSM;
 
     GameObject cloud;
@@ -65,7 +66,6 @@ public class VFX_Manager : MonoBehaviour
 
     bool smokeOn = false;
     float smokeTimer = .5f;
-
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
     bool inStage = false;
@@ -76,7 +76,6 @@ public class VFX_Manager : MonoBehaviour
     {
         // Set all Effects
         cloud = transform.GetChild(0).gameObject;
-
         offset = transform.position - player.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
         cloud.SetActive(false);
@@ -91,7 +90,6 @@ public class VFX_Manager : MonoBehaviour
     void Update()
     {
         transform.position = player.transform.position + offset;
-
         MoveSnappingFeedback();
 
         if (smokeOn)
@@ -129,6 +127,7 @@ public class VFX_Manager : MonoBehaviour
     #region OnStateChanged
     public void OnStateChangedWalking(bool land)
     {
+        SetProperty(railMats, "_EmissionColor", normalColor, fadeTime);
         if (currentRail != null)
         {
             StartCoroutine(FadeOutRail());
@@ -143,6 +142,7 @@ public class VFX_Manager : MonoBehaviour
     }
     public void OnStateChangedInAir()
     {
+        SetProperty(railMats, "_EmissionColor", normalColor, fadeTime);
         if (currentRail != null)
         {
             StartCoroutine(FadeOutRail());
@@ -151,6 +151,7 @@ public class VFX_Manager : MonoBehaviour
     public void OnStateChangedSwinging()
     {
         StartCoroutine(LightRailUp());
+        SetProperty(railMats, "_EmissionColor", swingingColor, lightUpTime);
     }
     public void OnResnap()
     {
@@ -185,15 +186,20 @@ public class VFX_Manager : MonoBehaviour
 
     void MoveSnappingFeedback()
     {
-        if (currentRail != null)
+        if (PlayerMovementStateMachine.PlayerState.swinging == pSM.playerState && pSM.lastRail != null)
         {
-            Vector3 snappingPoint = currentRail.pathCreator.path.GetClosestPointOnPath(transform.position);
-            snappingPoint = pSM.closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+            Vector3 snappingPoint = pSM.lastRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+            SetProperty(railMats, "_SnappingPoint", snappingPoint);
+        }
+        else if (pSM.closestRail != null)
+        {
+            Vector3 snappingPoint = pSM.closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
             SetProperty(railMats, "_SnappingPoint", snappingPoint);
         }
         else
             StartCoroutine(FadeOutRail());
     }
+    #region Namin's VFX
     void StartLadderPushVFX(VisualEffect vfx)
     {
         vfx.SendEvent("_Start");
@@ -258,10 +264,14 @@ public class VFX_Manager : MonoBehaviour
             speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward, Camera.main.transform.forward * -1, lerpSpeed);
         }
     }
+    #endregion
+
     private void OnApplicationQuit()
     {
         SetProperty(railMats, "_SnappingPoint", Vector3.zero);
+        SetProperty(railMats, "_EmissionColor", normalColor, fadeTime);
     }
+    #region SET PROPERTY
     void SetProperty(Material[] railMats, string propertyName, Vector3 value)
     {
         foreach (Material railMat in railMats)
@@ -272,6 +282,41 @@ public class VFX_Manager : MonoBehaviour
         foreach (Material railMat in railMats)
             railMat.SetFloat(propertyName, value);
     }
+    void SetProperty(Material[] railMats, string propertyName, Color[] value, float time)
+    {
+        for (int i = 0; i < railMats.Length; i++)
+            StartCoroutine(ChangePropertyColor(railMats[i], propertyName, railMats[i].GetColor(propertyName), value[i], time));
+    }
+    IEnumerator ChangePropertyColor(Material mat, string propertyName, Color fromColor, Color toColor, float time)
+    {
+        float timer = 0;
+        while (timer < time)
+        {
+            float t = timer / time;
+            Color intensityValue = Color.Lerp(fromColor, toColor, t);
+            mat.SetColor(propertyName, intensityValue);
+            timer += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        mat.SetColor(propertyName, toColor);
+    }
+    #endregion
+    #region ON TRIGGER
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Cogwheel")
+        {
+            VisualEffect vE = other.transform.parent.GetComponentInChildren<VisualEffect>();
+            vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
+            vE.SendEvent("_Start");
+        }
+        if (other.tag == "Water")
+        {
+            //waterEffect.SendEvent("_Start");
+        }
+    }
+    #endregion
+
     #region LIGHT RAIL UP
     IEnumerator LightRailUp()
     {

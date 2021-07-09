@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 919884404562821775}
   - component: {fileID: 5376746375443461630}
-  - component: {fileID: 1210150210431950519}
   m_Layer: 6
   m_Name: BasicWall1x5C
   m_TagString: Untagged
@@ -57,19 +56,6 @@ LODGroup:
     renderers:
     - renderer: {fileID: 4912566435929366259}
   m_Enabled: 1
---- !u!65 &1210150210431950519
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 544871038510684213}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 5.0492554, y: 5.016993, z: 1.0322647}
-  m_Center: {x: 2.4924717, y: 2.4924715, z: -0.5081749}
 --- !u!1 &4662766693999326028
 GameObject:
   m_ObjectHideFlags: 0
@@ -81,6 +67,7 @@ GameObject:
   - component: {fileID: 8193393928441429260}
   - component: {fileID: 5001247186132408858}
   - component: {fileID: 4912566435929366259}
+  - component: {fileID: 9064143292494022669}
   m_Layer: 6
   m_Name: BasicWall1x5C_LOD1
   m_TagString: Untagged
@@ -151,6 +138,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &9064143292494022669
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4662766693999326028}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.049999997, y: 0.009999998, z: 0.04999999}
+  m_Center: {x: 0.024999999, y: 0.004999995, z: 0.024999995}
 --- !u!1 &8849022359634622714
 GameObject:
   m_ObjectHideFlags: 0
@@ -162,6 +162,7 @@ GameObject:
   - component: {fileID: 5507291723318341370}
   - component: {fileID: 1546383777285580756}
   - component: {fileID: 2518889815944600543}
+  - component: {fileID: 1158392418720541797}
   m_Layer: 6
   m_Name: BasicWall1x5C_LOD0
   m_TagString: Untagged
@@ -232,3 +233,16 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1158392418720541797
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8849022359634622714}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.049999997, y: 0.009999998, z: 0.04999999}
+  m_Center: {x: 0.024999999, y: 0.004999995, z: 0.024999995}

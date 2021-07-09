@@ -13,6 +13,7 @@ public class Landmark : MonoBehaviour
     [HideInInspector] public bool lerpScaleToSmall;
     float timer;
     bool landmarkComplete;
+    [SerializeField] bool isWindChimes;
 
     // Start is called before the first frame update
     void Start()
@@ -26,7 +27,7 @@ public class Landmark : MonoBehaviour
         if (lerpScaleToSmall)
         {
             timer += Time.deltaTime;
-            ObjectManager.instance.uILogic.SetLandmarkScaleToSmall(firstLinkedUI, secondLinkedUI, thirdLinkedUI, groundUI, timer);
+            ObjectManager.instance.uILogic.SetLandmarkScaleToSmall(firstLinkedUI, secondLinkedUI, thirdLinkedUI, groundUI, timer, isWindChimes);
             if (timer >= 1)
             {
                 lerpScaleToSmall = false;
@@ -36,7 +37,7 @@ public class Landmark : MonoBehaviour
         else if (lerpScaleToBig)
         {
             timer += Time.deltaTime;
-            ObjectManager.instance.uILogic.SetLandmarkScaleToBig(firstLinkedUI, secondLinkedUI, thirdLinkedUI, groundUI, timer);
+            ObjectManager.instance.uILogic.SetLandmarkScaleToBig(firstLinkedUI, secondLinkedUI, thirdLinkedUI, groundUI, timer, isWindChimes);
             if (timer >= 1)
             {
                 lerpScaleToBig = false;
