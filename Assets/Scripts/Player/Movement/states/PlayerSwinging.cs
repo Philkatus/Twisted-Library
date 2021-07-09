@@ -645,6 +645,7 @@ public class PlayerSwinging : State
         {
             if (angle <= stats.maxPushAngle)
             {
+                PSM.effects.canSwing = true;
                 onWall = true;
                 if (PSM.useRelativeBobPosition)
                     return GetPointOnLine(Vector3.zero, wallDirection * 100, ropeLength);
@@ -692,7 +693,10 @@ public class PlayerSwinging : State
             {
                 PSM.swingInputBool = false;
                 if (!firstRound)
+                {
                     RepellingForce();
+                    PSM.effects.canSwing = false;
+                }
                 else
                     firstRound = false;
             }
@@ -736,7 +740,7 @@ public class PlayerSwinging : State
             inputGiven = true;
             inputTimer = 0;
 
-            if (VoiceManager.Instance != null) 
+            if (VoiceManager.Instance != null)
             {
                 VoiceManager.Instance.TryToSwigningSound();
             }
@@ -1039,7 +1043,7 @@ public class PlayerSwinging : State
                     }
                 }
             }
-            else 
+            else
             {
                 PSM.ladder.position = path.GetPointAtDistance(PSM.currentDistance, EndOfPathInstruction.Stop);
                 PSM.transform.localPosition = new Vector3(0, ladderSizeState.ladderLength * PSM.HeightOnLadder, -0.38f);
