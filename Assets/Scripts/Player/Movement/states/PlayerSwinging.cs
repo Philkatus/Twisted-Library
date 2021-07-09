@@ -653,7 +653,7 @@ public class PlayerSwinging : State
                     return GetPointOnLine(Vector3.zero, wallDirection * 100, ropeLength);
                 else
                     return GetPointOnLine(PSM.Bob_Pivot.position, wallDirection * 100, ropeLength);
-                
+
             }
         }
         if (onWall)
