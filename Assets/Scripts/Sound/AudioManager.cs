@@ -57,7 +57,6 @@ public class AudioManager : MonoBehaviour
         else 
         {
             soundSource = inactiveSoundSources[0];
-            soundSource.gameObject.SetActive(true);
             inactiveSoundSources.RemoveAt(0);
             activeSoundSources.Add(soundSource);
         }
@@ -67,13 +66,15 @@ public class AudioManager : MonoBehaviour
     void SetSoundSourceInactive(ResonanceAudioSource source, bool sourceToNull)
     {
         Sound s = Array.Find(sounds, sound => sound.Source == source);
-        if (sourceToNull)
+        if (s != null)
         {
-            s.Source = null;
+            if (sourceToNull && s.Source != null)
+            {
+                s.Source = null;
+            }
+            activeSoundSources.Remove(source);
+            inactiveSoundSources.Add(source);
         }
-        activeSoundSources.Remove(source);
-        inactiveSoundSources.Add(source);
-        source.gameObject.SetActive(false);
     }
     public IEnumerator SetInactiveWhenNotPlaying(ResonanceAudioSource source)
     {
@@ -276,7 +277,6 @@ public class AudioManager : MonoBehaviour
         StopSound("slidingSlow");
         StopSound("slidingMedium");
         StopSound("slidingFast");
-        Debug.Log("StopSound");
     }
     public void SlidingSoundCalculation(float slidingSpeed)
     {

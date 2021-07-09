@@ -25,7 +25,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5734043116322978128}
   m_LocalRotation: {x: -0.4999994, y: -0.5000006, z: 0.5000006, w: -0.4999994}
-  m_LocalPosition: {x: 0, y: -0.142, z: 0}
+  m_LocalPosition: {x: 0, y: -0.121, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 8681396381533789865}
@@ -45,7 +45,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Version: 2
   m_Material: {fileID: 2100000, guid: fd1f81875dd9a2f4e9bc009be65a9389, type: 2}
-  m_DrawDistance: 100
+  m_DrawDistance: 10000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
   m_EndAngleFade: 180
@@ -53,8 +53,8 @@ MonoBehaviour:
   m_UVBias: {x: 0, y: 0}
   m_AffectsTransparency: 0
   m_DecalLayerMask: 1
-  m_Offset: {x: 0, y: 0, z: 4.945}
-  m_Size: {x: 1, y: 1, z: 9.89}
+  m_Offset: {x: 0, y: 0, z: 4.31}
+  m_Size: {x: 1, y: 1, z: 8.62}
   m_FadeFactor: 1
 --- !u!1 &7901682690522144972
 GameObject:
@@ -118,7 +118,7 @@ MonoBehaviour:
   normalWidth: 0.38
   broadWidth: 0.27
   normalGD: 1.3
-  broadGD: 2
+  broadGD: 1.5
   noIntensity: 100000
   normalIntensity: 5000000
   lightUpIntensity: 9000000
@@ -155,8 +155,51 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+  impactCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.0031481422
+      value: 0.99319357
+      inSlope: 0.65394956
+      outSlope: 0.65394956
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.15133934
+    - serializedVersion: 3
+      time: 0.29893273
+      value: 2.3525176
+      inSlope: 1.0722251
+      outSlope: 1.0722251
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.16409916
+      outWeight: 0.4646853
+    - serializedVersion: 3
+      time: 0.45353615
+      value: 2.2516139
+      inSlope: -1.6229081
+      outSlope: -1.6229081
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 1
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.6553378
+      value: 0.0015086532
+      inSlope: -0.67258674
+      outSlope: -0.67258674
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33808368
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   shadowRemapMin: 0
-  shadowRemapMax: 5
+  shadowRemapMax: 8.75
+  decalScale: 1.3
   lerpSpeed: 0.01
 --- !u!65 &3423011792537373906
 BoxCollider:
