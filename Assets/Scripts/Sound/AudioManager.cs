@@ -14,6 +14,7 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
     int currentSlidingMode;
+    float previousSlidingSpeed;
     void Awake()
     {
         if (Instance == null)
@@ -268,70 +269,89 @@ public class AudioManager : MonoBehaviour
         float speed1;
         float speed2;
         Sound s;
-        if (slidingSpeed < mediumSpeed) 
+
+        if (slidingSpeed >= previousSlidingSpeed)
         {
-            s = Array.Find(sounds, sound => sound.name == "slidingSlow");
-            speed1 = 0;
-            speed2 = mediumSpeed;
-            if (currentSlidingMode == 1) 
+            if (slidingSpeed == 0) 
             {
-                BlendSoundOut("slidingMedium");
-                PlayRandom(s);
-                BlendSoundIn(s);
-                currentSlidingMode = 0;
+                StopSound("slidingSlow");
+                StopSound("slidingMedium");
+                StopSound("slidingFast");
 
             }
-            if (currentSlidingMode == 2) 
+
+            if (slidingSpeed < mediumSpeed)
             {
-                BlendSoundOut("slidingFast");
-                BlendSoundIn(s);
-                currentSlidingMode = 0;
-            }
-            
-        } 
-        else if (slidingSpeed > highSpeed) 
-        {
-            s = Array.Find(sounds, sound => sound.name == "slidingFast");
-            speed1 = highSpeed;
-            speed2 = maxSlidingSpeed;
-            if (currentSlidingMode == 0)
-            {
-                BlendSoundOut("slidingSlow");
-                PlayRandom(s);
-                BlendSoundIn(s);
-                currentSlidingMode = 2;
+                s = Array.Find(sounds, sound => sound.name == "slidingSlow");
+                speed1 = 0;
+                speed2 = mediumSpeed;
+                if (currentSlidingMode == 1)
+                {
+                    BlendSoundOut("slidingMedium");
+                    PlayRandom(s);
+                    BlendSoundIn(s);
+                    currentSlidingMode = 0;
+
+                }
+                if (currentSlidingMode == 2)
+                {
+                    BlendSoundOut("slidingFast");
+                    BlendSoundIn(s);
+                    currentSlidingMode = 0;
+                }
 
             }
-            if (currentSlidingMode == 1)
+            else if (slidingSpeed > highSpeed)
             {
-                BlendSoundOut("slidingMedium");
-                PlayRandom(s);
-                BlendSoundIn(s);
-                currentSlidingMode = 2;
+                s = Array.Find(sounds, sound => sound.name == "slidingFast");
+                speed1 = highSpeed;
+                speed2 = maxSlidingSpeed;
+                if (currentSlidingMode == 0)
+                {
+                    BlendSoundOut("slidingSlow");
+                    PlayRandom(s);
+                    BlendSoundIn(s);
+                    currentSlidingMode = 2;
+
+                }
+                if (currentSlidingMode == 1)
+                {
+                    BlendSoundOut("slidingMedium");
+                    PlayRandom(s);
+                    BlendSoundIn(s);
+                    currentSlidingMode = 2;
+                }
+
             }
-           
+            else
+            {
+                s = Array.Find(sounds, sound => sound.name == "slidingMedium");
+                speed1 = mediumSpeed;
+                speed2 = highSpeed;
+                if (currentSlidingMode == 0)
+                {
+                    BlendSoundOut("slidingSlow");
+                    PlayRandom(s);
+                    BlendSoundIn(s);
+                    currentSlidingMode = 1;
+
+                }
+                if (currentSlidingMode == 2)
+                {
+                    BlendSoundOut("slidingFast");
+                    PlayRandom(s);
+                    BlendSoundIn(s);
+                    currentSlidingMode = 1;
+                }
+            }
+            //Adjust Pitch 
+            //s.source.audioSource.pitch = Mathf.Lerp(-1, 1, slidingSpeed / maxSlidingSpeed);
         }
         else 
         {
-            s = Array.Find(sounds, sound => sound.name == "slidingMedium");
-            speed1 = mediumSpeed;
-            speed2 = highSpeed;
-            if (currentSlidingMode == 0)
-            {
-                BlendSoundOut("slidingSlow");
-                PlayRandom(s);
-                BlendSoundIn(s);
-                currentSlidingMode = 1;
-
-            }
-            if (currentSlidingMode == 2)
-            {
-                BlendSoundOut("slidingFast");
-                PlayRandom(s);
-                BlendSoundIn(s);
-                currentSlidingMode = 1;
-            }
+            //apply break 
         }
+        previousSlidingSpeed = slidingSpeed;
 
     }
 }
