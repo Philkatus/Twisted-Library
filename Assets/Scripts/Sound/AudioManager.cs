@@ -12,6 +12,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] GameObject SoundSourcePrefab;
 
     public static AudioManager Instance;
+
+    int currentSlidingMode;
+    float previousSlidingSpeed;
     void Awake()
     {
         if (Instance == null)
@@ -61,15 +64,17 @@ public class AudioManager : MonoBehaviour
         return soundSource;
     }
 
-    void SetSoundSourceInactive(ResonanceAudioSource source) 
+    void SetSoundSourceInactive(ResonanceAudioSource source, bool sourceToNull)
     {
-        Sound s = Array.Find(sounds, sound => sound.source == source);
-        s.source = null;
+        Sound s = Array.Find(sounds, sound => sound.Source == source);
+        if (sourceToNull)
+        {
+            s.Source = null;
+        }
         activeSoundSources.Remove(source);
         inactiveSoundSources.Add(source);
         source.gameObject.SetActive(false);
     }
-
     public IEnumerator SetInactiveWhenNotPlaying(ResonanceAudioSource source)
     {
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
@@ -77,7 +82,7 @@ public class AudioManager : MonoBehaviour
         {
             yield return delay;
         }
-        SetSoundSourceInactive(source);
+        SetSoundSourceInactive(source,true);
         
     }
     public void PlayRandom(string name)
@@ -88,16 +93,35 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.source == null) 
+        if (s.Source == null) 
         {
-            s.source = GetInactiveSoundSource();
-            ApplyValuesToSource(s, s.source.audioSource);
+            s.Source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.Source.audioSource);
             
         }
-        s.source.transform.position = transform.position;
-        s.source.transform.parent = transform;
-        s.source.audioSource.Play();
-        StartCoroutine(SetInactiveWhenNotPlaying(s.source));
+        s.Source.transform.position = transform.position;
+        s.Source.transform.parent = ObjectManager.instance.pSM.transform;
+        s.Source.audioSource.Play();
+        StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
+    }
+    void PlayRandom(Sound s)
+    {
+        
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        if (s.Source == null)
+        {
+            s.Source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.Source.audioSource);
+
+        }
+        s.Source.transform.position = transform.position;
+        s.Source.transform.parent = ObjectManager.instance.pSM.transform;
+        s.Source.audioSource.Play();
+        StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
     }
     public void PlayRandom(string name,Vector3 position)
     {
@@ -107,17 +131,35 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.source == null)
+        if (s.Source == null)
         {
-            s.source = GetInactiveSoundSource();
-            ApplyValuesToSource(s, s.source.audioSource);
+            s.Source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.Source.audioSource);
         }
-        s.source.transform.position = position;
-        s.source.audioSource.Play();
+        s.Source.transform.position = position;
+        s.Source.audioSource.Play();
 
-        StartCoroutine(SetInactiveWhenNotPlaying(s.source));
+        StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
     }
-    public void StopSound(string name)
+    void PlayRandom(Sound s, Vector3 position)
+    {
+        
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        if (s.Source == null)
+        {
+            s.Source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.Source.audioSource);
+        }
+        s.Source.transform.position = position;
+        s.Source.audioSource.Play();
+
+        StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
+    }
+    public void StopSound(string name,bool sourceToNull =true)
     {
         Sound s = Array.Find(sounds, item => item.name == name);
         if (s == null)
@@ -125,10 +167,218 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.source != null)
+        if (s.Source != null)
         {
-            s.source.audioSource.Stop();
-            SetSoundSourceInactive(s.source);
+            s.Source.audioSource.Stop();
+            SetSoundSourceInactive(s.Source,sourceToNull);
         }
+    }
+
+    public void StopSound(Sound s, bool sourceToNull = true)
+    {
+       
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        if (s.Source != null)
+        {
+            s.Source.audioSource.Stop();
+            SetSoundSourceInactive(s.Source,sourceToNull);
+        }
+    }
+    public void BlendSoundIn(string name)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        if (s.Source != null)
+        {
+            StartCoroutine(blendSoundIn(s));
+        }
+    }
+    void BlendSoundIn(Sound s)
+    {
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        if (s.Source != null)
+        {
+            StartCoroutine(blendSoundIn(s));
+        }
+    }
+    IEnumerator blendSoundIn(Sound sound) 
+    {
+        if (sound.Source != null)
+        {
+            float timer = 0;
+            if (sound.Source.audioSource.volume == sound.volume)
+                sound.Source.audioSource.volume = 0;
+            WaitForEndOfFrame delay = new WaitForEndOfFrame();
+            while (sound.Source.audioSource.volume < sound.volume)
+            {
+                timer += Time.deltaTime;
+                sound.Source.audioSource.volume = Mathf.Lerp(0, sound.volume, timer / sound.blendDuration);
+                yield return delay;
+            }
+        }
+    }
+    public void BlendSoundOut(string name)
+    {
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        if (s.Source != null) 
+        {
+            StartCoroutine(blendSoundOut(s));
+        }
+    }
+    public void BlendSoundOut(Sound s)
+    {
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        if (s.Source != null)
+        {
+            StartCoroutine(blendSoundOut(s));
+        }
+    }
+    IEnumerator blendSoundOut(Sound sound)
+    {
+        if (sound.Source != null)
+        {
+            float timer = 0;
+            sound.Source.audioSource.volume = sound.volume;
+            WaitForEndOfFrame delay = new WaitForEndOfFrame();
+            while (sound.Source.audioSource.volume < sound.volume)
+            {
+                timer += Time.deltaTime;
+                sound.Source.audioSource.volume = Mathf.Lerp(sound.volume, 0, timer / sound.blendDuration);
+                yield return delay;
+            }
+            StopSound(sound);
+        }
+    }
+
+    public void StopSlidingSound() 
+    {
+        StopSound("slidingSlow");
+        StopSound("slidingMedium");
+        StopSound("slidingFast");
+        Debug.Log("StopSound");
+    }
+    public void SlidingSoundCalculation(float slidingSpeed)
+    {
+        float maxSlidingSpeed = ObjectManager.instance.pSM.stats.maxSlidingSpeed;
+        float mediumSpeed = maxSlidingSpeed*.8f;
+        float highSpeed = maxSlidingSpeed*.5f;
+        float speed1;
+        float speed2;
+        Sound s;
+
+        if (slidingSpeed >= previousSlidingSpeed)
+        {
+            if (slidingSpeed == 0) 
+            {
+
+                StopSlidingSound();
+            }
+
+            if (slidingSpeed < mediumSpeed)
+            {
+                s = Array.Find(sounds, sound => sound.name == "slidingSlow");
+                if (s.Source == null) 
+                {
+                    PlayRandom(s);
+                }
+                speed1 = 0;
+                speed2 = mediumSpeed;
+                if (currentSlidingMode == 1)
+                {
+                    BlendSoundOut("slidingMedium");
+                    PlayRandom(s);
+                    BlendSoundIn(s);
+                    currentSlidingMode = 0;
+
+                }
+                if (currentSlidingMode == 2)
+                {
+                    BlendSoundOut("slidingFast");
+                    BlendSoundIn(s);
+                    currentSlidingMode = 0;
+                }
+
+            }
+            else if (slidingSpeed > highSpeed)
+            {
+                s = Array.Find(sounds, sound => sound.name == "slidingFast");
+                speed1 = highSpeed;
+                speed2 = maxSlidingSpeed;
+                if (s.Source == null)
+                {
+                    PlayRandom(s);
+                }
+                if (currentSlidingMode == 0)
+                {
+                    BlendSoundOut("slidingSlow");
+                    PlayRandom(s);
+                    BlendSoundIn(s);
+                    currentSlidingMode = 2;
+
+                }
+                if (currentSlidingMode == 1)
+                {
+                    BlendSoundOut("slidingMedium");
+                    PlayRandom(s);
+                    BlendSoundIn(s);
+                    currentSlidingMode = 2;
+                }
+
+            }
+            else
+            {
+                s = Array.Find(sounds, sound => sound.name == "slidingMedium");
+                speed1 = mediumSpeed;
+                speed2 = highSpeed;
+                if (s.Source == null)
+                {
+                    PlayRandom(s);
+                }
+                if (currentSlidingMode == 0)
+                {
+                    BlendSoundOut("slidingSlow");
+                    PlayRandom(s);
+                    BlendSoundIn(s);
+                    currentSlidingMode = 1;
+
+                }
+                if (currentSlidingMode == 2)
+                {
+                    BlendSoundOut("slidingFast");
+                    PlayRandom(s);
+                    BlendSoundIn(s);
+                    currentSlidingMode = 1;
+                }
+            }
+            //Adjust Pitch 
+            //s.source.audioSource.pitch = Mathf.Lerp(-1, 1, slidingSpeed / maxSlidingSpeed);
+        }
+        else 
+        {
+            //apply break 
+        }
+        previousSlidingSpeed = slidingSpeed;
+
     }
 }

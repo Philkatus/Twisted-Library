@@ -61,6 +61,10 @@ public class Landmark : MonoBehaviour
         {
             ObjectManager.instance.uILogic.OnLandmarkComplete(groundUI);
             landmarkComplete = true;
+            if (VoiceManager.Instance != null) 
+            {
+                VoiceManager.Instance.TryToAchievementSound();
+            }
         }
     }
 
