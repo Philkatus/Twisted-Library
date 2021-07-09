@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 381946449190620845}
   - component: {fileID: 7326662724477685813}
   - component: {fileID: 933087507774631637}
+  - component: {fileID: 363005133135685274}
   m_Layer: 6
   m_Name: TrimBasicWall1x5B_LOD0
   m_TagString: Untagged
@@ -81,6 +82,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &363005133135685274
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4108227348867587137}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.049999997, y: 0.009992241, z: 0.0106372265}
+  m_Center: {x: 0.024999939, y: 0.0049955263, z: 0.0053186114}
 --- !u!1 &5127736349842383300
 GameObject:
   m_ObjectHideFlags: 0
@@ -92,6 +106,7 @@ GameObject:
   - component: {fileID: 2348221136187162206}
   - component: {fileID: 475390456629958112}
   - component: {fileID: 1438229314576123146}
+  - component: {fileID: 3689734473318338467}
   m_Layer: 6
   m_Name: TrimBasicWall1x5B_LOD1
   m_TagString: Untagged
@@ -162,6 +177,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &3689734473318338467
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5127736349842383300}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.049999997, y: 0.010011853, z: 0.010719673}
+  m_Center: {x: 0.024999939, y: 0.0049940706, z: 0.0053598345}
 --- !u!1 &6450002016271985634
 GameObject:
   m_ObjectHideFlags: 0
@@ -172,7 +200,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5965248628032385368}
   - component: {fileID: 1482473369282479657}
-  - component: {fileID: 9179422881094782237}
   m_Layer: 6
   m_Name: TrimBasicWall1x5B
   m_TagString: Untagged
@@ -187,7 +214,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6450002016271985634}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 74.5009, y: -3.1877432, z: -38.64556}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -219,16 +246,3 @@ LODGroup:
     renderers:
     - renderer: {fileID: 1438229314576123146}
   m_Enabled: 1
---- !u!65 &9179422881094782237
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6450002016271985634}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 5.045021, y: 1.0787525, z: 1.0286369}
-  m_Center: {x: 2.4950218, y: 0.5118916, z: -0.50115395}
