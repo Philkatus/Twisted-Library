@@ -139,7 +139,7 @@ public class PlayerMovementStateMachine : StateMachine
     InputAction jumpAction;
     InputAction moveAction;
     InputAction foldAction;
-    Rail lastRail;
+    public Rail lastRail;
 
     Coroutine[] inputTimer = new Coroutine[4];
     #endregion
@@ -155,11 +155,17 @@ public class PlayerMovementStateMachine : StateMachine
     private void Update()
     {
         coyoteTimer += Time.deltaTime;
-        if (playerState != PlayerState.swinging)
-            UpdateRailTimer();
+        //if (playerState != PlayerState.swinging)
+        UpdateRailTimer();
         CheckForInputBools();
 
-        Time.timeScale = 0.3f;
+        if (playerState == PlayerState.swinging && currentSlidingSpeed >= stats.maxSlidingSpeed * .8f)
+        {
+            if (VoiceManager.Instance != null)
+            {
+                VoiceManager.Instance.TryToHighSpeedSound();
+            }
+        }
     }
 
     private void FixedUpdate()
@@ -183,7 +189,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void UpdateRailTimer()
     {
         railCheckTimer += Time.deltaTime;
-        if (railCheckTimer >= 0.1f)
+        if (railCheckTimer >= 0.07f)
         {
             CheckForRail();
             railCheckTimer = 0;
@@ -237,6 +243,7 @@ public class PlayerMovementStateMachine : StateMachine
         if (jumpInputBool)
         {
             StartCoroutine(JumpDelay());
+
         }
         if (snapInputBool && playerState != PlayerState.swinging)
         {
@@ -497,12 +504,13 @@ public class PlayerMovementStateMachine : StateMachine
 
             if (nextClosestRail != null)
             {
-                float pathlength = closestRail.pathCreator.path.cumulativeLengthAtEachVertex[closestRail.pathCreator.path.cumulativeLengthAtEachVertex.Length - 1];
-                if (currentDistance >= pathlength)
-                    currentDistance -= pathlength;
-                else
-                    currentDistance = pathlength + currentDistance;
+
                 closestRail = nextClosestRail;
+
+                currentDistance = closestRail.pathCreator.path.GetClosestDistanceAlongPath(ladder.transform.position);
+                //VFX-Snapping
+                effects.currentRail = closestRail;
+
                 return true;
             }
             else
@@ -567,7 +575,7 @@ public class PlayerMovementStateMachine : StateMachine
     public void OnResnap()
     {
         SetState(this.State);
-        effects.OnStateChangedSwinging();
+        effects.OnResnap();
         playerState = PlayerState.swinging;
     }
 

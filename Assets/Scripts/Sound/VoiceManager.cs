@@ -11,6 +11,8 @@ public class VoiceManager : MonoBehaviour
     [SerializeField] SoundType Jumping;
     [SerializeField] SoundType HighSpeedSliding;
     [SerializeField] SoundType Achievement;
+    [SerializeField] SoundType smallAchievement;
+    [SerializeField] SoundType swinging;
     private void Awake()
     {
         if (Instance == null)
@@ -36,11 +38,11 @@ public class VoiceManager : MonoBehaviour
 
     public void TryToIdle() 
     {
-        Debug.Log("tryToIdle");
+       
         Idle.timer += Time.deltaTime;
         if (soundTimerandChance(Idle,false)) 
         {
-            Debug.Log("imGonnaIdle");
+            
             Idle.timer = 0;
             Idle.cooldown = UnityEngine.Random.Range(Idle.minCooldown, Idle.maxCooldown);
             AudioManager.Instance.PlayRandom("idleVoice");
@@ -92,6 +94,28 @@ public class VoiceManager : MonoBehaviour
             AudioManager.Instance.PlayRandom("AchievementVoice");
         }
     }
+    public void TryToSmallAchievementSound()
+    {
+        Debug.Log("tryToSmallAchievement");
+        if (soundTimerandChance(Achievement, true))
+        {
+            Debug.Log("ImGonnaSmallAchievementSound");
+            smallAchievement.timer = 0;
+            smallAchievement.cooldown = UnityEngine.Random.Range(smallAchievement.minCooldown, smallAchievement.maxCooldown);
+            AudioManager.Instance.PlayRandom("SmallAchievementVoice");
+        }
+    }
+    public void TryToSwigningSound()
+    {
+        Debug.Log("tryToSwinging");
+        if (soundTimerandChance(Achievement, true))
+        {
+            Debug.Log("ImGonnaSwingingSound");
+            swinging.timer = 0;
+            swinging.cooldown = UnityEngine.Random.Range(swinging.minCooldown, swinging.maxCooldown);
+            AudioManager.Instance.PlayRandom("swingingVoice");
+        }
+    }
 
     public void resetIdleTimer()
     {
@@ -113,6 +137,15 @@ public class VoiceManager : MonoBehaviour
     {
         Achievement.timer = 0;
     }
+    public void resetSmallAchievementTimer()
+    {
+        smallAchievement.timer = 0;
+    }
+    public void resetSwingingTimer()
+    {
+        swinging.timer = 0;
+    }
+
     bool soundTimerandChance(SoundType sound,bool withCoolDown) 
     {
       
@@ -121,7 +154,6 @@ public class VoiceManager : MonoBehaviour
         {
             if (sound.coroutine == null)
             {
-                Debug.Log("start coroutine");
                 if (withCoolDown)
                 {
                     sound.coroutine = StartCoroutine(startCoolDown(sound));
@@ -130,6 +162,10 @@ public class VoiceManager : MonoBehaviour
             if (sound.timer >= sound.cooldown)
             {
                 sound.timer = 0;
+                if (sound.coroutine == null&&withCoolDown)
+                {
+                    sound.coroutine = StartCoroutine(startCoolDown(sound));
+                }
                 return true;
             }
         }

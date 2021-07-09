@@ -28,10 +28,10 @@ public class SwitchOnAfterSnap : MonoBehaviour
         GetComponent<Rail>().isASwitch = true;
         offRotation = pivot.rotation;
         onRotation = pivotEnd.rotation;
-        railOnRotation = railParentEnd.rotation;
         railOffRotation = railParent.rotation;
         challengeComponent.onResetChallenge += new ChallengeComponent.EventHandler(SwitchOff);
         challengeComponent.type = "switch";
+        railOnRotation = railParentEnd.rotation;
     }
 
     // Update is called once per frame
@@ -39,19 +39,24 @@ public class SwitchOnAfterSnap : MonoBehaviour
     {
         if (!challengeComponent.challenge.ChallengeCompleted)
         {
+            if (switchOn && challengeComponent.Completed)
+            {
+                switchOn = false;
+            }
             if (switchOn)
             {
                 if (!challengeComponent.challenge.challengeStarted && !doOncePerAttempt)
                 {
+                    Debug.Log(this.gameObject.name);
                     foreach (ChallengeComponent component in challengeComponent.challenge.components)
                     {
-                        ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, challengeComponent.type);
+                        ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, component.type);
                     }
                     doOncePerAttempt = true;
                 }
                 tSwitchOn += Time.deltaTime * 2;
-                pivot.transform.rotation = Quaternion.Lerp(snapRotation, onRotation, tSwitchOn);
                 railParent.transform.rotation = Quaternion.Lerp(railSnapRotation, railOnRotation, tSwitchOn);
+                pivot.transform.rotation = Quaternion.Lerp(snapRotation, onRotation, tSwitchOn);
                 ObjectManager.instance.uILogic.UpdateComponentVisual(challengeComponent.linkedUI, challengeComponent.type, tSwitchOn, challengeComponent.challenge.timeToCompleteComponents, true);
                 if (pivot.transform.rotation == onRotation)
                 {

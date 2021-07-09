@@ -38,6 +38,10 @@ public class Challenge : MonoBehaviour
                 landmark.CheckIfAllChallengesComplete();
                 landmark.ShowChallengeCompletionInUI(this);
                 componentTimer = 0;
+                if (VoiceManager.Instance != null) 
+                {
+                    VoiceManager.Instance.TryToSmallAchievementSound();
+                }
             }
             challengeCompleted = value;
         }
@@ -96,7 +100,6 @@ public class Challenge : MonoBehaviour
 
         if (waitToHideComponentsUI)
         {
-            Debug.Log(componentTimer);
             componentTimer += Time.deltaTime;
             if (componentTimer >= 4)
             {

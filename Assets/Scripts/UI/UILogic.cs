@@ -4,7 +4,6 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Cinemachine;
 
 public class UILogic : MonoBehaviour
 {
@@ -34,6 +33,8 @@ public class UILogic : MonoBehaviour
     public List<Button> startCanvasButtons;
     public Vector3 inactiveSize;
     public Vector3 activeSize;
+    public Vector3 inactiveSizeWind;
+    public Vector3 activeSizeWind;
 
     float timer;
     float uiAlpha;
@@ -309,7 +310,6 @@ public class UILogic : MonoBehaviour
         {
             linkedUI.GetComponent<Slider>().value = .83f;
             linkedUI.transform.GetChild(0).GetComponent<Animator>().SetBool("WheelGotTriggered", false);
-            Debug.Log("commmmmpleteeee");
         }
     }
 
@@ -338,13 +338,42 @@ public class UILogic : MonoBehaviour
         ExtensionMethods.CrossFadeAlphaFixed(linkedUI, 1f, .1f);
     }
 
-    public void SetLandmarkScaleToSmall(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, float time)
+    public void SetLandmarkScaleToSmall(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, float time, bool isWindChimes)
     {
         // wenn ein challenge complete ist, soll das landmark ui wieder klein werden
-        firstLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
-        secondLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
-        thirdLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
-        groundUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
+        if (isWindChimes)
+        {
+            firstLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSizeWind, inactiveSizeWind, time);
+            secondLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSizeWind, inactiveSizeWind, time);
+            thirdLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSizeWind, inactiveSizeWind, time);
+            groundUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSizeWind, inactiveSizeWind, time);
+        }
+        else
+        {
+            firstLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
+            secondLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
+            thirdLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
+            groundUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(activeSize, inactiveSize, time);
+        }
+    }
+
+    public void SetLandmarkScaleToBig(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, float time, bool isWindChimes)
+    {
+        // mach dieses landmark größer, weil gerade deren challenge gemacht wird
+        if (isWindChimes)
+        {
+            firstLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSizeWind, activeSizeWind, time);
+            secondLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSizeWind, activeSizeWind, time);
+            thirdLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSizeWind, activeSizeWind, time);
+            groundUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSizeWind, activeSizeWind, time);
+        }
+        else
+        {
+            firstLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
+            secondLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
+            thirdLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
+            groundUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
+        }
     }
 
     public void OnHideChallengeComponent(GameObject linkedUI, string type)
@@ -385,22 +414,12 @@ public class UILogic : MonoBehaviour
         {
             linkedUI.GetComponent<RectTransform>().localScale = inactiveSize;
             linkedUI.GetComponent<Slider>().value = .49f;
-
             linkedUI.transform.GetChild(0).GetComponent<Image>().enabled = false;
             linkedUI.transform.GetChild(0).GetComponent<Image>().enabled = true;
             ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 0, 0f);
             ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, uiAlpha, .2f);
             ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).gameObject, 1f, .2f);
         }
-    }
-
-    public void SetLandmarkScaleToBig(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, float time)
-    {
-        // mach dieses landmark größer, weil gerade deren challenge gemacht wird
-        firstLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
-        secondLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
-        thirdLinkedUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
-        groundUI.GetComponent<RectTransform>().localScale = Vector3.Lerp(inactiveSize, activeSize, time);
     }
 
     public void OnLandmarkComplete(GameObject groundUI)
