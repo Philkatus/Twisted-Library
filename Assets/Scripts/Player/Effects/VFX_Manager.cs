@@ -63,7 +63,7 @@ public class VFX_Manager : MonoBehaviour
     [Header("Decal Shadow")]
     [SerializeField] DecalProjector shadow;
     [SerializeField] AnimationCurve shadowSize, impactCurve;
-    [SerializeField] float shadowRemapMin, shadowRemapMax;
+    [SerializeField] float shadowRemapMin, shadowRemapMax, decalScale;
 
     PlayerMovementStateMachine pSM;
 
@@ -228,14 +228,14 @@ public class VFX_Manager : MonoBehaviour
             {
                 float distance = Vector3.Distance(groundPoint, shadow.transform.position);
                 distance = Mathf.Clamp(distance, shadowRemapMin, shadowRemapMax);
-                ExtensionMethods.Remap(distance, shadowRemapMin, shadowRemapMax, 0, 1);
+                distance = ExtensionMethods.Remap(distance, shadowRemapMin, shadowRemapMax, 0, 1);
                 float curvepoint = shadowSize.Evaluate(distance);
-                shadow.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
+                shadow.size = new Vector3(curvepoint*decalScale, curvepoint * decalScale, shadowRemapMax);
             }
         }
         else
         {
-            shadow.size = new Vector3(0, 0, shadowRemapMax);
+            StartCoroutine(OnImpact());
         }
     }
     #endregion
@@ -362,11 +362,17 @@ public class VFX_Manager : MonoBehaviour
     IEnumerator OnImpact()
     {
         float timer = 0;
-        float time = impactCurve.keys[impactCurve.length].time;
+        float time = impactCurve.keys[impactCurve.length-1].time;
         while (timer < time)
         {
+            Debug.Log("A");
+            float t = timer / time;
+            float curvepoint = impactCurve.Evaluate(t) * decalScale;
+            shadow.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
+            timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+        shadow.size = new Vector3(0, 0, shadowRemapMax);
     }
     #endregion
     #region LIGHT RAIL UP
