@@ -99,7 +99,7 @@ public class AudioManager : MonoBehaviour
             ApplyValuesToSource(s, s.Source.audioSource);
             
         }
-        s.Source.transform.position = transform.position;
+        s.Source.transform.position = ObjectManager.instance.pSM.transform.position;
         s.Source.transform.parent = ObjectManager.instance.pSM.transform;
         s.Source.audioSource.Play();
         StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
@@ -118,7 +118,7 @@ public class AudioManager : MonoBehaviour
             ApplyValuesToSource(s, s.Source.audioSource);
 
         }
-        s.Source.transform.position = transform.position;
+        s.Source.transform.position = ObjectManager.instance.pSM.transform.position;
         s.Source.transform.parent = ObjectManager.instance.pSM.transform;
         s.Source.audioSource.Play();
         StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
@@ -372,7 +372,10 @@ public class AudioManager : MonoBehaviour
                 }
             }
             //Adjust Pitch 
-            //s.source.audioSource.pitch = Mathf.Lerp(-1, 1, slidingSpeed / maxSlidingSpeed);
+            if (s != null && s.Source!=null)
+            {
+                s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.2f, slidingSpeed / maxSlidingSpeed);
+            }
         }
         else 
         {
