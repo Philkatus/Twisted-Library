@@ -185,7 +185,6 @@ public class PlayerInTheAir : State
                     closestDistance = distance;
                     target = closestHit.point;
 
-                    // Debug.Log(hits[i].normal);
                     // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
                 }
             }
