@@ -58,6 +58,7 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] float lightUpTime;
     [SerializeField] float fadeTime, normalWidth, broadWidth, normalGD, broadGD;
     [SerializeField] int noIntensity, normalIntensity, lightUpIntensity;
+    [SerializeField] Color normalColor, swingingColor;
     PlayerMovementStateMachine pSM;
 
     GameObject cloud;
@@ -185,10 +186,14 @@ public class VFX_Manager : MonoBehaviour
 
     void MoveSnappingFeedback()
     {
-        if (currentRail != null)
+        if (PlayerMovementStateMachine.PlayerState.swinging == pSM.playerState && pSM.lastRail != null)
         {
-            Vector3 snappingPoint = currentRail.pathCreator.path.GetClosestPointOnPath(transform.position);
-            snappingPoint = pSM.closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+            Vector3 snappingPoint = pSM.lastRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+            SetProperty(railMats, "_SnappingPoint", snappingPoint);
+        }
+        else if (pSM.closestRail != null)
+        {
+            Vector3 snappingPoint = pSM.closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
             SetProperty(railMats, "_SnappingPoint", snappingPoint);
         }
         else
@@ -272,6 +277,17 @@ public class VFX_Manager : MonoBehaviour
         foreach (Material railMat in railMats)
             railMat.SetFloat(propertyName, value);
     }
+    #region ON TRIGGER
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Cogwheel")
+        {
+            VisualEffect vE = other.GetComponentInChildren<VisualEffect>();
+            vE.SetVector3("currentSpeed", pSM.playerVelocity.normalized);
+            vE.SendEvent("_Start");
+        }
+    }
+    #endregion
     #region LIGHT RAIL UP
     IEnumerator LightRailUp()
     {
