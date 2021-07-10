@@ -641,6 +641,7 @@ public class PlayerSwinging : State
             if (angle <= stats.maxPushAngle)
             {
                 PSM.effects.canSwing = true;
+                PSM.effects.onWall = true;
                 onWall = true;
                 AudioManager.Instance.PlayRandom("impactFront");
 
