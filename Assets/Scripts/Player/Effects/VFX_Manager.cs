@@ -80,6 +80,10 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] GameObject ladder;
     [SerializeField] DecalProjector wallProjector;
     [SerializeField] float wallTime;
+    [Header("Water Steps")]
+    [SerializeField] DecalProjector waterStepsLeft;
+    [SerializeField] DecalProjector waterStepsRight;
+    [SerializeField] float waterSpeed;
 
     PlayerMovementStateMachine pSM;
 
@@ -118,7 +122,6 @@ public class VFX_Manager : MonoBehaviour
         }
         else
         {
-            Debug.Log(lastPositionWall);
             wallProjector.transform.position = lastPositionWall;
         }
 
@@ -195,7 +198,7 @@ public class VFX_Manager : MonoBehaviour
         shadow.size = new Vector3(0, 0, shadowRemapMax);
         StartCoroutine(LightRailUp());
         SetProperty(railMats, "_EmissionColor", swingingColor, lightUpTime);
-        
+
     }
     public void OnResnap()
     {
@@ -441,6 +444,23 @@ public class VFX_Manager : MonoBehaviour
         }
         wallProjector.material.SetFloat("_WallTime", 0);
         wallProjecting = false;
+    }
+    #endregion
+    #region WATER STEPS
+    IEnumerator ExtendWater()
+    {
+        float timer = 0;
+        while (timer < waterSpeed)
+        {
+            float t = timer / waterSpeed;
+            float currentSize = Mathf.Lerp(0, 0.3f, t);
+            waterStepsLeft.size = new Vector3(currentSize, currentSize, 1);
+            waterStepsRight.size = new Vector3(currentSize, currentSize, 1);
+            timer += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        waterStepsLeft.size = new Vector3(0, 0, 1);
+        waterStepsRight.size = new Vector3(0, 0, 1);
     }
     #endregion
     #region LIGHT RAIL UP
