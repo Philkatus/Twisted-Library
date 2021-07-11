@@ -167,6 +167,7 @@ MonoBehaviour:
     audioGroup: {fileID: 725777247585803838, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 1
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: Falling
@@ -175,6 +176,7 @@ MonoBehaviour:
     audioGroup: {fileID: 725777247585803838, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.1
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 1
   - name: LandingAfterJump
@@ -183,6 +185,7 @@ MonoBehaviour:
     audioGroup: {fileID: 725777247585803838, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.01
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: LandingAfterFall
@@ -191,6 +194,7 @@ MonoBehaviour:
     audioGroup: {fileID: 725777247585803838, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.1
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: AttachLadder
@@ -199,6 +203,7 @@ MonoBehaviour:
     audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.5
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: Sliding
@@ -207,6 +212,7 @@ MonoBehaviour:
     audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.5
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 1
   - name: FoldLadder
@@ -215,6 +221,7 @@ MonoBehaviour:
     audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.5
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: impactSide
@@ -228,6 +235,7 @@ MonoBehaviour:
     audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.562
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: impactFront
@@ -240,8 +248,9 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 6b987904fff2bee4eab36807490cf979, type: 3}
     - {fileID: 8300000, guid: c4ef686a27b113e4d87434f396fb8c40, type: 3}
     audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
-    volume: 0.562
+    volume: 0.3
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: LadderFold
@@ -250,6 +259,87 @@ MonoBehaviour:
     audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.562
     pitch: 0.82
+    priority: 128
+    blendDuration: 0
+    loop: 0
+  - name: LadderUnFold
+    clips:
+    - {fileID: 8300000, guid: 70f21aae898ea674ba9e2b38f190ec96, type: 3}
+    - {fileID: 8300000, guid: 1f30cbc50683f0c428695d949f8b3eb5, type: 3}
+    - {fileID: 8300000, guid: 1de722611548c1b49a32c86021a76d58, type: 3}
+    - {fileID: 8300000, guid: ee8e260bfcbac0b4cbed6c0de00d55b4, type: 3}
+    audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.5
+    pitch: 1
+    priority: 128
+    blendDuration: 0
+    loop: 0
+  - name: slidingSlow
+    clips:
+    - {fileID: 8300000, guid: 7020c7c02b5e1cc42949b2888b061706, type: 3}
+    audioGroup: {fileID: -210644370743574820, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.5
+    pitch: 1
+    priority: 128
+    blendDuration: 0.3
+    loop: 1
+  - name: slidingMedium
+    clips:
+    - {fileID: 8300000, guid: 62d371db998faa44689b1ea7a4c2ff6f, type: 3}
+    audioGroup: {fileID: -210644370743574820, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.45
+    pitch: 1
+    priority: 128
+    blendDuration: 0.3
+    loop: 1
+  - name: slidingFast
+    clips:
+    - {fileID: 8300000, guid: e5dc90ae90b06354f9e4fe998e9620f9, type: 3}
+    audioGroup: {fileID: -210644370743574820, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.4
+    pitch: 1
+    priority: 128
+    blendDuration: 0.3
+    loop: 1
+  - name: slidingBreak
+    clips: []
+    audioGroup: {fileID: -210644370743574820, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.5
+    pitch: 1
+    priority: 128
+    blendDuration: 0
+    loop: 1
+  - name: concreteLadderPush
+    clips:
+    - {fileID: 8300000, guid: 7b565d3d459840646a8ccdc800243858, type: 3}
+    - {fileID: 8300000, guid: 2d22df4376e479e4f9a375f2b8042397, type: 3}
+    - {fileID: 8300000, guid: 560ab41b08d87fc4e9f6c2ea858a2125, type: 3}
+    - {fileID: 8300000, guid: f0c502669e975bc4e82fb0a935802b56, type: 3}
+    - {fileID: 8300000, guid: 94be0b9490f3bcb47b7c13399b65b97f, type: 3}
+    audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.5
+    pitch: 1
+    priority: 128
+    blendDuration: 0
+    loop: 0
+  - name: grasLadderPush
+    clips:
+    - {fileID: 8300000, guid: f96949fdea2f2ca4abd3c013700f7b6b, type: 3}
+    - {fileID: 8300000, guid: c69c378e3bc6ae2408d31a97f0696008, type: 3}
+    - {fileID: 8300000, guid: 3acac993d8c328f4f967d45f5702abc3, type: 3}
+    - {fileID: 8300000, guid: eb464a3c087f543428692043a9ea0a3d, type: 3}
+    audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.5
+    pitch: 1
+    priority: 128
+    blendDuration: 0
+    loop: 0
+  - name: waterLadderPush
+    clips: []
+    audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.5
+    pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: idleVoice
@@ -266,6 +356,7 @@ MonoBehaviour:
     audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.5
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: WalkingVoice
@@ -282,19 +373,7 @@ MonoBehaviour:
     audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.5
     pitch: 1
-    blendDuration: 0
-    loop: 0
-  - name: JumpingVoice
-    clips:
-    - {fileID: 8300000, guid: f98933377fc0c864d9cba3894a65b378, type: 3}
-    - {fileID: 8300000, guid: 9c624742d33c830409ca42140cce0b7c, type: 3}
-    - {fileID: 8300000, guid: a70fad5119d3c2b40a47d20f647d6aab, type: 3}
-    - {fileID: 8300000, guid: 8f5ccd8655def8148833e3827b348e86, type: 3}
-    - {fileID: 8300000, guid: 08e7a94d85f0c6a47b27159ebbc12ec4, type: 3}
-    - {fileID: 8300000, guid: a0fd22b04e36015428150e826c28e7a0, type: 3}
-    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
-    volume: 0.5
-    pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: SlidingVoice
@@ -302,20 +381,7 @@ MonoBehaviour:
     audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.5
     pitch: 1
-    blendDuration: 0
-    loop: 0
-  - name: AchievementVoice
-    clips: []
-    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
-    volume: 0.5
-    pitch: 1
-    blendDuration: 0
-    loop: 0
-  - name: SmallAchievementVoice
-    clips: []
-    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
-    volume: 0.562
-    pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: swingingVoice
@@ -329,45 +395,85 @@ MonoBehaviour:
     audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.562
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
-  - name: slidingSlow
+  - name: JumpingVoice
     clips:
-    - {fileID: 8300000, guid: f46af3fed8e76a14fa831ce3a9e92600, type: 3}
-    - {fileID: 8300000, guid: 5c2a8746fe8b2424d937513aced784ec, type: 3}
-    audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    - {fileID: 8300000, guid: f98933377fc0c864d9cba3894a65b378, type: 3}
+    - {fileID: 8300000, guid: 9c624742d33c830409ca42140cce0b7c, type: 3}
+    - {fileID: 8300000, guid: a70fad5119d3c2b40a47d20f647d6aab, type: 3}
+    - {fileID: 8300000, guid: 8f5ccd8655def8148833e3827b348e86, type: 3}
+    - {fileID: 8300000, guid: 08e7a94d85f0c6a47b27159ebbc12ec4, type: 3}
+    - {fileID: 8300000, guid: a0fd22b04e36015428150e826c28e7a0, type: 3}
+    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.5
     pitch: 1
-    blendDuration: 0.1
-    loop: 1
-  - name: slidingMedium
+    priority: 128
+    blendDuration: 0
+    loop: 0
+  - name: AchievementVoice
     clips:
-    - {fileID: 8300000, guid: f733db7b71230aa44a030959649f2452, type: 3}
-    audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
-    volume: 0.64
-    pitch: 1
-    blendDuration: 0.1
-    loop: 1
-  - name: slidingFast
-    clips:
-    - {fileID: 8300000, guid: 2ebdb6f0f41ae6e4abece5c68e54d127, type: 3}
-    audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
-    volume: 0.631
-    pitch: 1
-    blendDuration: 0.1
-    loop: 1
-  - name: slidingBreak
-    clips:
-    - {fileID: 8300000, guid: c7374bd3752710b41895ab1df2e03022, type: 3}
-    - {fileID: 8300000, guid: 10bf1cdfcc4a2c942b98a4c72adea09a, type: 3}
-    - {fileID: 8300000, guid: 484dfde39234d2a428e337944bbda3d0, type: 3}
-    - {fileID: 8300000, guid: ba994270620d48e4e9030fba512858a8, type: 3}
-    - {fileID: 8300000, guid: faaa4cce74a68f146acacb741c8f5098, type: 3}
-    audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    - {fileID: 8300000, guid: 6f3a2e6f8e0b1254a8fde1f7d32b9dca, type: 3}
+    - {fileID: 8300000, guid: 85074b1e70bedcc428e554c442bd9b0d, type: 3}
+    - {fileID: 8300000, guid: 41d599a3f5c6f5144be8eb684927d96b, type: 3}
+    - {fileID: 8300000, guid: 8e8a98d6a34cd3e4da90154d95ac01c9, type: 3}
+    - {fileID: 8300000, guid: 3341032951122de4fa28ee9be582ef5e, type: 3}
+    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.5
     pitch: 1
+    priority: 128
+    blendDuration: 0
+    loop: 0
+  - name: SmallAchievementVoice
+    clips:
+    - {fileID: 8300000, guid: ebbc69502abca9d4dadc635130555193, type: 3}
+    - {fileID: 8300000, guid: 631043a58cf289e45bddeb4bf310ba3d, type: 3}
+    - {fileID: 8300000, guid: 2dbf76becfa09e64d96703ed351a2475, type: 3}
+    - {fileID: 8300000, guid: b34ec52f80cf22d43a85deb9822fafd2, type: 3}
+    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.562
+    pitch: 1
+    priority: 128
+    blendDuration: 0
+    loop: 0
+  - name: CogChallenge
+    clips:
+    - {fileID: 0}
+    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.562
+    pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 1
+  - name: SwitchChallenge
+    clips:
+    - {fileID: 8300000, guid: ebbc69502abca9d4dadc635130555193, type: 3}
+    - {fileID: 8300000, guid: 631043a58cf289e45bddeb4bf310ba3d, type: 3}
+    - {fileID: 8300000, guid: 2dbf76becfa09e64d96703ed351a2475, type: 3}
+    - {fileID: 8300000, guid: b34ec52f80cf22d43a85deb9822fafd2, type: 3}
+    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.562
+    pitch: 1
+    priority: 128
+    blendDuration: 0
+    loop: 0
+  - name: Landmark1Rotation
+    clips: []
+    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.562
+    pitch: 1
+    priority: 128
+    blendDuration: 0
+    loop: 0
+  - name: Landmark2Rotation
+    clips: []
+    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.562
+    pitch: 1
+    priority: 128
+    blendDuration: 0
+    loop: 0
   activeSoundSources: []
   inactiveSoundSources: []
   SoundSourcePrefab: {fileID: 1176170004654050, guid: 7649fb0a9057a44d7866d4c957ec7e96, type: 3}
