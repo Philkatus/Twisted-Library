@@ -40,11 +40,6 @@ public class FootstepSoundManager : MonoBehaviour
     public ParticleSystem footstepLFX;
     public ParticleSystem footstepRFX;
 
-
-    private bool isOnWater;
-    private bool isOnGras;
-
-
     private float currentFrameFootstepLeft;
     private float currentFrameFootstepRight;
     private float lastFrameFootstepLeft;
@@ -55,10 +50,10 @@ public class FootstepSoundManager : MonoBehaviour
 
     void Start()
     {
-       
+        
         animator = GetComponent<Animator>();
         animScript = GetComponent<AnimationStateController>();
-        movementScript = GetComponent<PlayerMovementStateMachine>();
+        movementScript = ObjectManager.instance.pSM;
     }
 
     void Update()
@@ -138,11 +133,11 @@ public class FootstepSoundManager : MonoBehaviour
 
     private void PlayLeftStep() 
     {
-        if (isOnGras &&footstepsLeftGras.Length>0) 
+        if (movementScript.isOnGras &&footstepsLeftGras.Length>0) 
         {
             resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeftGras[Random.Range(0, footstepsLeft.Length)], audioVolume);
         }
-        else if (isOnWater && footstepsLeftWater.Length > 0) 
+        else if (movementScript.isOnWater && footstepsLeftWater.Length > 0) 
         {
             resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeftWater[Random.Range(0, footstepsLeft.Length)], audioVolume);
         }
@@ -154,11 +149,11 @@ public class FootstepSoundManager : MonoBehaviour
 
     private void PlayRightStep()
     {
-        if (isOnGras && footstepsRightGras.Length > 0)
+        if (movementScript.isOnGras && footstepsRightGras.Length > 0)
         {
             resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRightGras[Random.Range(0, footstepsLeft.Length)], audioVolume);
         }
-        else if (isOnWater && footstepsRightWater.Length > 0)
+        else if (movementScript.isOnWater && footstepsRightWater.Length > 0)
         {
             resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRightWater[Random.Range(0, footstepsLeft.Length)], audioVolume);
         }
@@ -180,10 +175,10 @@ public class FootstepSoundManager : MonoBehaviour
 
     public void SetGras(bool setTo)
     {
-        isOnGras = setTo;
+        movementScript.isOnGras = setTo;
     }
     public void SetWater(bool setTo)
     {
-        isOnWater = setTo;
+        movementScript.isOnWater = setTo;
     }
 }

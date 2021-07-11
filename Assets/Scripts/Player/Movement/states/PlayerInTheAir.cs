@@ -236,6 +236,7 @@ public class PlayerInTheAir : State
                     PlayerFollowTarget.instance.DoAdjustY(true);
                     if (VoiceManager.Instance != null)
                         VoiceManager.Instance.TryToJumpSound();
+                    AudioManager.Instance.PlayRandom(AudioManager.Instance.GetLadderPushString(true));
 
                 }
                 else if (Vector3.Angle(directionToWall, Vector3.up) >= 45)
@@ -267,6 +268,7 @@ public class PlayerInTheAir : State
                     PlayerFollowTarget.instance.DoAdjustY(true);
                     if (VoiceManager.Instance != null)
                         VoiceManager.Instance.TryToJumpSound();
+                    AudioManager.Instance.PlayRandom(AudioManager.Instance.GetLadderPushString(false));
                 }
             }
         }
