@@ -52,6 +52,15 @@ public class VFX_Manager : MonoBehaviour
             CanSwing = value;
         }
     }
+    bool OnWall = false;
+    public bool onWall
+    {
+        get { return OnWall; }
+        set
+        {
+            StartCoroutine(AnimateWall(wallTime));
+        }
+    }
     #endregion
     #region PRIVATE
     [SerializeField] GameObject player, sparkleBurstL, sparkleBurstR, speedLinesS;
@@ -67,23 +76,33 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] VisualEffect landingBubbles;
     [SerializeField] AnimationCurve shadowSize, impactCurve, hardImpactCurve;
     [SerializeField] float shadowRemapMin, shadowRemapMax, decalScale, minJumpTime, maxJumpTime;
+    [Header("Wall Projection")]
+    [SerializeField] GameObject ladder;
+    [SerializeField] DecalProjector wallProjector;
+    [SerializeField] float wallTime;
+    [Header("Water Steps")]
+    [SerializeField] DecalProjector waterStepsLeft;
+    [SerializeField] DecalProjector waterStepsRight;
+    [SerializeField] float waterSpeed;
 
     PlayerMovementStateMachine pSM;
 
-    Vector3 offset;
+    Vector3 offset, wallOffset, lastPositionWall;
 
     bool smokeOn = false;
     float smokeTimer = .5f, inAirTimer = 0;
 
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
-    bool inStage = false, inAir;
+    bool inStage = false, inAir, wallProjecting;
 
     #endregion
     private void Start()
     {
         // Set all Effects
-        offset = transform.position - player.transform.position;
+        offset = transform.GetChild(0).transform.position - player.transform.position;
+
+        wallOffset = wallProjector.transform.position - ladder.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
 
         //Set Burst Visual Effect
@@ -95,12 +114,25 @@ public class VFX_Manager : MonoBehaviour
     }
     void Update()
     {
-        transform.position = player.transform.position + offset;
+        //offsets
+        transform.GetChild(0).transform.position = player.transform.position + offset;
+        if (!wallProjecting)
+        {
+            wallProjector.transform.position = ladder.transform.position + wallOffset;
+        }
+        else
+        {
+            wallProjector.transform.position = lastPositionWall;
+        }
+
+
         MoveSnappingFeedback();
         if (PlayerMovementStateMachine.PlayerState.inTheAir == pSM.playerState)
         {
             UpdateShadowSize();
         }
+
+        //Smoke
         if (smokeOn)
         {
             smokeTimer -= Time.deltaTime;
@@ -114,6 +146,7 @@ public class VFX_Manager : MonoBehaviour
             }
         }
 
+        //sliding
         if (weAreSliding)
         {
             if (pSM.slidingInput <= -1 && pSM.currentSlidingSpeed > 0)//Links
@@ -165,6 +198,7 @@ public class VFX_Manager : MonoBehaviour
         shadow.size = new Vector3(0, 0, shadowRemapMax);
         StartCoroutine(LightRailUp());
         SetProperty(railMats, "_EmissionColor", swingingColor, lightUpTime);
+
     }
     public void OnResnap()
     {
@@ -303,6 +337,7 @@ public class VFX_Manager : MonoBehaviour
     {
         SetProperty(railMats, "_SnappingPoint", Vector3.zero);
         SetProperty(railMats, "_EmissionColor", normalColor, fadeTime);
+        wallProjector.material.SetFloat("_WallTime", 0);
     }
     #region SET PROPERTY
     void SetProperty(Material[] railMats, string propertyName, Vector3 value)
@@ -389,6 +424,43 @@ public class VFX_Manager : MonoBehaviour
             inAirTimer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+    }
+    #endregion
+    #region WALL PROJECTION
+    IEnumerator AnimateWall(float time)
+    {
+        //yield return new WaitForSeconds(0.3f);
+        yield return new WaitForEndOfFrame();
+        wallProjecting = true;
+        lastPositionWall = ladder.transform.position + wallOffset;
+        float timer = 0;
+        while (timer < time)
+        {
+            float t = timer / time;
+            float currentTime = Mathf.Lerp(0, 1.22f, t);
+            wallProjector.material.SetFloat("_WallTime", currentTime);
+            timer += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        wallProjector.material.SetFloat("_WallTime", 0);
+        wallProjecting = false;
+    }
+    #endregion
+    #region WATER STEPS
+    IEnumerator ExtendWater()
+    {
+        float timer = 0;
+        while (timer < waterSpeed)
+        {
+            float t = timer / waterSpeed;
+            float currentSize = Mathf.Lerp(0, 0.3f, t);
+            waterStepsLeft.size = new Vector3(currentSize, currentSize, 1);
+            waterStepsRight.size = new Vector3(currentSize, currentSize, 1);
+            timer += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        waterStepsLeft.size = new Vector3(0, 0, 1);
+        waterStepsRight.size = new Vector3(0, 0, 1);
     }
     #endregion
     #region LIGHT RAIL UP
