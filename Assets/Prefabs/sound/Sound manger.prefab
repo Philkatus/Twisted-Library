@@ -108,7 +108,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2901707260055400209}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 615.7559, y: -309.7013, z: 1.230222}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -250,7 +250,7 @@ MonoBehaviour:
     audioGroup: {fileID: -5607112993488925135, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.3
     pitch: 1
-    priority: 128
+    priority: 166
     blendDuration: 0
     loop: 0
   - name: LadderFold
@@ -302,7 +302,8 @@ MonoBehaviour:
     blendDuration: 0.3
     loop: 1
   - name: slidingBreak
-    clips: []
+    clips:
+    - {fileID: 8300000, guid: c7374bd3752710b41895ab1df2e03022, type: 3}
     audioGroup: {fileID: -210644370743574820, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.5
     pitch: 1
@@ -386,12 +387,11 @@ MonoBehaviour:
     loop: 0
   - name: swingingVoice
     clips:
-    - {fileID: 8300000, guid: 631d5f77e3c784b4da672d95e066de54, type: 3}
+    - {fileID: 0}
     - {fileID: 8300000, guid: a3488dccdfae0d845b5ba0d9d6c8ad25, type: 3}
     - {fileID: 8300000, guid: c850772ba7e86cf43ae1eb12f312f2f1, type: 3}
     - {fileID: 8300000, guid: a51c11fc3791e5342baa7e186b384cda, type: 3}
     - {fileID: 8300000, guid: a1b54e67a264d7a4ba21a5406aecf08a, type: 3}
-    - {fileID: 8300000, guid: 1fee7216026ab5640a905822ff090016, type: 3}
     audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.562
     pitch: 1
@@ -404,7 +404,6 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 9c624742d33c830409ca42140cce0b7c, type: 3}
     - {fileID: 8300000, guid: a70fad5119d3c2b40a47d20f647d6aab, type: 3}
     - {fileID: 8300000, guid: 8f5ccd8655def8148833e3827b348e86, type: 3}
-    - {fileID: 8300000, guid: 08e7a94d85f0c6a47b27159ebbc12ec4, type: 3}
     - {fileID: 8300000, guid: a0fd22b04e36015428150e826c28e7a0, type: 3}
     audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.5
@@ -414,11 +413,11 @@ MonoBehaviour:
     loop: 0
   - name: AchievementVoice
     clips:
-    - {fileID: 8300000, guid: 6f3a2e6f8e0b1254a8fde1f7d32b9dca, type: 3}
-    - {fileID: 8300000, guid: 85074b1e70bedcc428e554c442bd9b0d, type: 3}
-    - {fileID: 8300000, guid: 41d599a3f5c6f5144be8eb684927d96b, type: 3}
-    - {fileID: 8300000, guid: 8e8a98d6a34cd3e4da90154d95ac01c9, type: 3}
-    - {fileID: 8300000, guid: 3341032951122de4fa28ee9be582ef5e, type: 3}
+    - {fileID: 8300000, guid: c7374bd3752710b41895ab1df2e03022, type: 3}
+    - {fileID: 8300000, guid: 10bf1cdfcc4a2c942b98a4c72adea09a, type: 3}
+    - {fileID: 8300000, guid: 484dfde39234d2a428e337944bbda3d0, type: 3}
+    - {fileID: 8300000, guid: ba994270620d48e4e9030fba512858a8, type: 3}
+    - {fileID: 8300000, guid: faaa4cce74a68f146acacb741c8f5098, type: 3}
     audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
     volume: 0.5
     pitch: 1

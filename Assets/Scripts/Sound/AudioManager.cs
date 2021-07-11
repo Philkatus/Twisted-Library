@@ -16,8 +16,8 @@ public class AudioManager : MonoBehaviour
 
     ResonanceAudioSource[] CogSoundSources = new ResonanceAudioSource[9];
     ResonanceAudioSource[] SwitchSoundSources = new ResonanceAudioSource[9];
-    ResonanceAudioSource[] Landmark1Sources = new ResonanceAudioSource[6];
-    ResonanceAudioSource[] Landmark2Sources = new ResonanceAudioSource[6];
+    [SerializeField] ResonanceAudioSource[] Landmark1Sources = new ResonanceAudioSource[6];
+    [SerializeField] ResonanceAudioSource[] Landmark2Sources = new ResonanceAudioSource[6];
     bool isBreaking;
     int currentSlidingMode;
     float previousSlidingSpeed;
@@ -456,36 +456,28 @@ public class AudioManager : MonoBehaviour
             SwitchSoundSources[index].audioSource.Play();
         }
     }
-    public void Landmark1Sound(int index, Vector3 position1,Vector3 position2,Transform transform1, Transform transform2)
+    public void Landmark1Sound(int index)
     {
         string name = "Landmark1Rotation";
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (Landmark1Sources[index] == null)
         {
-            Landmark1Sources[index] = GetInactiveSoundSource();
             ApplyValuesToSource(s, Landmark1Sources[index].audioSource);
-            Landmark1Sources[index].transform.position = position1;
-            Landmark1Sources[index].transform.parent = transform1;
             Landmark1Sources[index].audioSource.Play();
         }
-        if (Landmark1Sources[index*2] == null)
+        if (Landmark1Sources[index+3] == null)
         {
-            Landmark1Sources[index*2] = GetInactiveSoundSource();
-            ApplyValuesToSource(s, Landmark1Sources[index].audioSource);
-            Landmark1Sources[index*2].transform.position = position2;
-            Landmark1Sources[index].transform.parent = transform2;
-            Landmark1Sources[index*2].audioSource.Play();
+            ApplyValuesToSource(s, Landmark1Sources[index+3].audioSource);
+            Landmark1Sources[index+3].audioSource.Play();
         }
     }
-    public void Landmark2Sound(int index, Vector3 position,Transform transform)
+    public void Landmark2Sound(int index)
     {
         string name = "Landmark2Rotation";
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (Landmark2Sources[index] == null)
         {
-            Landmark2Sources[index] = GetInactiveSoundSource();
             ApplyValuesToSource(s, Landmark2Sources[index].audioSource);
-            Landmark2Sources[index].transform.position = position;
             Landmark2Sources[index].audioSource.Play();
         }
     }
