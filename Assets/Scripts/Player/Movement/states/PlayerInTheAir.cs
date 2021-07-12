@@ -223,6 +223,7 @@ public class PlayerInTheAir : State
                 Vector3 directionToWall = (PSM.transform.position - target).normalized;
                 if (Vector3.Angle(directionToWall, Vector3.up) < 45 && !PSM.didLadderPush)
                 {
+                    PSM.effects.PlayCoroutine(Vector3.up);
                     PSM.didLadderPush = true;
                     PSM.ladderJumpTarget = target;
                     PSM.baseVelocity.y = 0;
