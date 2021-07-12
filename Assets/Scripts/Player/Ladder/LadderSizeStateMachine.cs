@@ -12,6 +12,7 @@ public class LadderSizeStateMachine : StateMachine
     public PlayerMovementStateMachine playerStateMachine;
     public Transform ladderParent;
     public Transform followTarget;
+    public Animator anim;
     #endregion
 
     private void Start()

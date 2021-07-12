@@ -73,7 +73,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         get
         {
-            return ladderSizeStateMachine.ladderParent.right;
+            return ladderSizeStateMachine.ladderParent.up;
         }
     }
     [HideInInspector] public int snapdirection = 1;
