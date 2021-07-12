@@ -132,7 +132,7 @@ public class RotateCogwheel : MonoBehaviour
                     }
                 }
             }
-            if (!didSprayEffect)
+            if (!didSprayEffect && slidingInput != 0)
             {
                 effects.PlayCogwheel(this.transform.parent);
                 didSprayEffect = true;
