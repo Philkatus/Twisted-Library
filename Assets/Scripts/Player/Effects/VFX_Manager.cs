@@ -452,6 +452,7 @@ public class VFX_Manager : MonoBehaviour
         bool castEffect = false;
         while (timer < time)
         {
+            doubleJump.transform.LookAt(doubleJump.transform.position-planeNormal);
             float t = timer / time;
 
             float curvepoint = impactCurve.Evaluate(t) * decalScale;
