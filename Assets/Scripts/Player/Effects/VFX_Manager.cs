@@ -391,6 +391,11 @@ public class VFX_Manager : MonoBehaviour
         vE.SetFloat("_Magnitude", pSM.currentSlidingSpeed);
         vE.SendEvent("_Start");
     }
+    public void PlaySwitch(Transform parentObj)
+    {
+        VisualEffect vE = parentObj.GetComponentInChildren<VisualEffect>();
+        vE.SendEvent("_Start");
+    }
     #endregion
 
     #region SHADOW
