@@ -84,13 +84,16 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] DecalProjector waterStepsLeft;
     [SerializeField] DecalProjector waterStepsRight;
     [SerializeField] float waterSpeed;
+    [Header("Double Jump")]
+    [SerializeField] DecalProjector doubleJump;
+    [SerializeField] VisualEffect doubleJumpSpray;
 
     PlayerMovementStateMachine pSM;
 
-    Vector3 offset, wallOffset, lastPositionWall;
+    Vector3 offset, lastPositionWall;
 
     bool smokeOn = false;
-    float smokeTimer = .5f, inAirTimer = 0;
+    float smokeTimer = .5f, inAirTimer = 0, wallOffsetUp, wallOffsetBack;
 
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
@@ -102,7 +105,8 @@ public class VFX_Manager : MonoBehaviour
         // Set all Effects
         offset = transform.GetChild(0).transform.position - player.transform.position;
 
-        wallOffset = wallProjector.transform.position - ladder.transform.position;
+        wallOffsetUp = wallProjector.transform.position.y - ladder.transform.position.y;
+        wallOffsetBack = wallProjector.transform.position.z - ladder.transform.position.z;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
 
         //Set Burst Visual Effect
@@ -116,11 +120,7 @@ public class VFX_Manager : MonoBehaviour
     {
         //offsets
         transform.GetChild(0).transform.position = player.transform.position + offset;
-        if (!wallProjecting)
-        {
-            wallProjector.transform.position = ladder.transform.position + wallOffset;
-        }
-        else
+        if (wallProjecting)
         {
             wallProjector.transform.position = lastPositionWall;
         }
@@ -370,19 +370,12 @@ public class VFX_Manager : MonoBehaviour
         mat.SetColor(propertyName, toColor);
     }
     #endregion
-    #region ON TRIGGER
-    private void OnTriggerEnter(Collider other)
+    #region CHALLENGES
+    public void PlayCogwheel(Transform parentObj)
     {
-        if (other.tag == "Cogwheel")
-        {
-            VisualEffect vE = other.transform.parent.GetComponentInChildren<VisualEffect>();
-            vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
-            vE.SendEvent("_Start");
-        }
-        if (other.tag == "Water")
-        {
-            //waterEffect.SendEvent("_Start");
-        }
+        VisualEffect vE = parentObj.GetComponentInChildren<VisualEffect>();
+        vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
+        vE.SendEvent("_Start");
     }
     #endregion
     #region SHADOW
@@ -426,13 +419,51 @@ public class VFX_Manager : MonoBehaviour
         }
     }
     #endregion
+    #region DOUBLE JUMP
+    public void PlayCoroutine(Vector3 planeNormal)
+    {
+        StartCoroutine(OnDoubleJump(inAirTimer, planeNormal));
+    }
+    IEnumerator OnDoubleJump(float inAirTime, Vector3 planeNormal)
+    {
+        float jumpIntensity = Mathf.Clamp(inAirTime, minJumpTime, maxJumpTime);
+        jumpIntensity = ExtensionMethods.Remap(jumpIntensity, minJumpTime, maxJumpTime, 0, 1);
+
+        float timer = 0;
+        float time = impactCurve.keys[impactCurve.length - 1].time;
+        bool castEffect = false;
+        while (timer < time)
+        {
+            float t = timer / time;
+
+            float curvepoint = impactCurve.Evaluate(t) * decalScale;
+            float curvepoint2 = hardImpactCurve.Evaluate(t) * decalScale;
+            curvepoint = Mathf.Lerp(curvepoint, curvepoint2, jumpIntensity);
+
+            doubleJump.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
+
+            if (t >= 0.2f && !castEffect)
+            {
+                doubleJumpSpray.SetFloat("_Radius", curvepoint);
+                doubleJumpSpray.SendEvent("_Start");
+                castEffect = true;
+            }
+
+            timer += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        doubleJump.size = new Vector3(0, 0, shadowRemapMax);
+    }
+    #endregion
     #region WALL PROJECTION
     IEnumerator AnimateWall(float time)
     {
         //yield return new WaitForSeconds(0.3f);
         yield return new WaitForEndOfFrame();
         wallProjecting = true;
-        lastPositionWall = ladder.transform.position + wallOffset;
+        wallProjector.transform.position = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
+        lastPositionWall = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
+        wallProjector.transform.rotation = Quaternion.Euler(wallProjector.transform.eulerAngles.x, ladder.transform.eulerAngles.y, wallProjector.transform.eulerAngles.z);
         float timer = 0;
         while (timer < time)
         {

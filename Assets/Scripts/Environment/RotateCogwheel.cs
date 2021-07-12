@@ -5,6 +5,8 @@ using UnityEngine;
 public class RotateCogwheel : MonoBehaviour
 {
     ChallengeComponent challengeComponent;
+    VFX_Manager effects;
+    PlayerMovementStateMachine pSM;
     float tWheelAcceleration = 1;
     float currentRotationDirection;
     float turnOnTimer;
@@ -20,6 +22,9 @@ public class RotateCogwheel : MonoBehaviour
 
     void Start()
     {
+        pSM = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerMovementStateMachine>();
+        Debug.Log(GameObject.FindGameObjectsWithTag("Player")[0].name);
+        effects = pSM.effects;
         challengeComponent = GetComponent<ChallengeComponent>();
         challengeComponent.onResetChallenge += new ChallengeComponent.EventHandler(SetStopWheelTrue);
         challengeComponent.type = "cogwheel";
@@ -125,6 +130,10 @@ public class RotateCogwheel : MonoBehaviour
                     challengeComponent.Completed = true;
                 }
             }
+        }
+        if (other.tag == "Player")
+        {
+            effects.PlayCogwheel(this.transform.parent);
         }
     }
 
