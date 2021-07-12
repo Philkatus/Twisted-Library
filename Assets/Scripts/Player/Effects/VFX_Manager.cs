@@ -385,10 +385,15 @@ public class VFX_Manager : MonoBehaviour
     #region CHALLENGES
     public void PlayCogwheel(Transform parentObj)
     {
-        Debug.Log("A");
         VisualEffect vE = parentObj.GetComponentInChildren<VisualEffect>();
-        Vector3 dirVector = new Vector3(pSM.slidingInput * pSM.currentSlidingSpeed,0,0);
+        Vector3 dirVector = new Vector3(pSM.slidingInput,0,0);
         vE.SetVector3("_CurrentSpeed", dirVector);
+        vE.SetFloat("_Magnitude", pSM.currentSlidingSpeed);
+        vE.SendEvent("_Start");
+    }
+    public void PlaySwitch(Transform parentObj)
+    {
+        VisualEffect vE = parentObj.GetComponentInChildren<VisualEffect>();
         vE.SendEvent("_Start");
     }
     #endregion
