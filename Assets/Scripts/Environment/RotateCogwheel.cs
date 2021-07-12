@@ -16,13 +16,14 @@ public class RotateCogwheel : MonoBehaviour
     bool doOncePerAttempt;
     bool rotateWheel;
     bool doOnce;
+    bool didSprayEffect;
 
     [SerializeField] List<Transform> wheels = new List<Transform>();
     [SerializeField] int CogSoundIndex;
 
     void Start()
     {
-        pSM = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<PlayerMovementStateMachine>();
+        pSM = ObjectManager.instance.pSM;
         Debug.Log(GameObject.FindGameObjectsWithTag("Player")[0].name);
         effects = pSM.effects;
         challengeComponent = GetComponent<ChallengeComponent>();
@@ -90,50 +91,65 @@ public class RotateCogwheel : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.tag == "Player" && !challengeComponent.challenge.ChallengeCompleted)
-        {
-            var psm = other.gameObject.GetComponent<PlayerMovementStateMachine>();
-            bool isSliding = psm.playerState == PlayerMovementStateMachine.PlayerState.swinging;
-            var slidingInput = psm.slidingInput;
-            if (slidingInput != 0 && isSliding)
-            {
-                if (!challengeComponent.challenge.challengeStarted && !doOncePerAttempt)
-                {
-                    foreach (ChallengeComponent component in challengeComponent.challenge.components)
-                    {
-                        ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, component.type);
-                    }
-                    AudioManager.Instance.PlayRandom("CogChallenge",transform.position);
-
-                    AudioManager.Instance.CogSound(CogSoundIndex, transform.position);
-                }
-                if (!doOncePerAttempt)
-                {
-                    doOncePerAttempt = true;
-                    turnOn = true;
-                }
-                if (currentRotationDirection == 0)
-                {
-                    tWheelAcceleration = 0;
-                    StartCoroutine(RotateWheel());
-                    currentRotationDirection = slidingInput;
-                }
-                else if (currentRotationDirection != slidingInput)
-                {
-                    StopAllCoroutines();
-                    currentRotationDirection = slidingInput;
-                    tWheelAcceleration = 1;
-                    changeDirection = true;
-                }
-                else if (rotateWheel)
-                {
-                    challengeComponent.Completed = true;
-                }
-            }
-        }
         if (other.tag == "Player")
         {
-            effects.PlayCogwheel(this.transform.parent);
+            bool isSliding = pSM.playerState == PlayerMovementStateMachine.PlayerState.swinging;
+            var slidingInput = pSM.slidingInput;
+            if (!challengeComponent.challenge.ChallengeCompleted)
+            {
+                if (slidingInput != 0 && isSliding)
+                {
+                    if (!challengeComponent.challenge.challengeStarted && !doOncePerAttempt)
+                    {
+                        foreach (ChallengeComponent component in challengeComponent.challenge.components)
+                        {
+                            ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, component.type);
+                        }
+                        AudioManager.Instance.PlayRandom("CogChallenge", transform.position);
+
+                        AudioManager.Instance.CogSound(CogSoundIndex, transform.position);
+                    }
+                    if (!doOncePerAttempt)
+                    {
+                        doOncePerAttempt = true;
+                        turnOn = true;
+                    }
+                    if (currentRotationDirection == 0)
+                    {
+                        tWheelAcceleration = 0;
+                        StartCoroutine(RotateWheel());
+                        currentRotationDirection = slidingInput;
+                    }
+                    else if (currentRotationDirection != slidingInput)
+                    {
+                        StopAllCoroutines();
+                        currentRotationDirection = slidingInput;
+                        tWheelAcceleration = 1;
+                        changeDirection = true;
+                    }
+                    else if (rotateWheel)
+                    {
+                        challengeComponent.Completed = true;
+                    }
+                }
+            }
+            if (!didSprayEffect)
+            {
+                effects.PlayCogwheel(this.transform.parent);
+                didSprayEffect = true;
+            }
+            if (isSliding && didSprayEffect && slidingInput == 0)
+            {
+                didSprayEffect = false;
+            }
+        }
+    }
+
+    void OnTriggerExit(Collider collider)
+    {
+        if (collider.tag == "Player")
+        {
+            didSprayEffect = false;
         }
     }
 
