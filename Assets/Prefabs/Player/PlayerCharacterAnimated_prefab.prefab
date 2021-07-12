@@ -2147,6 +2147,7 @@ MonoBehaviour:
     audioGroup: {fileID: 0}
     volume: 1
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: Falling
@@ -2154,6 +2155,7 @@ MonoBehaviour:
     audioGroup: {fileID: 0}
     volume: 0.1
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 1
   - name: LandingAfterJump
@@ -2161,6 +2163,7 @@ MonoBehaviour:
     audioGroup: {fileID: 0}
     volume: 0.01
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: LandingAfterFall
@@ -2168,6 +2171,7 @@ MonoBehaviour:
     audioGroup: {fileID: 0}
     volume: 0.1
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: AttachLadder
@@ -2175,6 +2179,7 @@ MonoBehaviour:
     audioGroup: {fileID: 0}
     volume: 0.5
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   - name: Sliding
@@ -2182,6 +2187,7 @@ MonoBehaviour:
     audioGroup: {fileID: 0}
     volume: 0.5
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 1
   - name: FoldLadder
@@ -2189,11 +2195,26 @@ MonoBehaviour:
     audioGroup: {fileID: 0}
     volume: 0.5
     pitch: 1
+    priority: 128
     blendDuration: 0
     loop: 0
   activeSoundSources: []
   inactiveSoundSources: []
   SoundSourcePrefab: {fileID: 0}
+  Landmark1Sources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  Landmark2Sources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!114 &4761856323172733090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4900,8 +4921,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6164259229706539056}
-  m_LocalRotation: {x: -0.17052044, y: -0.24107629, z: 0.04307087, w: -0.95443696}
-  m_LocalPosition: {x: 186.96432, y: -25.807999, z: -42.57574}
+  m_LocalRotation: {x: -0.11774392, y: -0.7312585, z: 0.13064721, w: -0.6590363}
+  m_LocalPosition: {x: 35.812534, y: -25.807999, z: -178.97166}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 6164259229316237293}
@@ -7600,6 +7621,8 @@ MonoBehaviour:
   isWallJumping: 0
   animationControllerisFoldingJumped: 0
   expandAfterSnap: 0
+  isOnWater: 0
+  isOnGras: 0
   baseVelocity: {x: 0, y: 0, z: 0}
   bonusVelocity: {x: 0, y: 0, z: 0}
   railCheckLadderPosition: {x: 0, y: 0, z: 0}
@@ -8852,6 +8875,10 @@ PrefabInstance:
       propertyPath: ladderPushRight
       value: 
       objectReference: {fileID: 54529243261345812}
+    - target: {fileID: 6504759155732504270, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 7901682690522144972, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
       propertyPath: m_Name
       value: Effects
