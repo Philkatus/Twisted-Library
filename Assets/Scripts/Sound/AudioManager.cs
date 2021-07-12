@@ -13,6 +13,12 @@ public class AudioManager : MonoBehaviour
 
     public static AudioManager Instance;
 
+
+    ResonanceAudioSource[] CogSoundSources = new ResonanceAudioSource[9];
+    ResonanceAudioSource[] SwitchSoundSources = new ResonanceAudioSource[9];
+    [SerializeField] ResonanceAudioSource[] Landmark1Sources = new ResonanceAudioSource[6];
+    [SerializeField] ResonanceAudioSource[] Landmark2Sources = new ResonanceAudioSource[6];
+    bool isBreaking;
     int currentSlidingMode;
     float previousSlidingSpeed;
     void Awake()
@@ -27,7 +33,7 @@ public class AudioManager : MonoBehaviour
             return;
         }
         DontDestroyOnLoad(gameObject);
-        
+
     }
 
     void ApplyValuesToSource(Sound s, AudioSource source)
@@ -37,24 +43,25 @@ public class AudioManager : MonoBehaviour
             source.clip = s.clips[UnityEngine.Random.Range(0, s.clips.Length)];
             source.volume = s.volume;
             source.pitch = s.pitch;
+            source.priority = s.priority;
             source.loop = s.loop;
             source.outputAudioMixerGroup = s.audioGroup;
         }
-        else 
+        else
         {
             Debug.LogError("There is no sound clip applied to " + s.name);
         }
     }
-    ResonanceAudioSource GetInactiveSoundSource() 
+    ResonanceAudioSource GetInactiveSoundSource()
     {
         ResonanceAudioSource soundSource;
-        if (inactiveSoundSources.Count == 0) 
+        if (inactiveSoundSources.Count == 0)
         {
 
             soundSource = Instantiate(SoundSourcePrefab).GetComponent<ResonanceAudioSource>();
             activeSoundSources.Add(soundSource);
         }
-        else 
+        else
         {
             soundSource = inactiveSoundSources[0];
             inactiveSoundSources.RemoveAt(0);
@@ -62,7 +69,6 @@ public class AudioManager : MonoBehaviour
         }
         return soundSource;
     }
-
     void SetSoundSourceInactive(ResonanceAudioSource source, bool sourceToNull)
     {
         Sound s = Array.Find(sounds, sound => sound.Source == source);
@@ -79,35 +85,16 @@ public class AudioManager : MonoBehaviour
     public IEnumerator SetInactiveWhenNotPlaying(ResonanceAudioSource source)
     {
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
-        while (source.audioSource.isPlaying) 
+        while (source.audioSource.isPlaying)
         {
             yield return delay;
         }
-        SetSoundSourceInactive(source,true);
-        
+        SetSoundSourceInactive(source, true);
+
     }
     public void PlayRandom(string name)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
-        if(s == null)
-        {
-            Debug.LogWarning("Sound: " + name + " not found!");
-            return;
-        }
-        if (s.Source == null) 
-        {
-            s.Source = GetInactiveSoundSource();
-            ApplyValuesToSource(s, s.Source.audioSource);
-            
-        }
-        s.Source.transform.position = ObjectManager.instance.pSM.transform.position;
-        s.Source.transform.parent = ObjectManager.instance.pSM.transform;
-        s.Source.audioSource.Play();
-        StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
-    }
-    void PlayRandom(Sound s)
-    {
-        
         if (s == null)
         {
             Debug.LogWarning("Sound: " + name + " not found!");
@@ -124,7 +111,26 @@ public class AudioManager : MonoBehaviour
         s.Source.audioSource.Play();
         StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
     }
-    public void PlayRandom(string name,Vector3 position)
+    void PlayRandom(Sound s)
+    {
+
+        if (s == null)
+        {
+            Debug.LogWarning("Sound: " + name + " not found!");
+            return;
+        }
+        if (s.Source == null)
+        {
+            s.Source = GetInactiveSoundSource();
+            ApplyValuesToSource(s, s.Source.audioSource);
+
+        }
+        s.Source.transform.position = ObjectManager.instance.pSM.transform.position;
+        s.Source.transform.parent = ObjectManager.instance.pSM.transform;
+        s.Source.audioSource.Play();
+        StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
+    }
+    public void PlayRandom(string name, Vector3 position)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (s == null)
@@ -144,7 +150,7 @@ public class AudioManager : MonoBehaviour
     }
     void PlayRandom(Sound s, Vector3 position)
     {
-        
+
         if (s == null)
         {
             Debug.LogWarning("Sound: " + name + " not found!");
@@ -160,7 +166,7 @@ public class AudioManager : MonoBehaviour
 
         StartCoroutine(SetInactiveWhenNotPlaying(s.Source));
     }
-    public void StopSound(string name,bool sourceToNull =true)
+    public void StopSound(string name, bool sourceToNull = true)
     {
         Sound s = Array.Find(sounds, item => item.name == name);
         if (s == null)
@@ -171,13 +177,12 @@ public class AudioManager : MonoBehaviour
         if (s.Source != null)
         {
             s.Source.audioSource.Stop();
-            SetSoundSourceInactive(s.Source,sourceToNull);
+            SetSoundSourceInactive(s.Source, sourceToNull);
         }
     }
-
     public void StopSound(Sound s, bool sourceToNull = true)
     {
-       
+
         if (s == null)
         {
             Debug.LogWarning("Sound: " + name + " not found!");
@@ -186,9 +191,11 @@ public class AudioManager : MonoBehaviour
         if (s.Source != null)
         {
             s.Source.audioSource.Stop();
-            SetSoundSourceInactive(s.Source,sourceToNull);
+            SetSoundSourceInactive(s.Source, sourceToNull);
         }
     }
+
+    #region slidingSounds
     public void BlendSoundIn(string name)
     {
         Sound s = Array.Find(sounds, sound => sound.name == name);
@@ -214,7 +221,7 @@ public class AudioManager : MonoBehaviour
             StartCoroutine(blendSoundIn(s));
         }
     }
-    IEnumerator blendSoundIn(Sound sound) 
+    IEnumerator blendSoundIn(Sound sound)
     {
         if (sound.Source != null)
         {
@@ -238,7 +245,7 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
-        if (s.Source != null) 
+        if (s.Source != null)
         {
             StartCoroutine(blendSoundOut(s));
         }
@@ -271,8 +278,7 @@ public class AudioManager : MonoBehaviour
             StopSound(sound);
         }
     }
-
-    public void StopSlidingSound() 
+    public void StopSlidingSound()
     {
         StopSound("slidingSlow");
         StopSound("slidingMedium");
@@ -281,24 +287,28 @@ public class AudioManager : MonoBehaviour
     public void SlidingSoundCalculation(float slidingSpeed)
     {
         float maxSlidingSpeed = ObjectManager.instance.pSM.stats.maxSlidingSpeed;
-        float mediumSpeed = maxSlidingSpeed*.8f;
-        float highSpeed = maxSlidingSpeed*.5f;
+        float mediumSpeed = maxSlidingSpeed * .4f;
+        float highSpeed = maxSlidingSpeed * .8f;
         float speed1;
         float speed2;
         Sound s;
 
         if (slidingSpeed >= previousSlidingSpeed)
         {
-            if (slidingSpeed == 0) 
+            if (isBreaking)
+            {
+                StopSound("slidingBreak");
+                isBreaking = false;
+            }
+            if (slidingSpeed == 0)
             {
 
                 StopSlidingSound();
             }
-
-            if (slidingSpeed < mediumSpeed)
+            else if (slidingSpeed < mediumSpeed)
             {
                 s = Array.Find(sounds, sound => sound.name == "slidingSlow");
-                if (s.Source == null) 
+                if (s.Source == null)
                 {
                     PlayRandom(s);
                 }
@@ -315,8 +325,13 @@ public class AudioManager : MonoBehaviour
                 if (currentSlidingMode == 2)
                 {
                     BlendSoundOut("slidingFast");
+                    PlayRandom(s);
                     BlendSoundIn(s);
                     currentSlidingMode = 0;
+                }
+                if (s != null && s.Source != null)
+                {
+                    s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.2f, slidingSpeed / maxSlidingSpeed);
                 }
 
             }
@@ -344,6 +359,10 @@ public class AudioManager : MonoBehaviour
                     BlendSoundIn(s);
                     currentSlidingMode = 2;
                 }
+                if (s != null && s.Source != null)
+                {
+                    s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.2f, slidingSpeed / maxSlidingSpeed);
+                }
 
             }
             else
@@ -370,18 +389,112 @@ public class AudioManager : MonoBehaviour
                     BlendSoundIn(s);
                     currentSlidingMode = 1;
                 }
+                if (s != null && s.Source != null)
+                {
+                    s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.5f, slidingSpeed / maxSlidingSpeed);
+                }
             }
             //Adjust Pitch 
-            if (s != null && s.Source!=null)
-            {
-                s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.2f, slidingSpeed / maxSlidingSpeed);
-            }
+            
         }
-        else 
+        else
         {
-            //apply break 
+            if (!isBreaking)
+            {
+                PlayRandom("slidingBreak");
+                isBreaking = true;
+            }
         }
         previousSlidingSpeed = slidingSpeed;
 
+    }
+    #endregion
+
+    #region ladderPushSounds
+    public string GetLadderPushString(bool variance) 
+    {
+        PlayerMovementStateMachine pSM = ObjectManager.instance.pSM;
+        string ConcreteString = "concreteLadderPush";
+        string grasString = "grasLadderPush";
+        string WaterString= "waterLadderPush";
+        string returnString = ConcreteString;
+        if (variance) 
+        {
+            if (pSM.isOnGras) 
+            {
+                returnString = grasString;
+            }
+            else if (pSM.isOnWater) 
+            {
+                returnString = WaterString;
+            }
+        }
+        return returnString;
+    }
+    #endregion
+    public void CogSound(int index, Vector3 position) 
+    {
+        string name = "CogChallenge";
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (CogSoundSources[index]==null)
+        {
+            CogSoundSources[index] = GetInactiveSoundSource();
+            ApplyValuesToSource(s, CogSoundSources[index].audioSource);
+            CogSoundSources[index].transform.position = position;
+            CogSoundSources[index].audioSource.Play();
+        }
+    }
+    public void SwitchSound(int index, Vector3 position) 
+    {
+        string name = "SwitchChallenge";
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (SwitchSoundSources[index])
+        {
+            SwitchSoundSources[index] = GetInactiveSoundSource();
+            ApplyValuesToSource(s, SwitchSoundSources[index].audioSource);
+            SwitchSoundSources[index].transform.position = position;
+            SwitchSoundSources[index].audioSource.Play();
+        }
+    }
+    public void Landmark1Sound(int index)
+    {
+        string name = "Landmark1Rotation";
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (Landmark1Sources[index] == null)
+        {
+            ApplyValuesToSource(s, Landmark1Sources[index].audioSource);
+            Landmark1Sources[index].audioSource.Play();
+        }
+        if (Landmark1Sources[index+3] == null)
+        {
+            ApplyValuesToSource(s, Landmark1Sources[index+3].audioSource);
+            Landmark1Sources[index+3].audioSource.Play();
+        }
+    }
+    public void Landmark2Sound(int index)
+    {
+        string name = "Landmark2Rotation";
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (Landmark2Sources[index] == null)
+        {
+            ApplyValuesToSource(s, Landmark2Sources[index].audioSource);
+            Landmark2Sources[index].audioSource.Play();
+        }
+    }
+    public void StopCogSound(int index, Vector3 position) 
+    {
+        if (CogSoundSources[index] != null)
+        {
+            CogSoundSources[index].audioSource.Stop();
+            SetSoundSourceInactive(CogSoundSources[index], true);
+        }
+    }
+    public void StopSwitchSound(int index, Vector3 position)
+    {
+        if (SwitchSoundSources[index] != null)
+        {
+            SwitchSoundSources[index].audioSource.Stop();
+            SetSoundSourceInactive(SwitchSoundSources[index], true);
+        }
     }
 }

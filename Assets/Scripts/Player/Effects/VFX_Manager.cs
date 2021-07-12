@@ -87,10 +87,10 @@ public class VFX_Manager : MonoBehaviour
 
     PlayerMovementStateMachine pSM;
 
-    Vector3 offset, wallOffset, lastPositionWall;
+    Vector3 offset, lastPositionWall;
 
     bool smokeOn = false;
-    float smokeTimer = .5f, inAirTimer = 0;
+    float smokeTimer = .5f, inAirTimer = 0, wallOffsetUp, wallOffsetBack;
 
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
@@ -102,7 +102,8 @@ public class VFX_Manager : MonoBehaviour
         // Set all Effects
         offset = transform.GetChild(0).transform.position - player.transform.position;
 
-        wallOffset = wallProjector.transform.position - ladder.transform.position;
+        wallOffsetUp = wallProjector.transform.position.y - ladder.transform.position.y;
+        wallOffsetBack = wallProjector.transform.position.z - ladder.transform.position.z;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
 
         //Set Burst Visual Effect
@@ -116,11 +117,7 @@ public class VFX_Manager : MonoBehaviour
     {
         //offsets
         transform.GetChild(0).transform.position = player.transform.position + offset;
-        if (!wallProjecting)
-        {
-            wallProjector.transform.position = ladder.transform.position + wallOffset;
-        }
-        else
+        if (wallProjecting)
         {
             wallProjector.transform.position = lastPositionWall;
         }
@@ -432,7 +429,9 @@ public class VFX_Manager : MonoBehaviour
         //yield return new WaitForSeconds(0.3f);
         yield return new WaitForEndOfFrame();
         wallProjecting = true;
-        lastPositionWall = ladder.transform.position + wallOffset;
+        wallProjector.transform.position = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
+        lastPositionWall = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
+        wallProjector.transform.rotation = Quaternion.Euler(wallProjector.transform.eulerAngles.x, ladder.transform.eulerAngles.y ,wallProjector.transform.eulerAngles.z);
         float timer = 0;
         while (timer < time)
         {
