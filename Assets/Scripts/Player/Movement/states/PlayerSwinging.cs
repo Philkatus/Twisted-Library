@@ -470,9 +470,6 @@ public class PlayerSwinging : State
         else
         {
             Vector3 axis = PSM.Bob_Pivot.right;
-            Debug.DrawRay(PSM.Bob_Pivot.transform.position, -PSM.Bob_Pivot.up, Color.red);
-            Debug.DrawRay(PSM.Bob_Pivot.transform.position, -PSM.Bob_Pivot.right, Color.red);
-            Debug.DrawRay(PSM.Bob_Pivot.transform.position, newPosition, Color.green);
             float rotateByAngle = (Vector3.SignedAngle(-PSM.Bob_Pivot.up, newPosition, axis));
             Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
             PSM.Bob_Pivot.rotation = targetRotation * PSM.Bob_Pivot.rotation;
@@ -582,8 +579,6 @@ public class PlayerSwinging : State
         // Get only the forward/backward force
         playerVelocity = bobForward * ExtensionMethods.resultingSpeed(currentVelocity, bobForward);
         SetCurrentPlayerVelocity(ladder.transform.position);
-        //Debug.DrawRay(PSM.transform.position, currentVelocity, Color.red, dt);
-        Debug.DrawRay(PSM.transform.position, playerVelocity, Color.blue, dt);
         // Get the movement delta
         Vector3 movementDelta = Vector3.zero;
         movementDelta += playerVelocity * dt;
@@ -646,6 +641,7 @@ public class PlayerSwinging : State
             if (angle <= stats.maxPushAngle)
             {
                 PSM.effects.canSwing = true;
+                PSM.effects.onWall = true;
                 onWall = true;
                 AudioManager.Instance.PlayRandom("impactFront");
 
@@ -1031,12 +1027,10 @@ public class PlayerSwinging : State
                                 if (PSM.slidingInput * relativePathDirection == -1 && PSM.slideRightInput != 0)
                                 {
                                     PSM.SaveInput(1, 1, closestRail);
-                                    Debug.Log("right");
                                 }
                                 if (PSM.slidingInput * relativePathDirection == 1 && PSM.slideLeftInput != 0)
                                 {
                                     PSM.SaveInput(1, 1, closestRail);
-                                    Debug.Log("left");
                                 }
 
 
@@ -1046,7 +1040,7 @@ public class PlayerSwinging : State
                         }
                     }
                 }
-                else 
+                else
                 {
                     AudioManager.Instance.SlidingSoundCalculation(PSM.currentSlidingSpeed);
                 }

@@ -42,7 +42,6 @@ public class LadderSnap : State
 
                 //LadderSizeStateMachine.ladderLength += Mathf.Clamp(Vector3.Distance(PSM.ladder.transform.position, currentPlayerPosition) + 0.1f, stats.ladderLengthSmall, stats.ladderLengthBig);
                 LadderSizeStateMachine.ladderLength = Mathf.Clamp(Vector3.Distance(pivot, currentPlayerPosition) + 0.1f, LadderSizeStateMachine.ladderLength, stats.ladderLengthBig);
-                Debug.Log("expansion!");
                 LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
                 PSM.HeightOnLadder -= Vector3.Distance(pivot, PSM.transform.position);
                 PSM.HeightOnLadder = Mathf.Clamp(PSM.HeightOnLadder, -0.75f, 0);
@@ -52,7 +51,6 @@ public class LadderSnap : State
             {
                 LadderSizeStateMachine.ladderLength = Mathf.Clamp(Vector3.Distance(PSM.ladder.transform.position, currentPlayerPosition), LadderSizeStateMachine.ladderLength, stats.ladderLengthBig);
                 LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
-                Debug.Log("jfjkkjkfkdjfdjk");
                 PSM.expandAfterSnap = false;
             }
         }
@@ -66,12 +64,10 @@ public class LadderSnap : State
                 PSM.expandAfterSnap = false;
                 PSM.playerVelocity = Vector3.zero;
                 PSM.baseVelocity = Vector3.zero;
-                Debug.Log("set to null");
                 PSM.bonusVelocity = Vector3.zero;
             }
         }
 
-        Debug.Log("expandaftersnap" + PSM.expandAfterSnap);
         lastPlayerPosition = currentPlayerPosition;
     }
 

@@ -28,11 +28,15 @@ public class PlayerMovementStateMachine : StateMachine
     public float slidingInput;
     public float startingSlidingInput;
     public float currentSlidingSpeed;
+
     public bool dismounting;
     public bool didLadderPush;
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
     public bool expandAfterSnap;
+
+    public bool isOnWater;
+    public bool isOnGras;
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
@@ -144,9 +148,13 @@ public class PlayerMovementStateMachine : StateMachine
     Coroutine[] inputTimer = new Coroutine[4];
     #endregion
 
-    private void Start()
+    private void Awake()
     {
         ObjectManager.instance.pSM = this;
+    }
+    private void Start()
+    {
+        
         InitializeVariables();
         SetState(new PlayerWalking(this));
         GetControls();
@@ -172,8 +180,6 @@ public class PlayerMovementStateMachine : StateMachine
         GetInput();
         //LooseBonusVelocity(stats.bonusVelocityDrag,Vector3.up);
         State.Movement();
-        Debug.DrawRay(transform.position, playerVelocity, Color.magenta);
-        Debug.DrawRay(transform.position, bonusVelocity, Color.blue);
     }
 
     private void InitializeVariables()

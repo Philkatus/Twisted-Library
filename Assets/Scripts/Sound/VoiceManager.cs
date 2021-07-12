@@ -50,11 +50,11 @@ public class VoiceManager : MonoBehaviour
     }
     public void TryToWalkSound()
     {
-        Debug.Log("tryToWalkSound");
+        
         Walking.timer += Time.deltaTime;
         if (soundTimerandChance(Walking,false))
         {
-            Debug.Log("imGonnaWalkSound");
+            
             Walking.timer = 0;
             Walking.cooldown = UnityEngine.Random.Range(Walking.minCooldown, Walking.maxCooldown);
             AudioManager.Instance.PlayRandom("WalkingVoice");
@@ -62,10 +62,10 @@ public class VoiceManager : MonoBehaviour
     }
     public void TryToJumpSound()
     {
-        Debug.Log("tryToIJumpSound");
+        
         if (soundTimerandChance(Jumping,true))
         {
-            Debug.Log("imGonnaJumpSound");
+            
             Jumping.timer = 0;
             Jumping.cooldown = UnityEngine.Random.Range(Jumping.minCooldown, Jumping.maxCooldown);
             AudioManager.Instance.PlayRandom("JumpingVoice");
@@ -73,11 +73,11 @@ public class VoiceManager : MonoBehaviour
     }
     public void TryToHighSpeedSound() 
     {
-        Debug.Log("tryToSliding");
+
         HighSpeedSliding.timer += Time.deltaTime;
         if (soundTimerandChance(HighSpeedSliding,false))
         {
-            Debug.Log("ImGonnaSlidingSound");
+            
             HighSpeedSliding.timer = 0;
             HighSpeedSliding.cooldown = UnityEngine.Random.Range(HighSpeedSliding.minCooldown, HighSpeedSliding.maxCooldown);
             AudioManager.Instance.PlayRandom("SlidingVoice");
@@ -85,10 +85,10 @@ public class VoiceManager : MonoBehaviour
     }
     public void TryToAchievementSound() 
     {
-        Debug.Log("tryToAchievement");
+        
         if (soundTimerandChance(Achievement,true))
         {
-            Debug.Log("ImGonnaAchievementSound");
+            
             Achievement.timer = 0;
             Achievement.cooldown = UnityEngine.Random.Range(Achievement.minCooldown, Achievement.maxCooldown);
             AudioManager.Instance.PlayRandom("AchievementVoice");
@@ -96,10 +96,10 @@ public class VoiceManager : MonoBehaviour
     }
     public void TryToSmallAchievementSound()
     {
-        Debug.Log("tryToSmallAchievement");
+       
         if (soundTimerandChance(Achievement, true))
         {
-            Debug.Log("ImGonnaSmallAchievementSound");
+            
             smallAchievement.timer = 0;
             smallAchievement.cooldown = UnityEngine.Random.Range(smallAchievement.minCooldown, smallAchievement.maxCooldown);
             AudioManager.Instance.PlayRandom("SmallAchievementVoice");
@@ -107,10 +107,10 @@ public class VoiceManager : MonoBehaviour
     }
     public void TryToSwigningSound()
     {
-        Debug.Log("tryToSwinging");
+       
         if (soundTimerandChance(Achievement, true))
         {
-            Debug.Log("ImGonnaSwingingSound");
+           
             swinging.timer = 0;
             swinging.cooldown = UnityEngine.Random.Range(swinging.minCooldown, swinging.maxCooldown);
             AudioManager.Instance.PlayRandom("swingingVoice");

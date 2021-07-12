@@ -13,6 +13,8 @@ public class Sound
     public float volume;
     [Range(0.1f, 3)]
     public float pitch;
+    [Range(0, 265)]
+    public int priority =128;
 
     public float blendDuration;
     public bool loop;

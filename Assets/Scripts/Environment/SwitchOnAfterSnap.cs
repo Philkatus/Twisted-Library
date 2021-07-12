@@ -47,7 +47,6 @@ public class SwitchOnAfterSnap : MonoBehaviour
             {
                 if (!challengeComponent.challenge.challengeStarted && !doOncePerAttempt)
                 {
-                    Debug.Log(this.gameObject.name);
                     foreach (ChallengeComponent component in challengeComponent.challenge.components)
                     {
                         ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, component.type);
