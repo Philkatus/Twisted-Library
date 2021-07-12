@@ -84,6 +84,9 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] DecalProjector waterStepsLeft;
     [SerializeField] DecalProjector waterStepsRight;
     [SerializeField] float waterSpeed;
+    [Header("Double Jump")]
+    [SerializeField] DecalProjector doubleJump;
+    [SerializeField] VisualEffect doubleJumpSpray;
 
     PlayerMovementStateMachine pSM;
 
@@ -367,25 +370,14 @@ public class VFX_Manager : MonoBehaviour
         mat.SetColor(propertyName, toColor);
     }
     #endregion
-    #region ON TRIGGER
-    /*private void OnTriggerEnter(Collider other)
-    {
-        if (other.tag == "Cogwheel")
-        {
-
-        }
-        if (other.tag == "Water")
-        {
-            //waterEffect.SendEvent("_Start");
-        }
-    }*/
-    #endregion
+    #region CHALLENGES
     public void PlayCogwheel(Transform parentObj)
     {
         VisualEffect vE = parentObj.GetComponentInChildren<VisualEffect>();
         vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
         vE.SendEvent("_Start");
     }
+    #endregion
     #region SHADOW
     IEnumerator OnImpact(float inAirTime)
     {
@@ -425,6 +417,42 @@ public class VFX_Manager : MonoBehaviour
             inAirTimer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
+    }
+    #endregion
+    #region DOUBLE JUMP
+    public void PlayCoroutine(Vector3 planeNormal)
+    {
+        StartCoroutine(OnDoubleJump(inAirTimer, planeNormal));
+    }
+    IEnumerator OnDoubleJump(float inAirTime, Vector3 planeNormal)
+    {
+        float jumpIntensity = Mathf.Clamp(inAirTime, minJumpTime, maxJumpTime);
+        jumpIntensity = ExtensionMethods.Remap(jumpIntensity, minJumpTime, maxJumpTime, 0, 1);
+
+        float timer = 0;
+        float time = impactCurve.keys[impactCurve.length - 1].time;
+        bool castEffect = false;
+        while (timer < time)
+        {
+            float t = timer / time;
+
+            float curvepoint = impactCurve.Evaluate(t) * decalScale;
+            float curvepoint2 = hardImpactCurve.Evaluate(t) * decalScale;
+            curvepoint = Mathf.Lerp(curvepoint, curvepoint2, jumpIntensity);
+
+            doubleJump.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
+
+            if (t >= 0.2f && !castEffect)
+            {
+                doubleJumpSpray.SetFloat("_Radius", curvepoint);
+                doubleJumpSpray.SendEvent("_Start");
+                castEffect = true;
+            }
+
+            timer += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        doubleJump.size = new Vector3(0, 0, shadowRemapMax);
     }
     #endregion
     #region WALL PROJECTION
