@@ -4921,7 +4921,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6164259229706539056}
-  m_LocalRotation: {x: -0.117752895, y: -0.7312132, z: 0.1306391, w: -0.65908647}
+  m_LocalRotation: {x: -0.117740944, y: -0.7312735, z: 0.1306499, w: -0.65901953}
   m_LocalPosition: {x: 35.812534, y: -25.807999, z: -178.97166}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -7794,6 +7794,12 @@ MonoBehaviour:
   playerStateMachine: {fileID: 5224045388643823046}
   ladderParent: {fileID: 3407637921710111903}
   followTarget: {fileID: 0}
+  anim: {fileID: 0}
+  LadderVisuals: {fileID: 0}
+  upGrades:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &7754077919433205827
 GameObject:
   m_ObjectHideFlags: 0
@@ -8876,6 +8882,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6504759155732504270, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6848978467466545482, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 0}

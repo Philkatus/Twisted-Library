@@ -26,14 +26,17 @@ public class UpgradeScripts : MonoBehaviour
             if (upgrade == Upgrade.canLadderFold)
             {
                 stats.canLadderFold = true;
+                ObjectManager.instance.pSM.ladderSizeStateMachine.upGrades[0].enabled = true;
             }
             else if (upgrade == Upgrade.canLadderPush)
             {
                 stats.canLadderPush = true;
+                ObjectManager.instance.pSM.ladderSizeStateMachine.upGrades[1].enabled = true;
             }
             else if (upgrade == Upgrade.canSlide)
             {
                 stats.canSlide = true;
+                ObjectManager.instance.pSM.ladderSizeStateMachine.upGrades[2].enabled = true;
             }
 
             Destroy(this.gameObject);

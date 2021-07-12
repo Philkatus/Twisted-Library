@@ -13,6 +13,9 @@ public class LadderSizeStateMachine : StateMachine
     public Transform ladderParent;
     public Transform followTarget;
     public Animator anim;
+    public Transform LadderVisuals;
+
+    public MeshRenderer[] upGrades = new MeshRenderer[3];
     #endregion
 
     private void Start()

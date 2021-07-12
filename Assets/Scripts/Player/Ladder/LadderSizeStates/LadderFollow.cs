@@ -8,6 +8,8 @@ public class LadderFollow : State
     bool isLerpGoing;
     float time = 0;
     float noisetimer;
+    Vector3 ladderVisualLocalposition;
+    Quaternion ladserVisualLocalRotation;
 
     public LadderFollow(LadderSizeStateMachine ladderSizeStateMachine) : base(ladderSizeStateMachine)
     {
@@ -22,6 +24,9 @@ public class LadderFollow : State
         PSM.effects.OnStateChangedLadderPush();
         LadderSizeStateMachine.isFoldingUp = true;
         AudioManager.Instance.PlayRandom("LadderFold", LadderSizeStateMachine.transform.position + PSM.ladderDirection * stats.ladderLengthBig);
+        ladderVisualLocalposition = LadderSizeStateMachine.LadderVisuals.localPosition;
+        ladserVisualLocalRotation = LadderSizeStateMachine.LadderVisuals.localRotation;
+
     }
 
     public override void Fold()
@@ -48,21 +53,31 @@ public class LadderFollow : State
     public override void FollowLadderTarget()
     {
         LadderSizeStateMachine lSM = LadderSizeStateMachine;
-        Vector3 followTarget = lSM.followTarget.position;
+        Vector3 followTarget;
         noisetimer += Time.deltaTime;
         float yOffset = Mathf.PerlinNoise(1, noisetimer);
-        yOffset = ExtensionMethods.Remap(yOffset, -.1f, 1, 0f, .2f);
+        yOffset = ExtensionMethods.Remap(yOffset, 0f, 1, -.4f, .4f);
         float xOffset = Mathf.PerlinNoise(200, noisetimer);
-        yOffset = ExtensionMethods.Remap(xOffset, 0, 1, -.3f, .3f);
+        xOffset = ExtensionMethods.Remap(xOffset, 0, 1, -.4f, .4f);
         float zOffset = Mathf.PerlinNoise(3000, noisetimer);
-        yOffset = ExtensionMethods.Remap(zOffset, 0, 1, -.3f, .3f);
+        zOffset = ExtensionMethods.Remap(zOffset, 0, 1, -.4f, .4f);
 
 
         followTarget = new Vector3(lSM.followTarget.position.x +xOffset ,lSM.followTarget.position.y+yOffset , lSM.followTarget.position.z+zOffset);
         lSM.transform.position = Vector3.Lerp(lSM.transform.position,lSM.followTarget.position, 3.5f*Time.deltaTime);
-        Quaternion quaternion = Quaternion.LookRotation(lSM.transform.position - PSM.transform.position, lSM.transform.position - followTarget);
-        //lSM.transform.rotation = Quaternion.Slerp(lSM.transform.rotation, quaternion, Time.deltaTime);
-        lSM.transform.up = Vector3.Lerp(lSM.transform.up, (-lSM.transform.position+ followTarget).normalized,4.8f*Time.deltaTime);
+
+        if (Vector3.Distance(lSM.transform.position, followTarget) > 1.8f)
+        {
+            lSM.transform.up = Vector3.Lerp(lSM.transform.up, (-lSM.LadderVisuals.position + followTarget).normalized, 4.8f* Time.deltaTime);
+            lSM.LadderVisuals.forward = Vector3.Lerp(lSM.LadderVisuals.forward, (-lSM.LadderVisuals.position + followTarget).normalized, 4.8f * Time.deltaTime);
+        }
+        else
+        {
+            Vector3 followDirection = new Vector3(PSM.transform.forward.x + xOffset, PSM.transform.forward.y + yOffset, PSM.transform.forward.z + zOffset).normalized;
+            lSM.transform.up = Vector3.Lerp(lSM.transform.up, PSM.transform.forward, 4 * Time.deltaTime);
+            lSM.LadderVisuals.forward = Vector3.Lerp(lSM.LadderVisuals.forward, followDirection,3 * Time.deltaTime);
+            lSM.LadderVisuals.localPosition = ladderVisualLocalposition+new Vector3(zOffset/2,xOffset/2,yOffset/2);
+        }
 
     }
 
@@ -70,6 +85,8 @@ public class LadderFollow : State
     {
         //also set false when changing state because that happens before the timer above is over
         LadderSizeStateMachine.isFoldingUp = false;
+        LadderSizeStateMachine.LadderVisuals.transform.localPosition = ladderVisualLocalposition;
+        LadderSizeStateMachine.LadderVisuals.transform.localRotation = ladserVisualLocalRotation;
 
         yield break;
     }
