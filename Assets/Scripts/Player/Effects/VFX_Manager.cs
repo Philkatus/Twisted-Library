@@ -386,7 +386,14 @@ public class VFX_Manager : MonoBehaviour
     public void PlayCogwheel(Transform parentObj)
     {
         VisualEffect vE = parentObj.GetComponentInChildren<VisualEffect>();
-        vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
+        Vector3 dirVector = new Vector3(pSM.slidingInput,0,0);
+        vE.SetVector3("_CurrentSpeed", dirVector);
+        vE.SetFloat("_Magnitude", pSM.currentSlidingSpeed);
+        vE.SendEvent("_Start");
+    }
+    public void PlaySwitch(Transform parentObj)
+    {
+        VisualEffect vE = parentObj.GetComponentInChildren<VisualEffect>();
         vE.SendEvent("_Start");
     }
     #endregion
@@ -508,6 +515,7 @@ public class VFX_Manager : MonoBehaviour
         wallProjecting = false;
     }
     #endregion
+
     #region WATER STEPS
     IEnumerator ExtendWater()
     {
@@ -525,6 +533,7 @@ public class VFX_Manager : MonoBehaviour
         waterStepsRight.size = new Vector3(0, 0, 1);
     }
     #endregion
+
     #region LIGHT RAIL UP
     IEnumerator LightRailUp()
     {

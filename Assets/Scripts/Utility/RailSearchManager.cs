@@ -190,6 +190,16 @@ public class RailSearchManagerEditor : Editor
         {
             railSearchManager.SearchForAllRails();
         }
+        if (GUILayout.Button("PlacePlayerInTutorial"))
+        {
+            var player = GameObject.Find("PlayerCharacterAnimated_prefab");
+            player.transform.position = new Vector3(-398.130005f, -52.1800003f, -88.4000015f);
+        }
+        if (GUILayout.Button("PlacePlayerAfterTutorial"))
+        {
+            var player = GameObject.Find("PlayerCharacterAnimated_prefab");
+            player.transform.position = new Vector3(-145.740005f, 88.3199997f, -23.8600006f);
+        }
     }
 }
 #endif

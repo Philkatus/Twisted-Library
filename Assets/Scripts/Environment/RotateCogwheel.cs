@@ -24,7 +24,6 @@ public class RotateCogwheel : MonoBehaviour
     void Start()
     {
         pSM = ObjectManager.instance.pSM;
-        Debug.Log(GameObject.FindGameObjectsWithTag("Player")[0].name);
         effects = pSM.effects;
         challengeComponent = GetComponent<ChallengeComponent>();
         challengeComponent.onResetChallenge += new ChallengeComponent.EventHandler(SetStopWheelTrue);
@@ -133,7 +132,7 @@ public class RotateCogwheel : MonoBehaviour
                     }
                 }
             }
-            if (!didSprayEffect)
+            if (!didSprayEffect && slidingInput != 0)
             {
                 effects.PlayCogwheel(this.transform.parent);
                 didSprayEffect = true;

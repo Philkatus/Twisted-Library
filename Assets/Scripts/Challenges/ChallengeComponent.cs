@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class ChallengeComponent : MonoBehaviour
 {
     public delegate void EventHandler();
+    PlayerMovementStateMachine psm;
     public event EventHandler onResetChallenge;
     [HideInInspector] public Challenge challenge;
     public GameObject linkedUI;
@@ -28,6 +29,8 @@ public class ChallengeComponent : MonoBehaviour
             }
             else
             {
+                if (type == "switch")
+                    psm.effects.PlaySwitch(this.transform);
                 challenge.componentTimer = 0;
                 challenge.componentCompletionTime = Time.time;
                 challenge.challengeStarted = true;
@@ -45,5 +48,6 @@ public class ChallengeComponent : MonoBehaviour
             Debug.LogError("This scene needs a Challenge Manager");
         else
             challengeManager = ChallengeManager.instance;
+        psm = ObjectManager.instance.pSM;
     }
 }
