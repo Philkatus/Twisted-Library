@@ -368,20 +368,24 @@ public class VFX_Manager : MonoBehaviour
     }
     #endregion
     #region ON TRIGGER
-    private void OnTriggerEnter(Collider other)
+    /*private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Cogwheel")
         {
-            VisualEffect vE = other.transform.parent.GetComponentInChildren<VisualEffect>();
-            vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
-            vE.SendEvent("_Start");
+
         }
         if (other.tag == "Water")
         {
             //waterEffect.SendEvent("_Start");
         }
-    }
+    }*/
     #endregion
+    public void PlayCogwheel(Transform parentObj)
+    {
+        VisualEffect vE = parentObj.GetComponentInChildren<VisualEffect>();
+        vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
+        vE.SendEvent("_Start");
+    }
     #region SHADOW
     IEnumerator OnImpact(float inAirTime)
     {
@@ -431,7 +435,7 @@ public class VFX_Manager : MonoBehaviour
         wallProjecting = true;
         wallProjector.transform.position = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
         lastPositionWall = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
-        wallProjector.transform.rotation = Quaternion.Euler(wallProjector.transform.eulerAngles.x, ladder.transform.eulerAngles.y ,wallProjector.transform.eulerAngles.z);
+        wallProjector.transform.rotation = Quaternion.Euler(wallProjector.transform.eulerAngles.x, ladder.transform.eulerAngles.y, wallProjector.transform.eulerAngles.z);
         float timer = 0;
         while (timer < time)
         {
