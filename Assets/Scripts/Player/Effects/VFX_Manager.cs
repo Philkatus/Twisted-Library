@@ -452,6 +452,7 @@ public class VFX_Manager : MonoBehaviour
         bool castEffect = false;
         while (timer < time)
         {
+            doubleJump.transform.LookAt(doubleJump.transform.position-planeNormal);
             float t = timer / time;
 
             float curvepoint = impactCurve.Evaluate(t) * decalScale;
@@ -487,7 +488,6 @@ public class VFX_Manager : MonoBehaviour
     #region WALL PROJECTION
     IEnumerator AnimateWall(float time)
     {
-        //yield return new WaitForSeconds(0.3f);
         yield return new WaitForEndOfFrame();
         wallProjecting = true;
         wallProjector.transform.position = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
@@ -496,6 +496,8 @@ public class VFX_Manager : MonoBehaviour
         float timer = 0;
         while (timer < time)
         {
+            if (pSM.playerState == PlayerMovementStateMachine.PlayerState.swinging)
+                lastPositionWall = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
             float t = timer / time;
             float currentTime = Mathf.Lerp(0, 1.22f, t);
             wallProjector.material.SetFloat("_WallTime", currentTime);
