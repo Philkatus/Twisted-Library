@@ -154,7 +154,7 @@ public class PlayerMovementStateMachine : StateMachine
     }
     private void Start()
     {
-        
+
         InitializeVariables();
         SetState(new PlayerWalking(this));
         GetControls();
@@ -249,7 +249,6 @@ public class PlayerMovementStateMachine : StateMachine
         if (jumpInputBool)
         {
             StartCoroutine(JumpDelay());
-
         }
         if (snapInputBool && playerState != PlayerState.swinging)
         {
@@ -567,6 +566,8 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnSnap()
     {
+        // ANIMATION CODE FOR SNAPPING
+        ObjectManager.instance.animationStateController.Snap();
 
         snapInputBool = false;
         effects.OnStateChangedSwinging();
@@ -607,7 +608,7 @@ public class PlayerMovementStateMachine : StateMachine
     public IEnumerator JumpDelay()
     {
         ObjectManager.instance.animationStateController.SetJump();
-        yield return new WaitForSeconds(0.2f);
+        // yield return new WaitForSeconds(0.1f);
         State.Jump();
         if (stats.useJumpForLadderPush && jumpInputBool)
         {

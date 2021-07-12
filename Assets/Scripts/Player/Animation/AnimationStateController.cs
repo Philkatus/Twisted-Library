@@ -6,7 +6,7 @@ using UnityEngine.Animations.Rigging;
 
 public class AnimationStateController : MonoBehaviour
 {
-    #region variables
+    #region [Grey] old variables
     [Header("References")]
     public PlayerMovementStateMachine playerSM;
     public LadderSizeStateMachine ladderSM;
@@ -83,7 +83,7 @@ public class AnimationStateController : MonoBehaviour
     bool slideAudioPlaying;
     #endregion
 
-    #region NEW VARS
+    #region [Attributes] NEW VARS
     [SerializeField] Animator animator;
 
     private Vector2 velocity_vec;
@@ -124,6 +124,7 @@ public class AnimationStateController : MonoBehaviour
 
     void Update()
     {
+        // Time.timeScale = 0.3f;
         #region OLD
         // //ignoring the y velocity
         velocity_vec = new Vector2(playerSM.sideWaysInput, playerSM.forwardInput);
@@ -158,7 +159,7 @@ public class AnimationStateController : MonoBehaviour
         // Falling();
         // HeadAim();
         // FallImpact();
-        // DismountingTop();
+        PlayerOnLadder();
         // ladderStateChange();
         AnimateMovement();
         // LadderPush();
@@ -177,8 +178,53 @@ public class AnimationStateController : MonoBehaviour
     }
     float velocityZ = 0f;
     float velocityX = 0f;
+    float velocityY = 0f;
+
     [SerializeField] float acceleration = 2f;
     [SerializeField] float deceleration = 2f;
+
+    void LadderClimb()
+    {
+        if (playerSM.HeightOnLadder < 0 && playerSM.HeightOnLadder > -.75f)
+        {
+            if (Mathf.Abs(velocity_vec.y) > 0f)
+                // climb up
+                if (velocity_vec.y > 0f && velocityY < 1f)
+                {
+                    velocityY += Time.deltaTime * acceleration * 5;
+                }
+
+            // climb down
+            if (velocity_vec.y < 0f && velocityY > -1f)
+            {
+                velocityY -= Time.deltaTime * acceleration * 5;
+            }
+
+            // decrease velocityY
+            if (Mathf.Abs(velocity_vec.y) <= 0.4f && velocityY < 0f)
+            {
+                velocityY += Time.deltaTime * deceleration;
+            }
+            if (Mathf.Abs(velocity_vec.y) <= 0.4f && velocityY > 0f)
+            {
+                velocityY -= Time.deltaTime * deceleration;
+            }
+
+            // reset velocityY
+            if (Mathf.Abs(velocity_vec.y) <= 0.1f && velocityY != 0f && velocityY > -0.1f && velocityY < 0.1f)
+            {
+                velocityY = 0f;
+            }
+        }
+        else
+        {
+            velocityY = 0f;
+        }
+
+
+        animator.SetFloat("ClimbingDirection", velocityY);
+    }
+
     void AnimateMovement()
     {
         // run forward
@@ -247,25 +293,23 @@ public class AnimationStateController : MonoBehaviour
         // }
     }
 
-    public void TriggerTurn()
-    {
-        animator.SetTrigger("Turn");
-    }
 
-    public void ExitWalkingState()
-    {
-        animator.SetBool("Walking", false);
-    }
 
+    #region[rgba(236,240,241,0.05)] EXIT/ENTER METHODS
     public void EnterWalkingState()
     {
         animator.SetBool("Walking", true);
+    }
+    public void ExitWalkingState()
+    {
+        animator.SetBool("Walking", false);
     }
 
     public void EnterAirborneState()
     {
         SetFallPhase();
         animator.SetBool("Airborne", true);
+        // UnsetJump();
     }
 
     public void ExitAirborneState()
@@ -273,18 +317,49 @@ public class AnimationStateController : MonoBehaviour
         animator.SetBool("Airborne", false);
     }
 
+    public void EnterOnLadderState()
+    {
+        animator.SetBool("OnLadder", true);
+
+    }
+
+    public void ExitOnLadderState()
+    {
+        animator.SetBool("OnLadder", false);
+
+    }
+    #endregion
+
+    //JUMPING HELPER FUNCTIONS 
+    #region[rgba(20,240,241,0.05)]
     public void SetFallPhase()
     {
         animator.SetBool("IsFalling", true);
     }
 
-    public void SetJump(){
+    public void SetJump()
+    {
         animator.SetBool("Jump", true);
     }
 
-        public void UnsetJump(){
+    public void UnsetJump()
+    {
         animator.SetBool("Jump", false);
     }
+    #endregion
+    
+    // SNAP FUNCTIONS
+    #region[rgba(12,70,255,0.09)]
+    public void Snap(){
+        animator.SetTrigger("Snap");
+    }
+    #endregion
+    //OnLadder HELPER FUNCTIONS
+    #region[rgba(200,200,20,0.05)]
+    public void DismountLadder(){
+        animator.SetTrigger("Dismount");
+    }
+    #endregion
 
     void CheckIK()
     {
@@ -586,6 +661,17 @@ public class AnimationStateController : MonoBehaviour
         }
     }
 
+    #region[Methods] ONLADDER METHODS
+    float timer = 0;
+    void PlayerOnLadder()
+    {
+        if (animator.GetBool("OnLadder"))
+        {
+            DismountingTop();
+            LadderClimb();
+        }
+    }
+
     void DismountingTop()
     {
         if (playerSM.dismounting == true)
@@ -597,4 +683,5 @@ public class AnimationStateController : MonoBehaviour
             animator.SetBool("isDismounting", false);
         }
     }
+    #endregion
 }
