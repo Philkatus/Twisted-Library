@@ -98,8 +98,8 @@ public class VFX_Manager : MonoBehaviour
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
     bool inStage = false, inAir, wallProjecting;
-
     #endregion
+
     private void Start()
     {
         sprayPosition = bigDoubleJumpSpray.transform.localPosition;
@@ -117,6 +117,7 @@ public class VFX_Manager : MonoBehaviour
         //set Sliding Speedlines
         speedLinesSliding = speedLinesS.GetComponent<VisualEffect>();
     }
+
     void Update()
     {
         //offsets
@@ -168,6 +169,7 @@ public class VFX_Manager : MonoBehaviour
         }
     }
     #region OnStateChanged
+
     public void OnStateChangedWalking(bool land)
     {
         inAir = false;
@@ -183,6 +185,7 @@ public class VFX_Manager : MonoBehaviour
             UpdateShadowSize(true);
         }
     }
+
     public void OnStateChangedInAir()
     {
         inAir = true;
@@ -193,6 +196,7 @@ public class VFX_Manager : MonoBehaviour
             StartCoroutine(FadeOutRail());
         }
     }
+
     public void OnStateChangedSwinging()
     {
         inAir = false;
@@ -201,6 +205,7 @@ public class VFX_Manager : MonoBehaviour
         SetProperty(railMats, "_EmissionColor", swingingColor, lightUpTime);
 
     }
+
     public void OnResnap()
     {
     }
@@ -226,17 +231,18 @@ public class VFX_Manager : MonoBehaviour
     {
         if (PlayerMovementStateMachine.PlayerState.swinging == pSM.playerState && pSM.lastRail != null)
         {
-            Vector3 snappingPoint = pSM.lastRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+            Vector3 snappingPoint = pSM.lastRail.pathCreator.path.GetClosestPointOnPath(transform.GetChild(0).position);
             SetProperty(railMats, "_SnappingPoint", snappingPoint);
         }
         else if (pSM.closestRail != null)
         {
-            Vector3 snappingPoint = pSM.closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
+            Vector3 snappingPoint = pSM.closestRail.pathCreator.path.GetClosestPointOnPath(transform.GetChild(0).position);
             SetProperty(railMats, "_SnappingPoint", snappingPoint);
         }
         else
             StartCoroutine(FadeOutRail());
     }
+
     void UpdateShadowSize(bool end = false)
     {
         if (!end)
@@ -340,22 +346,26 @@ public class VFX_Manager : MonoBehaviour
         SetProperty(railMats, "_EmissionColor", normalColor, fadeTime);
         wallProjector.material.SetFloat("_WallTime", 0);
     }
+
     #region SET PROPERTY
     void SetProperty(Material[] railMats, string propertyName, Vector3 value)
     {
         foreach (Material railMat in railMats)
             railMat.SetVector(propertyName, value);
     }
+
     void SetProperty(Material[] railMats, string propertyName, float value)
     {
         foreach (Material railMat in railMats)
             railMat.SetFloat(propertyName, value);
     }
+
     void SetProperty(Material[] railMats, string propertyName, Color[] value, float time)
     {
         for (int i = 0; i < railMats.Length; i++)
             StartCoroutine(ChangePropertyColor(railMats[i], propertyName, railMats[i].GetColor(propertyName), value[i], time));
     }
+
     IEnumerator ChangePropertyColor(Material mat, string propertyName, Color fromColor, Color toColor, float time)
     {
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
@@ -371,6 +381,7 @@ public class VFX_Manager : MonoBehaviour
         mat.SetColor(propertyName, toColor);
     }
     #endregion
+
     #region CHALLENGES
     public void PlayCogwheel(Transform parentObj)
     {
@@ -379,6 +390,7 @@ public class VFX_Manager : MonoBehaviour
         vE.SendEvent("_Start");
     }
     #endregion
+
     #region SHADOW
     IEnumerator OnImpact(float inAirTime)
     {
@@ -420,11 +432,13 @@ public class VFX_Manager : MonoBehaviour
         }
     }
     #endregion
+
     #region DOUBLE JUMP
     public void PlayCoroutine(Vector3 planeNormal, Vector3 planeUp)
     {
         StartCoroutine(OnDoubleJump(inAirTimer, planeNormal, planeUp));
     }
+
     IEnumerator OnDoubleJump(float inAirTime, Vector3 planeNormal, Vector3 planeUp)
     {
         float sprayY = bigDoubleJumpSpray.transform.position.y;
@@ -469,6 +483,7 @@ public class VFX_Manager : MonoBehaviour
         bigDoubleJumpSpray.transform.localPosition = sprayPosition;
     }
     #endregion
+
     #region WALL PROJECTION
     IEnumerator AnimateWall(float time)
     {
