@@ -163,6 +163,10 @@ public class PlayerInTheAir : State
             float maxHeight = stats.ladderLengthBig - sphereRadius;
             float acceleration = stats.LadderPushAcceleration;
 
+            //for VFX
+            Vector3 normal = Vector3.up;
+            Vector3 up = Vector3.forward;
+
             Vector3 origin = PSM.transform.position;
             LayerMask mask = LayerMask.GetMask("Environment");
             List<RaycastHit> hits = new List<RaycastHit>();
@@ -184,8 +188,6 @@ public class PlayerInTheAir : State
                     closestHit = hits[i];
                     closestDistance = distance;
                     target = closestHit.point;
-                    
-                    // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
                 }
             }
             #endregion
@@ -211,7 +213,12 @@ public class PlayerInTheAir : State
                         closestHit = hits[i];
                         closestDistance = distance;
                         target = closestHit.point;
-                        Debug.DrawLine(PSM.transform.position, hits[i].point, Color.red, 2);
+                        normal = closestHit.normal;
+                        Debug.Log(closestHit.normal);
+                        // this is a bit complicated but i didnt find a better way
+
+                        Plane upPlane = new Plane(normal, target);
+                        up = upPlane.ClosestPointOnPlane(target + new Vector3(1, 1, 1)) - target;
                     }
                 }
             }
@@ -223,7 +230,7 @@ public class PlayerInTheAir : State
                 Vector3 directionToWall = (PSM.transform.position - target).normalized;
                 if (Vector3.Angle(directionToWall, Vector3.up) < 45 && !PSM.didLadderPush)
                 {
-                    PSM.effects.PlayCoroutine(Vector3.up);
+                    PSM.effects.PlayCoroutine(normal, up.normalized);
                     PSM.didLadderPush = true;
                     PSM.ladderJumpTarget = target;
                     PSM.baseVelocity.y = 0;
@@ -242,7 +249,7 @@ public class PlayerInTheAir : State
                 }
                 else if (Vector3.Angle(directionToWall, Vector3.up) >= 45)
                 {
-
+                    PSM.effects.PlayCoroutine(normal, up.normalized);
                     PSM.ladderJumpTarget = target;
                     PSM.baseVelocity.y = 0;
                     PSM.foldInputBool = false;
