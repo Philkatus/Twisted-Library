@@ -33,12 +33,11 @@ public class Challenge : MonoBehaviour
         {
             if (value == true && !challengeCompleted)
             {
-                Debug.Log("Challenge complete!");
                 gameObject.SendMessage("OnAllComponentsCompleted");
                 landmark.CheckIfAllChallengesComplete();
                 landmark.ShowChallengeCompletionInUI(this);
                 componentTimer = 0;
-                if (VoiceManager.Instance != null) 
+                if (VoiceManager.Instance != null)
                 {
                     VoiceManager.Instance.TryToSmallAchievementSound();
                 }
@@ -81,7 +80,6 @@ public class Challenge : MonoBehaviour
                 componentCompletionTime = 0;
                 challengeStarted = false;
                 waitToHideComponentsUI = true;
-                Debug.Log("Challenge failed!");
             }
             foreach (ChallengeComponent component in components)
             {

@@ -22,6 +22,7 @@ public class LadderUnfold : State
         {
             LadderSizeStateMachine.isUnFolding = true;
         }
+        AudioManager.Instance.PlayRandom("LadderUnFold");
     }
 
     public override void Fold()

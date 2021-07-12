@@ -185,7 +185,6 @@ public class PlayerInTheAir : State
                     closestDistance = distance;
                     target = closestHit.point;
 
-                    // Debug.Log(hits[i].normal);
                     // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
                 }
             }
@@ -237,6 +236,7 @@ public class PlayerInTheAir : State
                     PlayerFollowTarget.instance.DoAdjustY(true);
                     if (VoiceManager.Instance != null)
                         VoiceManager.Instance.TryToJumpSound();
+                    AudioManager.Instance.PlayRandom(AudioManager.Instance.GetLadderPushString(true));
 
                 }
                 else if (Vector3.Angle(directionToWall, Vector3.up) >= 45)
@@ -268,6 +268,7 @@ public class PlayerInTheAir : State
                     PlayerFollowTarget.instance.DoAdjustY(true);
                     if (VoiceManager.Instance != null)
                         VoiceManager.Instance.TryToJumpSound();
+                    AudioManager.Instance.PlayRandom(AudioManager.Instance.GetLadderPushString(false));
                 }
             }
         }

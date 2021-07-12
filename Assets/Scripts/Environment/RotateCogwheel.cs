@@ -16,6 +16,7 @@ public class RotateCogwheel : MonoBehaviour
     bool doOnce;
 
     [SerializeField] List<Transform> wheels = new List<Transform>();
+    [SerializeField] int CogSoundIndex;
 
     void Start()
     {
@@ -97,6 +98,9 @@ public class RotateCogwheel : MonoBehaviour
                     {
                         ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, component.type);
                     }
+                    AudioManager.Instance.PlayRandom("CogChallenge",transform.position);
+
+                    AudioManager.Instance.CogSound(CogSoundIndex, transform.position);
                 }
                 if (!doOncePerAttempt)
                 {
@@ -126,6 +130,7 @@ public class RotateCogwheel : MonoBehaviour
 
     IEnumerator RotateWheel()
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
         while (tWheelAcceleration < 1)
         {
             tWheelAcceleration += Time.deltaTime / 1.3f;
@@ -139,19 +144,20 @@ public class RotateCogwheel : MonoBehaviour
                 rotateWheel = true;
                 yield return null;
             }
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
     }
 
     IEnumerator RotateWheelNoEnd()
     {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
         while (doOnce)
         {
             foreach (Transform wheel in wheels)
             {
                 wheel.transform.Rotate(0, 1, 0, Space.Self);
             }
-            yield return new WaitForEndOfFrame();
+            yield return delay;
         }
     }
 
