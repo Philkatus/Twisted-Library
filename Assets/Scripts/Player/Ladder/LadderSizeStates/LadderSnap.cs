@@ -5,10 +5,7 @@ using UnityEngine;
 public class LadderSnap : State
 {
     ValuesScriptableObject stats;
-    Vector3 lastPlayerPosition;
-    Vector3 currentPlayerPosition;
-    bool isFirstFrame = true;
-    bool hasExpanded;
+    bool hasSnapped;
 
     public LadderSnap(LadderSizeStateMachine ladderSizeStateMachine) : base(ladderSizeStateMachine)
     {
@@ -22,53 +19,21 @@ public class LadderSnap : State
 
     public override void Fold()
     {
-        currentPlayerPosition = PSM.transform.position;
-        if (isFirstFrame)
-        {
-            lastPlayerPosition = currentPlayerPosition;
-            isFirstFrame = false;
-            return;
-        }
+        
+    }
 
-        Vector3 pivot = PSM.closestRail.pathCreator.path.GetPointAtDistance(PSM.currentDistance);
-        bool isSwingingUp = PSM.playerVelocity.y > 0;
-        bool isOverRail = currentPlayerPosition.y > pivot.y;
-        bool isFullyUnfolded = LadderSizeStateMachine.ladderLength >= stats.ladderLengthBig;
-        if (!isFullyUnfolded && !hasExpanded)
-        {
-            if ((isSwingingUp && isOverRail) || (!isSwingingUp && !isOverRail))
-            {
-                PSM.expandAfterSnap = true;
+    public override void FollowLadderTarget()
+    {
+        LadderSizeStateMachine lSM = LadderSizeStateMachine;
+        Vector3 followTarget = PSM.closestRail.pathCreator.path.GetPointAtDistance(PSM.currentDistance);
 
-                //LadderSizeStateMachine.ladderLength += Mathf.Clamp(Vector3.Distance(PSM.ladder.transform.position, currentPlayerPosition) + 0.1f, stats.ladderLengthSmall, stats.ladderLengthBig);
-                LadderSizeStateMachine.ladderLength = Mathf.Clamp(Vector3.Distance(pivot, currentPlayerPosition) + 0.1f, LadderSizeStateMachine.ladderLength, stats.ladderLengthBig);
-                LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
-                PSM.HeightOnLadder -= Vector3.Distance(pivot, PSM.transform.position);
-                PSM.HeightOnLadder = Mathf.Clamp(PSM.HeightOnLadder, -0.75f, 0);
-                PSM.transform.localPosition = new Vector3(0, LadderSizeStateMachine.ladderLength * PSM.HeightOnLadder, -0.38f);
-            }
-            else
-            {
-                LadderSizeStateMachine.ladderLength = Mathf.Clamp(Vector3.Distance(PSM.ladder.transform.position, currentPlayerPosition), LadderSizeStateMachine.ladderLength, stats.ladderLengthBig);
-                LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
-                PSM.expandAfterSnap = false;
-            }
-        }
-        else
+        lSM.transform.position = Vector3.Lerp(lSM.transform.position, lSM.followTarget.position, 3.5f * Time.deltaTime);
+        if (Vector3.Distance(lSM.transform.position, followTarget) > 0) 
         {
-            if (!hasExpanded)
-            {
-                LadderSizeStateMachine.ladderLength = stats.ladderLengthBig;
-                hasExpanded = true;
-                LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
-                PSM.expandAfterSnap = false;
-                PSM.playerVelocity = Vector3.zero;
-                PSM.baseVelocity = Vector3.zero;
-                PSM.bonusVelocity = Vector3.zero;
-            }
+            lSM.transform.up = Vector3.Lerp(lSM.transform.up, (PSM.transform.forward).normalized, 4.8f * Time.deltaTime);
         }
+       
 
-        lastPlayerPosition = currentPlayerPosition;
     }
 
 

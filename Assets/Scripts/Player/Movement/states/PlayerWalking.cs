@@ -34,8 +34,8 @@ public class PlayerWalking : State
         ladder.transform.SetParent(PSM.myParent);
 
         controller.transform.rotation = Quaternion.AngleAxis(Vector3.SignedAngle(controller.transform.up, Vector3.up, controller.transform.right), controller.transform.right) * controller.transform.rotation;
-        ladder.position = PSM.LadderWalkingPosition;
-        ladder.rotation = PSM.LadderWalkingRotation;
+        //ladder.position = PSM.LadderWalkingPosition;
+        //ladder.rotation = PSM.LadderWalkingRotation;
         stats = PSM.stats;
     }
 

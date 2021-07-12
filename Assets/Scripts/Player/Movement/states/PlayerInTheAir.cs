@@ -282,8 +282,8 @@ public class PlayerInTheAir : State
         PSM.ladder.transform.localScale = new Vector3(1, 1, 1);
         controller.transform.localScale = new Vector3(1, 1, 1);
         PSM.ladder.transform.SetParent(PSM.myParent);
-        PSM.ladder.position = PSM.LadderWalkingPosition;
-        PSM.ladder.rotation = PSM.LadderWalkingRotation;
+        //PSM.ladder.position = PSM.LadderWalkingPosition;
+        //PSM.ladder.rotation = PSM.LadderWalkingRotation;
         stats = PSM.stats;
 
         controller = PSM.controller;

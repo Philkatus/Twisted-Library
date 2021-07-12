@@ -7,6 +7,7 @@ public class LadderFollow : State
     ValuesScriptableObject stats;
     bool isLerpGoing;
     float time = 0;
+    float noisetimer;
 
     public LadderFollow(LadderSizeStateMachine ladderSizeStateMachine) : base(ladderSizeStateMachine)
     {
@@ -47,12 +48,21 @@ public class LadderFollow : State
     public override void FollowLadderTarget()
     {
         LadderSizeStateMachine lSM = LadderSizeStateMachine;
-        Transform followTarget = lSM.followTarget;
+        Vector3 followTarget = lSM.followTarget.position;
+        noisetimer += Time.deltaTime;
+        float yOffset = Mathf.PerlinNoise(1, noisetimer);
+        yOffset = ExtensionMethods.Remap(yOffset, -.1f, 1, 0f, .2f);
+        float xOffset = Mathf.PerlinNoise(200, noisetimer);
+        yOffset = ExtensionMethods.Remap(xOffset, 0, 1, -.3f, .3f);
+        float zOffset = Mathf.PerlinNoise(3000, noisetimer);
+        yOffset = ExtensionMethods.Remap(zOffset, 0, 1, -.3f, .3f);
 
-        lSM.transform.position = Vector3.Lerp(lSM.transform.position,followTarget.position, 3*Time.deltaTime);
-        Quaternion quaternion = Quaternion.LookRotation(lSM.transform.position - PSM.transform.position, lSM.transform.position - followTarget.transform.position);
+
+        followTarget = new Vector3(lSM.followTarget.position.x +xOffset ,lSM.followTarget.position.y+yOffset , lSM.followTarget.position.z+zOffset);
+        lSM.transform.position = Vector3.Lerp(lSM.transform.position,lSM.followTarget.position, 3.5f*Time.deltaTime);
+        Quaternion quaternion = Quaternion.LookRotation(lSM.transform.position - PSM.transform.position, lSM.transform.position - followTarget);
         //lSM.transform.rotation = Quaternion.Slerp(lSM.transform.rotation, quaternion, Time.deltaTime);
-        lSM.transform.up = Vector3.Lerp(lSM.transform.up, lSM.transform.position - followTarget.position,3*Time.deltaTime);
+        lSM.transform.up = Vector3.Lerp(lSM.transform.up, (-lSM.transform.position+ followTarget).normalized,4.8f*Time.deltaTime);
 
     }
 
