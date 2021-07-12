@@ -67,10 +67,8 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public InputAction swingAction;
     [HideInInspector] public InputAction snapAction;
     [HideInInspector] public InputAction fallFromLadder;
-    [HideInInspector] public Quaternion ladderWalkingRotation;
-    [HideInInspector] public Vector3 ladderWalkingPosition;
+    
     [HideInInspector] public Vector3 ladderJumpTarget;
-    [HideInInspector]
     public Vector3 ladderDirection
     {
         get
@@ -79,6 +77,20 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
     [HideInInspector] public int snapdirection = 1;
+
+    Quaternion ladderWalkingRotation;
+    public Quaternion LadderWalkingRotation
+    {
+        get { return transform.rotation * ladderWalkingRotation; }
+        set { ladderWalkingRotation = value; }
+    }
+    Vector3 ladderWalkingPosition;
+    public Vector3 LadderWalkingPosition
+    {
+        get { return transform.position + ladderWalkingPosition; }
+        set { ladderWalkingPosition = value; }
+    }
+
 
     #region inputBools
     bool[] inputBools = new bool[4];
@@ -186,8 +198,8 @@ public class PlayerMovementStateMachine : StateMachine
     {
         myParent = transform.parent;
         railAllocator = RailSearchManager.instance;
-        ladderWalkingPosition = ladder.localPosition;
-        ladderWalkingRotation = ladder.localRotation;
+        LadderWalkingPosition = ladder.localPosition;
+        LadderWalkingRotation = ladder.localRotation;
         coyoteTimer = stats.slidingCoyoteTime;
     }
 

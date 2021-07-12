@@ -184,7 +184,7 @@ public class PlayerInTheAir : State
                     closestHit = hits[i];
                     closestDistance = distance;
                     target = closestHit.point;
-
+                    
                     // Debug.DrawLine(PlayerStateMachine.transform.position, hits[i].point,Color.black,2);
                 }
             }
@@ -280,9 +280,9 @@ public class PlayerInTheAir : State
         controller.transform.SetParent(PSM.myParent);
         PSM.ladder.transform.localScale = new Vector3(1, 1, 1);
         controller.transform.localScale = new Vector3(1, 1, 1);
-        PSM.ladder.transform.SetParent(PSM.animController.spine);
-        PSM.ladder.localPosition = PSM.ladderWalkingPosition;
-        PSM.ladder.localRotation = PSM.ladderWalkingRotation;
+        PSM.ladder.transform.SetParent(PSM.myParent);
+        PSM.ladder.position = PSM.LadderWalkingPosition;
+        PSM.ladder.rotation = PSM.LadderWalkingRotation;
         stats = PSM.stats;
 
         controller = PSM.controller;

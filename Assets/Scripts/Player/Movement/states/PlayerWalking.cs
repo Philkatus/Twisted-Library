@@ -31,11 +31,11 @@ public class PlayerWalking : State
         controller.transform.SetParent(PSM.myParent);
         ladder.transform.localScale = new Vector3(1, 1, 1);
         controller.transform.localScale = new Vector3(1, 1, 1);
-        ladder.transform.SetParent(PSM.animController.spine);
+        ladder.transform.SetParent(PSM.myParent);
 
         controller.transform.rotation = Quaternion.AngleAxis(Vector3.SignedAngle(controller.transform.up, Vector3.up, controller.transform.right), controller.transform.right) * controller.transform.rotation;
-        ladder.localPosition = PSM.ladderWalkingPosition;
-        ladder.localRotation = PSM.ladderWalkingRotation;
+        ladder.position = PSM.LadderWalkingPosition;
+        ladder.rotation = PSM.LadderWalkingRotation;
         stats = PSM.stats;
     }
 
