@@ -152,6 +152,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         ObjectManager.instance.pSM = this;
     }
+
     private void Start()
     {
         InitializeVariables();
@@ -205,6 +206,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         if (playerState != PlayerState.swinging && CheckForRail())
         {
+            ObjectManager.instance.animationStateController.Snap();
             State.Snap();
         }
     }
@@ -242,12 +244,16 @@ public class PlayerMovementStateMachine : StateMachine
         }
         inputTimer[index] = StartCoroutine(InputTimer(index, duration, rail));
     }
-
+    Coroutine jumpRoutine;
     private void CheckForInputBools()
     {
         if (jumpInputBool)
         {
-            StartCoroutine(JumpDelay());
+            if (jumpRoutine == null)
+            {
+                jumpRoutine = StartCoroutine(JumpDelay());
+
+            }
         }
         if (snapInputBool && playerState != PlayerState.swinging)
         {
@@ -568,9 +574,6 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnSnap()
     {
-        // ANIMATION CODE FOR SNAPPING
-        ObjectManager.instance.animationStateController.Snap();
-
         snapInputBool = false;
         effects.OnStateChangedSwinging();
         playerState = PlayerState.swinging;
@@ -609,15 +612,19 @@ public class PlayerMovementStateMachine : StateMachine
 
     public IEnumerator JumpDelay()
     {
-        ObjectManager.instance.animationStateController.SetJump();
-        // yield return new WaitForSeconds(0.1f);
+        if(playerState != PlayerState.inTheAir){
+            ObjectManager.instance.animationStateController.SetJump();
+        }
+
+        yield return new WaitForSeconds(0.1f);
         State.Jump();
         if (stats.useJumpForLadderPush && jumpInputBool)
         {
             State.LadderPush();
         }
         yield return null;
-        ObjectManager.instance.animationStateController.UnsetJump();
+        jumpRoutine = null;
+        // ObjectManager.instance.animationStateController.UnsetJump();
     }
 
     public enum PlayerState
