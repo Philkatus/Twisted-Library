@@ -66,6 +66,9 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] GameObject player, sparkleBurstL, sparkleBurstR, speedLinesS;
     [SerializeField] VisualEffect ladderPushLeft, ladderPushRight, upgradeCloud, stepLeft, stepRight;
     [SerializeField] Material[] railMats;
+    [Header("Wheel Light Up")]
+    [SerializeField] Material wheelMat;
+    [SerializeField] float wheelIntensity = 5000000;
     [Header("Snapping Light Up")]
     [SerializeField] float lightUpTime;
     [SerializeField] float fadeTime, normalWidth, broadWidth, normalGD, broadGD;
@@ -418,11 +421,35 @@ public class VFX_Manager : MonoBehaviour
         vE.SetVector3("_CurrentSpeed", dirVector);
         vE.SetFloat("_Magnitude", pSM.currentSlidingSpeed);
         vE.SendEvent("_Start");
+        StartCoroutine(LightUpWheel());
     }
     public void PlaySwitch(Transform parentObj)
     {
         VisualEffect vE = parentObj.GetComponentInChildren<VisualEffect>();
         vE.SendEvent("_Start");
+    }
+
+    IEnumerator LightUpWheel()
+    {
+        float startIntensity = 10000;
+        float endIntensity = wheelIntensity;
+        float timer = 0;
+        wheelMat.SetVector("_Position", transform.GetChild(0).position);
+        while (timer < 0.5f)
+        {
+            float t = timer / 0.5f;
+            timer += Time.deltaTime;
+            wheelMat.SetFloat("_Emission", Mathf.Lerp(startIntensity, endIntensity, t));
+            yield return new WaitForEndOfFrame();
+        }
+        while (timer < 1.5f)
+        {
+            float t = timer / 1.5f;
+            timer += Time.deltaTime;
+            wheelMat.SetFloat("_Emission", Mathf.Lerp(endIntensity, startIntensity, t));
+            yield return new WaitForEndOfFrame();
+        }
+        wheelMat.SetFloat("_Emission", startIntensity);
     }
     #endregion
 
