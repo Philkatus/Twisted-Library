@@ -78,7 +78,7 @@ public class LadderSizeStateMachine : StateMachine
     {
         if (!playerStateMachine.stats.useNewSnapping)
         {
-            SetState(new LadderUnfold(this));
+            SetState(new LadderSnap(this));
             playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderUnfold;
         }
         else 

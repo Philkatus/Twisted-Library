@@ -45,10 +45,11 @@ public class PlayerWalking : State
         Transform cam = Camera.main.transform;
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
+        bool isSnapping = PSM.snappingStep != PlayerMovementStateMachine.SnappingStep.Finished;
 
         Vector3 direction = (directionForward * PSM.forwardInput + directionRight * PSM.sideWaysInput).normalized;
         float angle = 0;
-        if (direction != Vector3.zero)
+        if (!isSnapping && direction != Vector3.zero)
         {
             controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 10 * Time.fixedDeltaTime);
             angle = Vector3.Angle(controller.transform.forward, direction);
@@ -58,7 +59,10 @@ public class PlayerWalking : State
             }
         }
         //controller.transform.up = Vector3.Lerp(controller.transform.up, Vector3.up, 20 * Time.fixedDeltaTime);
-        PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.MovementAcceleration;
+        if (!isSnapping)
+        {
+            PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.MovementAcceleration;
+        }
 
         #region Drag When No Input
         if (PSM.forwardInput == 0)
@@ -109,6 +113,18 @@ public class PlayerWalking : State
         PSM.baseVelocity.y = 0;
         PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaximumMovementSpeed);
         PSM.baseVelocity.y = y;
+        if (isSnapping && PSM.closestRail!=null)
+        {
+            /*
+            Vector3 StartingPoint = PSM.closestRail.pathCreator.path.GetPointAtDistance(PSM.currentDistance);
+            Vector3 upwardsVelocity = ExtensionMethods.resultingVelocity(PSM.baseVelocity, Vector3.up);
+            Vector3 forwardVelocity = ExtensionMethods.resultingVelocity(PSM.baseVelocity, PSM.transform.position - StartingPoint);
+            PSM.baseVelocity = upwardsVelocity + forwardVelocity;
+            */
+            Vector3 PathDirection = PSM.closestRail.pathCreator.path.GetDirectionAtDistance(PSM.currentDistance);
+            Vector3 SideWaysVelocity = ExtensionMethods.resultingVelocity(PSM.baseVelocity, PathDirection);
+            PSM.baseVelocity -= SideWaysVelocity;
+        }
         PSM.LoseBonusVelocityPercentage(stats.WalkingBonusVelocityDrag);
         controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.movementVelocityFactor);
 
@@ -133,15 +149,18 @@ public class PlayerWalking : State
 
     public override void Jump()
     {
-        if (Mathf.Abs(PSM.controller.velocity.y) < 0.2f)
+        if (PSM.snappingStep == PlayerMovementStateMachine.SnappingStep.Finished)
         {
-            PlayerFollowTarget.instance.OnSimpleJump();
+            if (Mathf.Abs(PSM.controller.velocity.y) < 0.2f)
+            {
+                PlayerFollowTarget.instance.OnSimpleJump();
+            }
+            PSM.baseVelocity.y = stats.JumpHeight;
+            PSM.jumpInputBool = false;
+            if (VoiceManager.Instance != null)
+                VoiceManager.Instance.TryToJumpSound();
+            PSM.OnFall();
         }
-        PSM.baseVelocity.y = stats.JumpHeight;
-        PSM.jumpInputBool = false;
-        if (VoiceManager.Instance != null)
-            VoiceManager.Instance.TryToJumpSound();
-        PSM.OnFall();
     }
 
     public override void Snap()

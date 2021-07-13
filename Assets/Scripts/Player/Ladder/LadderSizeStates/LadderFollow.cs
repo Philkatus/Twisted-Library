@@ -54,7 +54,7 @@ public class LadderFollow : State
     {
         LadderSizeStateMachine lSM = LadderSizeStateMachine;
         Vector3 followTarget;
-        noisetimer += Time.deltaTime;
+        noisetimer += Time.deltaTime/2;
         float yOffset = Mathf.PerlinNoise(1, noisetimer);
         yOffset = ExtensionMethods.Remap(yOffset, 0f, 1, -.4f, .4f);
         float xOffset = Mathf.PerlinNoise(200, noisetimer);
