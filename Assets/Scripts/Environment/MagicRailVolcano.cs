@@ -15,7 +15,9 @@ public class MagicRailVolcano : MonoBehaviour
     private void Start()
     {
         startingPos = transform.localPosition;
-        planeStartPos = bigPlate.transform.position;
+
+        if(!noPlane)
+            planeStartPos = bigPlate.transform.position;
     }
 
     private void OnTriggerStay(Collider other)
