@@ -239,6 +239,8 @@ public class PlayerInTheAir : State
                     PSM.bonusVelocity += directionToWall * acceleration;
                     floatingTimer = 0;
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
+                    ObjectManager.instance.animationStateController.TriggerDoubleJump();
+
                     PSM.ladderSizeStateMachine.OnLadderPush();
                     PlayerFollowTarget.instance.DoAdjustY(true);
                     if (VoiceManager.Instance != null)
@@ -271,6 +273,8 @@ public class PlayerInTheAir : State
                     */
                     PSM.bonusVelocity = targetVelocity;
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
+                    ObjectManager.instance.animationStateController.TriggerDoubleJump();
+
                     PSM.ladderSizeStateMachine.OnLadderPush();
                     PlayerFollowTarget.instance.DoAdjustY(true);
                     if (VoiceManager.Instance != null)
