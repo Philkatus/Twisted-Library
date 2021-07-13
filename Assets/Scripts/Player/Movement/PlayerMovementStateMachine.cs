@@ -37,7 +37,6 @@ public class PlayerMovementStateMachine : StateMachine
     public bool expandAfterSnap;
 
     public bool isOnWater;
-    public bool isOnGras;
     public bool controlsDisabled;
 
     public Vector3 baseVelocity;
