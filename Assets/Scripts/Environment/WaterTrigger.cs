@@ -4,13 +4,18 @@ using UnityEngine;
 
 public class WaterTrigger : MonoBehaviour
 {
-    bool walkingInWater;
+    PlayerMovementStateMachine psm;
+
+    void Start()
+    {
+        psm = ObjectManager.instance.pSM;
+    }
 
     void OnTriggerEnter(Collider collider)
     {
-        if (collider.tag == "Player" && !walkingInWater)
+        if (collider.tag == "Player" && !psm.isOnWater)
         {
-            walkingInWater = true;
+            psm.isOnWater = true;
             Debug.Log("went into water");
             ObjectManager.instance.pSM.effects.SetActiveShadow(false);
         }
@@ -18,10 +23,10 @@ public class WaterTrigger : MonoBehaviour
 
     void OnTriggerExit(Collider collider)
     {
-        if (collider.tag == "Player" && walkingInWater)
+        if (collider.tag == "Player" && psm.isOnWater)
         {
             Debug.Log("left water");
-            walkingInWater = false;
+            psm.isOnWater = false;
             ObjectManager.instance.pSM.effects.SetActiveShadow(true);
         }
     }
