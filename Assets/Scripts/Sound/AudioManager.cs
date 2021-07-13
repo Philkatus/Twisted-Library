@@ -331,7 +331,7 @@ public class AudioManager : MonoBehaviour
                 }
                 if (s != null && s.Source != null)
                 {
-                    s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.2f, slidingSpeed / maxSlidingSpeed);
+                    //s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.2f, slidingSpeed / maxSlidingSpeed);
                 }
 
             }
@@ -361,7 +361,7 @@ public class AudioManager : MonoBehaviour
                 }
                 if (s != null && s.Source != null)
                 {
-                    s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.2f, slidingSpeed / maxSlidingSpeed);
+                    //s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.2f, slidingSpeed / maxSlidingSpeed);
                 }
 
             }
@@ -391,7 +391,7 @@ public class AudioManager : MonoBehaviour
                 }
                 if (s != null && s.Source != null)
                 {
-                    s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.5f, slidingSpeed / maxSlidingSpeed);
+                   // s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.5f, slidingSpeed / maxSlidingSpeed);
                 }
             }
             //Adjust Pitch 
