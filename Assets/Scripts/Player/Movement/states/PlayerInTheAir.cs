@@ -162,18 +162,18 @@ public class PlayerInTheAir : State
             float sphereRadius = .2f;
             float maxHeight = stats.ladderLengthBig - sphereRadius;
             float acceleration = stats.LadderPushAcceleration;
-
+            bool useOnWaterSound = false;
             //for VFX
             Vector3 normal = Vector3.up;
             Vector3 up = Vector3.forward;
 
             Vector3 origin = PSM.transform.position;
-            LayerMask mask = LayerMask.GetMask("Environment");
+            LayerMask mask = LayerMask.GetMask("Environment", "Water");
             List<RaycastHit> hits = new List<RaycastHit>();
             #region CastDown
             if (!PSM.didLadderPush)
             {
-                hits.AddRange(Physics.SphereCastAll(origin + Vector3.up * .5f, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Ignore));
+                hits.AddRange(Physics.SphereCastAll(origin + Vector3.up * .5f, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Collide));
             }
             float closestDistance = Mathf.Infinity;
             RaycastHit closestHit;
@@ -186,6 +186,7 @@ public class PlayerInTheAir : State
                     hits[i].point != Vector3.zero)
                 {
                     closestHit = hits[i];
+                    useOnWaterSound = closestHit.collider.gameObject.layer == 4 ? true : false;
                     closestDistance = distance;
                     target = closestHit.point;
                 }
@@ -215,7 +216,6 @@ public class PlayerInTheAir : State
                         target = closestHit.point;
                         normal = closestHit.normal;
                         // this is a bit complicated but i didnt find a better way
-
                         Plane upPlane = new Plane(normal, target);
                         up = upPlane.ClosestPointOnPlane(target + new Vector3(1, 1, 1)) - target;
                     }
@@ -245,7 +245,7 @@ public class PlayerInTheAir : State
                     PlayerFollowTarget.instance.DoAdjustY(true);
                     if (VoiceManager.Instance != null)
                         VoiceManager.Instance.TryToJumpSound();
-                    AudioManager.Instance.PlayRandom(AudioManager.Instance.GetLadderPushString(true));
+                    AudioManager.Instance.PlayRandom(AudioManager.Instance.GetLadderPushString(useOnWaterSound));
 
                 }
                 else if (Vector3.Angle(directionToWall, Vector3.up) >= 45)
