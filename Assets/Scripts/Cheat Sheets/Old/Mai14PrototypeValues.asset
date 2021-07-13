@@ -12,50 +12,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f06406a2f87f5a64781d8f07d19cd6c6, type: 3}
   m_Name: Mai14PrototypeValues
   m_EditorClassIdentifier: 
-  useNewSliding: 1
-  useJumpForLadderShoot: 0
+  useJumpForLadderPush: 0
   useTriggerToSlideWithMomentum: 1
+  useInvertedSliding: 0
+  useNewSnapping: 0
   bonusVelocityDrag: 20
   jumpInputTimer: 0
   snapInputTimer: 0
   foldInputTimer: 0
   swingInputTimer: 0
   slidingCoyoteTime: 0.2
+  canLadderPush: 1
+  canLadderFold: 1
+  canSlide: 1
   movementAcceleration: 50
-  maximumMovementSpeed: 15
+  maximumMovementSpeed: 8
   movementDrag: 50
   walkingBonusVelocityDrag: 50
   movementVelocityFactor: 1
   jumpHeight: 18
   maxJumpingSpeed: 15
-  rocketJumpAcceleration: 25
-  wallJump: {x: 0, y: 12, z: 5}
-  airMovementFactor: 0.846
+  maxJumpingSpeedForward: 0
+  ladderPushAcceleration: 0
+  ladderPushVelocityThreshhold: 0
+  ladderPushCurrentVelocityFactor: 0.1
+  jumpFromLadderDirection: {x: 0, y: 0, z: 0}
+  airMovementAcceleration: 0
+  initialAirMovementAcceleration: 0
+  initialAirMovementTime: 0
   jumpingDrag: 4
   gravity: 60
+  floatTime: 1
   maxFallingSpeed: 15
-  jumpVelocityFactor: 1
+  AirVelocityFactor: 1
   snappingDistance: 5
   resnappingDistance: 0.5
+  resnappingDotProduct: 0.9
   minVelocityToChangeSnapDirection: 1
-  climbingSpeedOnLadder: 1
-  slidingAcceleration: 50
-  maxSlidingSpeed: 10
-  slidingSpeedSizeFactor: 1
-  slidingDragPercentage: 3
+  minCameraAngleToChangeSnapDirection: 0.3
+  climbingSpeedOnLadder: 0.00001
+  heightOnLadderKatapulFactor: 0.2
+  timeToLoseLadderPushBonusSpeed: 3
   ladderDismountSpeed: 1.5
   ladderDismountTimer: 0.2
-  slidingVelocityFactor: 0.01
-  preservesVelocityOnSnap: 0
   fallingMomentumPercentage: 10
-  speedLevels:
-  - 0
-  - 0.3
-  - 1
-  - 1.5
-  timeToSwitchDirection: 1
-  accelerationCooldown: 1
-  useSwinging: 1
+  playerOffsetFromLadder: 0
+  maxSlidingSpeed: 10
+  timeToAccecelerate: 0.7
+  timeToDecelerate: 0.4
+  timeToWaitBeforeDirectionChange: 0.2
   swingingAcceleration: 2000
   minSwingingDeceleration: 0.0075
   maxSwingingDeceleration: 0.031
@@ -65,4 +70,14 @@ MonoBehaviour:
   maxPushAngle: -0.75
   maxSwingSpeed: 45
   swingingGravity: 70
-  swingingVelocityFactor: 1.6
+  centripetalForceFactor: 1
+  maxRepellingVelocity: 1
+  retainSwingVelocityOnJumpFactor: 1
+  ladderLengthBig: 4
+  ladderLengthSmall: 1.25
+  foldingTime: 0.2
+  extraFoldingTime: 0.5
+  onSnapUnFoldingTime: 0.5
+  railCatapultJumpMultiplier: 17
+  reversedRailCatapultJumpMultiplier: 0
+  alphaForTransparentUI: 0.3

@@ -6,7 +6,7 @@ using UnityEngine.Animations.Rigging;
 
 public class AnimationStateController : MonoBehaviour
 {
-    #region variables
+    #region [Grey] old variables
     [Header("References")]
     public PlayerMovementStateMachine playerSM;
     public LadderSizeStateMachine ladderSM;
@@ -39,7 +39,7 @@ public class AnimationStateController : MonoBehaviour
     [Header("Impact")]
     public float timeForLanding;
     public float timeForRoll;
-    public float timeForHardLanding;
+    public float strongImpactTimer;
     bool canLand;
     bool canRoll;
     bool canHardLand;
@@ -83,15 +83,25 @@ public class AnimationStateController : MonoBehaviour
     bool slideAudioPlaying;
     #endregion
 
-    #region NEW VARS
+    #region [Attributes] NEW VARS
     [SerializeField] Animator animator;
 
     private Vector2 velocity_vec;
+
+    // Movement Attributes
+    float velocityZ = 0f;
+    float velocityX = 0f;
+    float velocityY = 0f;
+
+    [SerializeField] float acceleration = 2f;
+    [SerializeField] float deceleration = 2f;
     #endregion
 
     void Awake()
     {
         ObjectManager.instance.animationStateController = this;
+        headRig.weight = 1;
+        armRig.weight = 1;
     }
 
     void Start()
@@ -117,13 +127,14 @@ public class AnimationStateController : MonoBehaviour
         playerControlsMap = playerSM.actionAsset.FindActionMap("PlayerControls");
         stats = playerSM.stats;
         jumpAction = playerControlsMap.FindAction("Jump");
-        jumpAction.performed += context => Jump();
+        // jumpAction.performed += context => Jump();
         #endregion
 
     }
 
     void Update()
     {
+        // Time.timeScale = 0.3f;
         #region OLD
         // //ignoring the y velocity
         velocity_vec = new Vector2(playerSM.sideWaysInput, playerSM.forwardInput);
@@ -156,11 +167,12 @@ public class AnimationStateController : MonoBehaviour
         // //Sliding();
         // Swinging();
         // Falling();
-        // HeadAim();
-        // FallImpact();
-        // DismountingTop();
+        HeadAim();
+
+        PlayerOnLadder();
         // ladderStateChange();
         AnimateMovement();
+        PlayerAirborne();
         // LadderPush();
 
         // if (useFeetIK && footIKScript != null)
@@ -175,10 +187,7 @@ public class AnimationStateController : MonoBehaviour
         transform.localPosition = Vector3.zero;
         transform.localRotation = Quaternion.identity;
     }
-    float velocityZ = 0f;
-    float velocityX = 0f;
-    [SerializeField] float acceleration = 2f;
-    [SerializeField] float deceleration = 2f;
+
     void AnimateMovement()
     {
         // run forward
@@ -247,36 +256,252 @@ public class AnimationStateController : MonoBehaviour
         // }
     }
 
-    public void TriggerTurn()
-    {
-        animator.SetTrigger("Turn");
-    }
 
+    // EXIT/ENTER METHODS --------------------------------------------------------------------------------------
+    #region[rgba(236,240,241,0.05)] 
+    public void EnterWalkingState()
+    {
+        audioManager.PlayRandom("LandingAfterJump");
+        animator.SetBool("Walking", true);
+        if (animator.GetBool("HardFall") && velocity_vec.magnitude < 0.1f)
+        {
+            StartCoroutine(ImpactStun());
+        }
+    }
     public void ExitWalkingState()
     {
         animator.SetBool("Walking", false);
-    }
-
-    public void EnterWalkingState()
-    {
-        animator.SetBool("Walking", true);
     }
 
     public void EnterAirborneState()
     {
         SetFallPhase();
         animator.SetBool("Airborne", true);
+        animator.SetBool("HardFall", false);
+        airTimer = 0;
     }
-
     public void ExitAirborneState()
     {
         animator.SetBool("Airborne", false);
+    }
+
+    public void EnterOnLadderState()
+    {
+        animator.SetBool("OnLadder", true);
+
+    }
+    public void ExitOnLadderState()
+    {
+        animator.SetBool("OnLadder", false);
+
+    }
+    #endregion
+    // EXIT/ENTER METHODS END -----------------------------------------------------------------------------------
+
+
+    //JUMPING HELPER FUNCTIONS ----------------------------------------------------------------------------------
+    #region[rgba(20,240,241,0.05)]
+    void PlayerAirborne()
+    {
+        CheckFallImpact();
     }
 
     public void SetFallPhase()
     {
         animator.SetBool("IsFalling", true);
     }
+
+    public void SetJump()
+    {
+        // animator.SetBool("Jump", true);
+        animator.SetTrigger("JumpTrigger");
+    }
+
+    public void UnsetJump()
+    {
+        animator.SetBool("Jump", false);
+    }
+
+    public void TriggerDoubleJump()
+    {
+        Debug.Log("DOUBLE");
+        animator.SetTrigger("DoubleJump");
+    }
+
+    void CheckFallImpact()
+    {
+        // if (airTimer >= 0.1f)
+        // {
+        //     canLand = true;
+
+        // }
+        // /*
+        // if (airTimer >= timeForRoll)
+        // {
+        //     canRoll = true;
+        //     canLand = false;
+        // }
+        // */
+
+        if (playerSM.playerState == PlayerMovementStateMachine.PlayerState.inTheAir)
+        {
+            airTimer += Time.deltaTime;
+
+        }
+        if (airTimer >= strongImpactTimer)
+        {
+            // canHardLand = true;
+            // canLand = false;
+            // canRoll = false;
+            animator.SetBool("HardFall", true);
+        }
+
+        if (false)
+        {
+            if (!animator.GetBool("HardFall") && controller.isGrounded)
+            {
+                // if (lastAirTime >= timeForLanding)
+                // {
+                //     animator.SetBool("isLanding", true);
+                // }
+            }
+            // else
+            // {
+            //     // animator.SetBool("isLanding", false);
+            // }
+            /*
+            if (canRoll && controller.isGrounded)
+            {
+                animator.SetBool("isRolling", true);
+                canRoll = false;
+                audioManager.Play("LandingAfterJump");
+            }
+            else
+            {
+                animator.SetBool("isRolling", false);
+            }
+            */
+            //Rolling after fall if Input != 0
+            // if (animator.GetBool("HardFall") && controller.isGrounded && velocity_vec.y > 0.1)
+            // {
+            //     // animator.SetBool("isRolling", true);
+            //     // canHardLand = false;
+            //     audioManager.PlayRandom("LandingAfterJump", playerSM.transform.position);
+            // }
+            // else
+            // {
+            //     animator.SetBool("isRolling", false);
+            // }
+            //HardImpact after fall if Input == 0
+            // if (animator.GetBool("HardFall") && controller.isGrounded && velocity_vec.y < 0.1)
+            // {
+            //     animator.SetBool("isHardLanding", true);
+            //     canHardLand = false;
+            //     audioManager.PlayRandom("LandingAfterFall", playerSM.transform.position);
+            //     StartCoroutine(ImpactInput());
+            // }
+            // else
+            // {
+            //     animator.SetBool("isHardLanding", false);
+            // }
+        }
+    }
+
+    IEnumerator ImpactStun()
+    {
+        playerControlsMap.Disable();
+        yield return new WaitForSeconds(0.5f);
+        playerControlsMap.Enable();
+    }
+    #endregion
+    //JUMPING HELPER FUNCTIONS END -------------------------------------------------------------------------------
+
+    // SNAP FUNCTIONS --------------------------------------------------------------------------------------------
+    #region[rgba(12,70,255,0.09)] 
+    public void Snap()
+    {
+        animator.SetTrigger("Snap");
+    }
+    #endregion
+    // SNAP FUNCTIONS END ----------------------------------------------------------------------------------------
+
+
+    //OnLadder ---------------------------------------------------------------------------------------------------
+    #region[Methods] ONLADDER METHODS
+    float timer = 0;
+    void PlayerOnLadder()
+    {
+        if (animator.GetBool("OnLadder"))
+        {
+            DismountingTop();
+            LadderClimb();
+        }
+    }
+
+    void LadderClimb()
+    {
+        if (playerSM.HeightOnLadder < 0 && playerSM.HeightOnLadder > -.75f)
+        {
+            // if (Mathf.Abs(velocity_vec.y) > 0f)
+            // climb up
+            if (velocity_vec.y > 0f && velocityY < 1f)
+            {
+                velocityY += Time.deltaTime * acceleration * 5;
+            }
+
+            // climb down
+            if (velocity_vec.y < 0f && velocityY > -1f)
+            {
+                velocityY -= Time.deltaTime * acceleration * 5;
+            }
+
+            // decrease velocityY
+            if (Mathf.Abs(velocity_vec.y) <= 0.4f && velocityY < 0f)
+            {
+                velocityY += Time.deltaTime * deceleration;
+            }
+            if (Mathf.Abs(velocity_vec.y) <= 0.4f && velocityY > 0f)
+            {
+                velocityY -= Time.deltaTime * deceleration;
+            }
+
+            // reset velocityY
+            if (Mathf.Abs(velocity_vec.y) <= 0.1f && velocityY != 0f && velocityY > -0.1f && velocityY < 0.1f)
+            {
+                velocityY = 0f;
+            }
+        }
+        else
+        {
+            velocityY = 0f;
+        }
+
+
+        animator.SetFloat("ClimbingDirection", velocityY);
+    }
+
+    void DismountingTop()
+    {
+        if (playerSM.dismounting == true)
+        {
+            animator.SetBool("isDismounting", true);
+        }
+        else
+        {
+            animator.SetBool("isDismounting", false);
+        }
+    }
+
+    public void DismountLadder()
+    {
+        animator.SetTrigger("Dismount");
+    }
+    #endregion
+    //OnLadder END -----------------------------------------------------------------------------------------------
+
+
+
+
 
     void CheckIK()
     {
@@ -365,82 +590,7 @@ public class AnimationStateController : MonoBehaviour
         }
     }
 
-    void FallImpact()
-    {
-        if (airTimer >= 0.1f)
-        {
-            canLand = true;
 
-        }
-        /*
-        if (airTimer >= timeForRoll)
-        {
-            canRoll = true;
-            canLand = false;
-        }
-        */
-        if (airTimer >= timeForHardLanding)
-        {
-            canHardLand = true;
-            canLand = false;
-            canRoll = false;
-        }
-        if (canLand && controller.isGrounded)
-        {
-            canLand = false;
-            audioManager.PlayRandom("LandingAfterJump", playerSM.transform.position);
-            if (lastAirTime >= timeForLanding)
-            {
-                animator.SetBool("isLanding", true);
-            }
-        }
-        else
-        {
-            animator.SetBool("isLanding", false);
-        }
-        /*
-        if (canRoll && controller.isGrounded)
-        {
-            animator.SetBool("isRolling", true);
-            canRoll = false;
-            audioManager.Play("LandingAfterJump");
-        }
-        else
-        {
-            animator.SetBool("isRolling", false);
-        }
-        */
-        //Rolling after fall if Input != 0
-        if (canHardLand && controller.isGrounded && forwardAmount > 0.1)
-        {
-            animator.SetBool("isRolling", true);
-            canHardLand = false;
-            audioManager.PlayRandom("LandingAfterJump", playerSM.transform.position);
-        }
-        else
-        {
-            animator.SetBool("isRolling", false);
-        }
-        //HardImpact after fall if Input == 0
-        if (canHardLand && controller.isGrounded && forwardAmount < 0.1)
-        {
-            animator.SetBool("isHardLanding", true);
-            canHardLand = false;
-            audioManager.PlayRandom("LandingAfterFall", playerSM.transform.position);
-            StartCoroutine(ImpactInput());
-        }
-        else
-        {
-            animator.SetBool("isHardLanding", false);
-        }
-    }
-
-    IEnumerator ImpactInput()
-    {
-        playerControlsMap.Disable();
-        yield return new WaitForSeconds(1);
-        playerControlsMap.Enable();
-    }
 
     void Falling()
     {
@@ -578,15 +728,4 @@ public class AnimationStateController : MonoBehaviour
         }
     }
 
-    void DismountingTop()
-    {
-        if (playerSM.dismounting == true)
-        {
-            animator.SetBool("isDismounting", true);
-        }
-        else
-        {
-            animator.SetBool("isDismounting", false);
-        }
-    }
 }
