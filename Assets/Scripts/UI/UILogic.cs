@@ -395,10 +395,10 @@ public class UILogic : MonoBehaviour
 
         if (type == "switch")
         {
-            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject, 0.0f, 0.5f);
-            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject, 0.0f, 0.5f);
-            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(1).transform.GetChild(0).gameObject, 0.0f, 0.5f);
-            ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(1).gameObject, 0.0f, 0.5f);
+            linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject.GetComponent<Image>().CrossFadeAlpha(0f, 0.5f, false);
+            linkedUI.transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).transform.GetChild(0).gameObject.GetComponent<Image>().CrossFadeAlpha(0f, 0.5f, false);
+            linkedUI.transform.GetChild(1).transform.GetChild(0).gameObject.GetComponent<Image>().CrossFadeAlpha(0f, 0.5f, false);
+            linkedUI.transform.GetChild(1).gameObject.GetComponent<Image>().CrossFadeAlpha(0f, 0.5f, false);
         }
         if (type == "cogwheel")
         {
