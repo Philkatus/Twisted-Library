@@ -561,7 +561,7 @@ public class UILogic : MonoBehaviour
         {
             tutorialUI = swingTutorialUI;
         }
-        else
+        else if (uiToUse == "letgo")
         {
             tutorialUI = letgoTutorialUI;
         }

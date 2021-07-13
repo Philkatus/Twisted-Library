@@ -4,14 +4,32 @@ using UnityEngine;
 
 public class TriggerSnapTutorial : MonoBehaviour
 {
-    bool doOnce;
+    public enum TriggerType
+    {
+        Snap, LetGo, Swing
+    }
+
+    public TriggerType triggerTutorialType;
 
     void OnTriggerEnter(Collider collider)
     {
-        if (collider.tag == "Player" && !doOnce)
+        if (collider.tag == "Player")
         {
-            StartCoroutine(ObjectManager.instance.uILogic.ShowTutorialExplanation("snap"));
-            doOnce = true;
+            var type = "";
+            if (triggerTutorialType == TriggerType.Snap)
+            {
+                type = "snap";
+            }
+            else if (triggerTutorialType == TriggerType.LetGo)
+            {
+                type = "letgo";
+            }
+            else
+            {
+                type = "swing";
+            }
+            ObjectManager.instance.uILogic.StartCoroutine(ObjectManager.instance.uILogic.ShowTutorialExplanation(type));
+            Destroy(this.gameObject);
         }
     }
 }
