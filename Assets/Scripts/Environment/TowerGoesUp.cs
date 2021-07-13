@@ -19,16 +19,16 @@ public class TowerGoesUp : MonoBehaviour
     }
 
     
-    void Update()
+    void FixedUpdate()
     {
         if(sendTowerUp)
         {
-            time += Time.deltaTime;
+            time += Time.fixedDeltaTime;
             Debug.Log("goes up");
             if(time < travelTime)
             {
                 float t = time / travelTime;
-                transform.localPosition = Vector3.Slerp(startPos, endPosition, t);
+                transform.localPosition = Vector3.Lerp(startPos, endPosition, t);
             }
             else
             {
@@ -39,12 +39,12 @@ public class TowerGoesUp : MonoBehaviour
 
         if (sendTowerDown)
         {
-            time += Time.deltaTime;
+            time += Time.fixedDeltaTime;
             Debug.Log("goes down");
             if (time < travelTime)
             {
                 float t = time / travelTime;
-                transform.localPosition = Vector3.Slerp(endPosition, startPos, t);
+                transform.localPosition = Vector3.Lerp(endPosition, startPos, t);
             }
             else
             {
@@ -55,12 +55,12 @@ public class TowerGoesUp : MonoBehaviour
 
         if (sendTowerDownMidWay)
         {
-            time += Time.deltaTime;
+            time += Time.fixedDeltaTime;
             Debug.Log("goes down midway");
             if (time < travelTime)
             {
                 float t = time / travelTime;
-                transform.localPosition = Vector3.Slerp(midwayPos, startPos, t);
+                transform.localPosition = Vector3.Lerp(midwayPos, startPos, t);
             }
             else
             {
@@ -74,7 +74,8 @@ public class TowerGoesUp : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.CompareTag("Player"))
+        time = 0;
+        if (other.gameObject.CompareTag("Player"))
         {
             sendTowerUp = true;
         }
@@ -93,6 +94,7 @@ public class TowerGoesUp : MonoBehaviour
             }
             else //already arrived on the top
             {
+                time = 0;
                 sendTowerDown = true;
             }
         }
