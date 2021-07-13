@@ -69,11 +69,12 @@ public class VFX_Manager : MonoBehaviour
     [Header("Wheel Light Up")]
     [SerializeField] Material wheelMat;
     [SerializeField] float wheelIntensity = 5000000;
-    [Header("Snapping Light Up")]
+    [Header("Ansnap / LightUp")]
     [SerializeField] float lightUpTime;
     [SerializeField] float fadeTime, normalWidth, broadWidth, normalGD, broadGD;
     [SerializeField] int noIntensity, normalIntensity, lightUpIntensity;
     [SerializeField] Color[] normalColor, swingingColor;
+    [SerializeField] VisualEffect snappingVFX;
     [Header("Decal Shadow")]
     [SerializeField] DecalProjector shadow;
     [SerializeField] VisualEffect landingBubbles;
@@ -217,7 +218,7 @@ public class VFX_Manager : MonoBehaviour
         shadow.size = new Vector3(0, 0, shadowRemapMax);
         StartCoroutine(LightRailUp());
         SetProperty(railMats, "_EmissionColor", swingingColor, lightUpTime);
-
+        PlayVFX("snap");
     }
 
     public void OnResnap()
@@ -404,6 +405,11 @@ public class VFX_Manager : MonoBehaviour
             case "stepRight":
                 vfx = stepRight;
                 break;
+            case "snap":
+                vfx = snappingVFX;
+                Vector3 snappingPoint = pSM.closestRail.pathCreator.path.GetClosestPointOnPath(transform.GetChild(0).position);
+                vfx.transform.position = snappingPoint;
+                break;
             default:
                 vfx = new VisualEffect();
                 Debug.Log("This doesnt exist");
@@ -431,7 +437,7 @@ public class VFX_Manager : MonoBehaviour
 
     IEnumerator LightUpWheel()
     {
-        float startIntensity = 10000;
+        float startIntensity = 1000;
         float endIntensity = wheelIntensity;
         float timer = 0;
         wheelMat.SetVector("_Position", transform.GetChild(0).position);
@@ -561,7 +567,7 @@ public class VFX_Manager : MonoBehaviour
             if (pSM.playerState == PlayerMovementStateMachine.PlayerState.swinging)
                 lastPositionWall = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
             float t = timer / time;
-            float currentTime = Mathf.Lerp(0, 1.22f, t);
+            float currentTime = Mathf.Lerp(0.2f, 1.22f, t);
             wallProjector.material.SetFloat("_WallTime", currentTime);
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
@@ -589,7 +595,7 @@ public class VFX_Manager : MonoBehaviour
     }
     #endregion
 
-    #region LIGHT RAIL UP
+    #region ANSNAPPEN
     IEnumerator LightRailUp()
     {
         inStage = true;
@@ -638,5 +644,6 @@ public class VFX_Manager : MonoBehaviour
         SetProperty(railMats, "_VD", toWidth);
         SetProperty(railMats, "_GD", toWidth2);
     }
+
     #endregion
 }
