@@ -17,7 +17,7 @@ public class UILogic : MonoBehaviour
     InputAction quitGame;
     InputAction showMoreOptions;
     InputAction back;
-    WaitForSeconds upgradeTextTime;
+    WaitForSeconds textTime;
     PlayerMovementStateMachine playerMovementStateMachine;
 
     [SerializeField] Camera startCamera;
@@ -29,6 +29,11 @@ public class UILogic : MonoBehaviour
     [SerializeField] GameObject slidingUpgradeUI;
     [SerializeField] GameObject ladderPushUpgradeUI;
     [SerializeField] GameObject catapultUpgradeUI;
+    [SerializeField] GameObject moveTutorialUI;
+    [SerializeField] GameObject jumpTutorialUI;
+    [SerializeField] GameObject snapTutorialUI;
+    [SerializeField] GameObject swingTutorialUI;
+    [SerializeField] GameObject letgoTutorialUI;
 
     public GameObject options, inGameUI;
     public GameObject controller;
@@ -72,7 +77,7 @@ public class UILogic : MonoBehaviour
         playerControlsMap.Disable();
         UIControlsMap.Enable();
         uiAlpha = ObjectManager.instance.pSM.stats.alphaForTransparentUI;
-        upgradeTextTime = new WaitForSeconds(4f);
+        textTime = new WaitForSeconds(4f);
 
         #region Set PlayerPrefs
         if (PlayerPrefs.GetInt("UseInvertedSliding", 0) == 1)
@@ -158,6 +163,7 @@ public class UILogic : MonoBehaviour
                 startCanvas.SetActive(false);
                 startcanvasDisabled = true;
                 playerControlsMap.Enable();
+                StartCoroutine(ShowTutorialExplanationBeginning());
             }
         }
     }
@@ -508,8 +514,7 @@ public class UILogic : MonoBehaviour
     IEnumerator HideUI(GameObject linkedUI)
     {
         yield return new WaitForSeconds(.1f);
-        ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 1f, 0f);
-        ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 0.0f, 0.5f);
+        linkedUI.transform.GetChild(0).gameObject.GetComponent<Image>().CrossFadeAlpha(0f, 0.5f, false);
     }
 
     #region Ingame upgrade explanations
@@ -517,27 +522,66 @@ public class UILogic : MonoBehaviour
     {
         ExtensionMethods.CrossFadeAlphaFixed(slidingUpgradeUI.transform.GetChild(0).gameObject, 1f, 0.5f);
         playerMovementStateMachine.controlsDisabled = true;
-        yield return upgradeTextTime;
+        yield return textTime;
         playerMovementStateMachine.controlsDisabled = false;
-        ExtensionMethods.CrossFadeAlphaFixed(slidingUpgradeUI.transform.GetChild(0).gameObject, 0f, 0.5f);
+        slidingUpgradeUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false);
+        yield return textTime;
     }
 
     public IEnumerator ShowAndHideLadderPushExplanation()
     {
         ExtensionMethods.CrossFadeAlphaFixed(ladderPushUpgradeUI.transform.GetChild(0).gameObject, 1f, 0.5f);
         playerMovementStateMachine.controlsDisabled = true;
-        yield return upgradeTextTime;
+        yield return textTime;
         playerMovementStateMachine.controlsDisabled = false;
-        ExtensionMethods.CrossFadeAlphaFixed(ladderPushUpgradeUI.transform.GetChild(0).gameObject, 0f, 0.5f);
+        ladderPushUpgradeUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false);
+        yield return textTime;
     }
 
     public IEnumerator ShowAndHideCatapultExplanation()
     {
         ExtensionMethods.CrossFadeAlphaFixed(catapultUpgradeUI.transform.GetChild(0).gameObject, 1f, 0.5f);
         playerMovementStateMachine.controlsDisabled = true;
-        yield return upgradeTextTime;
+        yield return textTime;
         playerMovementStateMachine.controlsDisabled = false;
-        ExtensionMethods.CrossFadeAlphaFixed(catapultUpgradeUI.transform.GetChild(0).gameObject, 0f, 0.5f);
+        catapultUpgradeUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false);
+        yield return textTime;
     }
+    #endregion
+
+    #region Tutorial
+    public IEnumerator ShowTutorialExplanation(string uiToUse)
+    {
+        GameObject tutorialUI = null;
+        if (uiToUse == "snap")
+        {
+            tutorialUI = snapTutorialUI;
+        }
+        else if (uiToUse == "swing")
+        {
+            tutorialUI = swingTutorialUI;
+        }
+        else
+        {
+            tutorialUI = letgoTutorialUI;
+        }
+        ExtensionMethods.CrossFadeAlphaFixed(tutorialUI.transform.GetChild(0).gameObject, 0.7f, 0.5f);
+        yield return textTime;
+        tutorialUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false);
+        yield return textTime;
+    }
+
+    public IEnumerator ShowTutorialExplanationBeginning()
+    {
+        ExtensionMethods.CrossFadeAlphaFixed(moveTutorialUI.transform.GetChild(0).gameObject, 0.7f, 0.5f);
+        yield return textTime;
+        moveTutorialUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false); ;
+        yield return textTime;
+        ExtensionMethods.CrossFadeAlphaFixed(jumpTutorialUI.transform.GetChild(0).gameObject, 0.7f, 0.5f);
+        yield return textTime;
+        jumpTutorialUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false); ;
+        yield return textTime;
+    }
+
     #endregion
 }
