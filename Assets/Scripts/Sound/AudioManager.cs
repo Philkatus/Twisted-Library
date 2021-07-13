@@ -391,11 +391,11 @@ public class AudioManager : MonoBehaviour
                 }
                 if (s != null && s.Source != null)
                 {
-                   // s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.5f, slidingSpeed / maxSlidingSpeed);
+                    // s.Source.audioSource.pitch = Mathf.Lerp(1f, 1.5f, slidingSpeed / maxSlidingSpeed);
                 }
             }
             //Adjust Pitch 
-            
+
         }
         else
         {
@@ -411,20 +411,15 @@ public class AudioManager : MonoBehaviour
     #endregion
 
     #region ladderPushSounds
-    public string GetLadderPushString(bool variance) 
+    public string GetLadderPushString(bool variance)
     {
         PlayerMovementStateMachine pSM = ObjectManager.instance.pSM;
         string ConcreteString = "concreteLadderPush";
-        string grasString = "grasLadderPush";
-        string WaterString= "waterLadderPush";
+        string WaterString = "waterLadderPush";
         string returnString = ConcreteString;
-        if (variance) 
+        if (variance)
         {
-            if (pSM.isOnGras) 
-            {
-                returnString = grasString;
-            }
-            else if (pSM.isOnWater) 
+            if (pSM.isOnWater)
             {
                 returnString = WaterString;
             }
@@ -432,11 +427,11 @@ public class AudioManager : MonoBehaviour
         return returnString;
     }
     #endregion
-    public void CogSound(int index, Vector3 position) 
+    public void CogSound(int index, Vector3 position)
     {
         string name = "CogChallenge";
         Sound s = Array.Find(sounds, sound => sound.name == name);
-        if (CogSoundSources[index]==null)
+        if (CogSoundSources[index] == null)
         {
             CogSoundSources[index] = GetInactiveSoundSource();
             ApplyValuesToSource(s, CogSoundSources[index].audioSource);
@@ -444,7 +439,7 @@ public class AudioManager : MonoBehaviour
             CogSoundSources[index].audioSource.Play();
         }
     }
-    public void SwitchSound(int index, Vector3 position) 
+    public void SwitchSound(int index, Vector3 position)
     {
         string name = "SwitchChallenge";
         Sound s = Array.Find(sounds, sound => sound.name == name);
@@ -465,10 +460,10 @@ public class AudioManager : MonoBehaviour
             ApplyValuesToSource(s, Landmark1Sources[index].audioSource);
             Landmark1Sources[index].audioSource.Play();
         }
-        if (Landmark1Sources[index+3] == null)
+        if (Landmark1Sources[index + 3] == null)
         {
-            ApplyValuesToSource(s, Landmark1Sources[index+3].audioSource);
-            Landmark1Sources[index+3].audioSource.Play();
+            ApplyValuesToSource(s, Landmark1Sources[index + 3].audioSource);
+            Landmark1Sources[index + 3].audioSource.Play();
         }
     }
     public void Landmark2Sound(int index)
@@ -481,7 +476,7 @@ public class AudioManager : MonoBehaviour
             Landmark2Sources[index].audioSource.Play();
         }
     }
-    public void StopCogSound(int index, Vector3 position) 
+    public void StopCogSound(int index, Vector3 position)
     {
         if (CogSoundSources[index] != null)
         {
