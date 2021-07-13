@@ -95,10 +95,9 @@ public class PlayerInTheAir : State
             PSM.baseVelocity -= SideWaysVelocity;
 
         }
-        else
-        {
+        
             controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.AirVelocityFactor);
-        }
+        
         if (HeadCollision())
         {
             PSM.baseVelocity.y -= PSM.baseVelocity.y * .9f * Time.fixedDeltaTime;
