@@ -24,7 +24,6 @@ public class TowerGoesUp : MonoBehaviour
         if(sendTowerUp)
         {
             time += Time.fixedDeltaTime;
-            Debug.Log("goes up");
             if(time < travelTime)
             {
                 float t = time / travelTime;
@@ -40,7 +39,6 @@ public class TowerGoesUp : MonoBehaviour
         if (sendTowerDown)
         {
             time += Time.fixedDeltaTime;
-            Debug.Log("goes down");
             if (time < travelTime)
             {
                 float t = time / travelTime;
@@ -56,7 +54,6 @@ public class TowerGoesUp : MonoBehaviour
         if (sendTowerDownMidWay)
         {
             time += Time.fixedDeltaTime;
-            Debug.Log("goes down midway");
             if (time < travelTime)
             {
                 float t = time / travelTime;
