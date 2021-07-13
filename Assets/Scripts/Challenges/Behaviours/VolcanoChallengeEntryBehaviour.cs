@@ -4,20 +4,15 @@ using UnityEngine;
 
 public class VolcanoChallengeEntryBehaviour : MonoBehaviour, ICentralObject
 {
-    [SerializeField] List<Animation> anims;
+    //[SerializeField] List<Animation> anims;
+
+    [SerializeField] RotateStuffEaselyDude rotateScript;
 
     [SerializeField] VolcanoGeneralBehaviour volcanoBehaviour;
 
     public bool play;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        foreach (var anim in anims)
-        {
-            anim.Stop();
-        }
-    }
+
 
     // Update is called once per frame
     void Update()
@@ -25,10 +20,7 @@ public class VolcanoChallengeEntryBehaviour : MonoBehaviour, ICentralObject
         //Debug
         if(play)
         {
-            foreach (var anim in anims)
-            {
-                anim.Play();
-            }
+            rotateScript.isPlaying = true;
 
             //should opne the first first, else we can't see it
             if (!volcanoBehaviour.upPlateOut)
@@ -60,10 +52,9 @@ public class VolcanoChallengeEntryBehaviour : MonoBehaviour, ICentralObject
 
     public void OnAllComponentsCompleted()
     {
-        foreach(var anim in anims)
-        {
-            anim.Play();
-        }
+
+
+        rotateScript.isPlaying = true;
 
 
         //should open the first first, else we can't see it
