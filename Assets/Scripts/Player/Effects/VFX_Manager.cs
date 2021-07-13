@@ -499,6 +499,10 @@ public class VFX_Manager : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
+    public void SetActiveShadow(bool disable)
+    {
+        shadow.enabled = disable;
+    }
     #endregion
 
     #region DOUBLE JUMP
@@ -578,20 +582,46 @@ public class VFX_Manager : MonoBehaviour
     #endregion
 
     #region WATER STEPS
-    IEnumerator ExtendWater()
+    public void TriggerLeftFootWater()
+    {
+        StartCoroutine(ExtendWater("left"));
+    }
+    public void TriggerRightFootWater()
+    {
+        StartCoroutine(ExtendWater("right"));
+    }
+    IEnumerator ExtendWater(string side)
     {
         float timer = 0;
         while (timer < waterSpeed)
         {
             float t = timer / waterSpeed;
             float currentSize = Mathf.Lerp(0, 0.3f, t);
-            waterStepsLeft.size = new Vector3(currentSize, currentSize, 1);
-            waterStepsRight.size = new Vector3(currentSize, currentSize, 1);
+            if (side == "left")
+            {
+                waterStepsLeft.size = new Vector3(currentSize, currentSize, 1);
+                waterStepsLeft.material.SetFloat("_Alpha", Mathf.Lerp(1,0,t));
+            }
+            else if (side == "right")
+            {
+                waterStepsRight.size = new Vector3(currentSize, currentSize, 1);
+                waterStepsRight.material.SetFloat("_Alpha", Mathf.Lerp(1, 0, t));
+            }
+
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        waterStepsLeft.size = new Vector3(0, 0, 1);
-        waterStepsRight.size = new Vector3(0, 0, 1);
+        if (side == "left")
+        {
+            waterStepsLeft.size = new Vector3(0, 0, 1);
+            waterStepsLeft.material.SetFloat("_Alpha", 1);
+        }
+        else if (side == "right")
+        {
+            waterStepsRight.size = new Vector3(0, 0, 1);
+            waterStepsRight.material.SetFloat("_Alpha", 1);
+        }
+
     }
     #endregion
 
