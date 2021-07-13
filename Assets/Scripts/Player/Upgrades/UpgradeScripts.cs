@@ -29,16 +29,19 @@ public class UpgradeScripts : MonoBehaviour
             if (upgrade == Upgrade.canLadderFold)
             {
                 stats.canLadderFold = true;
+                ObjectManager.instance.pSM.ladderSizeStateMachine.upGrades[0].enabled = true;
                 uILogic.StartCoroutine(uILogic.ShowAndHideCatapultExplanation());
             }
             else if (upgrade == Upgrade.canLadderPush)
             {
                 stats.canLadderPush = true;
+                ObjectManager.instance.pSM.ladderSizeStateMachine.upGrades[1].enabled = true;
                 uILogic.StartCoroutine(uILogic.ShowAndHideLadderPushExplanation());
             }
             else if (upgrade == Upgrade.canSlide)
             {
                 stats.canSlide = true;
+                ObjectManager.instance.pSM.ladderSizeStateMachine.upGrades[2].enabled = true;
                 uILogic.StartCoroutine(uILogic.ShowAndHideSlidingExplanation());
             }
 

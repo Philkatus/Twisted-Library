@@ -35,7 +35,7 @@ public class LadderPush : State
     {
         if (PSM.playerState != PlayerMovementStateMachine.PlayerState.swinging)
         {
-            pSM.ladder.SetParent(pSM.animController.spine);
+            pSM.ladder.SetParent(null);
         }
             lSM.ladderParent.localRotation = LadderLocalRotation;
         
@@ -74,11 +74,11 @@ public class LadderPush : State
         {
             time += Time.deltaTime;
 
-            pSM.ladder.localPosition = Vector3.Lerp(startingLocalPosition, pSM.ladderWalkingPosition, time / stats.foldingTime);
-            pSM.ladder.localRotation = Quaternion.Lerp(startingLocalRotation, pSM.ladderWalkingRotation, time / stats.foldingTime);
+            pSM.ladder.position = Vector3.Lerp(startingLocalPosition, pSM.LadderWalkingPosition, time / stats.foldingTime);
+            pSM.ladder.rotation = Quaternion.Lerp(startingLocalRotation, pSM.LadderWalkingRotation, time / stats.foldingTime);
             
-                pSM.ladder.localPosition = pSM.ladderWalkingPosition;
-                pSM.ladder.localRotation = pSM.ladderWalkingRotation;
+                pSM.ladder.position = pSM.LadderWalkingPosition;
+                pSM.ladder.rotation = pSM.LadderWalkingRotation;
                 lSM.OnShrink();
             
         }

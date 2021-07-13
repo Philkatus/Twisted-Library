@@ -66,11 +66,10 @@ public abstract class State
 
     }
 
-    public virtual IEnumerator ChangeLadderSize()
+    public virtual void FollowLadderTarget() 
     {
-        yield return null;
-    }
 
+    }
     public virtual IEnumerator Finish()
     {
         yield return null;

@@ -125,4 +125,13 @@ public static class ExtensionMethods
         currentVelocity += clampedVelocity;
         return currentVelocity;
     }
+
+    public static Quaternion XLookRotation(Vector3 right, Vector3 up)
+    {
+
+        Quaternion rightToForward = Quaternion.Euler(0f, -90f, 0f);
+        Quaternion forwardToTarget = Quaternion.LookRotation(right, up);
+
+        return forwardToTarget * rightToForward;
+    }
 }

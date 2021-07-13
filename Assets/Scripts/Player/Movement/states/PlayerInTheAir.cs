@@ -39,9 +39,10 @@ public class PlayerInTheAir : State
         Vector3 directionForward = new Vector3(cam.forward.x, 0, cam.forward.z).normalized;
         Vector3 directionRight = new Vector3(cam.right.x, 0, cam.right.z).normalized;
         Vector3 direction = directionForward * PSM.forwardInput + directionRight * PSM.sideWaysInput;
-
-        controller.transform.rotation = Quaternion.AngleAxis(-Mathf.Abs(Vector3.SignedAngle(controller.transform.up, Vector3.up, controller.transform.right) * Time.fixedDeltaTime * 4), controller.transform.right) * controller.transform.rotation;
-        if (direction != Vector3.zero)
+        bool isSnapping = PSM.snappingStep != PlayerMovementStateMachine.SnappingStep.Finished;
+        if (!isSnapping)
+            controller.transform.rotation = Quaternion.AngleAxis(-Mathf.Abs(Vector3.SignedAngle(controller.transform.up, Vector3.up, controller.transform.right) * Time.fixedDeltaTime * 4), controller.transform.right) * controller.transform.rotation;
+        if (!isSnapping && direction != Vector3.zero)
         {
             controller.transform.forward = Vector3.Lerp(controller.transform.forward, direction, 20 * Time.fixedDeltaTime);
         }
@@ -63,12 +64,12 @@ public class PlayerInTheAir : State
         }
         #endregion
 
-        if (initialAirMovementTimer < stats.initialAirMovementTime)
+        if (!isSnapping && initialAirMovementTimer < stats.initialAirMovementTime)
         {
             PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.InitialAirMovementAcceleration;
             initialAirMovementTimer += Time.deltaTime;
         }
-        else
+        else if(!isSnapping)
         {
             PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.AirMovementAcceleration;
         }
@@ -81,7 +82,22 @@ public class PlayerInTheAir : State
         }
         GravityAndClamp();
 
-        controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.AirVelocityFactor);
+        if (isSnapping && PSM.closestRail != null)
+        {
+            /*
+            Vector3 StartingPoint = PSM.closestRail.pathCreator.path.GetPointAtDistance(PSM.currentDistance);
+            Vector3 upwardsVelocity = ExtensionMethods.resultingVelocity(PSM.baseVelocity, Vector3.up);
+            Vector3 forwardVelocity = ExtensionMethods.resultingVelocity(PSM.baseVelocity, PSM.transform.position - StartingPoint);
+            PSM.baseVelocity = upwardsVelocity + forwardVelocity;
+            */
+            Vector3 PathDirection = PSM.closestRail.pathCreator.path.GetDirectionAtDistance(PSM.currentDistance);
+            Vector3 SideWaysVelocity = ExtensionMethods.resultingVelocity(PSM.baseVelocity, PathDirection);
+            PSM.baseVelocity -= SideWaysVelocity;
+
+        }
+        
+            controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.AirVelocityFactor);
+        
         if (HeadCollision())
         {
             PSM.baseVelocity.y -= PSM.baseVelocity.y * .9f * Time.fixedDeltaTime;
@@ -157,7 +173,7 @@ public class PlayerInTheAir : State
 
     public override void LadderPush()
     {
-        if (stats.canLadderPush)
+        if (stats.canLadderPush && PSM.snappingStep == PlayerMovementStateMachine.SnappingStep.Finished)
         {
             float sphereRadius = .2f;
             float maxHeight = stats.ladderLengthBig - sphereRadius;
@@ -287,9 +303,9 @@ public class PlayerInTheAir : State
         controller.transform.SetParent(PSM.myParent);
         PSM.ladder.transform.localScale = new Vector3(1, 1, 1);
         controller.transform.localScale = new Vector3(1, 1, 1);
-        PSM.ladder.transform.SetParent(PSM.animController.spine);
-        PSM.ladder.localPosition = PSM.ladderWalkingPosition;
-        PSM.ladder.localRotation = PSM.ladderWalkingRotation;
+        PSM.ladder.transform.SetParent(PSM.myParent);
+        //PSM.ladder.position = PSM.LadderWalkingPosition;
+        //PSM.ladder.rotation = PSM.LadderWalkingRotation;
         stats = PSM.stats;
 
         controller = PSM.controller;

@@ -166,7 +166,19 @@ public class PlayerSwinging : State
             PSM.bob.transform.SetParent(null);
             PSM.Bob_Pivot.rotation = Quaternion.Euler(0, 90, 0);
         }
-        SnappingOrientation();
+        #region  Variable assignment
+        stats = PSM.stats;
+        ladderSizeState = PSM.ladderSizeStateMachine;
+        closestRail = PSM.closestRail;
+        railType = closestRail.railType;
+        climbingSpeed = stats.climbingSpeedOnLadder;
+        controller = PSM.controller;
+        ladder = PSM.ladder;
+        pathCreator = closestRail.pathCreator;
+        path = pathCreator.path;
+        #endregion
+
+        //SnappingOrientation();
 
         #region Set Variables Sliding
         var inverstedSlidingAdjustment = PSM.stats.useInvertedSliding ? -1 : 1;
@@ -272,17 +284,7 @@ public class PlayerSwinging : State
 
     void SnappingOrientation()
     {
-        #region  Variable assignment
-        stats = PSM.stats;
-        ladderSizeState = PSM.ladderSizeStateMachine;
-        closestRail = PSM.closestRail;
-        railType = closestRail.railType;
-        climbingSpeed = stats.climbingSpeedOnLadder;
-        controller = PSM.controller;
-        ladder = PSM.ladder;
-        pathCreator = closestRail.pathCreator;
-        path = pathCreator.path;
-        #endregion
+        
 
         #region LadderPlacement
         Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(PSM.transform.position);

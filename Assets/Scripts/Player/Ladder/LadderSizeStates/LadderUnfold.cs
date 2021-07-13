@@ -23,10 +23,13 @@ public class LadderUnfold : State
             LadderSizeStateMachine.isUnFolding = true;
         }
         AudioManager.Instance.PlayRandom("LadderUnFold");
+
+        LadderSizeStateMachine.anim.SetTrigger("LadderExtent");
     }
 
     public override void Fold()
     {
+        /*
         if (isLerpGoing)
         {
             time += Time.deltaTime;
@@ -44,6 +47,7 @@ public class LadderUnfold : State
         {
             LadderSizeStateMachine.isUnFolding = false;
         }
+        */
 
 
     }

@@ -11,16 +11,22 @@ public class LadderSizeStateMachine : StateMachine
     public bool isUnFolding = false;
     public PlayerMovementStateMachine playerStateMachine;
     public Transform ladderParent;
+    public Transform followTarget;
+    public Animator anim;
+    public Transform LadderVisuals;
+
+    public MeshRenderer[] upGrades = new MeshRenderer[3];
     #endregion
 
     private void Start()
     {
-        SetState(new LadderSmall(this));
+        SetState(new LadderFold(this));
     }
 
     private void Update()
     {
         State.Fold();
+        State.FollowLadderTarget();
     }
 
     #region Functions to change the State
@@ -29,9 +35,9 @@ public class LadderSizeStateMachine : StateMachine
     ///</summary>
     public void OnGrow()
     {
-        if (!(State is LadderBig))
+        if (!(State is LadderUnfold))
         {
-            SetState(new LadderBig(this));
+            SetState(new LadderUnfold(this));
             playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderBig;
         }
     }
@@ -41,13 +47,12 @@ public class LadderSizeStateMachine : StateMachine
     ///</summary>
     public void OnShrink()
     {
-        if (!(State is LadderSmall))
+        if (!(State is LadderFollow))
         {
-            SetState(new LadderSmall(this));
+            SetState(new LadderFollow(this));
             playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderSmall;
         }
     }
-
 
     ///<summary>
     /// Is called when the ladder folds in both directions.
@@ -69,12 +74,11 @@ public class LadderSizeStateMachine : StateMachine
             }
         }
     }
-
     public void OnSnap()
     {
         if (!playerStateMachine.stats.useNewSnapping)
         {
-            SetState(new LadderUnfold(this));
+            SetState(new LadderSnap(this));
             playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderUnfold;
         }
         else 
@@ -83,7 +87,6 @@ public class LadderSizeStateMachine : StateMachine
             playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderSnap;
         }
     }
-
     public void OnLadderPush()
     {
         SetState(new LadderPush(this));
