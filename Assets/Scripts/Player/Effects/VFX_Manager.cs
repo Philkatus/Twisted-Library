@@ -62,10 +62,13 @@ public class VFX_Manager : MonoBehaviour
         }
     }
     #endregion
-    #region PRIVATE
+    #region INSPECTOR
     [SerializeField] GameObject player, sparkleBurstL, sparkleBurstR, speedLinesS;
-    [SerializeField] VisualEffect ladderPushLeft, ladderPushRight;
+    [SerializeField] VisualEffect ladderPushLeft, ladderPushRight, upgradeCloud, stepLeft, stepRight;
     [SerializeField] Material[] railMats;
+    [Header("Wheel Light Up")]
+    [SerializeField] Material wheelMat;
+    [SerializeField] float wheelIntensity = 5000000;
     [Header("Snapping Light Up")]
     [SerializeField] float lightUpTime;
     [SerializeField] float fadeTime, normalWidth, broadWidth, normalGD, broadGD;
@@ -87,7 +90,9 @@ public class VFX_Manager : MonoBehaviour
     [Header("Double Jump")]
     [SerializeField] DecalProjector doubleJump;
     [SerializeField] VisualEffect doubleJumpSpray, bigDoubleJumpSpray;
+    #endregion
 
+    #region PRIVATE
     PlayerMovementStateMachine pSM;
 
     Vector3 offset, lastPositionWall, sprayPosition;
@@ -100,6 +105,7 @@ public class VFX_Manager : MonoBehaviour
     bool inStage = false, inAir, wallProjecting;
     #endregion
 
+    #region UNITY FUNCTIONS
     private void Start()
     {
         sprayPosition = bigDoubleJumpSpray.transform.localPosition;
@@ -168,6 +174,14 @@ public class VFX_Manager : MonoBehaviour
             SlidingSparkleIntensity(sparkleBurstRight);
         }
     }
+    private void OnApplicationQuit()
+    {
+        SetProperty(railMats, "_SnappingPoint", Vector3.zero);
+        SetProperty(railMats, "_EmissionColor", normalColor, fadeTime);
+        wallProjector.material.SetFloat("_WallTime", 0);
+    }
+    #endregion
+
     #region OnStateChanged
 
     public void OnStateChangedWalking(bool land)
@@ -340,13 +354,6 @@ public class VFX_Manager : MonoBehaviour
     }
     #endregion
 
-    private void OnApplicationQuit()
-    {
-        SetProperty(railMats, "_SnappingPoint", Vector3.zero);
-        SetProperty(railMats, "_EmissionColor", normalColor, fadeTime);
-        wallProjector.material.SetFloat("_WallTime", 0);
-    }
-
     #region SET PROPERTY
     void SetProperty(Material[] railMats, string propertyName, Vector3 value)
     {
@@ -382,12 +389,67 @@ public class VFX_Manager : MonoBehaviour
     }
     #endregion
 
+    #region GENERAL PUBLIC
+    public void PlayVFX(string effectName)
+    {
+        VisualEffect vfx;
+        switch (effectName)
+        {
+            case "cloud":
+                vfx = upgradeCloud;
+                break;
+            case "stepLeft":
+                vfx = stepLeft;
+                break;
+            case "stepRight":
+                vfx = stepRight;
+                break;
+            default:
+                vfx = new VisualEffect();
+                Debug.Log("This doesnt exist");
+                break;
+        }
+        vfx.SendEvent("_Start");
+    }
+    #endregion
+
     #region CHALLENGES
     public void PlayCogwheel(Transform parentObj)
     {
         VisualEffect vE = parentObj.GetComponentInChildren<VisualEffect>();
-        vE.SetVector3("_CurrentSpeed", pSM.playerVelocity.normalized);
+        Vector3 dirVector = new Vector3(pSM.slidingInput, 0, 0);
+        vE.SetVector3("_CurrentSpeed", dirVector);
+        vE.SetFloat("_Magnitude", pSM.currentSlidingSpeed);
         vE.SendEvent("_Start");
+        StartCoroutine(LightUpWheel());
+    }
+    public void PlaySwitch(Transform parentObj)
+    {
+        VisualEffect vE = parentObj.GetComponentInChildren<VisualEffect>();
+        vE.SendEvent("_Start");
+    }
+
+    IEnumerator LightUpWheel()
+    {
+        float startIntensity = 10000;
+        float endIntensity = wheelIntensity;
+        float timer = 0;
+        wheelMat.SetVector("_Position", transform.GetChild(0).position);
+        while (timer < 0.5f)
+        {
+            float t = timer / 0.5f;
+            timer += Time.deltaTime;
+            wheelMat.SetFloat("_Emission", Mathf.Lerp(startIntensity, endIntensity, t));
+            yield return new WaitForEndOfFrame();
+        }
+        while (timer < 1.5f)
+        {
+            float t = timer / 1.5f;
+            timer += Time.deltaTime;
+            wheelMat.SetFloat("_Emission", Mathf.Lerp(endIntensity, startIntensity, t));
+            yield return new WaitForEndOfFrame();
+        }
+        wheelMat.SetFloat("_Emission", startIntensity);
     }
     #endregion
 
@@ -452,7 +514,7 @@ public class VFX_Manager : MonoBehaviour
         bool castEffect = false;
         while (timer < time)
         {
-            doubleJump.transform.LookAt(doubleJump.transform.position-planeNormal);
+            doubleJump.transform.LookAt(doubleJump.transform.position - planeNormal);
             float t = timer / time;
 
             float curvepoint = impactCurve.Evaluate(t) * decalScale;
@@ -508,6 +570,7 @@ public class VFX_Manager : MonoBehaviour
         wallProjecting = false;
     }
     #endregion
+
     #region WATER STEPS
     IEnumerator ExtendWater()
     {
@@ -525,6 +588,7 @@ public class VFX_Manager : MonoBehaviour
         waterStepsRight.size = new Vector3(0, 0, 1);
     }
     #endregion
+
     #region LIGHT RAIL UP
     IEnumerator LightRailUp()
     {
