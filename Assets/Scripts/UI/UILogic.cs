@@ -17,6 +17,8 @@ public class UILogic : MonoBehaviour
     InputAction quitGame;
     InputAction showMoreOptions;
     InputAction back;
+    WaitForSeconds upgradeTextTime;
+    PlayerMovementStateMachine playerMovementStateMachine;
 
     [SerializeField] Camera startCamera;
     [SerializeField] Camera playCamera;
@@ -24,6 +26,9 @@ public class UILogic : MonoBehaviour
     [SerializeField] GameObject startCanvas;
     [SerializeField] Toggle invertedSlidingToggle;
     [SerializeField] Toggle jumpForLadderPushToggle;
+    [SerializeField] GameObject slidingUpgradeUI;
+    [SerializeField] GameObject ladderPushUpgradeUI;
+    [SerializeField] GameObject catapultUpgradeUI;
 
     public GameObject options, inGameUI;
     public GameObject controller;
@@ -48,6 +53,7 @@ public class UILogic : MonoBehaviour
     private void Start()
     {
         ObjectManager.instance.uILogic = this;
+        playerMovementStateMachine = ObjectManager.instance.pSM;
         EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("PLAY"));
 
         inputActionAsset = ObjectManager.instance.pSM.actionAsset;
@@ -66,6 +72,7 @@ public class UILogic : MonoBehaviour
         playerControlsMap.Disable();
         UIControlsMap.Enable();
         uiAlpha = ObjectManager.instance.pSM.stats.alphaForTransparentUI;
+        upgradeTextTime = new WaitForSeconds(4f);
 
         #region Set PlayerPrefs
         if (PlayerPrefs.GetInt("UseInvertedSliding", 0) == 1)
@@ -263,7 +270,7 @@ public class UILogic : MonoBehaviour
 
     public void ShowMoreOptions()
     {
-        // schreib hier rein, was passieren soll, wenn mehr ooptions angezeigt werden sollen (toggles erschienen usw.)
+        // schreib hier rein, was passieren soll, wenn mehr options angezeigt werden sollen (toggles erschienen usw.)
         controlsImage.enabled = false;
         moreOptionsSelected = true;
 
@@ -273,6 +280,8 @@ public class UILogic : MonoBehaviour
         }
         EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("FirstToggle"));
     }
+
+    #region Landmark and Challenge ingame UI
 
     public void ShowLandmarkUI(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI)
     {
@@ -463,6 +472,7 @@ public class UILogic : MonoBehaviour
             }
         }
     }
+    #endregion
 
     public void ToggleInvertedSliding()
     {
@@ -501,4 +511,33 @@ public class UILogic : MonoBehaviour
         ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 1f, 0f);
         ExtensionMethods.CrossFadeAlphaFixed(linkedUI.transform.GetChild(0).gameObject, 0.0f, 0.5f);
     }
+
+    #region Ingame upgrade explanations
+    public IEnumerator ShowAndHideSlidingExplanation()
+    {
+        ExtensionMethods.CrossFadeAlphaFixed(slidingUpgradeUI.transform.GetChild(0).gameObject, 1f, 0.5f);
+        playerMovementStateMachine.controlsDisabled = true;
+        yield return upgradeTextTime;
+        playerMovementStateMachine.controlsDisabled = false;
+        ExtensionMethods.CrossFadeAlphaFixed(slidingUpgradeUI.transform.GetChild(0).gameObject, 0f, 0.5f);
+    }
+
+    public IEnumerator ShowAndHideLadderPushExplanation()
+    {
+        ExtensionMethods.CrossFadeAlphaFixed(ladderPushUpgradeUI.transform.GetChild(0).gameObject, 1f, 0.5f);
+        playerMovementStateMachine.controlsDisabled = true;
+        yield return upgradeTextTime;
+        playerMovementStateMachine.controlsDisabled = false;
+        ExtensionMethods.CrossFadeAlphaFixed(ladderPushUpgradeUI.transform.GetChild(0).gameObject, 0f, 0.5f);
+    }
+
+    public IEnumerator ShowAndHideCatapultExplanation()
+    {
+        ExtensionMethods.CrossFadeAlphaFixed(catapultUpgradeUI.transform.GetChild(0).gameObject, 1f, 0.5f);
+        playerMovementStateMachine.controlsDisabled = true;
+        yield return upgradeTextTime;
+        playerMovementStateMachine.controlsDisabled = false;
+        ExtensionMethods.CrossFadeAlphaFixed(catapultUpgradeUI.transform.GetChild(0).gameObject, 0f, 0.5f);
+    }
+    #endregion
 }
