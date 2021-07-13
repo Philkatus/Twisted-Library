@@ -13,16 +13,33 @@ public static class ExtensionMethods
     public static void CrossFadeAlphaFixed(GameObject uiObject, float alpha, float duration)
     {
         var img = uiObject.GetComponent<Image>();
-        //Make the alpha 1
-        Color fixedColor = img.color;
-        fixedColor.a = 1;
-        img.color = fixedColor;
+        if (img == null)
+        {
+            var text = uiObject.GetComponent<Text>();
+            //Make the alpha 1
+            Color fixedColore = text.color;
+            fixedColore.a = 1;
+            text.color = fixedColore;
 
-        //Set the 0 to zero then duration to 0
-        img.CrossFadeAlpha(0f, 0f, true);
+            //Set the 0 to zero then duration to 0
+            text.CrossFadeAlpha(0f, 0f, true);
 
-        //Finally perform CrossFadeAlpha
-        img.CrossFadeAlpha(alpha, duration, false);
+            //Finally perform CrossFadeAlpha
+            text.CrossFadeAlpha(alpha, duration, false);
+        }
+        else
+        {
+            //Make the alpha 1
+            Color fixedColor = img.color;
+            fixedColor.a = 1;
+            img.color = fixedColor;
+
+            //Set the 0 to zero then duration to 0
+            img.CrossFadeAlpha(0f, 0f, true);
+
+            //Finally perform CrossFadeAlpha
+            img.CrossFadeAlpha(alpha, duration, false);
+        }
     }
 
     /// <summary>

@@ -38,6 +38,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     public bool isOnWater;
     public bool isOnGras;
+    public bool controlsDisabled;
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
@@ -183,7 +184,10 @@ public class PlayerMovementStateMachine : StateMachine
         coyoteTimer += Time.deltaTime;
         if (playerState != PlayerState.swinging)
             UpdateRailTimer();
-        CheckForInputBools();
+        if (!controlsDisabled)
+        {
+            CheckForInputBools();
+        }
         if (playerState == PlayerState.swinging && currentSlidingSpeed >= stats.maxSlidingSpeed * .8f)
         {
             if (VoiceManager.Instance != null)
@@ -195,9 +199,12 @@ public class PlayerMovementStateMachine : StateMachine
 
     private void FixedUpdate()
     {
-        GetInput();
-        //LooseBonusVelocity(stats.bonusVelocityDrag,Vector3.up);
-        State.Movement();
+        if (!controlsDisabled)
+        {
+            GetInput();
+            //LooseBonusVelocity(stats.bonusVelocityDrag,Vector3.up);
+            State.Movement();
+        }
     }
 
     private void InitializeVariables()

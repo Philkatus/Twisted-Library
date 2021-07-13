@@ -231,7 +231,6 @@ public class PlayerInTheAir : State
                         closestDistance = distance;
                         target = closestHit.point;
                         normal = closestHit.normal;
-                        Debug.Log(closestHit.normal);
                         // this is a bit complicated but i didnt find a better way
 
                         Plane upPlane = new Plane(normal, target);
