@@ -36,7 +36,6 @@ public class PlayerMovementStateMachine : StateMachine
     public bool expandAfterSnap;
 
     public bool isOnWater;
-    public bool isOnGras;
     public bool controlsDisabled;
 
     public Vector3 baseVelocity;
@@ -153,6 +152,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         ObjectManager.instance.pSM = this;
     }
+
     private void Start()
     {
         InitializeVariables();
@@ -165,10 +165,12 @@ public class PlayerMovementStateMachine : StateMachine
         coyoteTimer += Time.deltaTime;
         if (playerState != PlayerState.swinging)
             UpdateRailTimer();
+
         if (!controlsDisabled)
         {
             CheckForInputBools();
         }
+        
         if (playerState == PlayerState.swinging && currentSlidingSpeed >= stats.maxSlidingSpeed * .8f)
         {
             if (VoiceManager.Instance != null)
@@ -211,6 +213,7 @@ public class PlayerMovementStateMachine : StateMachine
     {
         if (playerState != PlayerState.swinging && CheckForRail())
         {
+            ObjectManager.instance.animationStateController.Snap();
             State.Snap();
         }
     }
@@ -248,17 +251,16 @@ public class PlayerMovementStateMachine : StateMachine
         }
         inputTimer[index] = StartCoroutine(InputTimer(index, duration, rail));
     }
-
+    Coroutine jumpRoutine;
     private void CheckForInputBools()
     {
         if (jumpInputBool)
         {
-            State.Jump();
-            if (stats.useJumpForLadderPush && jumpInputBool)
+            if (jumpRoutine == null)
             {
-                State.LadderPush();
-            }
+                jumpRoutine = StartCoroutine(JumpDelay());
 
+            }
         }
         if (snapInputBool && playerState != PlayerState.swinging)
         {
@@ -579,7 +581,6 @@ public class PlayerMovementStateMachine : StateMachine
     ///</summary>
     public void OnSnap()
     {
-
         snapInputBool = false;
         effects.OnStateChangedSwinging();
         playerState = PlayerState.swinging;
@@ -615,6 +616,23 @@ public class PlayerMovementStateMachine : StateMachine
         State.Jump();
     }
     #endregion
+
+    public IEnumerator JumpDelay()
+    {
+        if(playerState != PlayerState.inTheAir){
+            ObjectManager.instance.animationStateController.SetJump();
+        }
+
+        yield return new WaitForSeconds(0.1f);
+        State.Jump();
+        if (stats.useJumpForLadderPush && jumpInputBool)
+        {
+            State.LadderPush();
+        }
+        yield return null;
+        jumpRoutine = null;
+        // ObjectManager.instance.animationStateController.UnsetJump();
+    }
 
     public enum PlayerState
     {
