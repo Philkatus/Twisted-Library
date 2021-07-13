@@ -10,6 +10,8 @@ public class UpgradeScripts : MonoBehaviour
 
     public Upgrade upgrade;
 
+    UILogic uILogic;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
@@ -17,6 +19,7 @@ public class UpgradeScripts : MonoBehaviour
         stats.canLadderFold = false;
         stats.canLadderPush = false;
         stats.canSlide = false;
+        uILogic = ObjectManager.instance.uILogic;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -26,14 +29,17 @@ public class UpgradeScripts : MonoBehaviour
             if (upgrade == Upgrade.canLadderFold)
             {
                 stats.canLadderFold = true;
+                uILogic.StartCoroutine(uILogic.ShowAndHideCatapultExplanation());
             }
             else if (upgrade == Upgrade.canLadderPush)
             {
                 stats.canLadderPush = true;
+                uILogic.StartCoroutine(uILogic.ShowAndHideLadderPushExplanation());
             }
             else if (upgrade == Upgrade.canSlide)
             {
                 stats.canSlide = true;
+                uILogic.StartCoroutine(uILogic.ShowAndHideSlidingExplanation());
             }
 
             Destroy(this.gameObject);
