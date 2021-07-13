@@ -10,7 +10,7 @@ public class TowerGoesUp : MonoBehaviour
     float time;
     Vector3 startPos, midwayPos;
 
-    bool sendTowerUp, sendTowerDown, sendTowerDownMidWay;
+    bool sendTowerUp, sendTowerDown, sendTowerDownMidWay, sendTowerUpMidWay;
 
     void Start()
     {
@@ -66,15 +66,42 @@ public class TowerGoesUp : MonoBehaviour
                 sendTowerDownMidWay = false;
             }
         }
+
+        if (sendTowerUpMidWay)
+        {
+            time += Time.fixedDeltaTime;
+            if (time < travelTime)
+            {
+                float t = time / travelTime;
+                transform.localPosition = Vector3.Lerp(midwayPos, endPosition, t);
+            }
+            else
+            {
+                time = 0;
+                sendTowerUp = false;
+                sendTowerUpMidWay = false;
+            }
+        }
     }
 
 
     private void OnTriggerEnter(Collider other)
     {
-        time = 0;
         if (other.gameObject.CompareTag("Player"))
         {
-            sendTowerUp = true;
+            if(sendTowerDownMidWay || sendTowerDown) //still going down
+            {
+                sendTowerDown = false;
+                sendTowerDownMidWay = false;
+                time = 0;
+                midwayPos = this.transform.localPosition;
+                sendTowerUpMidWay = true;
+            }
+            else // already down
+            {
+                time = 0;
+                sendTowerUp = true;
+            }
         }
     }
 
@@ -82,9 +109,10 @@ public class TowerGoesUp : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (sendTowerUp) //still going up
+            if (sendTowerUp || sendTowerUpMidWay) //still going up
             {
                 sendTowerUp = false;
+                sendTowerUpMidWay = false;
                 time = 0;
                 midwayPos = this.transform.localPosition;
                 sendTowerDownMidWay = true;
