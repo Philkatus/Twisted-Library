@@ -12,6 +12,28 @@ public class VFX_Manager : MonoBehaviour
     public float lerpSpeed = .01f;
     #endregion
     #region GET/SET
+    int RandomColor;
+    int randomColor
+    {
+        get
+        {
+            int rc = RandomColor + 1;
+            if (rc >= possibleColors.Length)
+            {
+                RandomColor = 0;
+            }
+            else
+            {
+                RandomColor = rc;
+            }
+            Debug.Log(RandomColor);
+            return RandomColor;
+        }
+        set
+        {
+            // this isnt called
+        }
+    }
     Rail CurrentRail;
     public Rail currentRail
     {
@@ -80,6 +102,10 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] VisualEffect landingBubbles;
     [SerializeField] AnimationCurve shadowSize, impactCurve, hardImpactCurve;
     [SerializeField] float shadowRemapMin, shadowRemapMax, decalScale, minJumpTime, maxJumpTime;
+    [ColorUsage(true, true)]
+    [SerializeField] Color[] possibleColors;
+    [ColorUsage(true, true)]
+    [SerializeField] Color[] possibleColorsTransparent;
     [Header("Wall Projection")]
     [SerializeField] GameObject ladder;
     [SerializeField] DecalProjector wallProjector;
@@ -106,6 +132,8 @@ public class VFX_Manager : MonoBehaviour
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
     bool inStage = false, inAir, wallProjecting;
+    
+
     #endregion
 
     #region UNITY FUNCTIONS
@@ -496,6 +524,8 @@ public class VFX_Manager : MonoBehaviour
         float jumpIntensity = Mathf.Clamp(inAirTime, minJumpTime, maxJumpTime);
         jumpIntensity = ExtensionMethods.Remap(jumpIntensity, minJumpTime, maxJumpTime, 0, 1);
 
+        shadow.material.SetColor("_BaseColor", possibleColorsTransparent[randomColor]);
+
         float timer = 0;
         float time = impactCurve.keys[impactCurve.length - 1].time;
         bool castEffect = false;
@@ -512,6 +542,7 @@ public class VFX_Manager : MonoBehaviour
             if (t >= 0.2f && !castEffect)
             {
                 landingBubbles.SetFloat("_Radius", curvepoint);
+                landingBubbles.SetVector4("_Color", possibleColorsTransparent[randomColor]);
                 landingBubbles.SendEvent("_Start");
                 castEffect = true;
             }
@@ -550,6 +581,7 @@ public class VFX_Manager : MonoBehaviour
         float timer = 0;
         float time = impactCurve.keys[impactCurve.length - 1].time;
         bool castEffect = false;
+        doubleJump.material.SetColor("_BaseColor", possibleColorsTransparent[randomColor]);
         while (timer < time)
         {
             doubleJump.transform.LookAt(doubleJump.transform.position - planeNormal);
@@ -563,12 +595,15 @@ public class VFX_Manager : MonoBehaviour
             bigDoubleJumpSpray.transform.position = new Vector3(doubleJumpSpray.transform.position.x, sprayY, doubleJumpSpray.transform.position.z);
             if (t >= 0.2f && !castEffect)
             {
+                int i = randomColor;
                 doubleJumpSpray.SetFloat("_Radius", curvepoint);
+                doubleJumpSpray.SetVector4("_Color", possibleColorsTransparent[i]);
                 doubleJumpSpray.SetVector3("_Normal", planeNormal);
                 doubleJumpSpray.SetVector3("_Up", planeUp);
                 doubleJumpSpray.SendEvent("_Start");
 
                 bigDoubleJumpSpray.SetFloat("_Radius", curvepoint);
+                bigDoubleJumpSpray.SetVector4("_Color", possibleColorsTransparent[i]);
                 bigDoubleJumpSpray.SetVector3("_Normal", planeNormal);
                 bigDoubleJumpSpray.SetVector3("_Up", planeUp);
                 bigDoubleJumpSpray.SendEvent("_Start");
@@ -590,6 +625,7 @@ public class VFX_Manager : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
         wallProjecting = true;
+        wallProjector.material.SetColor("_Color", possibleColors[randomColor]);
         wallProjector.transform.position = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
         lastPositionWall = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
         wallProjector.transform.rotation = Quaternion.Euler(wallProjector.transform.eulerAngles.x, ladder.transform.eulerAngles.y, wallProjector.transform.eulerAngles.z);
