@@ -221,11 +221,12 @@ public class VFX_Manager : MonoBehaviour
             StartCoroutine(FadeOutRail());
         }
 
-        if (land)
+        if (land && !pSM.dismountedNoEffect)
         {
             speedLinesSliding.SetFloat("_SpeedIntensity", 0);
             UpdateShadowSize(true);
         }
+        pSM.dismountedNoEffect = false;
     }
 
     public void OnStateChangedInAir()
