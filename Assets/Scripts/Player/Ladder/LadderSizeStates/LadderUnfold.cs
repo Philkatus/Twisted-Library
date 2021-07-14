@@ -22,7 +22,9 @@ public class LadderUnfold : State
         AudioManager.Instance.PlayRandom("LadderUnFold");
 
         LadderSizeStateMachine.anim.SetTrigger("Ladder Extent");
-        
+        time = LadderSizeStateMachine.anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
+        LadderSizeStateMachine.ladderLength = Mathf.Lerp(stats.ladderLengthSmall, stats.ladderLengthBig, time % 1);
+
     }
 
     public override void Fold()

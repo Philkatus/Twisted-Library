@@ -84,19 +84,19 @@ public class PlayerInTheAir : State
 
         if (isSnapping && PSM.closestRail != null)
         {
-            /*
-            Vector3 StartingPoint = PSM.closestRail.pathCreator.path.GetPointAtDistance(PSM.currentDistance);
-            Vector3 upwardsVelocity = ExtensionMethods.resultingVelocity(PSM.baseVelocity, Vector3.up);
-            Vector3 forwardVelocity = ExtensionMethods.resultingVelocity(PSM.baseVelocity, PSM.transform.position - StartingPoint);
-            PSM.baseVelocity = upwardsVelocity + forwardVelocity;
-            */
             Vector3 PathDirection = PSM.closestRail.pathCreator.path.GetDirectionAtDistance(PSM.currentDistance);
             Vector3 SideWaysVelocity = ExtensionMethods.resultingVelocity(PSM.baseVelocity, PathDirection);
             PSM.baseVelocity -= SideWaysVelocity;
-
+            SideWaysVelocity = ExtensionMethods.resultingVelocity(PSM.bonusVelocity, PathDirection);
+            PSM.bonusVelocity -= SideWaysVelocity;
+            PSM.baseVelocity.y = 0;
+            PSM.bonusVelocity.y = 0;
         }
-        
+
+        if (!isSnapping)
+        {
             controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.AirVelocityFactor);
+        }
         
         if (HeadCollision())
         {
