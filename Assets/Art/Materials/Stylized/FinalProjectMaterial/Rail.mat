@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-1670474717186155488
+--- !u!114 &-3909534748642759336
 MonoBehaviour:
   m_ObjectHideFlags: 11
   m_CorrespondingSourceObject: {fileID: 0}
@@ -20,13 +20,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SnappingRail
-  m_Shader: {fileID: -6465566751694194690, guid: 0b0bed06e81d5b4438eb25a72eed1293, type: 3}
-  m_ShaderKeywords: _DISABLE_DECALS _DISABLE_SSR_TRANSPARENT
-  m_LightmapFlags: 2
+  m_Name: Rail
+  m_Shader: {fileID: 4800000, guid: 6e4ae4064600d784cac1e41a9e6f2e59, type: 3}
+  m_ShaderKeywords: _DISABLE_SSR_TRANSPARENT _NORMALMAP_TANGENT_SPACE
+  m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 2000
+  m_CustomRenderQueue: 2225
   stringTagMap:
     MotionVector: User
   disabledShaderPasses:
@@ -38,6 +38,26 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_1185ef755fd445bb96e3f783a7c0fcb3:
+        m_Texture: {fileID: 2800000, guid: 5e1acf362611957488060eee4178b3f3, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_1a1354a4313f4ade80ffd33332afd473:
+        m_Texture: {fileID: 2800000, guid: 473d10946844e2d4abcb0c001c0fc839, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_40e3cdb7740c4e018528e9a6ecfdf311:
+        m_Texture: {fileID: 2800000, guid: 473d10946844e2d4abcb0c001c0fc839, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_498a0a8beaa64da4862832be645640fb:
+        m_Texture: {fileID: 2800000, guid: fef973fa5cdfaff438b86ded21840dac, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_d8290f5801944b78b3d1b9b84347e1b8:
+        m_Texture: {fileID: 2800000, guid: fef973fa5cdfaff438b86ded21840dac, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _AnisotropyMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -118,6 +138,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Triplanar_9a2c0da9ea4c4473a62eca8dde5f687e_Texture_1:
+        m_Texture: {fileID: 2800000, guid: 3a6c4c86debbf48428a6f1e48d630905, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Triplanar_d9f23d3b219d45b49e8a490487747c9b_Texture_1:
+        m_Texture: {fileID: 2800000, guid: cc6bc457121cd914aa663e37a8dd11b5, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - unity_Lightmaps:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -131,10 +159,23 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Vector1_48afd7d0e5354bf489575690b18677d9: 3000000
-    - Vector1_86c2a7f3477c4d4f83e14aee0c650216: 3.76
-    - Vector1_b96d8c7518a643c5a86df7d8d1933dc8: 0.85
-    - Vector1_fa6b1dd35eb44a169590f3adf2206e47: 1.11
+    - Boolean_64c367cfa2bf4abfbc7bb7b19a0b30dd: 0
+    - Vector1_075a9d8493f34968b32f8ac1784de4cd: 20
+    - Vector1_3876bdf551fa4b819f65d932d4ce69ee: 1
+    - Vector1_4ea9046dca9f4151bebaa0e63a23cc62: 1
+    - Vector1_6ae722b5fd1349e1abcbf0277087e06a: 0.5
+    - Vector1_968ceaa325ad453d83c465404d00c615: 1
+    - Vector1_a765d45a0a484bf9a0088da763558dc2: 1
+    - Vector1_a863ad1bfc00401d9d27ac0cccdf4b74: 1
+    - Vector1_b540d837a22e48b191903e7a73906d23: 1
+    - Vector1_bc330a82c2a340b5bd000fdcb03eb0f9: 0
+    - Vector1_bc330a82c2a340b5bd000fdcb03eb0f9_1: 0
+    - Vector1_d401a56797784a52bd89e1ea7774bf60: 1
+    - Vector1_db51ec6257e44a8ba93f264511a18c3e: 0.3
+    - Vector1_db51ec6257e44a8ba93f264511a18c3e_1: 0.3
+    - Vector1_edf54c84dff5438a86fcd9ca8d213a02: 0.1
+    - Vector1_f13cd7c0ff5e486ea99a83e3e2d6e1d1: 0.5
+    - Vector1_fc264e8f4dfb4fedbee9fe3534c7640c: 0
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -175,7 +216,6 @@ Material:
     - _EnableFogOnTransparent: 1
     - _EnableGeometricSpecularAA: 0
     - _EnergyConservingSpecularColor: 1
-    - _GD: 1.3
     - _HeightAmplitude: 0.02
     - _HeightCenter: 0.5
     - _HeightMapParametrization: 0
@@ -194,7 +234,6 @@ Material:
     - _Metallic: 0
     - _MetallicRemapMax: 1
     - _MetallicRemapMin: 0
-    - _Multiplicator: 100000
     - _NormalMapSpace: 0
     - _NormalScale: 1
     - _OpaqueCullMode: 2
@@ -209,7 +248,7 @@ Material:
     - _RefractionModel: 0
     - _RenderQueueType: 1
     - _RequireSplitLighting: 0
-    - _Smoothness: 0.5
+    - _Smoothness: 0.596
     - _SmoothnessRemapMax: 1
     - _SmoothnessRemapMin: 0
     - _SpecularAAScreenSpaceVariance: 0.1
@@ -227,7 +266,7 @@ Material:
     - _StencilWriteMaskGBuffer: 14
     - _StencilWriteMaskMV: 40
     - _SubsurfaceMask: 1
-    - _SupportDecals: 0
+    - _SupportDecals: 1
     - _SurfaceType: 0
     - _TexWorldScale: 1
     - _TexWorldScaleEmissive: 1
@@ -245,26 +284,27 @@ Material:
     - _UVEmissive: 0
     - _UseEmissiveIntensity: 0
     - _UseShadowThreshold: 0
-    - _VD: 0.38
     - _ZTestDepthEqualForOpaque: 3
     - _ZTestGBuffer: 4
     - _ZTestTransparent: 4
     - _ZWrite: 1
     m_Colors:
-    - Color_66f012758b394a9eabf89d490fef9854: {r: 1, g: 0.50090605, b: 0, a: 1}
-    - Color_7c2363d0199f4a57ab78bd3cace9bb43: {r: 0, g: 0, b: 0, a: 0}
-    - Color_d0a9186538c040259c5ea69e4043e415: {r: 1, g: 0.67031884, b: 0, a: 1}
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - Color_069d3c5c198f43d39d56a1bdc6b3c250: {r: 0.8773585, g: 0, b: 0.008104415, a: 1}
+    - Color_2cdb69d5b781478ab9e5ac820d6f9649: {r: 0.21530375, g: 0.6320754, b: 0, a: 1}
+    - Color_c283a02d9ceb4216b3132703f7ebdd45: {r: 0.10588236, g: 0.58008265, b: 0.6039216, a: 1}
+    - Color_c7b33573500e4178ac9d98342a303137: {r: 0.8000001, g: 0.22352943, b: 0.1254902, a: 1}
+    - Color_f3d5657435cf4ababaf37af580bd075c: {r: 0.8000001, g: 0.22352943, b: 0.1254902, a: 1}
+    - Vector3_65defe254945433c944680fec8ba4d66: {r: 0, g: 1, b: 0, a: 0}
+    - _BaseColor: {r: 1, g: 0.514, b: 0.19, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 0.51399994, b: 0.18999997, a: 1}
     - _DiffusionProfileAsset: {r: 0, g: 0, b: 0, a: 0}
     - _DoubleSidedConstants: {r: 1, g: 1, b: -1, a: 0}
     - _EmissionColor: {r: 1, g: 1, b: 1, a: 1}
     - _EmissiveColor: {r: 0, g: 0, b: 0, a: 1}
-    - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissiveColorLDR: {r: 0.2181512, g: 1, b: 0.09119487, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
-    - _SnappingPoint: {r: 0, g: 0, b: 0, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _ThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
     - _TransmittanceColor: {r: 1, g: 1, b: 1, a: 1}
