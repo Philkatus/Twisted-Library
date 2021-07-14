@@ -16,8 +16,8 @@ public class AudioManager : MonoBehaviour
 
     ResonanceAudioSource[] CogSoundSources = new ResonanceAudioSource[9];
     ResonanceAudioSource[] SwitchSoundSources = new ResonanceAudioSource[9];
-    [SerializeField] ResonanceAudioSource[] Landmark1Sources = new ResonanceAudioSource[6];
-    [SerializeField] ResonanceAudioSource[] Landmark2Sources = new ResonanceAudioSource[6];
+    [SerializeField] ResonanceAudioSource[] LandmarkOneSources = new ResonanceAudioSource[6];
+    [SerializeField] ResonanceAudioSource[] LandmarkTwoSources = new ResonanceAudioSource[6];
     bool isBreaking;
     int currentSlidingMode;
     float previousSlidingSpeed;
@@ -420,6 +420,7 @@ public class AudioManager : MonoBehaviour
         if (useOnWaterSound)
         {
             returnString = WaterString;
+            Debug.Log("waterr!");
         }
         return returnString;
     }
@@ -448,29 +449,29 @@ public class AudioManager : MonoBehaviour
             SwitchSoundSources[index].audioSource.Play();
         }
     }
-    public void Landmark1Sound(int index)
+    public void LandmarkOneSound(int index)
     {
         string name = "Landmark1Rotation";
         Sound s = Array.Find(sounds, sound => sound.name == name);
-        if (Landmark1Sources[index] == null)
+        if (LandmarkOneSources[index] == null)
         {
-            ApplyValuesToSource(s, Landmark1Sources[index].audioSource);
-            Landmark1Sources[index].audioSource.Play();
+            ApplyValuesToSource(s, LandmarkOneSources[index].audioSource);
+            LandmarkOneSources[index].audioSource.Play();
         }
-        if (Landmark1Sources[index + 3] == null)
+        if (LandmarkOneSources[index + 3] == null)
         {
-            ApplyValuesToSource(s, Landmark1Sources[index + 3].audioSource);
-            Landmark1Sources[index + 3].audioSource.Play();
+            ApplyValuesToSource(s, LandmarkOneSources[index + 3].audioSource);
+            LandmarkOneSources[index + 3].audioSource.Play();
         }
     }
-    public void Landmark2Sound(int index)
+    public void LandmarkTwoSound(int index)
     {
         string name = "Landmark2Rotation";
         Sound s = Array.Find(sounds, sound => sound.name == name);
-        if (Landmark2Sources[index] == null)
+        if (LandmarkTwoSources[index] == null)
         {
-            ApplyValuesToSource(s, Landmark2Sources[index].audioSource);
-            Landmark2Sources[index].audioSource.Play();
+            ApplyValuesToSource(s, LandmarkTwoSources[index].audioSource);
+            LandmarkTwoSources[index].audioSource.Play();
         }
     }
     public void StopCogSound(int index, Vector3 position)
