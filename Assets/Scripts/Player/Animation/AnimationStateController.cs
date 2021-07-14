@@ -12,7 +12,13 @@ public class AnimationStateController : MonoBehaviour
     public LadderSizeStateMachine ladderSM;
     public CharacterController controller;
     public FootstepSoundManager soundManager;
-    public AudioManager audioManager;
+    public AudioManager audioManager 
+    {
+        get 
+        {
+            return AudioManager.Instance;
+        }
+    }
     public FootIK footIKScript;
 
     public ParticleSystem ladderPushSmoke;
@@ -111,7 +117,6 @@ public class AnimationStateController : MonoBehaviour
         footIKScript = GetComponent<FootIK>();
         soundManager = GetComponent<FootstepSoundManager>();
         footIKScript.enabled = false;
-        audioManager = FindObjectOfType<AudioManager>();
         //movementScript = GetComponent<PlayerMovementStateMachine>();
         //controller = GetComponent<CharacterController>();
 
@@ -129,7 +134,6 @@ public class AnimationStateController : MonoBehaviour
         jumpAction = playerControlsMap.FindAction("Jump");
         // jumpAction.performed += context => Jump();
         #endregion
-
     }
 
     void Update()
@@ -453,7 +457,7 @@ public class AnimationStateController : MonoBehaviour
 
     void LadderClimb()
     {
-        if (playerSM.HeightOnLadder < 0 && playerSM.HeightOnLadder > -.75f)
+        if (playerSM.heightOnLadder < 0 && playerSM.heightOnLadder > -.75f)
         {
             // if (Mathf.Abs(velocity_vec.y) > 0f)
             // climb up
