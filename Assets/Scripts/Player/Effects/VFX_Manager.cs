@@ -12,6 +12,27 @@ public class VFX_Manager : MonoBehaviour
     public float lerpSpeed = .01f;
     #endregion
     #region GET/SET
+    int RandomColor;
+    int randomColor
+    {
+        get
+        {
+            int rc = RandomColor + 1;
+            if (rc >= possibleColors.Length)
+            {
+                RandomColor = 0;
+            }
+            else
+            {
+                RandomColor = rc;
+            }
+            return RandomColor;
+        }
+        set
+        {
+            // this isnt called
+        }
+    }
     Rail CurrentRail;
     public Rail currentRail
     {
@@ -110,29 +131,7 @@ public class VFX_Manager : MonoBehaviour
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
     bool inStage = false, inAir, wallProjecting;
-    int RandomColor;
-    int randomColor
-    {
-        get
-        {
-            randomColor++;
-            return RandomColor;
-        }
-        set
-        {
-            if (value > 2)
-            {
-                Debug.Log(value);
-                RandomColor = 0;
-            }
-            else
-            {
-                Debug.Log(value);
-                RandomColor = value;
-            }
-
-        }
-    }
+    
 
     #endregion
 
