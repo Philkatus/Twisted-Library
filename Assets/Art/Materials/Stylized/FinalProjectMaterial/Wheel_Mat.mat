@@ -1,18 +1,5 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!114 &-6042866382884873586
-MonoBehaviour:
-  m_ObjectHideFlags: 11
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  version: 11
 --- !u!21 &2100000
 Material:
   serializedVersion: 6
@@ -20,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ShallowWater
-  m_Shader: {fileID: -6465566751694194690, guid: cd11abdf1a0430343a0a9ffc3cdaf509, type: 3}
+  m_Name: Wheel_Mat
+  m_Shader: {fileID: -6465566751694194690, guid: 02cc6c0f1fda6db4ab8aee43f9eeeb9d, type: 3}
   m_ShaderKeywords: _DISABLE_SSR_TRANSPARENT _ENABLE_FOG_ON_TRANSPARENT _SURFACE_TYPE_TRANSPARENT
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -132,15 +119,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
-    - Vector1_1f94b3d941784f2a8a1a083b77b8e091: 0.32
-    - Vector1_1fbee902db044758997b58d6775f0a0a: 0.05
-    - Vector1_4cb47d69e1b24e87b2255c3024ec3689: -0.01
-    - Vector1_6366ca35e3ec4471941e7b8e85780bfc: 0
-    - Vector1_6def7791911b44f983b4dbca8546364c: 100
-    - Vector1_8783bd8e3b45401ca3d769f3a3137a20: 20.55
-    - Vector1_e6996c91150f488bbe3eacce56eff497: 0.015
-    - Vector1_f6ba64ec89404fc099a14d78447728b8: 0.06
-    - Vector1_fad5a4a69a8e4c429da15a8cf53d0be5: 0.54
+    - Vector1_2ae8ade13a40412b8f2254c0f9f18b3f: 498
+    - Vector1_9fa42e17fc3d4112875f0593aab9fd5e: 0.81
+    - Vector1_aaa66a080a4a4f71ad712b98c957d300: 10000
+    - Vector1_b6a55c9d711846d9a3adb5b3fdde0fb4: 0.65
+    - Vector1_bf950797a3d54bb7b03c00557733ea87: 100000
     - _AORemapMax: 1
     - _AORemapMin: 0
     - _ATDistance: 1
@@ -173,6 +156,7 @@ Material:
     - _DoubleSidedEnable: 0
     - _DoubleSidedNormalMode: 1
     - _DstBlend: 10
+    - _Emission: 1000
     - _EmissiveColorMode: 1
     - _EmissiveExposureWeight: 1
     - _EmissiveIntensity: 1
@@ -254,9 +238,9 @@ Material:
     - _ZTestTransparent: 4
     - _ZWrite: 0
     m_Colors:
-    - Color_2058cb9920a246c08ba9846a39f5f235: {r: 0.42013758, g: 0.6886792, b: 0.6448345, a: 0}
-    - Color_2865b099f77d45dfbaa713d952c2e9d7: {r: 1, g: 1, b: 1, a: 0}
-    - Color_601f19504ba440c19c1c876118994649: {r: 0, g: 1, b: 0.7971015, a: 0}
+    - Color_9224311643f148908588b88303c8c338: {r: 1, g: 0.48742133, b: 0.7580628, a: 0}
+    - Color_ac96ff0f781e487195747485787bec19: {r: 0.764151, g: 0.6850954, b: 0.6536134, a: 0}
+    - Vector3_6813bd8ec8ee4154ae74d164e9d61e8b: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _BaseColorMap_MipInfo: {r: 0, g: 0, b: 0, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
@@ -267,6 +251,7 @@ Material:
     - _EmissiveColorLDR: {r: 0, g: 0, b: 0, a: 1}
     - _InvPrimScale: {r: 1, g: 1, b: 0, a: 0}
     - _IridescenceThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
+    - _Position: {r: -41.690933, g: 86.99893, b: 7.768051, a: 0}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}
     - _ThicknessRemap: {r: 0, g: 1, b: 0, a: 0}
     - _TransmittanceColor: {r: 1, g: 1, b: 1, a: 1}
@@ -274,3 +259,16 @@ Material:
     - _UVMappingMask: {r: 1, g: 0, b: 0, a: 0}
     - _UVMappingMaskEmissive: {r: 1, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
+--- !u!114 &6848452427617821572
+MonoBehaviour:
+  m_ObjectHideFlags: 11
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da692e001514ec24dbc4cca1949ff7e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  version: 11
