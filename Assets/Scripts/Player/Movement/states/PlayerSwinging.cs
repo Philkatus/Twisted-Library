@@ -1251,6 +1251,7 @@ public class PlayerSwinging : State
         else if (dismountedHalfways)
         {
             PSM.dismounting = false;
+            PSM.dismountedNoEffect = true;
             PSM.OnFall();
         }
     }
