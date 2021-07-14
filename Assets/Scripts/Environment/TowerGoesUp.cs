@@ -100,15 +100,20 @@ public class TowerGoesUp : MonoBehaviour
         }
     }
 
-    bool done;
+    public bool changedStateToSwinging, changedStateToinTheAir, firstSnapDoneSinceInTriggerCollider;
 
     private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
             psm = other.GetComponent<PlayerMovementStateMachine>();
-            if (psm.playerState == PlayerMovementStateMachine.PlayerState.swinging)
+            if (psm.playerState == PlayerMovementStateMachine.PlayerState.swinging && !changedStateToSwinging)
             {
+                changedStateToSwinging = true;
+                changedStateToinTheAir = false;
+
+                firstSnapDoneSinceInTriggerCollider = true;
+
                 if (sendTowerDownMidWay || sendTowerDown) //still going down
                 {
                     sendTowerDown = false;
@@ -123,27 +128,45 @@ public class TowerGoesUp : MonoBehaviour
                     sendTowerUp = true;
                 }
             }
+            else if (psm.playerState == PlayerMovementStateMachine.PlayerState.inTheAir && !changedStateToinTheAir && firstSnapDoneSinceInTriggerCollider)
+            {
+                changedStateToinTheAir = true;
+                changedStateToSwinging = false;
+
+                if (sendTowerUp || sendTowerUpMidWay) //still going up
+                {
+                    sendTowerUp = false;
+                    sendTowerUpMidWay = false;
+                    time = 0;
+                    midwayPos = this.transform.localPosition;
+                    sendTowerDownMidWay = true;
+                }
+                else //already arrived on the top
+                {
+                    time = 0;
+                    sendTowerDown = true;
+                }
+                
+            }
         }
     }
+
+
 
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (sendTowerUp || sendTowerUpMidWay) //still going up
+            firstSnapDoneSinceInTriggerCollider = false; //set back to false
+
+            if(this.transform.localPosition.y <= endPosition.y + 0.1f &&
+                this.transform.localPosition.y >= endPosition.y - 0.1f)
             {
-                sendTowerUp = false;
-                sendTowerUpMidWay = false;
-                time = 0;
-                midwayPos = this.transform.localPosition;
-                sendTowerDownMidWay = true;
-            }
-            else //already arrived on the top
-            {
-                time = 0;
-                sendTowerDown = true;
+                sendTowerDown = true; // when sliding out
+                changedStateToSwinging = false;
             }
         }
+
     }
 
 

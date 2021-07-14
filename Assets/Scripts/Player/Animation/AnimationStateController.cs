@@ -84,7 +84,7 @@ public class AnimationStateController : MonoBehaviour
     #endregion
 
     #region [Attributes] NEW VARS
-    [SerializeField] Animator animator;
+    public Animator animator;
 
     private Vector2 velocity_vec;
 
@@ -167,6 +167,7 @@ public class AnimationStateController : MonoBehaviour
         // //Sliding();
         // Swinging();
         // Falling();
+
         HeadAim();
 
         PlayerOnLadder();
@@ -261,12 +262,19 @@ public class AnimationStateController : MonoBehaviour
     #region[rgba(236,240,241,0.05)] 
     public void EnterWalkingState()
     {
-        audioManager.PlayRandom("LandingAfterJump");
-        animator.SetBool("Walking", true);
-        if (animator.GetBool("HardFall") && velocity_vec.magnitude < 0.1f)
+        if (playerSM.CheckIfOnWater())
         {
-            StartCoroutine(ImpactStun());
+            audioManager.PlayRandom("LandingAfterJumpWater");
         }
+        else
+        {
+            audioManager.PlayRandom("LandingAfterJump");
+        }
+        animator.SetBool("Walking", true);
+        //if (animator.GetBool("HardFall") && velocity_vec.magnitude < 0.1f)
+        //{
+        //    StartCoroutine(ImpactStun());
+        //}
     }
     public void ExitWalkingState()
     {
