@@ -14,10 +14,10 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
 
-    ResonanceAudioSource[] CogSoundSources = new ResonanceAudioSource[9];
-    ResonanceAudioSource[] SwitchSoundSources = new ResonanceAudioSource[9];
-    [SerializeField] ResonanceAudioSource[] LandmarkOneSources = new ResonanceAudioSource[6];
-    [SerializeField] ResonanceAudioSource[] LandmarkTwoSources = new ResonanceAudioSource[6];
+    public ResonanceAudioSource[] CogSoundSources = new ResonanceAudioSource[9];
+    public ResonanceAudioSource[] SwitchSoundSources = new ResonanceAudioSource[9];
+    public ResonanceAudioSource[] LandmarkOneSources = new ResonanceAudioSource[6];
+    public ResonanceAudioSource[] LandmarkTwoSources = new ResonanceAudioSource[6];
     bool isBreaking;
     int currentSlidingMode;
     float previousSlidingSpeed;
