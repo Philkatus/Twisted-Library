@@ -18,6 +18,7 @@ public class AudioManager : MonoBehaviour
     public ResonanceAudioSource[] SwitchSoundSources = new ResonanceAudioSource[9];
     public ResonanceAudioSource[] LandmarkOneSources = new ResonanceAudioSource[6];
     public ResonanceAudioSource[] LandmarkTwoSources = new ResonanceAudioSource[6];
+    public ResonanceAudioSource MovingLandmarkOneColumn;
     bool isBreaking;
     int currentSlidingMode;
     float previousSlidingSpeed;
@@ -449,6 +450,19 @@ public class AudioManager : MonoBehaviour
             SwitchSoundSources[index].audioSource.Play();
         }
     }
+
+    public void ColumnSound(Vector3 position)
+    {
+        string name = "ColumnChallenge";
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (MovingLandmarkOneColumn == null)
+        {
+            MovingLandmarkOneColumn = GetInactiveSoundSource();
+            ApplyValuesToSource(s, MovingLandmarkOneColumn.audioSource);
+            MovingLandmarkOneColumn.transform.position = position;
+            MovingLandmarkOneColumn.audioSource.Play();
+        }
+    }
     public void LandmarkOneSound(int index)
     {
         string name = "Landmark1Rotation";
@@ -488,6 +502,15 @@ public class AudioManager : MonoBehaviour
         {
             SwitchSoundSources[index].audioSource.Stop();
             SetSoundSourceInactive(SwitchSoundSources[index], true);
+        }
+    }
+
+    public void StopColumnSound(Vector3 position)
+    {
+        if (MovingLandmarkOneColumn != null)
+        {
+            MovingLandmarkOneColumn.audioSource.Stop();
+            SetSoundSourceInactive(MovingLandmarkOneColumn, true);
         }
     }
 }
