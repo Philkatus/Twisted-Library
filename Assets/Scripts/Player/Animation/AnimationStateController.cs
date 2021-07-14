@@ -498,7 +498,6 @@ public class AnimationStateController : MonoBehaviour
 
     void FaceSlideDirection()
     {
-        Debug.Log("Sliding: " + playerSM.slidingInput);
         if(playerSM.slidingInput == 0)
         {
             var temp = Mathf.SmoothDamp(animator.GetFloat("SlideDirection"), 0, ref switchVelocity, switchSideSpeed);
@@ -527,7 +526,10 @@ public class AnimationStateController : MonoBehaviour
         }
     }
 
-
+    public void PushFromWall()
+    {
+        animator.SetTrigger("PushWall");
+    }
 
     public void DismountLadder()
     {
