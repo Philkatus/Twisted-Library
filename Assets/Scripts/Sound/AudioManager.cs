@@ -421,7 +421,6 @@ public class AudioManager : MonoBehaviour
         if (useOnWaterSound)
         {
             returnString = WaterString;
-            Debug.Log("waterr!");
         }
         return returnString;
     }
@@ -453,26 +452,21 @@ public class AudioManager : MonoBehaviour
 
     public void ColumnSound(Vector3 position)
     {
-        string name = "ColumnChallenge";
-        Sound s = Array.Find(sounds, sound => sound.name == name);
-        if (MovingLandmarkOneColumn == null)
-        {
-            MovingLandmarkOneColumn = GetInactiveSoundSource();
-            ApplyValuesToSource(s, MovingLandmarkOneColumn.audioSource);
-            MovingLandmarkOneColumn.transform.position = position;
-            MovingLandmarkOneColumn.audioSource.Play();
-        }
+        MovingLandmarkOneColumn.audioSource.Play();
+        Debug.Log("column sound");
+
     }
+
     public void LandmarkOneSound(int index)
     {
         string name = "Landmark1Rotation";
         Sound s = Array.Find(sounds, sound => sound.name == name);
-        if (LandmarkOneSources[index] == null)
+        if (LandmarkOneSources[index] != null)
         {
             ApplyValuesToSource(s, LandmarkOneSources[index].audioSource);
             LandmarkOneSources[index].audioSource.Play();
         }
-        if (LandmarkOneSources[index + 3] == null)
+        if (LandmarkOneSources[index + 3] != null)
         {
             ApplyValuesToSource(s, LandmarkOneSources[index + 3].audioSource);
             LandmarkOneSources[index + 3].audioSource.Play();
@@ -510,7 +504,11 @@ public class AudioManager : MonoBehaviour
         if (MovingLandmarkOneColumn != null)
         {
             MovingLandmarkOneColumn.audioSource.Stop();
-            SetSoundSourceInactive(MovingLandmarkOneColumn, true);
+            Debug.Log("stop column sound");
+        }
+        else
+        {
+            Debug.LogError("Moving Column AudioSource is missing!");
         }
     }
 }
