@@ -19,6 +19,9 @@ public class Sound
     public float blendDuration;
     public bool loop;
 
+    public float minDistanceListener;
+    public float maxDistanceListener;
+
     [HideInInspector]
     public ResonanceAudioSource Source 
     {

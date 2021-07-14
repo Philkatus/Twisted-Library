@@ -2150,6 +2150,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 0
+    maxDistanceListener: 0
   - name: Falling
     clips: []
     audioGroup: {fileID: 0}
@@ -2158,6 +2160,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 1
+    minDistanceListener: 0
+    maxDistanceListener: 0
   - name: LandingAfterJump
     clips: []
     audioGroup: {fileID: 0}
@@ -2166,6 +2170,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 0
+    maxDistanceListener: 0
   - name: LandingAfterFall
     clips: []
     audioGroup: {fileID: 0}
@@ -2174,6 +2180,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 0
+    maxDistanceListener: 0
   - name: AttachLadder
     clips: []
     audioGroup: {fileID: 0}
@@ -2182,6 +2190,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 0
+    maxDistanceListener: 0
   - name: Sliding
     clips: []
     audioGroup: {fileID: 0}
@@ -2190,6 +2200,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 1
+    minDistanceListener: 0
+    maxDistanceListener: 0
   - name: FoldLadder
     clips: []
     audioGroup: {fileID: 0}
@@ -2198,23 +2210,49 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 0
+    maxDistanceListener: 0
   activeSoundSources: []
   inactiveSoundSources: []
   SoundSourcePrefab: {fileID: 0}
-  Landmark1Sources:
+  CogSoundSources:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  Landmark2Sources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  SwitchSoundSources:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  LandmarkOneSources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  LandmarkTwoSources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  MovingLandmarkOneColumn: {fileID: 0}
 --- !u!114 &4761856323172733090
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4907,6 +4945,8 @@ GameObject:
   - component: {fileID: 6164259229706539063}
   - component: {fileID: 6164259229706539057}
   - component: {fileID: 6164259229706539061}
+  - component: {fileID: 7952022841410290354}
+  - component: {fileID: 8945587637997719173}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -5121,6 +5161,34 @@ MonoBehaviour:
       data1: 0
       data2: 0
   defaultFrameSettings: 0
+--- !u!81 &7952022841410290354
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6164259229706539056}
+  m_Enabled: 1
+--- !u!114 &8945587637997719173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6164259229706539056}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 113e4aa2cd3db44d1ac0cb7e9794964b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  globalGainDb: 0
+  occlusionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  stereoSpeakerModeEnabled: 0
+  recorderSeamless: 0
+  recorderSourceTag: Untagged
+  recorderFoldout: 1
 --- !u!1 &6164259229721250489
 GameObject:
   m_ObjectHideFlags: 0
@@ -7695,7 +7763,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7511473034388439085}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 113e4aa2cd3db44d1ac0cb7e9794964b, type: 3}
   m_Name: 
@@ -9383,6 +9451,37 @@ MonoBehaviour:
 --- !u!4 &2483471896712661204 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5823507162670595526, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
+  m_PrefabInstance: {fileID: 8261378944886191378}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4128462683772201559 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5471150681751002949, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
+  m_PrefabInstance: {fileID: 8261378944886191378}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 761303255291671602}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 254830678a8340a4aa5252a9d9bbd6c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!2083052967 &4125042941420430409 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 5447465291368747355, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
+  m_PrefabInstance: {fileID: 8261378944886191378}
+  m_PrefabAsset: {fileID: 0}
+--- !u!2083052967 &54529243261345812 stripped
+VisualEffect:
+  m_CorrespondingSourceObject: {fileID: 8243815409592276230, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
+  m_PrefabInstance: {fileID: 8261378944886191378}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &4430205165718316087 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5754773772161290533, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
+  m_PrefabInstance: {fileID: 8261378944886191378}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5506079083363631988 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4526071041382692454, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
   m_PrefabInstance: {fileID: 8261378944886191378}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8689674393217070867
