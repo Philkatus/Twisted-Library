@@ -83,22 +83,33 @@ public class PlayerFollowTarget : MonoBehaviour
 
     private void MoveCameraY()
     {
-        if (doNotAdjust)
+        if (ObjectManager.instance.pSM.playerState != PlayerMovementStateMachine.PlayerState.swinging)
         {
-            transform.position = new Vector3(pos.x, transform.position.y, pos.z);
+            if (doNotAdjust)
+            {
+                transform.position = new Vector3(pos.x, transform.position.y, pos.z);
+            }
+            else
+            {
+                transform.position = pos;
+            }
         }
         else
         {
-            transform.position = pos;
+            transform.position = currentTarget.position;
         }
+            
+        
     }
 
     private bool CheckIfFalling()
     {
-        if (!Physics.Raycast(PlayerTarget.position, transform.TransformDirection(Vector3.down), out hit, 6, EnvironmentLayer))
         {
-            doNotAdjust = false;
-            return true;
+            if (!Physics.Raycast(PlayerTarget.position, transform.TransformDirection(Vector3.down), out hit, 6, EnvironmentLayer))
+            {
+                doNotAdjust = false;
+                return true;
+            }
         }
         return false;
     }
@@ -139,14 +150,11 @@ public class PlayerFollowTarget : MonoBehaviour
 
     public void FollowLadder()
     {
-        if (currentTarget != LadderTarget)
+        if (switchCoroutine != null)
         {
-            if (switchCoroutine != null)
-            {
-                StopCoroutine(switchCoroutine);
-            }
-            switchCoroutine = StartCoroutine(MoveTowards(LadderTarget));
+            StopCoroutine(switchCoroutine);
         }
+        switchCoroutine = StartCoroutine(MoveTowards(LadderTarget));
     }
 
     Coroutine switchCoroutine;
@@ -167,5 +175,6 @@ public class PlayerFollowTarget : MonoBehaviour
             yield return null;
         }
         currentTarget = endTarget;
+        switchCoroutine = null;
     }
 }
