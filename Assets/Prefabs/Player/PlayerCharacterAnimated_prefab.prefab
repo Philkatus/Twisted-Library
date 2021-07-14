@@ -2065,7 +2065,8 @@ MonoBehaviour:
   footstepsLeftWater: []
   footstepsRightWater: []
   exhale: {fileID: 8300000, guid: 9483260dfb48566448f11f347783e890, type: 3}
-  audioVolume: 1.5
+  audioVolumeConcrete: 0.1
+  audioVolumeWater: 0.1
   footstepLFX: {fileID: 0}
   footstepRFX: {fileID: 0}
   root: {fileID: 0}
@@ -9330,6 +9331,14 @@ PrefabInstance:
       propertyPath: movementScript
       value: 
       objectReference: {fileID: 5224045388643823046}
+    - target: {fileID: 7199847695135858691, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
+      propertyPath: audioVolumeWater
+      value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 7199847695135858691, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
+      propertyPath: audioVolumeConcrete
+      value: 0.3
+      objectReference: {fileID: 0}
     - target: {fileID: 7245182734532395694, guid: dc4ad29ddd9180b4a811da8c00e0bced, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
