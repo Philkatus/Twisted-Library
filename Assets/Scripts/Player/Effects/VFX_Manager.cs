@@ -125,14 +125,12 @@ public class VFX_Manager : MonoBehaviour
 
     Vector3 offset, lastPositionWall, sprayPosition;
 
-    bool smokeOn = false, inWater = false;
+    bool smokeOn = false, inWater = false, freshOutOfWater = false;
     float smokeTimer = .5f, inAirTimer = 0, wallOffsetUp, wallOffsetBack;
 
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
     bool inStage = false, inAir, wallProjecting;
-
-
     #endregion
 
     #region UNITY FUNCTIONS
@@ -443,15 +441,31 @@ public class VFX_Manager : MonoBehaviour
     public void SetActiveShadow(bool disable)
     {
         shadow.enabled = disable;
-        landingBubbles.enabled = disable;
+
         doubleJump.enabled = disable;
         doubleJumpSpray.enabled = disable;
         bigDoubleJumpSpray.enabled = disable;
 
         inWater = !disable;
         splash.enabled = !disable;
+        if (!disable)
+        {
+            PlayVFX("splash");
+            landingBubbles.enabled = disable;
+        }
+        else
+        {
+            StartCoroutine(DisableBubbles());
+        }
     }
 
+    IEnumerator DisableBubbles()
+    {
+        freshOutOfWater = true;
+        yield return new WaitForSeconds(1.4f);
+        landingBubbles.enabled = true;
+        freshOutOfWater = false;
+    }
     public void PlayVFX(string effectName)
     {
         VisualEffect vfx;
@@ -560,9 +574,13 @@ public class VFX_Manager : MonoBehaviour
 
             if (t >= 0.2f && !castEffect)
             {
-                landingBubbles.SetFloat("_Radius", curvepoint);
-                landingBubbles.SetVector4("_Color", GetColor(randomColor));
-                landingBubbles.SendEvent("_Start");
+                if (!inWater && !freshOutOfWater)
+                {
+                    Debug.Log("AAA");
+                    landingBubbles.SetFloat("_Radius", curvepoint);
+                    landingBubbles.SetVector4("_Color", GetColor(randomColor));
+                    landingBubbles.SendEvent("_Start");
+                }
                 castEffect = true;
             }
 
