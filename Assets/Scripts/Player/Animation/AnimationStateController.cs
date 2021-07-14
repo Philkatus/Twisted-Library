@@ -498,33 +498,36 @@ public class AnimationStateController : MonoBehaviour
 
     void FaceSlideDirection()
     {
+        Debug.Log("Sliding: " + playerSM.slidingInput);
         if(playerSM.slidingInput == 0)
         {
             var temp = Mathf.SmoothDamp(animator.GetFloat("SlideDirection"), 0, ref switchVelocity, switchSideSpeed);
+            if(temp < 0.1f && temp > -0.1f)
+            {
+                temp = 0;
+            }
             animator.SetFloat("SlideDirection", temp);
         } else if(playerSM.slidingInput == 1)
         {
             var temp = Mathf.SmoothDamp(animator.GetFloat("SlideDirection"), 1, ref switchVelocity, switchSideSpeed);
+            if (temp > 0.9f)
+            {
+                temp = 1;
+            }
             animator.SetFloat("SlideDirection", temp);
         }
         else
         {
             var temp = Mathf.SmoothDamp(animator.GetFloat("SlideDirection"), -1, ref switchVelocity, switchSideSpeed);
+            if (temp < -0.9f)
+            {
+                temp = -1;
+            }
             animator.SetFloat("SlideDirection", temp);
         }
     }
 
-    void DismountingTop()
-    {
-        if (playerSM.dismounting == true)
-        {
-            animator.SetBool("isDismounting", true);
-        }
-        else
-        {
-            animator.SetBool("isDismounting", false);
-        }
-    }
+
 
     public void DismountLadder()
     {
