@@ -62,7 +62,6 @@ public class FootstepSoundManager : MonoBehaviour
     void LateUpdate()
     {
         Footsteps();
-        Exhale();
     }
 
     public void FallingSound()
@@ -119,7 +118,7 @@ public class FootstepSoundManager : MonoBehaviour
 
     public void Footsteps()
     {
-        if(ObjectManager.instance.animationStateController.playerSM.playerState == PlayerMovementStateMachine.PlayerState.walking)
+        if (ObjectManager.instance.animationStateController.playerSM.playerState == PlayerMovementStateMachine.PlayerState.walking)
         {
             //Debug.Log(ObjectManager.instance.animationStateController.animator.GetBoneTransform(HumanBodyBones.LeftFoot).position);
             var footLPos = root.position.y - footL.position.y;
@@ -154,7 +153,7 @@ public class FootstepSoundManager : MonoBehaviour
                 rightPlayed = false;
             }
         }
-        
+
         //Debug.Log("FootL: " + footL.position);
         //currentFrameFootstepLeft = animator.GetFloat("FootstepL");
         //if (currentFrameFootstepLeft > 0 && lastFrameFootstepLeft < 0)
@@ -200,16 +199,6 @@ public class FootstepSoundManager : MonoBehaviour
         {
             resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRight[Random.Range(0, footstepsLeft.Length)], audioVolume);
         }
-    }
-
-    public void Exhale()
-    {
-        currentFrameExhale = animator.GetFloat("Exhale");
-        if (currentFrameExhale > 0 && lastFrameExhale < 0)
-        {
-            resonanceAudio.audioSource.PlayOneShot(exhale, audioVolume);
-        }
-        lastFrameExhale = animator.GetFloat("Exhale");
     }
 
     public void SetWater(bool setTo)

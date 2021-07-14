@@ -418,6 +418,7 @@ public class VFX_Manager : MonoBehaviour
         Color color = possibleColors[i];
         if (!fullOpacity)
             color.a = a;
+        color.a = Mathf.Clamp01(color.a);
         return color;
     }
 
@@ -653,7 +654,6 @@ public class VFX_Manager : MonoBehaviour
         yield return new WaitForEndOfFrame();
         wallProjecting = true;
         int i = 0;
-
         if (!useFadeOut)
             wallProjector.material.SetColor("_BaseColor", GetColor(randomColor));
         else
@@ -683,7 +683,7 @@ public class VFX_Manager : MonoBehaviour
                 float curvepoint = impactCurve.Evaluate(t) * decalScale * 2;
                 wallProjector.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
                 if (useFadeOut)
-                    wallProjector.material.SetColor("_BaseColor", GetColor(i, false, Mathf.Lerp(alpha, 0, t)));
+                    wallProjector.material.SetColor("_BaseColor", GetColor(i, false, Mathf.Lerp(3, 0, t)));
             }
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();

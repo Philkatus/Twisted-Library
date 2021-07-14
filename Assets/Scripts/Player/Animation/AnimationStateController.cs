@@ -446,7 +446,6 @@ public class AnimationStateController : MonoBehaviour
     {
         if (animator.GetBool("OnLadder"))
         {
-            DismountingTop();
             LadderClimb();
             FaceSlideDirection();
         }
