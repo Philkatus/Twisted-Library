@@ -14,10 +14,11 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance;
 
 
-    ResonanceAudioSource[] CogSoundSources = new ResonanceAudioSource[9];
-    ResonanceAudioSource[] SwitchSoundSources = new ResonanceAudioSource[9];
-    [SerializeField] ResonanceAudioSource[] Landmark1Sources = new ResonanceAudioSource[6];
-    [SerializeField] ResonanceAudioSource[] Landmark2Sources = new ResonanceAudioSource[6];
+    public ResonanceAudioSource[] CogSoundSources = new ResonanceAudioSource[9];
+    public ResonanceAudioSource[] SwitchSoundSources = new ResonanceAudioSource[9];
+    public ResonanceAudioSource[] LandmarkOneSources = new ResonanceAudioSource[9];
+    public ResonanceAudioSource[] LandmarkTwoSources = new ResonanceAudioSource[6];
+    public ResonanceAudioSource MovingLandmarkOneColumn;
     bool isBreaking;
     int currentSlidingMode;
     float previousSlidingSpeed;
@@ -46,6 +47,9 @@ public class AudioManager : MonoBehaviour
             source.priority = s.priority;
             source.loop = s.loop;
             source.outputAudioMixerGroup = s.audioGroup;
+            source.rolloffMode = AudioRolloffMode.Linear;
+            source.maxDistance = s.maxDistanceListener;
+            source.minDistance = s.minDistanceListener;
         }
         else
         {
@@ -448,29 +452,49 @@ public class AudioManager : MonoBehaviour
             SwitchSoundSources[index].audioSource.Play();
         }
     }
-    public void Landmark1Sound(int index)
+
+    public void LandmarkOneSound(int index)
     {
         string name = "Landmark1Rotation";
         Sound s = Array.Find(sounds, sound => sound.name == name);
-        if (Landmark1Sources[index] == null)
+        string nameDisk = "LandmarkOneDisks";
+        Sound sDisk = Array.Find(sounds, sound => sound.name == nameDisk);
+        if (LandmarkOneSources[index] != null)
         {
-            ApplyValuesToSource(s, Landmark1Sources[index].audioSource);
-            Landmark1Sources[index].audioSource.Play();
+            ApplyValuesToSource(s, LandmarkOneSources[index].audioSource);
+            LandmarkOneSources[index].audioSource.Play();
         }
-        if (Landmark1Sources[index + 3] == null)
+        if (LandmarkOneSources[index + 3] != null)
         {
-            ApplyValuesToSource(s, Landmark1Sources[index + 3].audioSource);
-            Landmark1Sources[index + 3].audioSource.Play();
+            ApplyValuesToSource(s, LandmarkOneSources[index + 3].audioSource);
+            LandmarkOneSources[index + 3].audioSource.Play();
+        }
+        if (LandmarkOneSources[index + 6] != null)
+        {
+            ApplyValuesToSource(sDisk, LandmarkOneSources[index + 6].audioSource);
+            LandmarkOneSources[index + 6].audioSource.Play();
         }
     }
-    public void Landmark2Sound(int index)
+
+    public void LandmarkOneColumnSound()
+    {
+        string name = "LandmarkOneColumn";
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (MovingLandmarkOneColumn != null)
+        {
+            ApplyValuesToSource(s, MovingLandmarkOneColumn.audioSource);
+            MovingLandmarkOneColumn.audioSource.Play();
+        }
+    }
+
+    public void LandmarkTwoSound(int index)
     {
         string name = "Landmark2Rotation";
         Sound s = Array.Find(sounds, sound => sound.name == name);
-        if (Landmark2Sources[index] == null)
+        if (LandmarkTwoSources[index] == null)
         {
-            ApplyValuesToSource(s, Landmark2Sources[index].audioSource);
-            Landmark2Sources[index].audioSource.Play();
+            ApplyValuesToSource(s, LandmarkTwoSources[index].audioSource);
+            LandmarkTwoSources[index].audioSource.Play();
         }
     }
     public void StopCogSound(int index, Vector3 position)
@@ -487,6 +511,19 @@ public class AudioManager : MonoBehaviour
         {
             SwitchSoundSources[index].audioSource.Stop();
             SetSoundSourceInactive(SwitchSoundSources[index], true);
+        }
+    }
+
+    public void StopColumnSound()
+    {
+        if (MovingLandmarkOneColumn != null)
+        {
+            MovingLandmarkOneColumn.audioSource.Stop();
+            Debug.Log("stop column sound");
+        }
+        else
+        {
+            Debug.LogError("Moving Column AudioSource is missing!");
         }
     }
 }

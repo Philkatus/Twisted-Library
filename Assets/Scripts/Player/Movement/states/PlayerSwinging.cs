@@ -1019,6 +1019,8 @@ public class PlayerSwinging : State
                             {
                                 PSM.playerVelocity = ExtensionMethods.ClampPlayerVelocity(PSM.playerVelocity, pathDirection, 0);
                                 PSM.currentSlidingSpeed = 0;
+                                tAcceleration = 0;
+                                tDeceleration = 0;
                                 PSM.slidingInput = 0;
                             }
                             else

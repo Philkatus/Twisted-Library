@@ -170,6 +170,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 0
+    maxDistanceListener: 0
   - name: Falling
     clips:
     - {fileID: 8300000, guid: 46300e4df286c1d449aea9a26cc30594, type: 3}
@@ -179,6 +181,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 1
+    minDistanceListener: 0
+    maxDistanceListener: 0
   - name: LandingAfterJump
     clips:
     - {fileID: 8300000, guid: 18270415c32bd9245a1538cf5a31ed79, type: 3}
@@ -188,6 +192,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 0
+    maxDistanceListener: 0
   - name: LandingAfterFall
     clips:
     - {fileID: 8300000, guid: 99b8a2b4a64f00648a2ad7a2b61a6142, type: 3}
@@ -197,6 +203,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 0
+    maxDistanceListener: 0
   - name: AttachLadder
     clips:
     - {fileID: 8300000, guid: d15f43bec7171fa499b6bb2812c7a281, type: 3}
@@ -210,6 +218,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 0
+    maxDistanceListener: 0
   - name: Sliding
     clips:
     - {fileID: 0}
@@ -219,6 +229,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 1
     loop: 1
+    minDistanceListener: 0
+    maxDistanceListener: 0
   - name: FoldLadder
     clips:
     - {fileID: 8300000, guid: 61fdda4497286ee4a91d5b8251b003fa, type: 3}
@@ -228,6 +240,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 0
+    maxDistanceListener: 0
   - name: impactSide
     clips:
     - {fileID: 8300000, guid: 985a1ad282af5ae4b9df6e4c5f96c101, type: 3}
@@ -242,6 +256,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 50
+    maxDistanceListener: 500
   - name: impactFront
     clips:
     - {fileID: 8300000, guid: 5b80011ec8ae6724394bbf48b2382931, type: 3}
@@ -257,6 +273,8 @@ MonoBehaviour:
     priority: 166
     blendDuration: 0
     loop: 0
+    minDistanceListener: 50
+    maxDistanceListener: 500
   - name: LadderFold
     clips:
     - {fileID: 8300000, guid: 7fa1c08a7364efd4aa7849328fbbd49e, type: 3}
@@ -269,6 +287,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 50
+    maxDistanceListener: 500
   - name: LadderUnFold
     clips:
     - {fileID: 8300000, guid: ffaf0f67370e41d43b37f8856c2bda6b, type: 3}
@@ -281,6 +301,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 50
+    maxDistanceListener: 500
   - name: slidingSlow
     clips:
     - {fileID: 8300000, guid: 6c98cd5abf618ad4badbfcddabea5045, type: 3}
@@ -290,6 +312,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0.3
     loop: 1
+    minDistanceListener: 1000
+    maxDistanceListener: 1000
   - name: slidingMedium
     clips:
     - {fileID: 8300000, guid: e7423afbc6afa724798ae12733baf538, type: 3}
@@ -299,6 +323,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0.3
     loop: 1
+    minDistanceListener: 1000
+    maxDistanceListener: 1000
   - name: slidingFast
     clips:
     - {fileID: 8300000, guid: ee91b4ffed99e17428c11336e7d983fe, type: 3}
@@ -308,6 +334,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0.3
     loop: 1
+    minDistanceListener: 1000
+    maxDistanceListener: 1000
   - name: slidingBreak
     clips:
     - {fileID: 8300000, guid: 498337919affe3f46813397b8f259bd5, type: 3}
@@ -320,6 +348,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 1
+    minDistanceListener: 50
+    maxDistanceListener: 500
   - name: concreteLadderPush
     clips:
     - {fileID: 8300000, guid: 3e49e73df1adffa4eb8b18732e8be4fd, type: 3}
@@ -333,6 +363,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 1000
+    maxDistanceListener: 1000
   - name: grasLadderPush
     clips:
     - {fileID: 8300000, guid: f96949fdea2f2ca4abd3c013700f7b6b, type: 3}
@@ -345,6 +377,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 1000
+    maxDistanceListener: 1000
   - name: waterLadderPush
     clips:
     - {fileID: 8300000, guid: 4019225f7919c214093d0459553b6b67, type: 3}
@@ -360,6 +394,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0.3
     loop: 0
+    minDistanceListener: 1000
+    maxDistanceListener: 1000
   - name: idleVoice
     clips:
     - {fileID: 8300000, guid: 3b84cd92b371c0547a5b399390d7316b, type: 3}
@@ -376,6 +412,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0.3
     loop: 0
+    minDistanceListener: 1000
+    maxDistanceListener: 1000
   - name: WalkingVoice
     clips:
     - {fileID: 8300000, guid: 9612077ec0acc0c4aadd3745c198803e, type: 3}
@@ -388,6 +426,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0.3
     loop: 0
+    minDistanceListener: 1000
+    maxDistanceListener: 1000
   - name: SlidingVoice
     clips:
     - {fileID: 8300000, guid: 4a600db0bd7e9f546ab562bb1376d2db, type: 3}
@@ -404,6 +444,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 1000
+    maxDistanceListener: 1000
   - name: swingingVoice
     clips:
     - {fileID: 8300000, guid: a3488dccdfae0d845b5ba0d9d6c8ad25, type: 3}
@@ -417,6 +459,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 1000
+    maxDistanceListener: 1000
   - name: JumpingVoice
     clips:
     - {fileID: 8300000, guid: f98933377fc0c864d9cba3894a65b378, type: 3}
@@ -430,6 +474,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 1000
+    maxDistanceListener: 1000
   - name: AchievementVoice
     clips:
     - {fileID: 8300000, guid: 6f3a2e6f8e0b1254a8fde1f7d32b9dca, type: 3}
@@ -443,6 +489,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 1000
+    maxDistanceListener: 1000
   - name: SmallAchievementVoice
     clips:
     - {fileID: 8300000, guid: ebbc69502abca9d4dadc635130555193, type: 3}
@@ -455,15 +503,22 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 1000
+    maxDistanceListener: 1000
   - name: CogChallenge
     clips:
-    - {fileID: 0}
-    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
-    volume: 0.562
+    - {fileID: 8300000, guid: 5966e76199c5348418ef078aff6b877e, type: 3}
+    - {fileID: 8300000, guid: c164c90c08082a348bc6bc1044265951, type: 3}
+    - {fileID: 8300000, guid: 9cce6415f55a79348a60827402227a8e, type: 3}
+    - {fileID: 8300000, guid: e731be44d019406419b24128eb1ffd80, type: 3}
+    audioGroup: {fileID: -83819476441676283, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 1
     pitch: 1
-    priority: 128
+    priority: 201
     blendDuration: 0
     loop: 1
+    minDistanceListener: 50
+    maxDistanceListener: 500
   - name: SwitchChallenge
     clips:
     - {fileID: 8300000, guid: ebbc69502abca9d4dadc635130555193, type: 3}
@@ -476,6 +531,8 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 50
+    maxDistanceListener: 500
   - name: Landmark1Rotation
     clips:
     - {fileID: 8300000, guid: f0a3750d7e0ae9d4fa4f0eca274206e9, type: 3}
@@ -486,7 +543,9 @@ MonoBehaviour:
     pitch: 1
     priority: 128
     blendDuration: 0
-    loop: 0
+    loop: 1
+    minDistanceListener: 50
+    maxDistanceListener: 500
   - name: Landmark2Rotation
     clips: []
     audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
@@ -495,20 +554,63 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+    minDistanceListener: 0
+    maxDistanceListener: 0
+  - name: LandmarkOneDisks
+    clips: []
+    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.562
+    pitch: 1
+    priority: 128
+    blendDuration: 0
+    loop: 0
+    minDistanceListener: 50
+    maxDistanceListener: 500
+  - name: LandmarkOneColumn
+    clips: []
+    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.562
+    pitch: 1
+    priority: 128
+    blendDuration: 0
+    loop: 1
+    minDistanceListener: 50
+    maxDistanceListener: 500
   activeSoundSources: []
   inactiveSoundSources: []
   SoundSourcePrefab: {fileID: 1176170004654050, guid: 7649fb0a9057a44d7866d4c957ec7e96, type: 3}
-  Landmark1Sources:
+  CogSoundSources:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  Landmark2Sources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  SwitchSoundSources:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  LandmarkOneSources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  LandmarkTwoSources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  MovingLandmarkOneColumn: {fileID: 0}

@@ -12,6 +12,27 @@ public class VFX_Manager : MonoBehaviour
     public float lerpSpeed = .01f;
     #endregion
     #region GET/SET
+    int RandomColor;
+    int randomColor
+    {
+        get
+        {
+            int rc = RandomColor + 1;
+            if (rc >= possibleColors.Length)
+            {
+                RandomColor = 0;
+            }
+            else
+            {
+                RandomColor = rc;
+            }
+            return RandomColor;
+        }
+        set
+        {
+            // this isnt called
+        }
+    }
     Rail CurrentRail;
     public Rail currentRail
     {
@@ -64,6 +85,7 @@ public class VFX_Manager : MonoBehaviour
     #endregion
     #region INSPECTOR
     [SerializeField] GameObject player, sparkleBurstL, sparkleBurstR, speedLinesS;
+    [SerializeField] bool useFadeOut, useNewWallProjector;
     [SerializeField] VisualEffect ladderPushLeft, ladderPushRight, upgradeCloud, stepLeft, stepRight;
     [SerializeField] Material[] railMats;
     [Header("Wheel Light Up")]
@@ -80,6 +102,9 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] VisualEffect landingBubbles;
     [SerializeField] AnimationCurve shadowSize, impactCurve, hardImpactCurve;
     [SerializeField] float shadowRemapMin, shadowRemapMax, decalScale, minJumpTime, maxJumpTime;
+    //[ColorUsage(true, true)]
+    [SerializeField] Color[] possibleColors;
+    [SerializeField] float alpha = 130;
     [Header("Wall Projection")]
     [SerializeField] GameObject ladder;
     [SerializeField] DecalProjector wallProjector;
@@ -106,6 +131,8 @@ public class VFX_Manager : MonoBehaviour
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
     bool inStage = false, inAir, wallProjecting;
+
+
     #endregion
 
     #region UNITY FUNCTIONS
@@ -382,6 +409,17 @@ public class VFX_Manager : MonoBehaviour
         for (int i = 0; i < railMats.Length; i++)
             StartCoroutine(ChangePropertyColor(railMats[i], propertyName, railMats[i].GetColor(propertyName), value[i], time));
     }
+    Color GetColor(int i, bool fullOpacity = false, float a = -1)
+    {
+        if (a == -1)
+        {
+            a = alpha;
+        }
+        Color color = possibleColors[i];
+        if (!fullOpacity)
+            color.a = a;
+        return color;
+    }
 
     IEnumerator ChangePropertyColor(Material mat, string propertyName, Color fromColor, Color toColor, float time)
     {
@@ -439,7 +477,10 @@ public class VFX_Manager : MonoBehaviour
             case "snap":
                 vfx = snappingVFX;
                 Vector3 snappingPoint = pSM.closestRail.pathCreator.path.GetClosestPointOnPath(transform.GetChild(0).position);
+                float distance = pSM.closestRail.pathCreator.path.GetClosestDistanceAlongPath(snappingPoint);
+
                 vfx.transform.position = snappingPoint;
+                vfx.transform.LookAt(snappingPoint + pSM.closestRail.pathCreator.path.GetNormalAtDistance(distance));
                 break;
             default:
                 vfx = new VisualEffect();
@@ -493,15 +534,22 @@ public class VFX_Manager : MonoBehaviour
     #region SHADOW
     IEnumerator OnImpact(float inAirTime)
     {
+        int i = 0;
         float jumpIntensity = Mathf.Clamp(inAirTime, minJumpTime, maxJumpTime);
         jumpIntensity = ExtensionMethods.Remap(jumpIntensity, minJumpTime, maxJumpTime, 0, 1);
-
+        if (!useFadeOut)
+            shadow.material.SetColor("_BaseColor", GetColor(randomColor));
+        else
+            i = randomColor;
         float timer = 0;
         float time = impactCurve.keys[impactCurve.length - 1].time;
         bool castEffect = false;
         while (timer < time)
         {
             float t = timer / time;
+
+            if (useFadeOut)
+                shadow.material.SetColor("_BaseColor", GetColor(i, false, Mathf.Lerp(alpha, 0, t)));
 
             float curvepoint = impactCurve.Evaluate(t) * decalScale;
             float curvepoint2 = hardImpactCurve.Evaluate(t) * decalScale;
@@ -512,6 +560,7 @@ public class VFX_Manager : MonoBehaviour
             if (t >= 0.2f && !castEffect)
             {
                 landingBubbles.SetFloat("_Radius", curvepoint);
+                landingBubbles.SetVector4("_Color", GetColor(randomColor));
                 landingBubbles.SendEvent("_Start");
                 castEffect = true;
             }
@@ -547,28 +596,41 @@ public class VFX_Manager : MonoBehaviour
         float jumpIntensity = Mathf.Clamp(inAirTime, minJumpTime, maxJumpTime);
         jumpIntensity = ExtensionMethods.Remap(jumpIntensity, minJumpTime, maxJumpTime, 0, 1);
 
+        int j = 0;
         float timer = 0;
         float time = impactCurve.keys[impactCurve.length - 1].time;
         bool castEffect = false;
+
+        if (!useFadeOut)
+            doubleJump.material.SetColor("_BaseColor", GetColor(randomColor));
+        else
+            j = randomColor;
+
         while (timer < time)
         {
             doubleJump.transform.LookAt(doubleJump.transform.position - planeNormal);
             float t = timer / time;
 
+            if (useFadeOut)
+                doubleJump.material.SetColor("_BaseColor", GetColor(j, false, Mathf.Lerp(alpha, 0, t)));
+
             float curvepoint = impactCurve.Evaluate(t) * decalScale;
             float curvepoint2 = hardImpactCurve.Evaluate(t) * decalScale;
-            curvepoint = Mathf.Lerp(curvepoint, curvepoint2, jumpIntensity) * 2;
+            curvepoint = Mathf.Lerp(curvepoint, curvepoint2, jumpIntensity) * 1.7f;
 
             doubleJump.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
             bigDoubleJumpSpray.transform.position = new Vector3(doubleJumpSpray.transform.position.x, sprayY, doubleJumpSpray.transform.position.z);
             if (t >= 0.2f && !castEffect)
             {
+                int i = randomColor;
                 doubleJumpSpray.SetFloat("_Radius", curvepoint);
+                doubleJumpSpray.SetVector4("_Color", GetColor(i));
                 doubleJumpSpray.SetVector3("_Normal", planeNormal);
                 doubleJumpSpray.SetVector3("_Up", planeUp);
                 doubleJumpSpray.SendEvent("_Start");
 
                 bigDoubleJumpSpray.SetFloat("_Radius", curvepoint);
+                bigDoubleJumpSpray.SetVector4("_Color", GetColor(i));
                 bigDoubleJumpSpray.SetVector3("_Normal", planeNormal);
                 bigDoubleJumpSpray.SetVector3("_Up", planeUp);
                 bigDoubleJumpSpray.SendEvent("_Start");
@@ -590,21 +652,50 @@ public class VFX_Manager : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
         wallProjecting = true;
+        int i = 0;
+
+        if (!useFadeOut)
+            wallProjector.material.SetColor("_BaseColor", GetColor(randomColor));
+        else
+            i = randomColor;
+
+        if (!useNewWallProjector)
+        {
+            wallProjector.material.SetColor("_Color", GetColor(randomColor, true));
+        }
+
         wallProjector.transform.position = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
         lastPositionWall = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
         wallProjector.transform.rotation = Quaternion.Euler(wallProjector.transform.eulerAngles.x, ladder.transform.eulerAngles.y, wallProjector.transform.eulerAngles.z);
         float timer = 0;
         while (timer < time)
         {
+            float t = timer / time;
             if (pSM.playerState == PlayerMovementStateMachine.PlayerState.swinging)
                 lastPositionWall = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
-            float t = timer / time;
-            float currentTime = Mathf.Lerp(0.2f, 1.22f, t);
-            wallProjector.material.SetFloat("_WallTime", currentTime);
+            if (!useNewWallProjector)
+            {
+                float currentTime = Mathf.Lerp(0.2f, 1.22f, t);
+                wallProjector.material.SetFloat("_WallTime", currentTime);
+            }
+            else
+            {
+                float curvepoint = impactCurve.Evaluate(t) * decalScale * 2;
+                wallProjector.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
+                if (useFadeOut)
+                    wallProjector.material.SetColor("_BaseColor", GetColor(i, false, Mathf.Lerp(alpha, 0, t)));
+            }
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        wallProjector.material.SetFloat("_WallTime", 0);
+        if (!useNewWallProjector)
+        {
+            wallProjector.material.SetFloat("_WallTime", 0);
+        }
+        else
+        {
+            wallProjector.size = new Vector3(0, 0, shadowRemapMax);
+        }
         wallProjecting = false;
     }
     #endregion

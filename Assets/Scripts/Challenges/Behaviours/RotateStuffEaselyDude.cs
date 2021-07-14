@@ -11,6 +11,10 @@ public class RotateStuffEaselyDude : MonoBehaviour
 
     [SerializeField] List<GameObject> objectsToSyncWith = new List<GameObject>();
 
+    public bool volcanoLandmark;
+
+    bool isSynced;
+
 
     // Start is called before the first frame update
     void Start()
@@ -23,19 +27,83 @@ public class RotateStuffEaselyDude : MonoBehaviour
     {
         if(isPlaying)
         {
-            if(rotateThisTransform)
+            if(volcanoLandmark) //volcanolandmark
             {
-                this.transform.Rotate(new Vector3(0, rotationSpeed * Time.deltaTime, 0), Space.World);
+                RotateNormal();
             }
-            else
+            else //windlandmark
             {
-                transformToRotate.Rotate(new Vector3(0, rotationSpeed * Time.deltaTime, 0), Space.World);
+                if(isSynced)
+                {
+                    RotateNormal();
+                }
+                else //isSyncing
+                {
+                    if (objectsToSyncWith.Count != 0)
+                    {
+                        GameObject gameObjectToSyncWith = null;
+                        if (objectsToSyncWith[0].GetComponent<RotateStuffEaselyDude>().isPlaying)
+                        {
+                            gameObjectToSyncWith = objectsToSyncWith[0];
+                        }
+                        else if (objectsToSyncWith[1].GetComponent<RotateStuffEaselyDude>().isPlaying)
+                        {
+                            gameObjectToSyncWith = objectsToSyncWith[1];
+                        }
+                        else
+                        {
+                            //is the first one, needs no syncing
+                            isSynced = true;
+                        }
+
+                        if(gameObjectToSyncWith != null)
+                        {
+                            if (this.transform.localRotation.z <= gameObjectToSyncWith.transform.localRotation.z + 0.5f &&
+                            this.transform.localRotation.z >= gameObjectToSyncWith.transform.localRotation.z - 0.5f)
+                            {
+                                isSynced = true;
+                                Debug.Log("Synced");
+                                Debug.Log(this.transform.localRotation.z + " local rot of " + this.gameObject.name);
+                                Debug.Log("this.transform.rotation.z " + this.transform.localRotation.z + " &  gameObjectToSyncWith.transform.rotation.z " + gameObjectToSyncWith.transform.localRotation.z);
+                            }
+                        }
+                        
+                    }
+
+                    RotateSlower();
+                }  
             }
 
-            if(objectsToSyncWith.Count != 0)
-            {
-
-            }
+            //Debug.Log(this.transform.localRotation.z + " z local rot of " + this.gameObject.name);
+            //Debug.Log(this.transform.localRotation.y * Mathf.Rad2Deg + " y  local rot of " + this.gameObject.name);
+            //Debug.Log(this.transform.rotation.z * Mathf.Rad2Deg + " genz  local rot of " + this.gameObject.name);
+            //Debug.Log(this.transform.rotation.y * Mathf.Rad2Deg + " genz  local rot of " + this.gameObject.name);
         }
     }
+
+    public void RotateNormal()
+    {
+        if (rotateThisTransform)
+        {
+            this.transform.Rotate(new Vector3(0, rotationSpeed * Time.deltaTime, 0), Space.World);
+        }
+        else
+        {
+            transformToRotate.Rotate(new Vector3(0, rotationSpeed * Time.deltaTime, 0), Space.World);
+        }
+    }
+
+    public void RotateSlower()
+    {
+        if (rotateThisTransform)
+        {
+            this.transform.Rotate(new Vector3(0, rotationSpeed * Time.deltaTime / 2, 0), Space.World);
+        }
+        else
+        {
+            transformToRotate.Rotate(new Vector3(0, rotationSpeed * Time.deltaTime / 2, 0), Space.World);
+        }
+    }
+
+    
 }

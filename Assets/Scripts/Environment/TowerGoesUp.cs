@@ -10,21 +10,22 @@ public class TowerGoesUp : MonoBehaviour
     float time;
     Vector3 startPos, midwayPos;
 
-    bool sendTowerUp, sendTowerDown, sendTowerDownMidWay, sendTowerUpMidWay;
+    bool sendTowerUp, sendTowerDown, sendTowerDownMidWay, sendTowerUpMidWay, moving;
 
     void Start()
     {
+        AudioManager.Instance.MovingLandmarkOneColumn = this.GetComponent<ResonanceAudioSource>();
         time = 0;
         startPos = this.transform.localPosition;
     }
 
-    
+
     void FixedUpdate()
     {
-        if(sendTowerUp)
+        if (sendTowerUp)
         {
             time += Time.fixedDeltaTime;
-            if(time < travelTime)
+            if (time < travelTime)
             {
                 float t = time / travelTime;
                 transform.localPosition = Vector3.Lerp(startPos, endPosition, t);
@@ -33,6 +34,8 @@ public class TowerGoesUp : MonoBehaviour
             {
                 time = 0;
                 sendTowerUp = false;
+                moving = false;
+                AudioManager.Instance.StopColumnSound();
             }
         }
 
@@ -48,6 +51,8 @@ public class TowerGoesUp : MonoBehaviour
             {
                 time = 0;
                 sendTowerDown = false;
+                moving = false;
+                AudioManager.Instance.StopColumnSound();
             }
         }
 
@@ -64,6 +69,8 @@ public class TowerGoesUp : MonoBehaviour
                 time = 0;
                 sendTowerDown = false;
                 sendTowerDownMidWay = false;
+                moving = false;
+                AudioManager.Instance.StopColumnSound();
             }
         }
 
@@ -80,7 +87,15 @@ public class TowerGoesUp : MonoBehaviour
                 time = 0;
                 sendTowerUp = false;
                 sendTowerUpMidWay = false;
+                moving = false;
+                AudioManager.Instance.StopColumnSound();
             }
+        }
+
+        if (!moving && (sendTowerDown || sendTowerDownMidWay || sendTowerUp || sendTowerUpMidWay))
+        {
+            moving = true;
+            AudioManager.Instance.LandmarkOneColumnSound();
         }
     }
 
@@ -89,7 +104,7 @@ public class TowerGoesUp : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if(sendTowerDownMidWay || sendTowerDown) //still going down
+            if (sendTowerDownMidWay || sendTowerDown) //still going down
             {
                 sendTowerDown = false;
                 sendTowerDownMidWay = false;
@@ -125,5 +140,5 @@ public class TowerGoesUp : MonoBehaviour
         }
     }
 
-    
+
 }
