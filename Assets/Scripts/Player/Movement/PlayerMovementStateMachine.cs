@@ -67,6 +67,7 @@ public class PlayerMovementStateMachine : StateMachine
     public Transform ladderBottom;
     public Transform LadderTop;
     public Transform ladderSnapTransform;
+    public Transform ladderPushTransform;
 
 
     [HideInInspector] public InputAction slideLeftAction;
@@ -666,7 +667,7 @@ public class PlayerMovementStateMachine : StateMachine
             lSM.transform.position += lSM.transform.up * Mathf.Clamp(Vector3.Distance(LastLadderBotPosition, ladderBottom.position),.1f,Mathf.Infinity);
             lSM.transform.position += lSM.transform.up * Mathf.Clamp(Vector3.Distance(transform.position, targetPoint)-4, 0, Time.deltaTime*5);
             heightOnLadder = -1;
-            transform.position = ladderBottom.position+ ladder.transform.forward * -stats.playerOffsetFromLadder;
+            transform.position = ladderBottom.position+ ladder.transform.forward * (-stats.playerOffsetFromLadder-.3f);
             //transform.localPosition = new Vector3(0, lSM.ladderLength * heightOnLadder, -0.38f);
 
             LastLadderBotPosition = ladderBottom.position;

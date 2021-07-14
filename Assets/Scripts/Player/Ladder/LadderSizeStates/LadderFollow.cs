@@ -57,7 +57,7 @@ public class LadderFollow : State
         else
         {
             Vector3 followDirection = new Vector3(PSM.transform.forward.x + xOffset, PSM.transform.forward.y + yOffset, PSM.transform.forward.z + zOffset).normalized;
-            lSM.transform.up = Vector3.Lerp(lSM.transform.up, PSM.transform.forward, 4 * Time.deltaTime);
+            lSM.transform.up = Vector3.Lerp(lSM.transform.up, PSM.transform.forward, 2 * Time.deltaTime);
             lSM.LadderVisuals.forward = Vector3.Lerp(lSM.LadderVisuals.forward, followDirection,3 * Time.deltaTime);
             lSM.LadderVisuals.localPosition = ladderVisualLocalposition+new Vector3(zOffset/2,xOffset/2,yOffset/2);
         }

@@ -28,16 +28,15 @@ public class LadderFold : State
     {
         if (isLerpGoing)
         {
-            time = LadderSizeStateMachine.anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
-            LadderSizeStateMachine.ladderLength = Mathf.Lerp(stats.ladderLengthBig, stats.ladderLengthSmall, time % 1);
-            if (time >= 1) 
+            LadderSizeStateMachine.ladderLength = Vector3.Distance(PSM.ladderBottom.position, PSM.LadderTop.position);
+            if (LadderSizeStateMachine.ladderLength <= stats.ladderLengthSmall + .2f) 
             {
                 isLerpGoing = false;
                 LadderSizeStateMachine.ladderLength = stats.ladderLengthSmall;
-                Debug.Log("hey");
             }
         }
-        if (time >= stats.foldingTime + stats.extraFoldingTime)
+        time += Time.deltaTime;
+        if (time >= stats.extraFoldingTime)
         {
             LadderSizeStateMachine.isFoldingUp = false;
         }

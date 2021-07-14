@@ -31,15 +31,15 @@ public class LadderUnfold : State
     {
         if (isLerpGoing)
         {
-            time = LadderSizeStateMachine.anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
-            LadderSizeStateMachine.ladderLength = Mathf.Lerp(stats.ladderLengthSmall, stats.ladderLengthBig,time % 1);
+            LadderSizeStateMachine.ladderLength = Vector3.Distance(PSM.ladderBottom.position, PSM.LadderTop.position);
             if (LadderSizeStateMachine.ladderLength>=stats.ladderLengthBig-.2f)
             {
                 isLerpGoing = false;
                 LadderSizeStateMachine.ladderLength = stats.ladderLengthBig;
             }
         }
-        if (time >= stats.foldingTime + stats.extraFoldingTime)
+        time += Time.deltaTime;
+        if (time >= stats.extraFoldingTime)
         {
             LadderSizeStateMachine.isUnFolding = false;
         }

@@ -241,7 +241,7 @@ public class PlayerSwinging : State
             switchScript.railSnapRotation = switchScript.railParent.rotation;
         }
         RotateAroundY();
-
+        Time.fixedDeltaTime = 0.002f;
     }
     void SnappingOrientation()
     {
