@@ -156,6 +156,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void Start()
     {
         InitializeVariables();
+        Cursor.visible = false;
         SetState(new PlayerWalking(this));
         GetControls();
     }
