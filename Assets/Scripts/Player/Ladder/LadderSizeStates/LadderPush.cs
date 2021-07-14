@@ -72,11 +72,11 @@ public class LadderPush : State
         {
             time += Time.deltaTime;
 
-            pSM.ladder.localPosition = Vector3.Lerp(startingLocalPosition, pSM.ladderWalkingPosition, time / stats.foldingTime);
-            pSM.ladder.localRotation = Quaternion.Lerp(startingLocalRotation, pSM.ladderWalkingRotation, time / stats.foldingTime);
+            pSM.ladder.localPosition = Vector3.Lerp(startingLocalPosition, pSM.LadderWalkingPosition, time / stats.foldingTime);
+            pSM.ladder.localRotation = Quaternion.Lerp(startingLocalRotation, pSM.LadderWalkingRotation, time / stats.foldingTime);
 
-            pSM.ladder.localPosition = pSM.ladderWalkingPosition;
-            pSM.ladder.localRotation = pSM.ladderWalkingRotation;
+            pSM.ladder.localPosition = pSM.LadderWalkingPosition;
+            pSM.ladder.localRotation = pSM.LadderWalkingRotation;
             lSM.OnShrink();
         }
     }
