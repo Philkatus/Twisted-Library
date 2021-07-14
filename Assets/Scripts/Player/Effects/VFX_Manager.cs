@@ -102,12 +102,12 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] VisualEffect landingBubbles;
     [SerializeField] AnimationCurve shadowSize, impactCurve, hardImpactCurve;
     [SerializeField] float shadowRemapMin, shadowRemapMax, decalScale, minJumpTime, maxJumpTime;
-    //[ColorUsage(true, true)]
     [SerializeField] Color[] possibleColors;
     [SerializeField] float alpha = 130;
     [Header("Wall Projection")]
     [SerializeField] GameObject ladder;
     [SerializeField] DecalProjector wallProjector;
+    [SerializeField] VisualEffect wallBubbles;
     [SerializeField] float wallTime;
     [Header("Water Steps")]
     [SerializeField] DecalProjector waterStepsLeft;
@@ -123,7 +123,7 @@ public class VFX_Manager : MonoBehaviour
     #region PRIVATE
     PlayerMovementStateMachine pSM;
 
-    Vector3 offset, lastPositionWall, sprayPosition;
+    Vector3 offset, wallbubbleOffsetBack, lastPositionWall, sprayPosition;
 
     bool smokeOn = false, inWater = false, freshOutOfWater = false;
     float smokeTimer = .5f, inAirTimer = 0, wallOffsetUp, wallOffsetBack;
@@ -142,6 +142,7 @@ public class VFX_Manager : MonoBehaviour
 
         wallOffsetUp = wallProjector.transform.position.y - ladder.transform.position.y;
         wallOffsetBack = wallProjector.transform.position.z - ladder.transform.position.z;
+        wallbubbleOffsetBack = wallBubbles.transform.position - wallProjector.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
 
         //Set Burst Visual Effect
@@ -156,9 +157,11 @@ public class VFX_Manager : MonoBehaviour
     {
         //offsets
         transform.GetChild(0).transform.position = player.transform.position + offset;
+        transform.GetChild(0).transform.rotation = player.transform.rotation;
         if (wallProjecting)
         {
             wallProjector.transform.position = lastPositionWall;
+            wallBubbles.transform.position = wallProjector.transform.position + wallProjector.transform.forward * 0.5f + Vector3.down * 0.5f;
         }
 
 
@@ -577,7 +580,6 @@ public class VFX_Manager : MonoBehaviour
             {
                 if (!inWater && !freshOutOfWater)
                 {
-                    Debug.Log("AAA");
                     landingBubbles.SetFloat("_Radius", curvepoint);
                     landingBubbles.SetVector4("_Color", GetColor(randomColor));
                     landingBubbles.SendEvent("_Start");
@@ -687,6 +689,7 @@ public class VFX_Manager : MonoBehaviour
         lastPositionWall = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
         wallProjector.transform.rotation = Quaternion.Euler(wallProjector.transform.eulerAngles.x, ladder.transform.eulerAngles.y, wallProjector.transform.eulerAngles.z);
         float timer = 0;
+        bool once = false;
         while (timer < time)
         {
             float t = timer / time;
@@ -699,10 +702,19 @@ public class VFX_Manager : MonoBehaviour
             }
             else
             {
-                float curvepoint = impactCurve.Evaluate(t) * decalScale * 2;
+                float curvepoint = impactCurve.Evaluate(t) * decalScale * 1.75f;
                 wallProjector.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
                 if (useFadeOut)
                     wallProjector.material.SetColor("_BaseColor", GetColor(i, false, Mathf.Lerp(2, 0, t)));
+                if (t >= 0.2f && !once)
+                {
+                    wallBubbles.SetFloat("_Radius", curvepoint);
+                    wallBubbles.SetVector3("_Normal", wallProjector.transform.forward);
+                    wallBubbles.SetVector3("_Up", wallProjector.transform.up);
+                    wallBubbles.SetVector4("_Color", GetColor(randomColor));
+                    wallBubbles.SendEvent("_Start");
+                    once = true;
+                }
             }
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
@@ -740,7 +752,7 @@ public class VFX_Manager : MonoBehaviour
         while (timer < waterSpeed)
         {
             float t = timer / waterSpeed;
-            float currentSize = Mathf.Lerp(0, 0.3f, t);
+            float currentSize = Mathf.Lerp(0, 0.6f, t);
             if (side == "left")
             {
                 waterStepsLeft.size = new Vector3(currentSize, currentSize, 1);
