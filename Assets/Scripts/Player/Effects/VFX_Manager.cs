@@ -683,7 +683,7 @@ public class VFX_Manager : MonoBehaviour
                 float curvepoint = impactCurve.Evaluate(t) * decalScale * 2;
                 wallProjector.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
                 if (useFadeOut)
-                    wallProjector.material.SetColor("_BaseColor", GetColor(i, false, Mathf.Lerp(3, 0, t)));
+                    wallProjector.material.SetColor("_BaseColor", GetColor(i, false, Mathf.Lerp(2, 0, t)));
             }
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
