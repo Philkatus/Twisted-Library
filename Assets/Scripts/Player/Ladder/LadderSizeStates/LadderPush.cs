@@ -9,12 +9,16 @@ public class LadderPush : State
     LadderSizeStateMachine lSM;
     Vector3 target;
     Quaternion LadderLocalRotation;
-    Vector3 startingLocalPosition;
-    Quaternion startingLocalRotation;
+    Vector3 startingPosition;
+    Vector3 startingRotation;
+    Quaternion startingRotation2;
+    Quaternion playerStartingRotation;
 
     bool isLerpGoing = true;
     float time;
+    float startDuration = 0.2f;
     float distance;
+    bool rotated;
 
     public LadderPush(LadderSizeStateMachine ladderSizeStateMachine) : base(ladderSizeStateMachine)
     {
@@ -28,56 +32,71 @@ public class LadderPush : State
         target = pSM.ladderJumpTarget;
         stats = pSM.stats;
         LadderLocalRotation = lSM.ladderParent.localRotation;
-        RotateLadder();
+        startingPosition = lSM.transform.position;
+        startingRotation = lSM.transform.up;
+        startingRotation2 = lSM.transform.rotation;
+        playerStartingRotation = pSM.transform.rotation;
+        isLerpGoing = true;
+        lSM.anim.SetTrigger("Ladder Push");
+
     }
 
     public override IEnumerator Finish()
     {
-        if (PSM.playerState != PlayerMovementStateMachine.PlayerState.swinging)
-        {
-            pSM.ladder.SetParent(pSM.animController.spine);
-        }
-        lSM.ladderParent.localRotation = LadderLocalRotation;
 
+        lSM.transform.SetParent(null);
         yield return null;
     }
 
     void RotateLadder()
     {
-        pSM.ladder.SetParent(pSM.transform);
-        lSM.ladderParent.transform.right = pSM.transform.position - target;
+        Vector3 targetDirection;
+        Vector3 TargetLadderPosition;
         distance = Vector3.Distance(target, pSM.transform.position);
-        lSM.ladderParent.transform.localScale = new Vector3(distance, 1, 1);
-        lSM.ladderLength = stats.ladderLengthBig;
+        targetDirection = (target - PSM.transform.position).normalized;
+        TargetLadderPosition = PSM.ladderPushTransform.position + targetDirection * stats.ladderLengthSmall;
+
+        Plane plane = new Plane(targetDirection, target);
+        Vector3 secondPoint = plane.ClosestPointOnPlane(target + new Vector3(1,1,1));
+        Vector3 forward = secondPoint - target;
+
+        lSM.transform.up = Vector3.Lerp(startingRotation, -targetDirection,time/startDuration);
+
+        //lSM.transform.rotation = Quaternion.Slerp(startingRotation2, Quaternion.LookRotation(forward, targetDirection),time/startDuration);
+        lSM.transform.position = Vector3.Lerp(startingPosition, TargetLadderPosition, time / startDuration);
+        Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
+        PSM.transform.rotation = Quaternion.Slerp(playerStartingRotation, targetRotation, time / startDuration);
+        if (time >= startDuration) 
+        {
+            rotated = true;
+
+            pSM.ladder.SetParent(pSM.transform);
+
+        }
+
+
     }
 
     public override void Fold()
     {
-        if (isLerpGoing)
+        time += Time.deltaTime;
+        if (!rotated)
+        {
+            RotateLadder();
+        }
+        else if (isLerpGoing)
         {
             distance = Vector3.Distance(target, pSM.transform.position);
-            lSM.ladderLength = Mathf.Clamp(distance, stats.ladderLengthSmall, stats.ladderLengthBig);
-            lSM.ladderParent.transform.right = pSM.transform.position - target;
-            lSM.ladderParent.transform.localScale = new Vector3(lSM.ladderLength, 1, 1);
-
+            
             if (distance >= stats.ladderLengthBig || pSM.playerVelocity.y <= 0)
             {
                 isLerpGoing = false;
-
-                startingLocalPosition = pSM.ladder.localPosition;
-                startingLocalRotation = pSM.ladder.localRotation;
             }
         }
         else
         {
-            time += Time.deltaTime;
-
-            pSM.ladder.localPosition = Vector3.Lerp(startingLocalPosition, pSM.ladderWalkingPosition, time / stats.foldingTime);
-            pSM.ladder.localRotation = Quaternion.Lerp(startingLocalRotation, pSM.ladderWalkingRotation, time / stats.foldingTime);
-
-            pSM.ladder.localPosition = pSM.ladderWalkingPosition;
-            pSM.ladder.localRotation = pSM.ladderWalkingRotation;
             lSM.OnShrink();
         }
+        
     }
 }
