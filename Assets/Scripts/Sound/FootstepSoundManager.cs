@@ -142,7 +142,6 @@ public class FootstepSoundManager : MonoBehaviour
             {
                 if (!rightPlayed)
                 {
-                    Debug.Log("FOOT: " + Mathf.Round((footRPos) * 100) / 100f);
                     ObjectManager.instance.animationStateController.playerSM.effects.TriggerRightFoot();
 
                     PlayRightStep();
