@@ -2091,7 +2091,7 @@ MonoBehaviour:
   useFeetIK: 0
   timeForLanding: 1
   timeForRoll: 3
-  timeForHardLanding: 1.5
+  strongImpactTimer: 0
   airTimer: 0
   headRig: {fileID: 5224045387643815620}
   armRig: {fileID: 5224045388768667450}
@@ -7623,7 +7623,7 @@ MonoBehaviour:
   animationControllerisFoldingJumped: 0
   expandAfterSnap: 0
   isOnWater: 0
-  isOnGras: 0
+  controlsDisabled: 0
   baseVelocity: {x: 0, y: 0, z: 0}
   bonusVelocity: {x: 0, y: 0, z: 0}
   railCheckLadderPosition: {x: 0, y: 0, z: 0}
@@ -8853,6 +8853,14 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 1739564866998265026, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: m_RootOrder
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 3421082612135700745, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: m_RootOrder
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
       propertyPath: ladder
       value: 
@@ -8880,6 +8888,86 @@ PrefabInstance:
     - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
       propertyPath: ladderPushRight
       value: 
+      objectReference: {fileID: 54529243261345812}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColors.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColors.Array.data[0].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColors.Array.data[0].g
+      value: 0.49019608
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColors.Array.data[0].r
+      value: 0.7490196
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColors.Array.data[1].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColors.Array.data[1].b
+      value: 0.502769
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColors.Array.data[1].r
+      value: 0.9647059
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColors.Array.data[2].a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColors.Array.data[2].b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColors.Array.data[2].g
+      value: 0.07058824
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColorsTransparent.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColorsTransparent.Array.data[0].a
+      value: 0.50980395
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColorsTransparent.Array.data[0].g
+      value: 0.65140754
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColorsTransparent.Array.data[0].r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColorsTransparent.Array.data[1].a
+      value: 0.50980395
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColorsTransparent.Array.data[1].b
+      value: 0.502769
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColorsTransparent.Array.data[1].r
+      value: 0.9647059
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColorsTransparent.Array.data[2].a
+      value: 0.50980395
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColorsTransparent.Array.data[2].b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5231750470208925127, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
+      propertyPath: possibleColorsTransparent.Array.data[2].g
+      value: 0.07058824
       objectReference: {fileID: 0}
     - target: {fileID: 6504759155732504270, guid: 466b6bbc6498d3c4a82d6cae298a7b47, type: 3}
       propertyPath: m_Materials.Array.data[0]

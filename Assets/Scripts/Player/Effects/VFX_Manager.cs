@@ -12,6 +12,27 @@ public class VFX_Manager : MonoBehaviour
     public float lerpSpeed = .01f;
     #endregion
     #region GET/SET
+    int RandomColor;
+    int randomColor
+    {
+        get
+        {
+            int rc = RandomColor + 1;
+            if (rc >= possibleColors.Length)
+            {
+                RandomColor = 0;
+            }
+            else
+            {
+                RandomColor = rc;
+            }
+            return RandomColor;
+        }
+        set
+        {
+            // this isnt called
+        }
+    }
     Rail CurrentRail;
     public Rail currentRail
     {
@@ -80,6 +101,10 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] VisualEffect landingBubbles;
     [SerializeField] AnimationCurve shadowSize, impactCurve, hardImpactCurve;
     [SerializeField] float shadowRemapMin, shadowRemapMax, decalScale, minJumpTime, maxJumpTime;
+    [ColorUsage(true, true)]
+    [SerializeField] Color[] possibleColors;
+    [ColorUsage(true, true)]
+    [SerializeField] Color[] possibleColorsTransparent;
     [Header("Wall Projection")]
     [SerializeField] GameObject ladder;
     [SerializeField] DecalProjector wallProjector;
@@ -91,6 +116,8 @@ public class VFX_Manager : MonoBehaviour
     [Header("Double Jump")]
     [SerializeField] DecalProjector doubleJump;
     [SerializeField] VisualEffect doubleJumpSpray, bigDoubleJumpSpray;
+    [Header("Splash")]
+    [SerializeField] VisualEffect splash;
     #endregion
 
     #region PRIVATE
@@ -98,12 +125,14 @@ public class VFX_Manager : MonoBehaviour
 
     Vector3 offset, lastPositionWall, sprayPosition;
 
-    bool smokeOn = false;
+    bool smokeOn = false, inWater = false;
     float smokeTimer = .5f, inAirTimer = 0, wallOffsetUp, wallOffsetBack;
 
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
     bool inStage = false, inAir, wallProjecting;
+    
+
     #endregion
 
     #region UNITY FUNCTIONS
@@ -260,30 +289,37 @@ public class VFX_Manager : MonoBehaviour
 
     void UpdateShadowSize(bool end = false)
     {
-        if (!end)
+        if (!inWater)
         {
-            Vector3 groundPoint = Vector3.zero;
-            RaycastHit[] hits = Physics.RaycastAll(transform.position, Vector3.down, shadowRemapMax);
-            foreach (RaycastHit hit in hits)
+            if (!end)
             {
-                if (hit.transform.gameObject.layer == 6)
+                Vector3 groundPoint = Vector3.zero;
+                RaycastHit[] hits = Physics.RaycastAll(transform.position, Vector3.down, shadowRemapMax);
+                foreach (RaycastHit hit in hits)
                 {
-                    groundPoint = hit.point;
-                    break;
+                    if (hit.transform.gameObject.layer == 6)
+                    {
+                        groundPoint = hit.point;
+                        break;
+                    }
+                }
+                if (groundPoint != Vector3.zero)
+                {
+                    float distance = Vector3.Distance(groundPoint, shadow.transform.position);
+                    distance = Mathf.Clamp(distance, shadowRemapMin, shadowRemapMax);
+                    distance = ExtensionMethods.Remap(distance, shadowRemapMin, shadowRemapMax, 0, 1);
+                    float curvepoint = shadowSize.Evaluate(distance);
+                    shadow.size = new Vector3(curvepoint * decalScale, curvepoint * decalScale, shadowRemapMax);
                 }
             }
-            if (groundPoint != Vector3.zero)
+            else
             {
-                float distance = Vector3.Distance(groundPoint, shadow.transform.position);
-                distance = Mathf.Clamp(distance, shadowRemapMin, shadowRemapMax);
-                distance = ExtensionMethods.Remap(distance, shadowRemapMin, shadowRemapMax, 0, 1);
-                float curvepoint = shadowSize.Evaluate(distance);
-                shadow.size = new Vector3(curvepoint * decalScale, curvepoint * decalScale, shadowRemapMax);
+                StartCoroutine(OnImpact(inAirTimer));
             }
         }
         else
         {
-            StartCoroutine(OnImpact(inAirTimer));
+            PlayVFX("splash");
         }
     }
     #endregion
@@ -391,6 +427,19 @@ public class VFX_Manager : MonoBehaviour
     #endregion
 
     #region GENERAL PUBLIC
+
+    public void SetActiveShadow(bool disable)
+    {
+        shadow.enabled = disable;
+        landingBubbles.enabled = disable;
+        doubleJump.enabled = disable;
+        doubleJumpSpray.enabled = disable;
+        bigDoubleJumpSpray.enabled = disable;
+
+        inWater = !disable;
+        splash.enabled = !disable;
+    }
+
     public void PlayVFX(string effectName)
     {
         VisualEffect vfx;
@@ -398,6 +447,15 @@ public class VFX_Manager : MonoBehaviour
         {
             case "cloud":
                 vfx = upgradeCloud;
+                break;
+            case "splash":
+                float jumpIntensity = Mathf.Clamp(inAirTimer, minJumpTime, maxJumpTime);
+                jumpIntensity = ExtensionMethods.Remap(jumpIntensity, minJumpTime, maxJumpTime, 0, 1);
+                float curvepoint = 2.5f * decalScale;
+                float curvepoint2 = 8 * decalScale;
+                curvepoint = Mathf.Lerp(curvepoint, curvepoint2, jumpIntensity);
+                splash.SetFloat("_Radius", curvepoint);
+                vfx = splash;
                 break;
             case "stepLeft":
                 vfx = stepLeft;
@@ -465,6 +523,8 @@ public class VFX_Manager : MonoBehaviour
         float jumpIntensity = Mathf.Clamp(inAirTime, minJumpTime, maxJumpTime);
         jumpIntensity = ExtensionMethods.Remap(jumpIntensity, minJumpTime, maxJumpTime, 0, 1);
 
+        shadow.material.SetColor("_BaseColor", possibleColorsTransparent[randomColor]);
+
         float timer = 0;
         float time = impactCurve.keys[impactCurve.length - 1].time;
         bool castEffect = false;
@@ -481,6 +541,7 @@ public class VFX_Manager : MonoBehaviour
             if (t >= 0.2f && !castEffect)
             {
                 landingBubbles.SetFloat("_Radius", curvepoint);
+                landingBubbles.SetVector4("_Color", possibleColors[randomColor]);
                 landingBubbles.SendEvent("_Start");
                 castEffect = true;
             }
@@ -499,10 +560,7 @@ public class VFX_Manager : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
     }
-    public void SetActiveShadow(bool disable)
-    {
-        shadow.enabled = disable;
-    }
+
     #endregion
 
     #region DOUBLE JUMP
@@ -522,6 +580,7 @@ public class VFX_Manager : MonoBehaviour
         float timer = 0;
         float time = impactCurve.keys[impactCurve.length - 1].time;
         bool castEffect = false;
+        doubleJump.material.SetColor("_BaseColor", possibleColorsTransparent[randomColor]);
         while (timer < time)
         {
             doubleJump.transform.LookAt(doubleJump.transform.position - planeNormal);
@@ -529,18 +588,20 @@ public class VFX_Manager : MonoBehaviour
 
             float curvepoint = impactCurve.Evaluate(t) * decalScale;
             float curvepoint2 = hardImpactCurve.Evaluate(t) * decalScale;
-            curvepoint = Mathf.Lerp(curvepoint, curvepoint2, jumpIntensity);
+            curvepoint = Mathf.Lerp(curvepoint, curvepoint2, jumpIntensity) * 2;
 
             doubleJump.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
             bigDoubleJumpSpray.transform.position = new Vector3(doubleJumpSpray.transform.position.x, sprayY, doubleJumpSpray.transform.position.z);
             if (t >= 0.2f && !castEffect)
             {
                 doubleJumpSpray.SetFloat("_Radius", curvepoint);
+                doubleJumpSpray.SetVector4("_Color", possibleColors[randomColor]);
                 doubleJumpSpray.SetVector3("_Normal", planeNormal);
                 doubleJumpSpray.SetVector3("_Up", planeUp);
                 doubleJumpSpray.SendEvent("_Start");
 
                 bigDoubleJumpSpray.SetFloat("_Radius", curvepoint);
+                bigDoubleJumpSpray.SetVector4("_Color", possibleColors[randomColor]);
                 bigDoubleJumpSpray.SetVector3("_Normal", planeNormal);
                 bigDoubleJumpSpray.SetVector3("_Up", planeUp);
                 bigDoubleJumpSpray.SendEvent("_Start");
@@ -562,6 +623,7 @@ public class VFX_Manager : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
         wallProjecting = true;
+        wallProjector.material.SetColor("_Color", possibleColors[randomColor]);
         wallProjector.transform.position = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
         lastPositionWall = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
         wallProjector.transform.rotation = Quaternion.Euler(wallProjector.transform.eulerAngles.x, ladder.transform.eulerAngles.y, wallProjector.transform.eulerAngles.z);
@@ -582,13 +644,19 @@ public class VFX_Manager : MonoBehaviour
     #endregion
 
     #region WATER STEPS
-    public void TriggerLeftFootWater()
+    public void TriggerLeftFoot()
     {
-        StartCoroutine(ExtendWater("left"));
+        if (inWater)
+            StartCoroutine(ExtendWater("left"));
+        else
+            PlayVFX("stepLeft");
     }
-    public void TriggerRightFootWater()
+    public void TriggerRightFoot()
     {
-        StartCoroutine(ExtendWater("right"));
+        if (inWater)
+            StartCoroutine(ExtendWater("right"));
+        else
+            PlayVFX("stepRight");
     }
     IEnumerator ExtendWater(string side)
     {
@@ -600,7 +668,7 @@ public class VFX_Manager : MonoBehaviour
             if (side == "left")
             {
                 waterStepsLeft.size = new Vector3(currentSize, currentSize, 1);
-                waterStepsLeft.material.SetFloat("_Alpha", Mathf.Lerp(1,0,t));
+                waterStepsLeft.material.SetFloat("_Alpha", Mathf.Lerp(1, 0, t));
             }
             else if (side == "right")
             {

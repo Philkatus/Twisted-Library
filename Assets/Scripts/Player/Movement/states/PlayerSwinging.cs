@@ -160,6 +160,7 @@ public class PlayerSwinging : State
     {
         PSM.jumpInputBool = false;
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
+        ObjectManager.instance.animationStateController.EnterOnLadderState();
         CameraController.instance.SwitchToLadderCam();
         if (!PSM.useRelativeBobPosition)
         {
@@ -1217,6 +1218,8 @@ public class PlayerSwinging : State
                     dismountTimer = 0;
                     dismountStartPos = PSM.transform.position;
                     PSM.dismounting = true;
+                    ObjectManager.instance.animationStateController.DismountLadder();
+
                 }
             }
         }
@@ -1229,7 +1232,7 @@ public class PlayerSwinging : State
     void Dismount()
     {
         // 1 is how much units the player needs to move up to be on top of the rail.
-        if ((PSM.transform.position - dismountStartPos).magnitude <= 1.4f && !dismountedHalfways)
+        if ((PSM.transform.position - dismountStartPos).magnitude <= 0.7f && !dismountedHalfways)
         {
             PSM.HeightOnLadder += stats.ladderDismountSpeed * Time.fixedDeltaTime;
             PSM.transform.position = ladder.transform.position + PSM.ladderDirection * ladderSizeState.ladderLength * PSM.HeightOnLadder;
@@ -1241,7 +1244,7 @@ public class PlayerSwinging : State
         }
 
         // Make one step forward on the rail before changing to walking state.
-        if ((PSM.transform.position - dismountStartPos).magnitude <= 0.3f && dismountedHalfways)
+        if ((PSM.transform.position - dismountStartPos).magnitude <= 0.7f && dismountedHalfways)
         {
             PSM.transform.position += ladder.transform.forward * stats.ladderDismountSpeed * Time.fixedDeltaTime;
         }
@@ -1278,6 +1281,8 @@ public class PlayerSwinging : State
         if (VoiceManager.Instance != null)
             VoiceManager.Instance.resetHighSpeedTimer();
         #endregion
+
+        ObjectManager.instance.animationStateController.ExitOnLadderState();
 
         yield break;
     }

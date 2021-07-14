@@ -411,18 +411,15 @@ public class AudioManager : MonoBehaviour
     #endregion
 
     #region ladderPushSounds
-    public string GetLadderPushString(bool variance)
+    public string GetLadderPushString(bool useOnWaterSound)
     {
         PlayerMovementStateMachine pSM = ObjectManager.instance.pSM;
         string ConcreteString = "concreteLadderPush";
         string WaterString = "waterLadderPush";
         string returnString = ConcreteString;
-        if (variance)
+        if (useOnWaterSound)
         {
-            if (pSM.isOnWater)
-            {
-                returnString = WaterString;
-            }
+            returnString = WaterString;
         }
         return returnString;
     }
