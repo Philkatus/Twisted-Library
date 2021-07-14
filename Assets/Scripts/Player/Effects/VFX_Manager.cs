@@ -123,7 +123,7 @@ public class VFX_Manager : MonoBehaviour
     #region PRIVATE
     PlayerMovementStateMachine pSM;
 
-    Vector3 offset, lastPositionWall, sprayPosition;
+    Vector3 offset, wallbubbleOffsetBack, lastPositionWall, sprayPosition;
 
     bool smokeOn = false, inWater = false, freshOutOfWater = false;
     float smokeTimer = .5f, inAirTimer = 0, wallOffsetUp, wallOffsetBack;
@@ -142,6 +142,7 @@ public class VFX_Manager : MonoBehaviour
 
         wallOffsetUp = wallProjector.transform.position.y - ladder.transform.position.y;
         wallOffsetBack = wallProjector.transform.position.z - ladder.transform.position.z;
+        wallbubbleOffsetBack = wallBubbles.transform.position - wallProjector.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
 
         //Set Burst Visual Effect
@@ -160,6 +161,7 @@ public class VFX_Manager : MonoBehaviour
         if (wallProjecting)
         {
             wallProjector.transform.position = lastPositionWall;
+            wallBubbles.transform.position = wallProjector.transform.position + wallProjector.transform.forward * 0.5f + Vector3.down * 0.5f;
         }
 
 
