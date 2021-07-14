@@ -261,7 +261,16 @@ public class AnimationStateController : MonoBehaviour
     #region[rgba(236,240,241,0.05)] 
     public void EnterWalkingState()
     {
-        audioManager.PlayRandom("LandingAfterJump");
+        if (playerSM.isOnWater)
+        {
+            audioManager.PlayRandom("LandingAfterJumpWater");
+            Debug.Log("Landed on water");
+        }
+        else
+        {
+            Debug.Log("Landed on eartg");
+            audioManager.PlayRandom("LandingAfterJump");
+        }
         animator.SetBool("Walking", true);
         if (animator.GetBool("HardFall") && velocity_vec.magnitude < 0.1f)
         {
