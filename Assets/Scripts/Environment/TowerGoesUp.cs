@@ -9,6 +9,7 @@ public class TowerGoesUp : MonoBehaviour
     [SerializeField] float travelTime;
     float time;
     Vector3 startPos, midwayPos;
+    PlayerMovementStateMachine psm;
 
     bool sendTowerUp, sendTowerDown, sendTowerDownMidWay, sendTowerUpMidWay, moving;
 
@@ -99,23 +100,28 @@ public class TowerGoesUp : MonoBehaviour
         }
     }
 
+    bool done;
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (sendTowerDownMidWay || sendTowerDown) //still going down
+            psm = other.GetComponent<PlayerMovementStateMachine>();
+            if (psm.playerState == PlayerMovementStateMachine.PlayerState.swinging)
             {
-                sendTowerDown = false;
-                sendTowerDownMidWay = false;
-                time = 0;
-                midwayPos = this.transform.localPosition;
-                sendTowerUpMidWay = true;
-            }
-            else // already down
-            {
-                time = 0;
-                sendTowerUp = true;
+                if (sendTowerDownMidWay || sendTowerDown) //still going down
+                {
+                    sendTowerDown = false;
+                    sendTowerDownMidWay = false;
+                    time = 0;
+                    midwayPos = this.transform.localPosition;
+                    sendTowerUpMidWay = true;
+                }
+                else // already down
+                {
+                    time = 0;
+                    sendTowerUp = true;
+                }
             }
         }
     }
