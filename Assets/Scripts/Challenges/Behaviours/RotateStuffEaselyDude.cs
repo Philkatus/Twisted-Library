@@ -35,7 +35,6 @@ public class RotateStuffEaselyDude : MonoBehaviour
             {
                 if(isSynced)
                 {
-                    Debug.Log("not synced");
                     RotateNormal();
                 }
                 else //isSyncing
@@ -64,6 +63,7 @@ public class RotateStuffEaselyDude : MonoBehaviour
                             {
                                 isSynced = true;
                                 Debug.Log("Synced");
+                                Debug.Log(this.transform.localRotation.z + " local rot of " + this.gameObject.name);
                                 Debug.Log("this.transform.rotation.z " + this.transform.localRotation.z + " &  gameObjectToSyncWith.transform.rotation.z " + gameObjectToSyncWith.transform.localRotation.z);
                             }
                         }
@@ -73,6 +73,11 @@ public class RotateStuffEaselyDude : MonoBehaviour
                     RotateSlower();
                 }  
             }
+
+            //Debug.Log(this.transform.localRotation.z + " z local rot of " + this.gameObject.name);
+            //Debug.Log(this.transform.localRotation.y * Mathf.Rad2Deg + " y  local rot of " + this.gameObject.name);
+            //Debug.Log(this.transform.rotation.z * Mathf.Rad2Deg + " genz  local rot of " + this.gameObject.name);
+            //Debug.Log(this.transform.rotation.y * Mathf.Rad2Deg + " genz  local rot of " + this.gameObject.name);
         }
     }
 
