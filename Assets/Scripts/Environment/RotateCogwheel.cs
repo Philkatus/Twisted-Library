@@ -28,7 +28,6 @@ public class RotateCogwheel : MonoBehaviour
         challengeComponent = GetComponent<ChallengeComponent>();
         challengeComponent.onResetChallenge += new ChallengeComponent.EventHandler(SetStopWheelTrue);
         challengeComponent.type = "cogwheel";
-        AudioManager.Instance.CogSoundSources[CogSoundIndex] = this.GetComponent<ResonanceAudioSource>();
     }
 
     void Update()
@@ -105,12 +104,10 @@ public class RotateCogwheel : MonoBehaviour
                         {
                             ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, component.type);
                         }
-                        //AudioManager.Instance.PlayRandom("CogChallenge", transform.position);
-
-                        AudioManager.Instance.CogSound(CogSoundIndex, transform.position);
                     }
                     if (!doOncePerAttempt)
                     {
+                        AudioManager.Instance.CogSound(CogSoundIndex, transform.position);
                         doOncePerAttempt = true;
                         turnOn = true;
                     }

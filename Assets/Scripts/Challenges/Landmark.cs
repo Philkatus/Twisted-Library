@@ -61,7 +61,7 @@ public class Landmark : MonoBehaviour
         {
             ObjectManager.instance.uILogic.OnLandmarkComplete(groundUI);
             landmarkComplete = true;
-            if (VoiceManager.Instance != null) 
+            if (VoiceManager.Instance != null)
             {
                 VoiceManager.Instance.TryToAchievementSound();
             }
@@ -74,13 +74,13 @@ public class Landmark : MonoBehaviour
         switch (index)
         {
             case 0:
-                ObjectManager.instance.uILogic.OnChallengeCompleteLandmark(firstLinkedUI);
+                ObjectManager.instance.uILogic.OnChallengeCompleteLandmark(firstLinkedUI, 0);
                 break;
             case 1:
-                ObjectManager.instance.uILogic.OnChallengeCompleteLandmark(secondLinkedUI);
+                ObjectManager.instance.uILogic.OnChallengeCompleteLandmark(secondLinkedUI, 1);
                 break;
             case 2:
-                ObjectManager.instance.uILogic.OnChallengeCompleteLandmark(thirdLinkedUI);
+                ObjectManager.instance.uILogic.OnChallengeCompleteLandmark(thirdLinkedUI, 2);
                 break;
         }
     }
