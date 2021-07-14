@@ -26,6 +26,7 @@ public class VFX_Manager : MonoBehaviour
             {
                 RandomColor = rc;
             }
+            Debug.Log(RandomColor);
             return RandomColor;
         }
         set
@@ -541,7 +542,7 @@ public class VFX_Manager : MonoBehaviour
             if (t >= 0.2f && !castEffect)
             {
                 landingBubbles.SetFloat("_Radius", curvepoint);
-                landingBubbles.SetVector4("_Color", possibleColors[randomColor]);
+                landingBubbles.SetVector4("_Color", possibleColorsTransparent[randomColor]);
                 landingBubbles.SendEvent("_Start");
                 castEffect = true;
             }
@@ -594,14 +595,15 @@ public class VFX_Manager : MonoBehaviour
             bigDoubleJumpSpray.transform.position = new Vector3(doubleJumpSpray.transform.position.x, sprayY, doubleJumpSpray.transform.position.z);
             if (t >= 0.2f && !castEffect)
             {
+                int i = randomColor;
                 doubleJumpSpray.SetFloat("_Radius", curvepoint);
-                doubleJumpSpray.SetVector4("_Color", possibleColors[randomColor]);
+                doubleJumpSpray.SetVector4("_Color", possibleColorsTransparent[i]);
                 doubleJumpSpray.SetVector3("_Normal", planeNormal);
                 doubleJumpSpray.SetVector3("_Up", planeUp);
                 doubleJumpSpray.SendEvent("_Start");
 
                 bigDoubleJumpSpray.SetFloat("_Radius", curvepoint);
-                bigDoubleJumpSpray.SetVector4("_Color", possibleColors[randomColor]);
+                bigDoubleJumpSpray.SetVector4("_Color", possibleColorsTransparent[i]);
                 bigDoubleJumpSpray.SetVector3("_Normal", planeNormal);
                 bigDoubleJumpSpray.SetVector3("_Up", planeUp);
                 bigDoubleJumpSpray.SendEvent("_Start");
