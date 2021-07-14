@@ -684,7 +684,6 @@ public class PlayerMovementStateMachine : StateMachine
                 Vector3 axis = ladder.right;
                 float rotateByAngle;
                 rotateByAngle = (Vector3.SignedAngle(-wallDirection, -ladderDirection, axis));
-                Debug.Log(rotateByAngle);
 
                 if (closestRail.railType != Rail.RailType.TwoSided)
                 {
@@ -710,6 +709,7 @@ public class PlayerMovementStateMachine : StateMachine
                 }
 
                 bob.transform.SetParent(Bob_Pivot);
+                bob.transform.localPosition = Vector3.down * stats.ladderLengthBig;
                 Quaternion rotation;
                 axis = Bob_Pivot.right;
                 rotation = Quaternion.AngleAxis(rotateByAngle, axis);

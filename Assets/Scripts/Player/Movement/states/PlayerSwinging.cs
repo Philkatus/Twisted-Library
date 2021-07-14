@@ -139,14 +139,9 @@ public class PlayerSwinging : State
             onWall = false;
             inputGiven = false;
         }
-        if (PSM.useRelativeBobPosition)
-        {
-            ropeLength = Vector3.Distance(pivot.transform.position, PSM.bob.transform.position);
-        }
-        else
-        {
-            ropeLength = Vector3.Distance(PSM.Bob_Pivot.transform.position, PSM.bob.transform.position);
-        }
+      
+            ropeLength =stats.ladderLengthBig;
+        
         #endregion
     }
 
@@ -205,7 +200,7 @@ public class PlayerSwinging : State
         inputGiven = false;
         canPress = true;
 
-        ropeLength = Vector3.Distance(PSM.Bob_Pivot.transform.position, PSM.bob.transform.position);
+        ropeLength = stats.ladderLengthBig;
 
         currentVelocity = Vector3.zero;
         currentStatePosition = bobPosition;
