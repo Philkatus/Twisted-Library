@@ -655,7 +655,8 @@ public class PlayerMovementStateMachine : StateMachine
             yield return delay;
             if (PlayerRotationTimer >= PlayerRotationDuration)
             {
-                ladderAnimController.SetTrigger("Ladder Extent");
+
+                lSM.OnGrow();
                 snappingStep += 1;
                 LastLadderBotPosition = ladderBottom.position;
                 transform.parent = ladderSizeStateMachine.transform;
@@ -667,7 +668,6 @@ public class PlayerMovementStateMachine : StateMachine
 
             lSM.transform.position += lSM.transform.up * Vector3.Distance(LastLadderBotPosition, ladderBottom.position);
             lSM.transform.position += lSM.transform.up * Mathf.Clamp(Vector3.Distance(transform.position, targetPoint)-4, 0, Time.deltaTime*5);
-            transform.position = ladderBottom.position;
 
             LastLadderBotPosition = ladderBottom.position;
             yield return delay;
@@ -676,7 +676,7 @@ public class PlayerMovementStateMachine : StateMachine
                 lSM.transform.position = targetPoint;
                 snappingStep += 1;
 
-                ladderSizeStateMachine.ladderLength = Vector3.Distance(ladderBottom.position, targetPoint);
+                //ladderSizeStateMachine.ladderLength = Vector3.Distance(ladderBottom.position, targetPoint);
                 heightOnLadder = -1;
                 transform.position = ladder.transform.position + ladderDirection * ladderSizeStateMachine.ladderLength * heightOnLadder + ladder.transform.forward * -stats.playerOffsetFromLadder;
                 controller.transform.parent = ladder.transform;
@@ -705,7 +705,6 @@ public class PlayerMovementStateMachine : StateMachine
                         slidingStartVelocity += ExtensionMethods.resultingVelocity(playerVelocity, bob.transform.forward);
                         slidingStartVelocity = Vector3.ClampMagnitude(slidingStartVelocity, stats.maxSwingSpeed);
                     }
-
                 }
 
                 bob.transform.SetParent(Bob_Pivot);

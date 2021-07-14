@@ -16,36 +16,32 @@ public class LadderFold : State
     public override void Initialize()
     {
         stats = PSM.stats;
-        time = ExtensionMethods.Remap(LadderSizeStateMachine.ladderLength, stats.ladderLengthSmall, stats.ladderLengthBig, stats.foldingTime, 0);
         isLerpGoing = true;
         PSM.effects.OnStateChangedLadderPush();
         LadderSizeStateMachine.isFoldingUp = true;
-        AudioManager.Instance.PlayRandom("LadderFold",LadderSizeStateMachine.transform.position+PSM.ladderDirection*stats.ladderLengthBig);
+        AudioManager.Instance.PlayRandom("LadderFold");
 
         LadderSizeStateMachine.anim.SetTrigger("Ladder Retract");
     }
 
     public override void Fold()
     {
-        /*
-        time += Time.deltaTime;
-
         if (isLerpGoing)
         {
-            LadderSizeStateMachine.ladderLength = Mathf.Lerp(stats.ladderLengthBig, stats.ladderLengthSmall, time / stats.foldingTime);
-            LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
-
-            if (time >= stats.foldingTime)
+            time = LadderSizeStateMachine.anim.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            LadderSizeStateMachine.ladderLength = Mathf.Lerp(stats.ladderLengthBig, stats.ladderLengthSmall, time % 1);
+            if (time >= 1) 
             {
                 isLerpGoing = false;
+                LadderSizeStateMachine.ladderLength = stats.ladderLengthSmall;
+                Debug.Log("hey");
             }
         }
-
         if (time >= stats.foldingTime + stats.extraFoldingTime)
         {
             LadderSizeStateMachine.isFoldingUp = false;
         }
-        */
+        
     }
 
     public override IEnumerator Finish()

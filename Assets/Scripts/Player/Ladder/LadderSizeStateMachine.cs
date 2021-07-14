@@ -20,7 +20,7 @@ public class LadderSizeStateMachine : StateMachine
 
     private void Start()
     {
-        SetState(new LadderFold(this));
+        OnShrink();
     }
 
     private void Update()
