@@ -457,11 +457,14 @@ MonoBehaviour:
     loop: 0
   - name: CogChallenge
     clips:
-    - {fileID: 0}
-    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
-    volume: 0.562
+    - {fileID: 8300000, guid: 5966e76199c5348418ef078aff6b877e, type: 3}
+    - {fileID: 8300000, guid: c164c90c08082a348bc6bc1044265951, type: 3}
+    - {fileID: 8300000, guid: 9cce6415f55a79348a60827402227a8e, type: 3}
+    - {fileID: 8300000, guid: e731be44d019406419b24128eb1ffd80, type: 3}
+    audioGroup: {fileID: -83819476441676283, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 1
     pitch: 1
-    priority: 128
+    priority: 201
     blendDuration: 0
     loop: 1
   - name: SwitchChallenge
@@ -486,7 +489,7 @@ MonoBehaviour:
     pitch: 1
     priority: 128
     blendDuration: 0
-    loop: 0
+    loop: 1
   - name: Landmark2Rotation
     clips: []
     audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
@@ -495,20 +498,57 @@ MonoBehaviour:
     priority: 128
     blendDuration: 0
     loop: 0
+  - name: LandmarkOneDisks
+    clips: []
+    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.562
+    pitch: 1
+    priority: 128
+    blendDuration: 0
+    loop: 0
+  - name: LandmarkOneColumn
+    clips: []
+    audioGroup: {fileID: -8476348758043858936, guid: 2bc30605d1179c049ab2e478a97f0ac8, type: 2}
+    volume: 0.562
+    pitch: 1
+    priority: 128
+    blendDuration: 0
+    loop: 1
   activeSoundSources: []
   inactiveSoundSources: []
   SoundSourcePrefab: {fileID: 1176170004654050, guid: 7649fb0a9057a44d7866d4c957ec7e96, type: 3}
-  Landmark1Sources:
+  CogSoundSources:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  Landmark2Sources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  SwitchSoundSources:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  LandmarkOneSources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  LandmarkTwoSources:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  MovingLandmarkOneColumn: {fileID: 0}

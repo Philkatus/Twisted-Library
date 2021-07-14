@@ -19,7 +19,7 @@ MonoBehaviour:
     m_Value: {x: 1, y: 0.902, z: 0.79, w: 7.151311e-10}
   gamma:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 0.846, z: 0.79, w: 0.14418125}
+    m_Value: {x: 1, y: 0.92113334, z: 0.8576261, w: 0.14418125}
   gain:
     m_OverrideState: 1
     m_Value: {x: 0.88, y: 0.958, z: 1, w: -0.020597328}
@@ -41,11 +41,11 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: {x: 1, y: 0, z: 0.8705821, w: -1}
   midtones:
-    m_OverrideState: 0
-    m_Value: {x: 1, y: 0.94854647, z: 0.9450537, w: 0}
+    m_OverrideState: 1
+    m_Value: {x: 1, y: 0.8958417, z: 0.79120857, w: 0.1022492}
   highlights:
     m_OverrideState: 1
-    m_Value: {x: 1, y: 0.931514, z: 0.6766848, w: 0.100334466}
+    m_Value: {x: 1, y: 0.82859266, z: 0.725481, w: 0.11758673}
   shadowsStart:
     m_OverrideState: 0
     m_Value: 0
@@ -74,12 +74,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4bff652df78c97c4f963064ad1f34619, type: 3}
   m_Name: ColorCurves
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   m_AdvancedMode: 0
   master:
-    m_OverrideState: 0
+    m_OverrideState: 1
     m_Value:
-      <length>k__BackingField: 2
+      <length>k__BackingField: 4
       m_Loop: 0
       m_ZeroValue: 0
       m_Range: 1
@@ -91,6 +91,24 @@ MonoBehaviour:
           value: 0
           inSlope: 1
           outSlope: 1
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 0.37837842
+          value: 0.34862387
+          inSlope: 1
+          outSlope: 1
+          tangentMode: 0
+          weightedMode: 0
+          inWeight: 0
+          outWeight: 0
+        - serializedVersion: 3
+          time: 0.7311907
+          value: 0.7706422
+          inSlope: 1.0920606
+          outSlope: 1.0920606
           tangentMode: 0
           weightedMode: 0
           inWeight: 0
@@ -185,8 +203,8 @@ MonoBehaviour:
           inWeight: 0
           outWeight: 0
         - serializedVersion: 3
-          time: 0.68491554
-          value: 0.58136666
+          time: 0.6970926
+          value: 0.5903951
           inSlope: 0.9584848
           outSlope: 0.9584848
           tangentMode: 0
@@ -234,8 +252,8 @@ MonoBehaviour:
           inWeight: 0
           outWeight: 0
         - serializedVersion: 3
-          time: 0.7518928
-          value: 0.9167704
+          time: 0.67172045
+          value: 0.8057851
           inSlope: 2.167042
           outSlope: 2.167042
           tangentMode: 0
@@ -306,7 +324,7 @@ MonoBehaviour:
         m_PreInfinity: 2
         m_PostInfinity: 2
         m_RotationOrder: 4
-  m_SelectedCurve: 3
+  m_SelectedCurve: 0
 --- !u!114 &-496571371406195726
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -326,7 +344,7 @@ MonoBehaviour:
     m_Value: 0
   contrast:
     m_OverrideState: 1
-    m_Value: 44
+    m_Value: 11.3
     min: -100
     max: 100
   colorFilter:
@@ -342,7 +360,7 @@ MonoBehaviour:
     max: 180
   saturation:
     m_OverrideState: 1
-    m_Value: 9
+    m_Value: 19.5
     min: -100
     max: 100
 --- !u!114 &11400000
@@ -441,7 +459,7 @@ MonoBehaviour:
     min: 0
   intensity:
     m_OverrideState: 1
-    m_Value: 0.109
+    m_Value: 0.133
     min: 0
     max: 1
   scatter:
@@ -451,7 +469,7 @@ MonoBehaviour:
     max: 1
   tint:
     m_OverrideState: 1
-    m_Value: {r: 0.990566, g: 0.6929418, b: 0.52705586, a: 1}
+    m_Value: {r: 1, g: 0.5232442, b: 0.044025064, a: 1}
     hdr: 0
     showAlpha: 0
     showEyeDropper: 1
@@ -589,31 +607,31 @@ MonoBehaviour:
     m_Value: 3
   toeStrength:
     m_OverrideState: 1
-    m_Value: 0.671
+    m_Value: 0.339
     min: 0
     max: 1
   toeLength:
     m_OverrideState: 1
-    m_Value: 0.739
+    m_Value: 0.916
     min: 0
     max: 1
   shoulderStrength:
     m_OverrideState: 1
-    m_Value: 0.62
+    m_Value: 0.461
     min: 0
     max: 1
   shoulderLength:
     m_OverrideState: 1
-    m_Value: 1.08
+    m_Value: 2.06
     min: 0
   shoulderAngle:
     m_OverrideState: 1
-    m_Value: 0.031
+    m_Value: 0
     min: 0
     max: 1
   gamma:
     m_OverrideState: 1
-    m_Value: 1.29
+    m_Value: 1.3
     min: 0.001
   lutTexture:
     m_OverrideState: 0

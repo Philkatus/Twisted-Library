@@ -104,12 +104,10 @@ public class RotateCogwheel : MonoBehaviour
                         {
                             ObjectManager.instance.uILogic.OnChallengeStartedComponent(component.linkedUI, component.type);
                         }
-                        AudioManager.Instance.PlayRandom("CogChallenge", transform.position);
-
-                        AudioManager.Instance.CogSound(CogSoundIndex, transform.position);
                     }
                     if (!doOncePerAttempt)
                     {
+                        AudioManager.Instance.CogSound(CogSoundIndex, transform.position);
                         doOncePerAttempt = true;
                         turnOn = true;
                     }

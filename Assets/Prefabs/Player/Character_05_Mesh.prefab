@@ -2532,7 +2532,7 @@ MonoBehaviour:
   useFeetIK: 0
   timeForLanding: 1
   timeForRoll: 3
-  timeForHardLanding: 1.5
+  strongImpactTimer: 0
   airTimer: 0
   headRig: {fileID: 2211893656114505702}
   armRig: {fileID: 2012157989496597807}
@@ -2731,14 +2731,14 @@ MonoBehaviour:
   activeSoundSources: []
   inactiveSoundSources: []
   SoundSourcePrefab: {fileID: 0}
-  Landmark1Sources:
+  LandmarkOneSources:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  Landmark2Sources:
+  LandmarkTwoSources:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
@@ -2761,12 +2761,28 @@ MonoBehaviour:
   movementScript: {fileID: 0}
   animScript: {fileID: 0}
   animator: {fileID: 0}
-  footstepsLeft: []
-  footstepsRight: []
+  footstepsLeft:
+  - {fileID: 8300000, guid: 86c4f15a51f2deb48b32c6c718c7103d, type: 3}
+  - {fileID: 8300000, guid: 9a63270cc30eadc4e912540415be7edc, type: 3}
+  - {fileID: 8300000, guid: a2e44a0b972c0c6428b2dd85336a008b, type: 3}
+  footstepsRight:
+  - {fileID: 8300000, guid: 413d838fe7696a140bf94f526d66d47c, type: 3}
+  - {fileID: 8300000, guid: 2d6822139732e4846a593e3a89295534, type: 3}
+  - {fileID: 8300000, guid: c2d8758fb93749c439c3439b9eb06e8d, type: 3}
   footstepsLeftGras: []
   footstepsRightGras: []
-  footstepsLeftWater: []
-  footstepsRightWater: []
+  footstepsLeftWater:
+  - {fileID: 8300000, guid: ac7f5bf3f49fa2340904d7f9cfc05adb, type: 3}
+  - {fileID: 8300000, guid: 066b4a49f340b9b47b5db7066ce91c5c, type: 3}
+  - {fileID: 8300000, guid: 1ed2d2307cd290646bae2de1c620e089, type: 3}
+  - {fileID: 8300000, guid: 148384799df0bcc4397c8ca884b70349, type: 3}
+  - {fileID: 8300000, guid: fc341feed4b553140a0bec8f11166ded, type: 3}
+  footstepsRightWater:
+  - {fileID: 8300000, guid: 5a0179cfa67ed3b4aa9c92bc4be59f2a, type: 3}
+  - {fileID: 8300000, guid: 47dea40eb45f68747a54f10b332f99e1, type: 3}
+  - {fileID: 8300000, guid: 115d76f0911b2e14f80b98d2ddd2255d, type: 3}
+  - {fileID: 8300000, guid: 0d062000e21816d438efbd974ddace7f, type: 3}
+  - {fileID: 8300000, guid: cbf73ebee7d7f6543bd5466748fa60c0, type: 3}
   exhale: {fileID: 8300000, guid: 9483260dfb48566448f11f347783e890, type: 3}
   audioVolume: 1.5
   footstepLFX: {fileID: 0}
