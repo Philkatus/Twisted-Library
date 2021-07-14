@@ -21,33 +21,16 @@ public class LadderFollow : State
         stats = PSM.stats;
         time = ExtensionMethods.Remap(LadderSizeStateMachine.ladderLength, stats.ladderLengthSmall, stats.ladderLengthBig, stats.foldingTime, 0);
         isLerpGoing = true;
-        PSM.effects.OnStateChangedLadderPush();
-        LadderSizeStateMachine.isFoldingUp = true;
         AudioManager.Instance.PlayRandom("LadderFold", LadderSizeStateMachine.transform.position + PSM.ladderDirection * stats.ladderLengthBig);
         ladderVisualLocalposition = LadderSizeStateMachine.LadderVisuals.localPosition;
         ladserVisualLocalRotation = LadderSizeStateMachine.LadderVisuals.localRotation;
 
+        LadderSizeStateMachine.anim.SetTrigger("Ladder Retract");
     }
 
     public override void Fold()
     {
-        time += Time.deltaTime;
-
-        if (isLerpGoing)
-        {
-            LadderSizeStateMachine.ladderLength = Mathf.Lerp(stats.ladderLengthBig, stats.ladderLengthSmall, time / stats.foldingTime);
-            LadderSizeStateMachine.ladderParent.transform.localScale = new Vector3(LadderSizeStateMachine.ladderLength, 1, 1);
-
-            if (time >= stats.foldingTime)
-            {
-                isLerpGoing = false;
-            }
-        }
-
-        if (time >= stats.foldingTime + stats.extraFoldingTime)
-        {
-            LadderSizeStateMachine.isFoldingUp = false;
-        }
+        
     }
 
     public override void FollowLadderTarget()

@@ -128,7 +128,7 @@ public class PlayerWalking : State
         PSM.LoseBonusVelocityPercentage(stats.WalkingBonusVelocityDrag);
         controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.movementVelocityFactor);
 
-        if (isGroundedWithCoyoteTime())
+        if (isGroundedWithCoyoteTime() && !isSnapping)
         {
             PSM.OnFall();
         }

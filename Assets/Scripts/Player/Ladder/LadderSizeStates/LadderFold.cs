@@ -22,7 +22,7 @@ public class LadderFold : State
         LadderSizeStateMachine.isFoldingUp = true;
         AudioManager.Instance.PlayRandom("LadderFold",LadderSizeStateMachine.transform.position+PSM.ladderDirection*stats.ladderLengthBig);
 
-        LadderSizeStateMachine.anim.SetTrigger("LadderRetract");
+        LadderSizeStateMachine.anim.SetTrigger("Ladder Retract");
     }
 
     public override void Fold()

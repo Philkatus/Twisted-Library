@@ -104,7 +104,7 @@ public class PlayerInTheAir : State
             PSM.bonusVelocity.y = PSM.bonusVelocity.y * .9f * Time.fixedDeltaTime;
         }
 
-        if (controller.isGrounded)
+        if (controller.isGrounded&&!isSnapping)
         {
             base.PSM.didLadderPush = false;
 

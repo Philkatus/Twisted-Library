@@ -38,7 +38,7 @@ public class LadderSizeStateMachine : StateMachine
         if (!(State is LadderUnfold))
         {
             SetState(new LadderUnfold(this));
-            playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderBig;
+            playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderUnfold;
         }
     }
 
@@ -50,7 +50,8 @@ public class LadderSizeStateMachine : StateMachine
         if (!(State is LadderFollow))
         {
             SetState(new LadderFollow(this));
-            playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderSmall;
+            playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderFollow;
+            playerStateMachine.snappingStep = PlayerMovementStateMachine.SnappingStep.Finished;
         }
     }
 
