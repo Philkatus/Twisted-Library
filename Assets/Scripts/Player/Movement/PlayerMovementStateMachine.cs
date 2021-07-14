@@ -35,7 +35,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
     public bool expandAfterSnap;
-
+    public bool dismountedNoEffect;
     public bool isOnWater;
     public bool controlsDisabled;
 
@@ -177,6 +177,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void Start()
     {
         InitializeVariables();
+        Cursor.visible = false;
         SetState(new PlayerWalking(this));
         GetControls();
     }
@@ -191,7 +192,7 @@ public class PlayerMovementStateMachine : StateMachine
         {
             CheckForInputBools();
         }
-        
+
         if (playerState == PlayerState.swinging && currentSlidingSpeed >= stats.maxSlidingSpeed * .8f)
         {
             if (VoiceManager.Instance != null)
@@ -393,6 +394,27 @@ public class PlayerMovementStateMachine : StateMachine
         }
         bonusVelocity += resultingVelocity;
     }
+
+    public bool CheckIfOnWater()
+    {
+        //i just copied it from ladder push, its not perfect
+        float sphereRadius = .2f;
+        float maxHeight = stats.ladderLengthBig - sphereRadius;
+
+        Vector3 origin = transform.position;
+        LayerMask mask = LayerMask.GetMask("Environment", "Water");
+        List<RaycastHit> hits = new List<RaycastHit>();
+        hits.AddRange(Physics.SphereCastAll(origin + Vector3.up * .5f, 1f, Vector3.down, maxHeight, mask, QueryTriggerInteraction.Collide));
+        foreach (RaycastHit hit in hits)
+        {
+            if (hit.collider.gameObject.layer == 4)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     ///<summary>
     /// A function to determine the closest rail to the player. Returns false if none are in range.
     ///</summary>
@@ -822,7 +844,8 @@ public class PlayerMovementStateMachine : StateMachine
 
     public IEnumerator JumpDelay()
     {
-        if(playerState != PlayerState.inTheAir){
+        if (playerState != PlayerState.inTheAir)
+        {
             ObjectManager.instance.animationStateController.SetJump();
         }
 

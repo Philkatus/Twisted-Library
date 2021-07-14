@@ -26,6 +26,7 @@ public class UpgradeScripts : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            ObjectManager.instance.animationStateController.CollectUpgrade();
             if (upgrade == Upgrade.canLadderFold)
             {
                 stats.canLadderFold = true;

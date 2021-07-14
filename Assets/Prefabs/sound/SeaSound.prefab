@@ -52,10 +52,10 @@ AudioSource:
   SpatializePostEffects: 1
   Priority: 128
   DopplerLevel: 0
-  MinDistance: 50
-  MaxDistance: 500
+  MinDistance: 1
+  MaxDistance: 100
   Pan2D: 0
-  rolloffMode: 1
+  rolloffMode: 0
   BypassEffects: 1
   BypassListenerEffects: 0
   BypassReverbZones: 1
@@ -118,7 +118,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1.1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -149,5 +149,5 @@ MonoBehaviour:
   nearFieldEffectEnabled: 0
   nearFieldEffectGain: 1
   occlusionEnabled: 1
-  occlusionIntensity: 0.43
+  occlusionIntensity: 1
   quality: 2

@@ -523,30 +523,36 @@ public class UILogic : MonoBehaviour
     {
         ExtensionMethods.CrossFadeAlphaFixed(slidingUpgradeUI.transform.GetChild(0).gameObject, 1f, 0.5f);
         playerMovementStateMachine.controlsDisabled = true;
-        yield return textTime;
+        yield return new WaitForSeconds(1.5f);
+        playerMovementStateMachine.effects.PlayVFX("cloud");
+        AudioManager.Instance.PlayRandom("UpgradeLadder");
+        yield return new WaitForSeconds(2f);
         playerMovementStateMachine.controlsDisabled = false;
         slidingUpgradeUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false);
-        yield return textTime;
     }
 
     public IEnumerator ShowAndHideLadderPushExplanation()
     {
         ExtensionMethods.CrossFadeAlphaFixed(ladderPushUpgradeUI.transform.GetChild(0).gameObject, 1f, 0.5f);
         playerMovementStateMachine.controlsDisabled = true;
-        yield return textTime;
+        yield return new WaitForSeconds(1f);
+        playerMovementStateMachine.effects.PlayVFX("cloud");
+        AudioManager.Instance.PlayRandom("UpgradeLadder");
+        yield return new WaitForSeconds(3.6f);
         playerMovementStateMachine.controlsDisabled = false;
         ladderPushUpgradeUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false);
-        yield return textTime;
     }
 
     public IEnumerator ShowAndHideCatapultExplanation()
     {
         ExtensionMethods.CrossFadeAlphaFixed(catapultUpgradeUI.transform.GetChild(0).gameObject, 1f, 0.5f);
         playerMovementStateMachine.controlsDisabled = true;
-        yield return textTime;
+        yield return new WaitForSeconds(2f);
+        playerMovementStateMachine.effects.PlayVFX("cloud");
+        AudioManager.Instance.PlayRandom("UpgradeLadder");
+        yield return new WaitForSeconds(3.6f);
         playerMovementStateMachine.controlsDisabled = false;
         catapultUpgradeUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false);
-        yield return textTime;
     }
     #endregion
 

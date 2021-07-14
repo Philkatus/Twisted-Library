@@ -1168,7 +1168,7 @@ public class PlayerSwinging : State
     void Dismount()
     {
         // 1 is how much units the player needs to move up to be on top of the rail.
-        if ((PSM.transform.position - dismountStartPos).magnitude <= 0.7f && !dismountedHalfways)
+        if ((PSM.transform.position - dismountStartPos).magnitude <= 0.9f && !dismountedHalfways)
         {
             PSM.heightOnLadder += stats.ladderDismountSpeed * Time.fixedDeltaTime;
             PSM.transform.position = ladder.transform.position + PSM.ladderDirection * ladderSizeState.ladderLength * PSM.heightOnLadder;
@@ -1187,6 +1187,7 @@ public class PlayerSwinging : State
         else if (dismountedHalfways)
         {
             PSM.dismounting = false;
+            PSM.dismountedNoEffect = true;
             PSM.OnFall();
         }
     }

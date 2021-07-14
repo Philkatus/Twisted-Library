@@ -102,12 +102,12 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] VisualEffect landingBubbles;
     [SerializeField] AnimationCurve shadowSize, impactCurve, hardImpactCurve;
     [SerializeField] float shadowRemapMin, shadowRemapMax, decalScale, minJumpTime, maxJumpTime;
-    //[ColorUsage(true, true)]
     [SerializeField] Color[] possibleColors;
     [SerializeField] float alpha = 130;
     [Header("Wall Projection")]
     [SerializeField] GameObject ladder;
     [SerializeField] DecalProjector wallProjector;
+    [SerializeField] VisualEffect wallBubbles;
     [SerializeField] float wallTime;
     [Header("Water Steps")]
     [SerializeField] DecalProjector waterStepsLeft;
@@ -125,14 +125,12 @@ public class VFX_Manager : MonoBehaviour
 
     Vector3 offset, lastPositionWall, sprayPosition;
 
-    bool smokeOn = false, inWater = false;
+    bool smokeOn = false, inWater = false, freshOutOfWater = false;
     float smokeTimer = .5f, inAirTimer = 0, wallOffsetUp, wallOffsetBack;
 
     VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
     bool weAreSliding = false;
     bool inStage = false, inAir, wallProjecting;
-
-
     #endregion
 
     #region UNITY FUNCTIONS
@@ -158,6 +156,7 @@ public class VFX_Manager : MonoBehaviour
     {
         //offsets
         transform.GetChild(0).transform.position = player.transform.position + offset;
+        transform.GetChild(0).transform.rotation = player.transform.rotation;
         if (wallProjecting)
         {
             wallProjector.transform.position = lastPositionWall;
@@ -223,11 +222,12 @@ public class VFX_Manager : MonoBehaviour
             StartCoroutine(FadeOutRail());
         }
 
-        if (land)
+        if (land && !pSM.dismountedNoEffect)
         {
             speedLinesSliding.SetFloat("_SpeedIntensity", 0);
             UpdateShadowSize(true);
         }
+        pSM.dismountedNoEffect = false;
     }
 
     public void OnStateChangedInAir()
@@ -418,6 +418,7 @@ public class VFX_Manager : MonoBehaviour
         Color color = possibleColors[i];
         if (!fullOpacity)
             color.a = a;
+        color.a = Mathf.Clamp01(color.a);
         return color;
     }
 
@@ -442,15 +443,31 @@ public class VFX_Manager : MonoBehaviour
     public void SetActiveShadow(bool disable)
     {
         shadow.enabled = disable;
-        landingBubbles.enabled = disable;
+
         doubleJump.enabled = disable;
         doubleJumpSpray.enabled = disable;
         bigDoubleJumpSpray.enabled = disable;
 
         inWater = !disable;
         splash.enabled = !disable;
+        if (!disable)
+        {
+            PlayVFX("splash");
+            landingBubbles.enabled = disable;
+        }
+        else
+        {
+            StartCoroutine(DisableBubbles());
+        }
     }
 
+    IEnumerator DisableBubbles()
+    {
+        freshOutOfWater = true;
+        yield return new WaitForSeconds(1.4f);
+        landingBubbles.enabled = true;
+        freshOutOfWater = false;
+    }
     public void PlayVFX(string effectName)
     {
         VisualEffect vfx;
@@ -559,9 +576,12 @@ public class VFX_Manager : MonoBehaviour
 
             if (t >= 0.2f && !castEffect)
             {
-                landingBubbles.SetFloat("_Radius", curvepoint);
-                landingBubbles.SetVector4("_Color", GetColor(randomColor));
-                landingBubbles.SendEvent("_Start");
+                if (!inWater && !freshOutOfWater)
+                {
+                    landingBubbles.SetFloat("_Radius", curvepoint);
+                    landingBubbles.SetVector4("_Color", GetColor(randomColor));
+                    landingBubbles.SendEvent("_Start");
+                }
                 castEffect = true;
             }
 
@@ -653,7 +673,6 @@ public class VFX_Manager : MonoBehaviour
         yield return new WaitForEndOfFrame();
         wallProjecting = true;
         int i = 0;
-
         if (!useFadeOut)
             wallProjector.material.SetColor("_BaseColor", GetColor(randomColor));
         else
@@ -668,6 +687,7 @@ public class VFX_Manager : MonoBehaviour
         lastPositionWall = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
         wallProjector.transform.rotation = Quaternion.Euler(wallProjector.transform.eulerAngles.x, ladder.transform.eulerAngles.y, wallProjector.transform.eulerAngles.z);
         float timer = 0;
+        bool once = false;
         while (timer < time)
         {
             float t = timer / time;
@@ -680,10 +700,19 @@ public class VFX_Manager : MonoBehaviour
             }
             else
             {
-                float curvepoint = impactCurve.Evaluate(t) * decalScale * 2;
+                float curvepoint = impactCurve.Evaluate(t) * decalScale * 1.75f;
                 wallProjector.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
                 if (useFadeOut)
-                    wallProjector.material.SetColor("_BaseColor", GetColor(i, false, Mathf.Lerp(alpha, 0, t)));
+                    wallProjector.material.SetColor("_BaseColor", GetColor(i, false, Mathf.Lerp(2, 0, t)));
+                if (t >= 0.2f && !once)
+                {
+                    wallBubbles.SetFloat("_Radius", curvepoint);
+                    wallBubbles.SetVector3("_Normal", wallProjector.transform.forward);
+                    wallBubbles.SetVector3("_Up", wallProjector.transform.up);
+                    wallBubbles.SetVector4("_Color", GetColor(randomColor));
+                    wallBubbles.SendEvent("_Start");
+                    once = true;
+                }
             }
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
@@ -721,7 +750,7 @@ public class VFX_Manager : MonoBehaviour
         while (timer < waterSpeed)
         {
             float t = timer / waterSpeed;
-            float currentSize = Mathf.Lerp(0, 0.3f, t);
+            float currentSize = Mathf.Lerp(0, 0.6f, t);
             if (side == "left")
             {
                 waterStepsLeft.size = new Vector3(currentSize, currentSize, 1);

@@ -90,7 +90,7 @@ public class AnimationStateController : MonoBehaviour
     #endregion
 
     #region [Attributes] NEW VARS
-    [SerializeField] Animator animator;
+    public Animator animator;
 
     private Vector2 velocity_vec;
 
@@ -171,6 +171,7 @@ public class AnimationStateController : MonoBehaviour
         // //Sliding();
         // Swinging();
         // Falling();
+
         HeadAim();
 
         PlayerOnLadder();
@@ -265,12 +266,19 @@ public class AnimationStateController : MonoBehaviour
     #region[rgba(236,240,241,0.05)] 
     public void EnterWalkingState()
     {
-        audioManager.PlayRandom("LandingAfterJump");
-        animator.SetBool("Walking", true);
-        if (animator.GetBool("HardFall") && velocity_vec.magnitude < 0.1f)
+        if (playerSM.CheckIfOnWater())
         {
-            StartCoroutine(ImpactStun());
+            audioManager.PlayRandom("LandingAfterJumpWater");
         }
+        else
+        {
+            audioManager.PlayRandom("LandingAfterJump");
+        }
+        animator.SetBool("Walking", true);
+        //if (animator.GetBool("HardFall") && velocity_vec.magnitude < 0.1f)
+        //{
+        //    StartCoroutine(ImpactStun());
+        //}
     }
     public void ExitWalkingState()
     {
@@ -298,6 +306,11 @@ public class AnimationStateController : MonoBehaviour
     {
         animator.SetBool("OnLadder", false);
 
+    }
+
+    public void CollectUpgrade()
+    {
+        animator.SetTrigger("Upgrade");
     }
     #endregion
     // EXIT/ENTER METHODS END -----------------------------------------------------------------------------------
@@ -437,8 +450,8 @@ public class AnimationStateController : MonoBehaviour
     {
         if (animator.GetBool("OnLadder"))
         {
-            DismountingTop();
             LadderClimb();
+            FaceSlideDirection();
         }
     }
 
@@ -484,16 +497,42 @@ public class AnimationStateController : MonoBehaviour
         animator.SetFloat("ClimbingDirection", velocityY);
     }
 
-    void DismountingTop()
+    [SerializeField] float switchSideSpeed = 0.2f;
+    float switchVelocity = 0f;
+
+    void FaceSlideDirection()
     {
-        if (playerSM.dismounting == true)
+        if(playerSM.slidingInput == 0)
         {
-            animator.SetBool("isDismounting", true);
+            var temp = Mathf.SmoothDamp(animator.GetFloat("SlideDirection"), 0, ref switchVelocity, switchSideSpeed);
+            if(temp < 0.1f && temp > -0.1f)
+            {
+                temp = 0;
+            }
+            animator.SetFloat("SlideDirection", temp);
+        } else if(playerSM.slidingInput == 1)
+        {
+            var temp = Mathf.SmoothDamp(animator.GetFloat("SlideDirection"), 1, ref switchVelocity, switchSideSpeed);
+            if (temp > 0.9f)
+            {
+                temp = 1;
+            }
+            animator.SetFloat("SlideDirection", temp);
         }
         else
         {
-            animator.SetBool("isDismounting", false);
+            var temp = Mathf.SmoothDamp(animator.GetFloat("SlideDirection"), -1, ref switchVelocity, switchSideSpeed);
+            if (temp < -0.9f)
+            {
+                temp = -1;
+            }
+            animator.SetFloat("SlideDirection", temp);
         }
+    }
+
+    public void PushFromWall()
+    {
+        animator.SetTrigger("PushWall");
     }
 
     public void DismountLadder()

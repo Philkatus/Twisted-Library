@@ -34,7 +34,8 @@ public class FootstepSoundManager : MonoBehaviour
     private AudioClip exhale;
 
     [Header("Volume")]
-    [Range(0.1f, 10f)] public float audioVolume = 0.1f;
+    [Range(0.1f, 10f)] public float audioVolumeConcrete = 0.1f;
+    [Range(0f, 10f)] public float audioVolumeWater = 0.1f;
 
     [Header("Movement Particle Systems")]
     public ParticleSystem footstepLFX;
@@ -46,6 +47,9 @@ public class FootstepSoundManager : MonoBehaviour
     private float lastFrameFootstepRight;
     private float currentFrameExhale;
     private float lastFrameExhale;
+
+
+    [SerializeField] Transform root, footL, footR;
     #endregion
 
     void Start()
@@ -56,10 +60,9 @@ public class FootstepSoundManager : MonoBehaviour
         movementScript = ObjectManager.instance.pSM;
     }
 
-    void Update()
+    void LateUpdate()
     {
         Footsteps();
-        Exhale();
     }
 
     public void FallingSound()
@@ -82,10 +85,11 @@ public class FootstepSoundManager : MonoBehaviour
     }
 
 
-    //Old version using animation Events of each animation. Doesnt work with the Movement Blend Tree.
-    //Using animation curves now
 
-    //Dont delete yet, leads to errors
+    ////Old version using animation Events of each animation. Doesnt work with the Movement Blend Tree.
+    ////Using animation curves now
+
+    ////Dont delete yet, leads to errors
     public void FootstepL(AnimationEvent animationEvent)
     {
         /*
@@ -110,36 +114,81 @@ public class FootstepSoundManager : MonoBehaviour
         */
     }
 
-
+    bool leftPlayed, rightPlayed;
 
 
     public void Footsteps()
     {
-        currentFrameFootstepLeft = animator.GetFloat("FootstepL");
-        if (currentFrameFootstepLeft > 0 && lastFrameFootstepLeft < 0)
+
+        if (ObjectManager.instance.animationStateController.playerSM.playerState == PlayerMovementStateMachine.PlayerState.walking)
         {
-            PlayLeftStep();
+            //Debug.Log(ObjectManager.instance.animationStateController.animator.GetBoneTransform(HumanBodyBones.LeftFoot).position);
+            var footLPos = root.position.y - footL.position.y;
+            var footRPos = root.position.y - footR.position.y;
+
+            if (footLPos > 0.4f)
+            {
+                if (!leftPlayed)
+                {
+                    ObjectManager.instance.animationStateController.playerSM.effects.TriggerLeftFoot();
+                    PlayLeftStep();
+                    leftPlayed = true;
+                }
+            }
+            else
+            {
+                leftPlayed = false;
+            }
+            if (footRPos > 0.4f)
+            {
+                if (!rightPlayed)
+                {
+
+                    ObjectManager.instance.animationStateController.playerSM.effects.TriggerRightFoot();
+
+                    PlayRightStep();
+                    rightPlayed = true;
+                }
+            }
+            else
+            {
+                rightPlayed = false;
+            }
         }
-        lastFrameFootstepLeft = animator.GetFloat("FootstepL");
+
+        //Debug.Log("FootL: " + footL.position);
+        //currentFrameFootstepLeft = animator.GetFloat("FootstepL");
+        //if (currentFrameFootstepLeft > 0 && lastFrameFootstepLeft < 0)
+        //{
+        //    PlayLeftStep();
+        //}
+        //lastFrameFootstepLeft = animator.GetFloat("FootstepL");
 
 
-        currentFrameFootstepRight = animator.GetFloat("FootstepR");
-        if (currentFrameFootstepRight < 0 && lastFrameFootstepRight > 0)
-        {
-            PlayRightStep();
-        }
-        lastFrameFootstepRight = animator.GetFloat("FootstepR");
+        //currentFrameFootstepRight = animator.GetFloat("FootstepR");
+        //if (currentFrameFootstepRight < 0 && lastFrameFootstepRight > 0)
+        //{
+        //    PlayRightStep();
+        //}
+        //lastFrameFootstepRight = animator.GetFloat("FootstepR");
+    }
+
+    public void Land()
+    {
+        PlayLeftStep();
+        PlayRightStep();
     }
 
     private void PlayLeftStep()
     {
         if (movementScript.isOnWater && footstepsLeftWater.Length > 0)
         {
-            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeftWater[Random.Range(0, footstepsLeft.Length)], audioVolume);
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeftWater[Random.Range(0, footstepsLeft.Length)], audioVolumeWater);
         }
         else if (footstepsLeft.Length > 0)
         {
-            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeft[Random.Range(0, footstepsLeft.Length)], audioVolume);
+
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeft[Random.Range(0, footstepsLeft.Length)], audioVolumeConcrete);
         }
     }
 
@@ -147,22 +196,13 @@ public class FootstepSoundManager : MonoBehaviour
     {
         if (movementScript.isOnWater && footstepsRightWater.Length > 0)
         {
-            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRightWater[Random.Range(0, footstepsLeft.Length)], audioVolume);
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRightWater[Random.Range(0, footstepsLeft.Length)], audioVolumeWater);
         }
         else if (footstepsRight.Length > 0)
         {
-            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRight[Random.Range(0, footstepsLeft.Length)], audioVolume);
-        }
-    }
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRight[Random.Range(0, footstepsLeft.Length)], audioVolumeConcrete);
 
-    public void Exhale()
-    {
-        currentFrameExhale = animator.GetFloat("Exhale");
-        if (currentFrameExhale > 0 && lastFrameExhale < 0)
-        {
-            resonanceAudio.audioSource.PlayOneShot(exhale, audioVolume);
         }
-        lastFrameExhale = animator.GetFloat("Exhale");
     }
 
     public void SetWater(bool setTo)

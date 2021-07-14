@@ -9,6 +9,7 @@ public class TowerGoesUp : MonoBehaviour
     [SerializeField] float travelTime;
     float time;
     Vector3 startPos, midwayPos;
+    PlayerMovementStateMachine psm;
 
     bool sendTowerUp, sendTowerDown, sendTowerDownMidWay, sendTowerUpMidWay, moving;
 
@@ -99,45 +100,73 @@ public class TowerGoesUp : MonoBehaviour
         }
     }
 
+    public bool changedStateToSwinging, changedStateToinTheAir, firstSnapDoneSinceInTriggerCollider;
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (sendTowerDownMidWay || sendTowerDown) //still going down
+            psm = other.GetComponent<PlayerMovementStateMachine>();
+            if (psm.playerState == PlayerMovementStateMachine.PlayerState.swinging && !changedStateToSwinging)
             {
-                sendTowerDown = false;
-                sendTowerDownMidWay = false;
-                time = 0;
-                midwayPos = this.transform.localPosition;
-                sendTowerUpMidWay = true;
+                changedStateToSwinging = true;
+                changedStateToinTheAir = false;
+
+                firstSnapDoneSinceInTriggerCollider = true;
+
+                if (sendTowerDownMidWay || sendTowerDown) //still going down
+                {
+                    sendTowerDown = false;
+                    sendTowerDownMidWay = false;
+                    time = 0;
+                    midwayPos = this.transform.localPosition;
+                    sendTowerUpMidWay = true;
+                }
+                else // already down
+                {
+                    time = 0;
+                    sendTowerUp = true;
+                }
             }
-            else // already down
+            else if (psm.playerState == PlayerMovementStateMachine.PlayerState.inTheAir && !changedStateToinTheAir && firstSnapDoneSinceInTriggerCollider)
             {
-                time = 0;
-                sendTowerUp = true;
+                changedStateToinTheAir = true;
+                changedStateToSwinging = false;
+
+                if (sendTowerUp || sendTowerUpMidWay) //still going up
+                {
+                    sendTowerUp = false;
+                    sendTowerUpMidWay = false;
+                    time = 0;
+                    midwayPos = this.transform.localPosition;
+                    sendTowerDownMidWay = true;
+                }
+                else //already arrived on the top
+                {
+                    time = 0;
+                    sendTowerDown = true;
+                }
+                
             }
         }
     }
+
+
 
     private void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (sendTowerUp || sendTowerUpMidWay) //still going up
+            firstSnapDoneSinceInTriggerCollider = false; //set back to false
+
+            if(this.transform.localPosition.y <= endPosition.y + 0.1f &&
+                this.transform.localPosition.y >= endPosition.y - 0.1f)
             {
-                sendTowerUp = false;
-                sendTowerUpMidWay = false;
-                time = 0;
-                midwayPos = this.transform.localPosition;
-                sendTowerDownMidWay = true;
-            }
-            else //already arrived on the top
-            {
-                time = 0;
-                sendTowerDown = true;
+                sendTowerDown = true; // when sliding out
+                changedStateToSwinging = false;
             }
         }
+
     }
 
 
