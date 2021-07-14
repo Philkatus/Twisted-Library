@@ -118,6 +118,7 @@ public class FootstepSoundManager : MonoBehaviour
 
     public void Footsteps()
     {
+
         if (ObjectManager.instance.animationStateController.playerSM.playerState == PlayerMovementStateMachine.PlayerState.walking)
         {
             //Debug.Log(ObjectManager.instance.animationStateController.animator.GetBoneTransform(HumanBodyBones.LeftFoot).position);
@@ -128,7 +129,6 @@ public class FootstepSoundManager : MonoBehaviour
             {
                 if (!leftPlayed)
                 {
-                    Debug.Log("FOOT: " + Mathf.Round((footLPos) * 100) / 100f);
                     ObjectManager.instance.animationStateController.playerSM.effects.TriggerLeftFoot();
                     PlayLeftStep();
                     leftPlayed = true;
@@ -142,6 +142,7 @@ public class FootstepSoundManager : MonoBehaviour
             {
                 if (!rightPlayed)
                 {
+
                     ObjectManager.instance.animationStateController.playerSM.effects.TriggerRightFoot();
 
                     PlayRightStep();
@@ -185,6 +186,7 @@ public class FootstepSoundManager : MonoBehaviour
         }
         else if (footstepsLeft.Length > 0)
         {
+
             resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeft[Random.Range(0, footstepsLeft.Length)], audioVolume);
         }
     }
@@ -198,6 +200,7 @@ public class FootstepSoundManager : MonoBehaviour
         else if (footstepsRight.Length > 0)
         {
             resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRight[Random.Range(0, footstepsLeft.Length)], audioVolume);
+
         }
     }
 
