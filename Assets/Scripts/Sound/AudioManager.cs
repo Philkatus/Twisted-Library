@@ -47,6 +47,9 @@ public class AudioManager : MonoBehaviour
             source.priority = s.priority;
             source.loop = s.loop;
             source.outputAudioMixerGroup = s.audioGroup;
+            source.rolloffMode = AudioRolloffMode.Linear;
+            source.maxDistance = s.maxDistanceListener;
+            source.minDistance = s.minDistanceListener;
         }
         else
         {
