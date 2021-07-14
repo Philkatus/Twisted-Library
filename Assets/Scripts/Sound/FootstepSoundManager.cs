@@ -34,7 +34,8 @@ public class FootstepSoundManager : MonoBehaviour
     private AudioClip exhale;
 
     [Header("Volume")]
-    [Range(0.1f, 10f)] public float audioVolume = 0.1f;
+    [Range(0.1f, 10f)] public float audioVolumeConcrete = 0.1f;
+    [Range(0f, 10f)] public float audioVolumeWater = 0.1f;
 
     [Header("Movement Particle Systems")]
     public ParticleSystem footstepLFX;
@@ -118,6 +119,7 @@ public class FootstepSoundManager : MonoBehaviour
 
     public void Footsteps()
     {
+
         if (ObjectManager.instance.animationStateController.playerSM.playerState == PlayerMovementStateMachine.PlayerState.walking)
         {
             //Debug.Log(ObjectManager.instance.animationStateController.animator.GetBoneTransform(HumanBodyBones.LeftFoot).position);
@@ -128,7 +130,6 @@ public class FootstepSoundManager : MonoBehaviour
             {
                 if (!leftPlayed)
                 {
-                    Debug.Log("FOOT: " + Mathf.Round((footLPos) * 100) / 100f);
                     ObjectManager.instance.animationStateController.playerSM.effects.TriggerLeftFoot();
                     PlayLeftStep();
                     leftPlayed = true;
@@ -142,7 +143,7 @@ public class FootstepSoundManager : MonoBehaviour
             {
                 if (!rightPlayed)
                 {
-                    Debug.Log("FOOT: " + Mathf.Round((footRPos) * 100) / 100f);
+
                     ObjectManager.instance.animationStateController.playerSM.effects.TriggerRightFoot();
 
                     PlayRightStep();
@@ -182,11 +183,12 @@ public class FootstepSoundManager : MonoBehaviour
     {
         if (movementScript.isOnWater && footstepsLeftWater.Length > 0)
         {
-            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeftWater[Random.Range(0, footstepsLeft.Length)], audioVolume);
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeftWater[Random.Range(0, footstepsLeft.Length)], audioVolumeWater);
         }
         else if (footstepsLeft.Length > 0)
         {
-            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeft[Random.Range(0, footstepsLeft.Length)], audioVolume);
+
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsLeft[Random.Range(0, footstepsLeft.Length)], audioVolumeConcrete);
         }
     }
 
@@ -194,11 +196,12 @@ public class FootstepSoundManager : MonoBehaviour
     {
         if (movementScript.isOnWater && footstepsRightWater.Length > 0)
         {
-            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRightWater[Random.Range(0, footstepsLeft.Length)], audioVolume);
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRightWater[Random.Range(0, footstepsLeft.Length)], audioVolumeWater);
         }
         else if (footstepsRight.Length > 0)
         {
-            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRight[Random.Range(0, footstepsLeft.Length)], audioVolume);
+            resonanceAudio.audioSource.PlayOneShot((AudioClip)footstepsRight[Random.Range(0, footstepsLeft.Length)], audioVolumeConcrete);
+
         }
     }
 

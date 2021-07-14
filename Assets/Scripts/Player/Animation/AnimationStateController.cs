@@ -303,6 +303,11 @@ public class AnimationStateController : MonoBehaviour
         animator.SetBool("OnLadder", false);
 
     }
+
+    public void CollectUpgrade()
+    {
+        animator.SetTrigger("Upgrade");
+    }
     #endregion
     // EXIT/ENTER METHODS END -----------------------------------------------------------------------------------
 
@@ -442,6 +447,7 @@ public class AnimationStateController : MonoBehaviour
         if (animator.GetBool("OnLadder"))
         {
             LadderClimb();
+            FaceSlideDirection();
         }
     }
 
@@ -486,6 +492,42 @@ public class AnimationStateController : MonoBehaviour
 
         animator.SetFloat("ClimbingDirection", velocityY);
     }
+
+    [SerializeField] float switchSideSpeed = 0.2f;
+    float switchVelocity = 0f;
+
+    void FaceSlideDirection()
+    {
+        Debug.Log("Sliding: " + playerSM.slidingInput);
+        if(playerSM.slidingInput == 0)
+        {
+            var temp = Mathf.SmoothDamp(animator.GetFloat("SlideDirection"), 0, ref switchVelocity, switchSideSpeed);
+            if(temp < 0.1f && temp > -0.1f)
+            {
+                temp = 0;
+            }
+            animator.SetFloat("SlideDirection", temp);
+        } else if(playerSM.slidingInput == 1)
+        {
+            var temp = Mathf.SmoothDamp(animator.GetFloat("SlideDirection"), 1, ref switchVelocity, switchSideSpeed);
+            if (temp > 0.9f)
+            {
+                temp = 1;
+            }
+            animator.SetFloat("SlideDirection", temp);
+        }
+        else
+        {
+            var temp = Mathf.SmoothDamp(animator.GetFloat("SlideDirection"), -1, ref switchVelocity, switchSideSpeed);
+            if (temp < -0.9f)
+            {
+                temp = -1;
+            }
+            animator.SetFloat("SlideDirection", temp);
+        }
+    }
+
+
 
     public void DismountLadder()
     {
