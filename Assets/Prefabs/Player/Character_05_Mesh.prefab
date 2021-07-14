@@ -2557,14 +2557,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3962710177776461586}
-  m_LocalRotation: {x: -0.7071067, y: -0.000000030908616, z: 0.000000030908623, w: 0.7071068}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1287191633168323140}
   m_Father: {fileID: 5823507162670595526}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!1 &3974904977861976704
 GameObject:
   m_ObjectHideFlags: 0
@@ -4430,7 +4430,6 @@ GameObject:
   - component: {fileID: 4539148673259914272}
   - component: {fileID: 4687175794350905908}
   - component: {fileID: 5027293721251099450}
-  - component: {fileID: 5653984935188587992}
   - component: {fileID: 7199847695135858691}
   - component: {fileID: 7368485110541878768}
   m_Layer: 0
@@ -4474,12 +4473,12 @@ AudioSource:
   m_Pitch: 1
   Loop: 0
   Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
+  Spatialize: 1
+  SpatializePostEffects: 1
+  Priority: 39
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 495.0495
+  MaxDistance: 1000
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -4564,7 +4563,7 @@ Animator:
   m_GameObject: {fileID: 6600746832498534268}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 73ad4962cd263f34ab69d4645adc2d1a, type: 3}
-  m_Controller: {fileID: 9100000, guid: fb93121d6f5792842a23dbfa93ba0654, type: 2}
+  m_Controller: {fileID: 9100000, guid: b58d4597b01d38f48a5f955d39b69b01, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -4586,17 +4585,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerSM: {fileID: 0}
-  ladderSM: {fileID: 0}
+  ladderSM: {fileID: 5471150681751002949}
   controller: {fileID: 0}
-  soundManager: {fileID: 0}
+  soundManager: {fileID: 7199847695135858691}
   audioManager: {fileID: 0}
-  footIKScript: {fileID: 0}
+  footIKScript: {fileID: 4539148673259914272}
   ladderPushSmoke: {fileID: 0}
   antiDrag: 1.65
   useFeetIK: 0
   timeForLanding: 1
   timeForRoll: 3
-  strongImpactTimer: 0
+  strongImpactTimer: 2
   airTimer: 0
   headRig: {fileID: 2211893656114505702}
   armRig: {fileID: 2012157989496597807}
@@ -4604,8 +4603,9 @@ MonoBehaviour:
   headRotationValue: -0.65
   spine: {fileID: 8122004619869329223}
   animator: {fileID: 1219713179535482570}
-  acceleration: 2
-  deceleration: 2
+  acceleration: 4
+  deceleration: 6
+  switchSideSpeed: 0.2
 --- !u!114 &4539148673259914272
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4723,127 +4723,6 @@ MonoBehaviour:
   occlusionEnabled: 0
   occlusionIntensity: 1
   quality: 2
---- !u!114 &5653984935188587992
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6600746832498534268}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ca9aa3a106903e44a01b8b613777fcf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sounds:
-  - name: JumpStart
-    clips: []
-    audioGroup: {fileID: 0}
-    volume: 1
-    pitch: 1
-    priority: 128
-    blendDuration: 0
-    loop: 0
-    minDistanceListener: 0
-    maxDistanceListener: 0
-  - name: Falling
-    clips: []
-    audioGroup: {fileID: 0}
-    volume: 0.1
-    pitch: 1
-    priority: 128
-    blendDuration: 0
-    loop: 1
-    minDistanceListener: 0
-    maxDistanceListener: 0
-  - name: LandingAfterJump
-    clips: []
-    audioGroup: {fileID: 0}
-    volume: 0.01
-    pitch: 1
-    priority: 128
-    blendDuration: 0
-    loop: 0
-    minDistanceListener: 0
-    maxDistanceListener: 0
-  - name: LandingAfterFall
-    clips: []
-    audioGroup: {fileID: 0}
-    volume: 0.1
-    pitch: 1
-    priority: 128
-    blendDuration: 0
-    loop: 0
-    minDistanceListener: 0
-    maxDistanceListener: 0
-  - name: AttachLadder
-    clips: []
-    audioGroup: {fileID: 0}
-    volume: 0.5
-    pitch: 1
-    priority: 128
-    blendDuration: 0
-    loop: 0
-    minDistanceListener: 0
-    maxDistanceListener: 0
-  - name: Sliding
-    clips: []
-    audioGroup: {fileID: 0}
-    volume: 0.5
-    pitch: 1
-    priority: 128
-    blendDuration: 0
-    loop: 1
-    minDistanceListener: 0
-    maxDistanceListener: 0
-  - name: FoldLadder
-    clips: []
-    audioGroup: {fileID: 0}
-    volume: 0.5
-    pitch: 1
-    priority: 128
-    blendDuration: 0
-    loop: 0
-    minDistanceListener: 0
-    maxDistanceListener: 0
-  activeSoundSources: []
-  inactiveSoundSources: []
-  SoundSourcePrefab: {fileID: 0}
-  CogSoundSources:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  SwitchSoundSources:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  LandmarkOneSources:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  LandmarkTwoSources:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  MovingLandmarkOneColumn: {fileID: 0}
 --- !u!114 &7199847695135858691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4886,9 +4765,9 @@ MonoBehaviour:
   audioVolume: 1.5
   footstepLFX: {fileID: 0}
   footstepRFX: {fileID: 0}
-  root: {fileID: 0}
-  footL: {fileID: 0}
-  footR: {fileID: 0}
+  root: {fileID: 1287191633168323140}
+  footL: {fileID: 7928345117543960331}
+  footR: {fileID: 7721375703186043117}
 --- !u!114 &7368485110541878768
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6103,7 +5982,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8662358494249681184}
-  m_LocalRotation: {x: 0.41333604, y: -0.4650832, z: -0.5326329, w: 0.5737188}
+  m_LocalRotation: {x: 0.5, y: -0.5, z: -0.5, w: 0.5}
   m_LocalPosition: {x: 0.44321054, y: -0.39099377, z: 0.54300445}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -6113,7 +5992,7 @@ Transform:
   - {fileID: 5737614746750885905}
   m_Father: {fileID: 8122004619869329223}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: -76.898, z: -90}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: -90}
 --- !u!143 &6872268466578327127
 CharacterController:
   m_ObjectHideFlags: 0
