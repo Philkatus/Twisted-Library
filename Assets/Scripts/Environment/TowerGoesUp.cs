@@ -9,6 +9,7 @@ public class TowerGoesUp : MonoBehaviour
     [SerializeField] float travelTime;
     float time;
     Vector3 startPos, midwayPos;
+    PlayerMovementStateMachine psm;
 
     bool sendTowerUp, sendTowerDown, sendTowerDownMidWay, sendTowerUpMidWay, moving;
 
@@ -35,7 +36,7 @@ public class TowerGoesUp : MonoBehaviour
                 time = 0;
                 sendTowerUp = false;
                 moving = false;
-                AudioManager.Instance.StopColumnSound(transform.position);
+                AudioManager.Instance.StopColumnSound();
             }
         }
 
@@ -52,7 +53,7 @@ public class TowerGoesUp : MonoBehaviour
                 time = 0;
                 sendTowerDown = false;
                 moving = false;
-                AudioManager.Instance.StopColumnSound(transform.position);
+                AudioManager.Instance.StopColumnSound();
             }
         }
 
@@ -70,7 +71,7 @@ public class TowerGoesUp : MonoBehaviour
                 sendTowerDown = false;
                 sendTowerDownMidWay = false;
                 moving = false;
-                AudioManager.Instance.StopColumnSound(transform.position);
+                AudioManager.Instance.StopColumnSound();
             }
         }
 
@@ -88,34 +89,39 @@ public class TowerGoesUp : MonoBehaviour
                 sendTowerUp = false;
                 sendTowerUpMidWay = false;
                 moving = false;
-                AudioManager.Instance.StopColumnSound(transform.position);
+                AudioManager.Instance.StopColumnSound();
             }
         }
 
         if (!moving && (sendTowerDown || sendTowerDownMidWay || sendTowerUp || sendTowerUpMidWay))
         {
             moving = true;
-            AudioManager.Instance.ColumnSound(transform.position);
+            AudioManager.Instance.LandmarkOneColumnSound();
         }
     }
 
+    bool done;
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (sendTowerDownMidWay || sendTowerDown) //still going down
+            psm = other.GetComponent<PlayerMovementStateMachine>();
+            if (psm.playerState == PlayerMovementStateMachine.PlayerState.swinging)
             {
-                sendTowerDown = false;
-                sendTowerDownMidWay = false;
-                time = 0;
-                midwayPos = this.transform.localPosition;
-                sendTowerUpMidWay = true;
-            }
-            else // already down
-            {
-                time = 0;
-                sendTowerUp = true;
+                if (sendTowerDownMidWay || sendTowerDown) //still going down
+                {
+                    sendTowerDown = false;
+                    sendTowerDownMidWay = false;
+                    time = 0;
+                    midwayPos = this.transform.localPosition;
+                    sendTowerUpMidWay = true;
+                }
+                else // already down
+                {
+                    time = 0;
+                    sendTowerUp = true;
+                }
             }
         }
     }
