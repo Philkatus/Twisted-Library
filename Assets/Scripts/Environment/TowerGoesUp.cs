@@ -35,7 +35,7 @@ public class TowerGoesUp : MonoBehaviour
                 time = 0;
                 sendTowerUp = false;
                 moving = false;
-                AudioManager.Instance.StopColumnSound(transform.position);
+                AudioManager.Instance.StopColumnSound();
             }
         }
 
@@ -52,7 +52,7 @@ public class TowerGoesUp : MonoBehaviour
                 time = 0;
                 sendTowerDown = false;
                 moving = false;
-                AudioManager.Instance.StopColumnSound(transform.position);
+                AudioManager.Instance.StopColumnSound();
             }
         }
 
@@ -70,7 +70,7 @@ public class TowerGoesUp : MonoBehaviour
                 sendTowerDown = false;
                 sendTowerDownMidWay = false;
                 moving = false;
-                AudioManager.Instance.StopColumnSound(transform.position);
+                AudioManager.Instance.StopColumnSound();
             }
         }
 
@@ -88,14 +88,14 @@ public class TowerGoesUp : MonoBehaviour
                 sendTowerUp = false;
                 sendTowerUpMidWay = false;
                 moving = false;
-                AudioManager.Instance.StopColumnSound(transform.position);
+                AudioManager.Instance.StopColumnSound();
             }
         }
 
         if (!moving && (sendTowerDown || sendTowerDownMidWay || sendTowerUp || sendTowerUpMidWay))
         {
             moving = true;
-            AudioManager.Instance.ColumnSound(transform.position);
+            AudioManager.Instance.LandmarkOneColumnSound();
         }
     }
 

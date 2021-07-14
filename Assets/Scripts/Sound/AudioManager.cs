@@ -16,7 +16,7 @@ public class AudioManager : MonoBehaviour
 
     public ResonanceAudioSource[] CogSoundSources = new ResonanceAudioSource[9];
     public ResonanceAudioSource[] SwitchSoundSources = new ResonanceAudioSource[9];
-    public ResonanceAudioSource[] LandmarkOneSources = new ResonanceAudioSource[6];
+    public ResonanceAudioSource[] LandmarkOneSources = new ResonanceAudioSource[9];
     public ResonanceAudioSource[] LandmarkTwoSources = new ResonanceAudioSource[6];
     public ResonanceAudioSource MovingLandmarkOneColumn;
     bool isBreaking;
@@ -450,17 +450,12 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void ColumnSound(Vector3 position)
-    {
-        MovingLandmarkOneColumn.audioSource.Play();
-        Debug.Log("column sound");
-
-    }
-
     public void LandmarkOneSound(int index)
     {
         string name = "Landmark1Rotation";
         Sound s = Array.Find(sounds, sound => sound.name == name);
+        string nameDisk = "LandmarkOneDisks";
+        Sound sDisk = Array.Find(sounds, sound => sound.name == nameDisk);
         if (LandmarkOneSources[index] != null)
         {
             ApplyValuesToSource(s, LandmarkOneSources[index].audioSource);
@@ -471,7 +466,24 @@ public class AudioManager : MonoBehaviour
             ApplyValuesToSource(s, LandmarkOneSources[index + 3].audioSource);
             LandmarkOneSources[index + 3].audioSource.Play();
         }
+        if (LandmarkOneSources[index + 6] != null)
+        {
+            ApplyValuesToSource(sDisk, LandmarkOneSources[index + 6].audioSource);
+            LandmarkOneSources[index + 6].audioSource.Play();
+        }
     }
+
+    public void LandmarkOneColumnSound()
+    {
+        string name = "LandmarkOneColumn";
+        Sound s = Array.Find(sounds, sound => sound.name == name);
+        if (MovingLandmarkOneColumn != null)
+        {
+            ApplyValuesToSource(s, MovingLandmarkOneColumn.audioSource);
+            MovingLandmarkOneColumn.audioSource.Play();
+        }
+    }
+
     public void LandmarkTwoSound(int index)
     {
         string name = "Landmark2Rotation";
@@ -499,7 +511,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    public void StopColumnSound(Vector3 position)
+    public void StopColumnSound()
     {
         if (MovingLandmarkOneColumn != null)
         {
