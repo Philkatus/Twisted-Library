@@ -85,7 +85,7 @@ public class VFX_Manager : MonoBehaviour
     #endregion
     #region INSPECTOR
     [SerializeField] GameObject player, sparkleBurstL, sparkleBurstR, speedLinesS;
-    [SerializeField] bool useFadeOut;
+    [SerializeField] bool useFadeOut, useNewWallProjector;
     [SerializeField] VisualEffect ladderPushLeft, ladderPushRight, upgradeCloud, stepLeft, stepRight;
     [SerializeField] Material[] railMats;
     [Header("Wheel Light Up")]
@@ -477,7 +477,10 @@ public class VFX_Manager : MonoBehaviour
             case "snap":
                 vfx = snappingVFX;
                 Vector3 snappingPoint = pSM.closestRail.pathCreator.path.GetClosestPointOnPath(transform.GetChild(0).position);
+                float distance = pSM.closestRail.pathCreator.path.GetClosestDistanceAlongPath(snappingPoint);
+
                 vfx.transform.position = snappingPoint;
+                vfx.transform.LookAt(snappingPoint + pSM.closestRail.pathCreator.path.GetNormalAtDistance(distance));
                 break;
             default:
                 vfx = new VisualEffect();
@@ -546,7 +549,6 @@ public class VFX_Manager : MonoBehaviour
             float t = timer / time;
 
             if (useFadeOut)
-
                 shadow.material.SetColor("_BaseColor", GetColor(i, false, Mathf.Lerp(alpha, 0, t)));
 
             float curvepoint = impactCurve.Evaluate(t) * decalScale;
@@ -650,22 +652,50 @@ public class VFX_Manager : MonoBehaviour
     {
         yield return new WaitForEndOfFrame();
         wallProjecting = true;
-        wallProjector.material.SetColor("_Color", GetColor(randomColor, true));
+        int i = 0;
+
+        if (!useFadeOut)
+            wallProjector.material.SetColor("_BaseColor", GetColor(randomColor));
+        else
+            i = randomColor;
+
+        if (!useNewWallProjector)
+        {
+            wallProjector.material.SetColor("_Color", GetColor(randomColor, true));
+        }
+
         wallProjector.transform.position = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
         lastPositionWall = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
         wallProjector.transform.rotation = Quaternion.Euler(wallProjector.transform.eulerAngles.x, ladder.transform.eulerAngles.y, wallProjector.transform.eulerAngles.z);
         float timer = 0;
         while (timer < time)
         {
+            float t = timer / time;
             if (pSM.playerState == PlayerMovementStateMachine.PlayerState.swinging)
                 lastPositionWall = pSM.ladder.transform.position + Vector3.up * wallOffsetUp + ladder.transform.forward * wallOffsetBack;
-            float t = timer / time;
-            float currentTime = Mathf.Lerp(0.2f, 1.22f, t);
-            wallProjector.material.SetFloat("_WallTime", currentTime);
+            if (!useNewWallProjector)
+            {
+                float currentTime = Mathf.Lerp(0.2f, 1.22f, t);
+                wallProjector.material.SetFloat("_WallTime", currentTime);
+            }
+            else
+            {
+                float curvepoint = impactCurve.Evaluate(t) * decalScale * 2;
+                wallProjector.size = new Vector3(curvepoint, curvepoint, shadowRemapMax);
+                if (useFadeOut)
+                    wallProjector.material.SetColor("_BaseColor", GetColor(i, false, Mathf.Lerp(alpha, 0, t)));
+            }
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        wallProjector.material.SetFloat("_WallTime", 0);
+        if (!useNewWallProjector)
+        {
+            wallProjector.material.SetFloat("_WallTime", 0);
+        }
+        else
+        {
+            wallProjector.size = new Vector3(0, 0, shadowRemapMax);
+        }
         wallProjecting = false;
     }
     #endregion
