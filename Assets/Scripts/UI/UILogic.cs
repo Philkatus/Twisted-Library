@@ -344,12 +344,12 @@ public class UILogic : MonoBehaviour
         }
     }
 
-    public void OnChallengeCompleteLandmark(GameObject linkedUI)
+    public void OnChallengeCompleteLandmark(GameObject linkedUI, int soundIndex)
     {
         // wenn alle switches an sind, wird das aufgerufen (challenge complete), wird im landmark script aufgerufen für das dazu
         // gehörige element vom landmark, was nun leuchten soll
         ExtensionMethods.CrossFadeAlphaFixed(linkedUI, 1f, .1f);
-        //AudioManager.Instance.LandmarkOneSound(index);
+        AudioManager.Instance.LandmarkOneSound(soundIndex);
     }
 
     public void SetLandmarkScaleToSmall(GameObject firstLinkedUI, GameObject secondLinkedUI, GameObject thirdLinkedUI, GameObject groundUI, float time, bool isWindChimes)
