@@ -441,7 +441,6 @@ public class AnimationStateController : MonoBehaviour
     {
         if (animator.GetBool("OnLadder"))
         {
-            DismountingTop();
             LadderClimb();
         }
     }
@@ -486,18 +485,6 @@ public class AnimationStateController : MonoBehaviour
 
 
         animator.SetFloat("ClimbingDirection", velocityY);
-    }
-
-    void DismountingTop()
-    {
-        if (playerSM.dismounting == true)
-        {
-            animator.SetBool("isDismounting", true);
-        }
-        else
-        {
-            animator.SetBool("isDismounting", false);
-        }
     }
 
     public void DismountLadder()
