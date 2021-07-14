@@ -8,8 +8,8 @@ public class PlayerWalking : State
     CharacterController controller;
     Transform ladder;
     ValuesScriptableObject stats;
-    float coyoteTime = 0.1f,
-        coyoteTimer = 0,
+    float coyoteTime = 0.4f,
+        coyoteTimer = 0f,
         speedDeadzone = 0.1f;
 
     public PlayerWalking(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
