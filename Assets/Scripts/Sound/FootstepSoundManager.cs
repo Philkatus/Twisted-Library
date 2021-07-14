@@ -46,6 +46,9 @@ public class FootstepSoundManager : MonoBehaviour
     private float lastFrameFootstepRight;
     private float currentFrameExhale;
     private float lastFrameExhale;
+
+
+    [SerializeField] Transform root, footL, footR;
     #endregion
 
     void Start()
@@ -56,7 +59,7 @@ public class FootstepSoundManager : MonoBehaviour
         movementScript = ObjectManager.instance.pSM;
     }
 
-    void Update()
+    void LateUpdate()
     {
         Footsteps();
         Exhale();
@@ -82,10 +85,11 @@ public class FootstepSoundManager : MonoBehaviour
     }
 
 
-    //Old version using animation Events of each animation. Doesnt work with the Movement Blend Tree.
-    //Using animation curves now
 
-    //Dont delete yet, leads to errors
+    ////Old version using animation Events of each animation. Doesnt work with the Movement Blend Tree.
+    ////Using animation curves now
+
+    ////Dont delete yet, leads to errors
     public void FootstepL(AnimationEvent animationEvent)
     {
         /*
@@ -110,25 +114,69 @@ public class FootstepSoundManager : MonoBehaviour
         */
     }
 
-
+    bool leftPlayed, rightPlayed;
 
 
     public void Footsteps()
     {
-        currentFrameFootstepLeft = animator.GetFloat("FootstepL");
-        if (currentFrameFootstepLeft > 0 && lastFrameFootstepLeft < 0)
+        if(ObjectManager.instance.animationStateController.playerSM.playerState == PlayerMovementStateMachine.PlayerState.walking)
         {
-            PlayLeftStep();
+            //Debug.Log(ObjectManager.instance.animationStateController.animator.GetBoneTransform(HumanBodyBones.LeftFoot).position);
+            var footLPos = root.position.y - footL.position.y;
+            var footRPos = root.position.y - footR.position.y;
+
+            if (footLPos > 0.4f)
+            {
+                if (!leftPlayed)
+                {
+                    Debug.Log("FOOT: " + Mathf.Round((footLPos) * 100) / 100f);
+                    ObjectManager.instance.animationStateController.playerSM.effects.TriggerLeftFoot();
+                    PlayLeftStep();
+                    leftPlayed = true;
+                }
+            }
+            else
+            {
+                leftPlayed = false;
+            }
+            if (footRPos > 0.4f)
+            {
+                if (!rightPlayed)
+                {
+                    Debug.Log("FOOT: " + Mathf.Round((footRPos) * 100) / 100f);
+                    ObjectManager.instance.animationStateController.playerSM.effects.TriggerRightFoot();
+
+                    PlayRightStep();
+                    rightPlayed = true;
+                }
+            }
+            else
+            {
+                rightPlayed = false;
+            }
         }
-        lastFrameFootstepLeft = animator.GetFloat("FootstepL");
+        
+        //Debug.Log("FootL: " + footL.position);
+        //currentFrameFootstepLeft = animator.GetFloat("FootstepL");
+        //if (currentFrameFootstepLeft > 0 && lastFrameFootstepLeft < 0)
+        //{
+        //    PlayLeftStep();
+        //}
+        //lastFrameFootstepLeft = animator.GetFloat("FootstepL");
 
 
-        currentFrameFootstepRight = animator.GetFloat("FootstepR");
-        if (currentFrameFootstepRight < 0 && lastFrameFootstepRight > 0)
-        {
-            PlayRightStep();
-        }
-        lastFrameFootstepRight = animator.GetFloat("FootstepR");
+        //currentFrameFootstepRight = animator.GetFloat("FootstepR");
+        //if (currentFrameFootstepRight < 0 && lastFrameFootstepRight > 0)
+        //{
+        //    PlayRightStep();
+        //}
+        //lastFrameFootstepRight = animator.GetFloat("FootstepR");
+    }
+
+    public void Land()
+    {
+        PlayLeftStep();
+        PlayRightStep();
     }
 
     private void PlayLeftStep()
