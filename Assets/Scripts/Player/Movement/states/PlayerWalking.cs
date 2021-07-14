@@ -8,8 +8,8 @@ public class PlayerWalking : State
     CharacterController controller;
     Transform ladder;
     ValuesScriptableObject stats;
-    float coyoteTime = 0.4f,
-        coyoteTimer = 0f,
+    float coyoteTime = 0.12f,
+        coyoteTickingTimer = 0f,
         speedDeadzone = 0.1f;
 
     public PlayerWalking(PlayerMovementStateMachine playerStateMachine) : base(playerStateMachine)
@@ -103,32 +103,30 @@ public class PlayerWalking : State
         }
         #endregion
 
-        PSM.baseVelocity.y -= stats.Gravity * Time.fixedDeltaTime;
+        coyoteTickingTimer += Time.fixedDeltaTime;
+        if (controller.isGrounded)
+        {
+            coyoteTickingTimer = 0;
+            PSM.baseVelocity.y -= stats.Gravity * Time.fixedDeltaTime;
+        }
         PSM.baseVelocity = ExtensionMethods.ClampPlayerVelocity(PSM.baseVelocity, Vector3.down, stats.MaxFallingSpeed);
         float y = PSM.baseVelocity.y;
         PSM.baseVelocity.y = 0;
         PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaximumMovementSpeed);
         PSM.baseVelocity.y = y;
         PSM.LoseBonusVelocityPercentage(stats.WalkingBonusVelocityDrag);
-        controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.movementVelocityFactor);
 
-        if (isGroundedWithCoyoteTime())
+        if (!controller.isGrounded)
+        {
+            PSM.bonusVelocity.y = 0;
+            PSM.baseVelocity.y = 0;
+        }
+
+        controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.movementVelocityFactor);
+        if (coyoteTickingTimer > coyoteTime)
         {
             PSM.OnFall();
         }
-    }
-
-    bool isGroundedWithCoyoteTime()
-    {
-        if (controller.isGrounded)
-        {
-            coyoteTime = 0;
-        }
-        else
-        {
-            coyoteTime += Time.fixedDeltaTime;
-        }
-        return coyoteTimer < coyoteTime;
     }
 
     public override void Jump()

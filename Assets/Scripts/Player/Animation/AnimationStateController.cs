@@ -526,7 +526,10 @@ public class AnimationStateController : MonoBehaviour
         }
     }
 
-
+    public void PushFromWall()
+    {
+        animator.SetTrigger("PushWall");
+    }
 
     public void DismountLadder()
     {
