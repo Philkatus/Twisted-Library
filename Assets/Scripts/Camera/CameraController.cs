@@ -48,7 +48,7 @@ public class CameraController : MonoBehaviour
         current.Priority -= 5;
         ladderCam.Priority += 5;
         current = ladderCam;
-            PlayerFollowTarget.instance.FollowLadder();
+        PlayerFollowTarget.instance.FollowLadder();
 
     }
 
@@ -63,56 +63,56 @@ public class CameraController : MonoBehaviour
         }
     }
 
-    private void SwitchCams()
-    {
-        if (current == cam01)
-        {
-            if (current.m_YAxis.Value <= delta)
-            {
-                if (!justSwitched)
-                {
-                    GoDown();
-                }
-            }
-            else
-            {
-                justSwitched = false;
-            }
-        }
-        if (current == cam02)
-        {
-            if (current.m_YAxis.Value >= 1 - delta)
-            {
-                if (!justSwitched)
-                {
-                    GoUp();
-                }
-            }
-            else
-            {
-                justSwitched = false;
-            }
-        }
-    }
+    //private void SwitchCams()
+    //{
+    //    if (current == cam01)
+    //    {
+    //        if (current.m_YAxis.Value <= delta)
+    //        {
+    //            if (!justSwitched)
+    //            {
+    //                GoDown();
+    //            }
+    //        }
+    //        else
+    //        {
+    //            justSwitched = false;
+    //        }
+    //    }
+    //    if (current == cam02)
+    //    {
+    //        if (current.m_YAxis.Value >= 1 - delta)
+    //        {
+    //            if (!justSwitched)
+    //            {
+    //                GoUp();
+    //            }
+    //        }
+    //        else
+    //        {
+    //            justSwitched = false;
+    //        }
+    //    }
+    //}
 
-    private void GoDown()
-    {
-        justSwitched = true;
+    //private void GoDown()
+    //{
+    //    justSwitched = true;
 
-        current.m_YAxis.Value = 0;
-        cam01.Priority -= 5;
-        cam02.Priority += 5;
-        current = cam02;
+    //    current.m_YAxis.Value = 0;
+    //    cam01.Priority -= 5;
+    //    cam02.Priority += 5;
+    //    current = cam02;
 
-    }
+    //}
 
-    private void GoUp()
-    {
-        justSwitched = true;
+    //private void GoUp()
+    //{
+    //    justSwitched = true;
 
-        current.m_YAxis.Value = 1;
-        cam01.Priority += 5;
-        cam02.Priority -= 5;
-        current = cam01;
-    }
+    //    current.m_YAxis.Value = 1;
+    //    cam01.Priority += 5;
+    //    cam02.Priority -= 5;
+    //    current = cam01;
+    //}
 }
