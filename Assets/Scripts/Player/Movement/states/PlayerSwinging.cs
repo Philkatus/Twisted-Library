@@ -378,8 +378,8 @@ public class PlayerSwinging : State
         if (!PSM.expandAfterSnap)
         {
             if (!PSM.useRelativeBobPosition)
-            {
-                CalculateCentrifugalForce();
+            { 
+                //CalculateCentrifugalForce();
             }
             SlidingMovement();
             Swing();
@@ -736,6 +736,7 @@ public class PlayerSwinging : State
 
 
     #endregion
+
     public void CalculateCentrifugalForce()
     {
         Vector3 CurrentSlidingVelocity = PSM.currentSlidingSpeed * ladder.transform.right * PSM.slidingInput;
