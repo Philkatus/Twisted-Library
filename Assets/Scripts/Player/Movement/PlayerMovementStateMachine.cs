@@ -233,7 +233,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     public void TryToSnapToShelf()
     {
-        if (playerState != PlayerState.swinging && CheckForRail())
+        if ( snappingStep==SnappingStep.Finished && playerState != PlayerState.swinging && CheckForRail())
         {
             ObjectManager.instance.animationStateController.Snap();
             State.Snap();
@@ -628,6 +628,7 @@ public class PlayerMovementStateMachine : StateMachine
         if (snapCoroutine == null)
         {
             snapCoroutine = StartCoroutine(snappingBehaviour());
+
         }
     }
 
@@ -641,7 +642,6 @@ public class PlayerMovementStateMachine : StateMachine
         float DistanceLaderToPlayer = stats.ladderLengthSmall;
 
         Vector3 LadderStartPosition = lSM.transform.position;
-        Vector3 LadderStartDirection = lSM.transform.up;
         Quaternion LadderStartRotation =lSM.transform.rotation;
         Quaternion playerStartRotation = transform.rotation;
         currentDistance = closestRail.pathCreator.path.GetClosestDistanceAlongPath(transform.position);
@@ -679,7 +679,7 @@ public class PlayerMovementStateMachine : StateMachine
             {
 
                 lSM.OnGrow();
-                snappingStep += 1;
+                snappingStep =SnappingStep.LadderExtension;
                 LastLadderBotPosition = ladderBottom.position;
 
             }
@@ -697,7 +697,7 @@ public class PlayerMovementStateMachine : StateMachine
             if (Vector3.Distance(ladderBottom.position, targetPoint) <= Vector3.Distance(ladderBottom.position, lSM.transform.position))//ladderAnimController.GetCurrentAnimatorStateInfo(0).normalizedTime >= maxAnimationTime) 
             {
                 lSM.transform.position = targetPoint;
-                snappingStep += 1;
+                snappingStep =SnappingStep.StartSwinging;
 
                 //ladderSizeStateMachine.ladderLength = Vector3.Distance(ladderBottom.position, targetPoint);
                 heightOnLadder = -1;
@@ -734,11 +734,12 @@ public class PlayerMovementStateMachine : StateMachine
             SetState(new PlayerSwinging(this));
            
             yield return delay;
-            snappingStep += 1;
-            snapCoroutine = null;
+            snappingStep =SnappingStep.Finished;
+            
         }
         while (snappingStep == SnappingStep.Finished)
         {
+            snapCoroutine = null;
             yield return delay;
         }
     }
