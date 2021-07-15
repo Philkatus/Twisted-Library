@@ -17,7 +17,7 @@ public class PlayerMovementStateMachine : StateMachine
     [Header("For reference")]
     public PlayerState playerState;
     public LadderState ladderState;
-    public SnappingStep snappingStep = SnappingStep.Finished; 
+    public SnappingStep snappingStep = SnappingStep.Finished;
     [Space]
 
     public float heightOnLadder = -1;
@@ -38,6 +38,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool dismountedNoEffect;
     public bool isOnWater;
     public bool controlsDisabled;
+    public bool stopWaterCoroutine;
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
@@ -75,7 +76,7 @@ public class PlayerMovementStateMachine : StateMachine
     [HideInInspector] public InputAction swingAction;
     [HideInInspector] public InputAction snapAction;
     [HideInInspector] public InputAction fallFromLadder;
-    
+
     [HideInInspector] public Vector3 ladderJumpTarget;
     [HideInInspector] public Vector3 slidingStartVelocity;
     public Vector3 ladderDirection
@@ -178,6 +179,9 @@ public class PlayerMovementStateMachine : StateMachine
     {
         InitializeVariables();
         Cursor.visible = false;
+#if UNITY_EDITOR
+        Cursor.visible = true;
+#endif
         SetState(new PlayerWalking(this));
         GetControls();
     }
@@ -185,7 +189,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void Update()
     {
         coyoteTimer += Time.deltaTime;
-        if (playerState != PlayerState.swinging && snappingStep==SnappingStep.Finished)
+        if (playerState != PlayerState.swinging && snappingStep == SnappingStep.Finished)
             UpdateRailTimer();
 
         if (!controlsDisabled)
@@ -284,7 +288,7 @@ public class PlayerMovementStateMachine : StateMachine
 
             }
         }
-        if (snapInputBool && playerState != PlayerState.swinging && snappingStep==SnappingStep.Finished)
+        if (snapInputBool && playerState != PlayerState.swinging && snappingStep == SnappingStep.Finished)
         {
             TryToSnapToShelf();
         }
@@ -631,22 +635,22 @@ public class PlayerMovementStateMachine : StateMachine
         }
     }
 
-    IEnumerator snappingBehaviour() 
+    IEnumerator snappingBehaviour()
     {
         #region localVariables
         LadderSizeStateMachine lSM = ladderSizeStateMachine;
-        WaitForEndOfFrame delay =  new WaitForEndOfFrame();
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
         float PlayerRotationTimer = 0f;
         float PlayerRotationDuration = .2f;
         float DistanceLaderToPlayer = stats.ladderLengthSmall;
 
         Vector3 LadderStartPosition = lSM.transform.position;
         Vector3 LadderStartDirection = lSM.transform.up;
-        Quaternion LadderStartRotation =lSM.transform.rotation;
+        Quaternion LadderStartRotation = lSM.transform.rotation;
         Quaternion playerStartRotation = transform.rotation;
         currentDistance = closestRail.pathCreator.path.GetClosestDistanceAlongPath(transform.position);
-        Vector3 pathDirection = closestRail.pathCreator.path.GetDirectionAtDistance(currentDistance,EndOfPathInstruction.Stop);
-        Vector3 targetPoint = closestRail.pathCreator.path.GetPointAtDistance(currentDistance,EndOfPathInstruction.Stop);
+        Vector3 pathDirection = closestRail.pathCreator.path.GetDirectionAtDistance(currentDistance, EndOfPathInstruction.Stop);
+        Vector3 targetPoint = closestRail.pathCreator.path.GetPointAtDistance(currentDistance, EndOfPathInstruction.Stop);
         Vector3 targetDirection;
         Vector3 TargetLadderPosition;
         Vector3 LastLadderBotPosition = ladderBottom.position;
@@ -658,21 +662,21 @@ public class PlayerMovementStateMachine : StateMachine
 
         #endregion
 
-        
+
         snappingStep = SnappingStep.PlayerRotation;
         lSM.OnSnap();
 
-        while (snappingStep==SnappingStep.PlayerRotation)
+        while (snappingStep == SnappingStep.PlayerRotation)
         {
 
             targetDirection = (targetPoint - transform.position).normalized;
             TargetLadderPosition = ladderSnapTransform.position + targetDirection * DistanceLaderToPlayer;
-            targetRotation = ExtensionMethods.XLookRotation(pathDirection*snapdirection, targetDirection);
+            targetRotation = ExtensionMethods.XLookRotation(pathDirection * snapdirection, targetDirection);
             PlayerRotationTimer += Time.deltaTime;
-            lSM.transform.position = Vector3.Lerp(LadderStartPosition, TargetLadderPosition, PlayerRotationTimer/PlayerRotationDuration);
-            lSM.transform.rotation = Quaternion.Slerp(LadderStartRotation, targetRotation, PlayerRotationTimer/PlayerRotationDuration);
+            lSM.transform.position = Vector3.Lerp(LadderStartPosition, TargetLadderPosition, PlayerRotationTimer / PlayerRotationDuration);
+            lSM.transform.rotation = Quaternion.Slerp(LadderStartRotation, targetRotation, PlayerRotationTimer / PlayerRotationDuration);
             transform.rotation = Quaternion.Slerp(playerStartRotation, targetRotation, PlayerRotationTimer / PlayerRotationDuration);
-            
+
 
             yield return delay;
             if (PlayerRotationTimer >= PlayerRotationDuration)
@@ -686,10 +690,10 @@ public class PlayerMovementStateMachine : StateMachine
         }
         while (snappingStep == SnappingStep.LadderExtension)
         {
-            lSM.transform.position += lSM.transform.up * Mathf.Clamp(Vector3.Distance(LastLadderBotPosition, ladderBottom.position),.1f,Mathf.Infinity);
-            lSM.transform.position += lSM.transform.up * Mathf.Clamp(Vector3.Distance(transform.position, targetPoint)-4, 0, Time.deltaTime*5);
+            lSM.transform.position += lSM.transform.up * Mathf.Clamp(Vector3.Distance(LastLadderBotPosition, ladderBottom.position), .1f, Mathf.Infinity);
+            lSM.transform.position += lSM.transform.up * Mathf.Clamp(Vector3.Distance(transform.position, targetPoint) - 4, 0, Time.deltaTime * 5);
             heightOnLadder = -1;
-            transform.position = ladderBottom.position+ ladder.transform.forward * (-stats.playerOffsetFromLadder-.3f);
+            transform.position = ladderBottom.position + ladder.transform.forward * (-stats.playerOffsetFromLadder - .3f);
             //transform.localPosition = new Vector3(0, lSM.ladderLength * heightOnLadder, -0.38f);
 
             LastLadderBotPosition = ladderBottom.position;
@@ -701,7 +705,7 @@ public class PlayerMovementStateMachine : StateMachine
 
                 //ladderSizeStateMachine.ladderLength = Vector3.Distance(ladderBottom.position, targetPoint);
                 heightOnLadder = -1;
-               
+
                 //transform.position = ladder.transform.position + ladderDirection * ladderSizeStateMachine.ladderLength * heightOnLadder + ladder.transform.forward * -stats.playerOffsetFromLadder;
                 transform.parent = ladder.transform;
 
@@ -720,7 +724,7 @@ public class PlayerMovementStateMachine : StateMachine
                 axis = Bob_Pivot.right;
                 rotation = Quaternion.AngleAxis(rotateByAngle, axis);
                 Bob_Pivot.rotation = rotation * Bob_Pivot.rotation;
-                
+
                 controller.transform.localRotation = Quaternion.Euler(0, 0, 0);
                 bob.transform.localRotation = Quaternion.Euler(0, 0, 0);
 
@@ -728,11 +732,11 @@ public class PlayerMovementStateMachine : StateMachine
         }
         while (snappingStep == SnappingStep.StartSwinging)
         {
-            
+
             effects.OnStateChangedSwinging();
             playerState = PlayerState.swinging;
             SetState(new PlayerSwinging(this));
-           
+
             yield return delay;
             snappingStep += 1;
             snapCoroutine = null;
@@ -742,8 +746,8 @@ public class PlayerMovementStateMachine : StateMachine
             yield return delay;
         }
     }
-   
-    void LadderPlacement(ref Vector3 wallDirection) 
+
+    void LadderPlacement(ref Vector3 wallDirection)
     {
         Vector3 startingPoint = closestRail.pathCreator.path.GetClosestPointOnPath(transform.position);
         ladder.transform.position = startingPoint;
@@ -810,7 +814,7 @@ public class PlayerMovementStateMachine : StateMachine
         if (!useRelativeBobPosition)
             Bob_Pivot.forward = Bob_Pivot.forward * snapdirection;
 
-       
+
     }
 
     ///<summary>
@@ -877,7 +881,7 @@ public class PlayerMovementStateMachine : StateMachine
         LadderSnap
     };
 
-    public enum SnappingStep 
+    public enum SnappingStep
     {
         PlayerRotation,
         LadderExtension,
