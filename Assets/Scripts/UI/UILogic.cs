@@ -83,23 +83,23 @@ public class UILogic : MonoBehaviour
         if (PlayerPrefs.GetInt("UseInvertedSliding", 0) == 1)
         {
             ObjectManager.instance.pSM.stats.useInvertedSliding = true;
-            // TO DO: checkbox auf an setzen
+            invertedSlidingToggle.isOn = true;
         }
         else
         {
             ObjectManager.instance.pSM.stats.useInvertedSliding = false;
-            // TO DO: checkbox auf aus setzen
+            invertedSlidingToggle.isOn = false;
         }
 
         if (PlayerPrefs.GetInt("UseJumpForLadderPush", 1) == 1)
         {
             ObjectManager.instance.pSM.stats.useJumpForLadderPush = true;
-            // TO DO: checkbox auf an setzen
+            jumpForLadderPushToggle.isOn = true;
         }
         else
         {
             ObjectManager.instance.pSM.stats.useJumpForLadderPush = false;
-            // TO DO: checkbox auf aus setzen
+            jumpForLadderPushToggle.isOn = false;
         }
 
         #endregion
