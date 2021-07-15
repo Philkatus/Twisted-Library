@@ -88,9 +88,9 @@ public class LadderSizeStateMachine : StateMachine
             playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderSnap;
         }
     }
-    public void OnLadderPush()
+    public void OnLadderPush(Vector3 Velocity)
     {
-        SetState(new LadderPush(this));
+        SetState(new LadderPush(this,Velocity));
         playerStateMachine.ladderState = PlayerMovementStateMachine.LadderState.LadderPush;
     }
     public void OnLadderPushEnd()
