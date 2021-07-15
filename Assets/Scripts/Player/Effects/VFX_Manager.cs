@@ -745,17 +745,17 @@ public class VFX_Manager : MonoBehaviour
     #region WATER STEPS
     public void TriggerLeftFoot()
     {
-        if (inWater)
-            StartCoroutine(ExtendWater("left"));
-        else
-            PlayVFX("stepLeft");
+        // if (inWater)
+        //     StartCoroutine(ExtendWater("left"));
+        // else
+        //     PlayVFX("stepLeft");
     }
     public void TriggerRightFoot()
     {
-        if (inWater)
-            StartCoroutine(ExtendWater("right"));
-        else
-            PlayVFX("stepRight");
+        // if (inWater)
+        //     StartCoroutine(ExtendWater("right"));
+        // else
+        //     PlayVFX("stepRight");
     }
     IEnumerator ExtendWater(string side)
     {
