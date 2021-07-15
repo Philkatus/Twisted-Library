@@ -13,19 +13,31 @@ public class WaterTrigger : MonoBehaviour
 
     void OnTriggerEnter(Collider collider)
     {
-        if (collider.tag == "Player" && !psm.isOnWater)
+        if (collider.tag == "Player")
         {
+            if (!psm.isOnWater)
+                ObjectManager.instance.pSM.effects.SetActiveShadow(false);
             psm.isOnWater = true;
-            ObjectManager.instance.pSM.effects.SetActiveShadow(false);
+            psm.stillOnWater = true;
+
         }
     }
 
     void OnTriggerExit(Collider collider)
     {
-        if (collider.tag == "Player" && psm.isOnWater)
+        if (collider.tag == "Player")
+        {
+            StartCoroutine(WaterExitDelay());
+        }
+    }
+    IEnumerator WaterExitDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
+        if (!psm.stillOnWater)
         {
             psm.isOnWater = false;
             ObjectManager.instance.pSM.effects.SetActiveShadow(true);
         }
+        psm.stillOnWater = false;
     }
 }

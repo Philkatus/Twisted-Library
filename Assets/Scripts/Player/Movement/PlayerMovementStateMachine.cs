@@ -31,6 +31,7 @@ public class PlayerMovementStateMachine : StateMachine
     public float currentSlidingSpeed;
 
     public bool dismounting;
+    public bool stillOnWater;
     public bool didLadderPush;
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
