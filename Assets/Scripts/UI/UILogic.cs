@@ -55,9 +55,13 @@ public class UILogic : MonoBehaviour
     bool optionGotDeselected;
     bool startcanvasDisabled;
 
-    private void Start()
+    void Awake()
     {
         ObjectManager.instance.uILogic = this;
+    }
+
+    private void Start()
+    {
         playerMovementStateMachine = ObjectManager.instance.pSM;
         EventSystem.current.SetSelectedGameObject(GameObject.FindGameObjectWithTag("PLAY"));
 
