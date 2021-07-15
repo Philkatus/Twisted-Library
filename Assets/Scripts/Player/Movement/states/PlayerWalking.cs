@@ -62,9 +62,10 @@ public class PlayerWalking : State
         if (!isSnapping)
         {
             PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.MovementAcceleration;
-        }
+        
 
         #region Drag When No Input
+       
         if (PSM.forwardInput == 0)
         {
             Vector3 currentDragForward = stats.MovementDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionForward);
@@ -75,23 +76,23 @@ public class PlayerWalking : State
             Vector3 currentDragSideways = stats.MovementDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
             PSM.baseVelocity -= currentDragSideways * Time.fixedDeltaTime;
         }
-        if (PSM.forwardInput == 0 && PSM.sideWaysInput == 0)
-        {
-            if (VoiceManager.Instance != null)
+            if (PSM.forwardInput == 0 && PSM.sideWaysInput == 0)
             {
-                VoiceManager.Instance.resetWalkTimer();
-                VoiceManager.Instance.TryToIdle();
-            }
+                if (VoiceManager.Instance != null)
+                {
+                    VoiceManager.Instance.resetWalkTimer();
+                    VoiceManager.Instance.TryToIdle();
+                }
 
-        }
-        else
-        {
-            if (VoiceManager.Instance != null)
+            }
+            else
             {
-                VoiceManager.Instance.resetIdleTimer();
-                VoiceManager.Instance.TryToWalkSound();
+                if (VoiceManager.Instance != null)
+                {
+                    VoiceManager.Instance.resetIdleTimer();
+                    VoiceManager.Instance.TryToWalkSound();
+                }
             }
-
         }
         #endregion
 
@@ -118,18 +119,6 @@ public class PlayerWalking : State
         PSM.baseVelocity.y = 0;
         PSM.baseVelocity = PSM.baseVelocity.normalized * Mathf.Clamp(PSM.baseVelocity.magnitude, 0, stats.MaximumMovementSpeed);
         PSM.baseVelocity.y = y;
-        if (isSnapping && PSM.closestRail!=null)
-        {
-            /*
-            Vector3 StartingPoint = PSM.closestRail.pathCreator.path.GetPointAtDistance(PSM.currentDistance);
-            Vector3 upwardsVelocity = ExtensionMethods.resultingVelocity(PSM.baseVelocity, Vector3.up);
-            Vector3 forwardVelocity = ExtensionMethods.resultingVelocity(PSM.baseVelocity, PSM.transform.position - StartingPoint);
-            PSM.baseVelocity = upwardsVelocity + forwardVelocity;
-            */
-            Vector3 PathDirection = PSM.closestRail.pathCreator.path.GetDirectionAtDistance(PSM.currentDistance);
-            Vector3 SideWaysVelocity = ExtensionMethods.resultingVelocity(PSM.baseVelocity, PathDirection);
-            PSM.baseVelocity -= SideWaysVelocity;
-        }
         PSM.LoseBonusVelocityPercentage(stats.WalkingBonusVelocityDrag);
 
         if (!controller.isGrounded)
@@ -137,8 +126,10 @@ public class PlayerWalking : State
             PSM.bonusVelocity.y = 0;
             PSM.baseVelocity.y = 0;
         }
-
-        controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.movementVelocityFactor);
+        if (!isSnapping)
+        {
+            controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.movementVelocityFactor);
+        }
         if (coyoteTickingTimer > coyoteTime)
         {
             PSM.OnFall();

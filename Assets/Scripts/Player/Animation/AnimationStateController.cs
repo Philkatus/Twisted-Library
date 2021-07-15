@@ -341,7 +341,7 @@ public class AnimationStateController : MonoBehaviour
 
     public void TriggerDoubleJump()
     {
-        Debug.Log("DOUBLE");
+        
         animator.SetTrigger("DoubleJump");
     }
 

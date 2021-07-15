@@ -11,18 +11,19 @@ public class LadderPush : State
     Quaternion LadderLocalRotation;
     Vector3 startingPosition;
     Vector3 startingRotation;
+    Vector3 velocity;
     Quaternion startingRotation2;
     Quaternion playerStartingRotation;
 
     bool isLerpGoing = true;
     float time;
-    float startDuration = 0.2f;
+    float startDuration = 0.04f;
     float distance;
     bool rotated;
 
-    public LadderPush(LadderSizeStateMachine ladderSizeStateMachine) : base(ladderSizeStateMachine)
+    public LadderPush(LadderSizeStateMachine ladderSizeStateMachine,Vector3 velocity) : base(ladderSizeStateMachine)
     {
-
+        this.velocity = velocity;
     }
 
     public override void Initialize()
@@ -65,13 +66,13 @@ public class LadderPush : State
         //lSM.transform.rotation = Quaternion.Slerp(startingRotation2, Quaternion.LookRotation(forward, targetDirection),time/startDuration);
         lSM.transform.position = Vector3.Lerp(startingPosition, TargetLadderPosition, time / startDuration);
         Quaternion targetRotation = Quaternion.LookRotation(targetDirection);
-        PSM.transform.rotation = Quaternion.Slerp(playerStartingRotation, targetRotation, time / startDuration);
+        //PSM.transform.rotation = Quaternion.Slerp(playerStartingRotation, targetRotation, time / startDuration);
         if (time >= startDuration) 
         {
             rotated = true;
 
             pSM.ladder.SetParent(pSM.transform);
-
+            PSM.bonusVelocity = velocity;
         }
 
 

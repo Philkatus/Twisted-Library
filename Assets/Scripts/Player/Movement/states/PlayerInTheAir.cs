@@ -48,28 +48,31 @@ public class PlayerInTheAir : State
         }
 
         #region Drag When No Input
-        if (PSM.forwardInput == 0)
+        if (!isSnapping)
         {
-            Vector3 currentDragForward = stats.JumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionForward);
-            PSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
-            currentDragForward = stats.bonusVelocityDrag * ExtensionMethods.resultingVelocity(PSM.bonusVelocity, directionForward);
-            PSM.bonusVelocity -= currentDragForward * Time.fixedDeltaTime;
-        }
-        if (PSM.sideWaysInput == 0)
-        {
-            Vector3 currentDragSideway = stats.JumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
-            PSM.baseVelocity -= currentDragSideway * Time.fixedDeltaTime;
-            currentDragSideway = stats.bonusVelocityDrag * ExtensionMethods.resultingVelocity(PSM.bonusVelocity, directionRight);
-            PSM.bonusVelocity -= currentDragSideway * Time.fixedDeltaTime;
+            if (PSM.forwardInput == 0)
+            {
+                Vector3 currentDragForward = stats.JumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionForward);
+                PSM.baseVelocity -= currentDragForward * Time.fixedDeltaTime;
+                currentDragForward = stats.bonusVelocityDrag * ExtensionMethods.resultingVelocity(PSM.bonusVelocity, directionForward);
+                PSM.bonusVelocity -= currentDragForward * Time.fixedDeltaTime;
+            }
+            if (PSM.sideWaysInput == 0)
+            {
+                Vector3 currentDragSideway = stats.JumpingDrag * ExtensionMethods.resultingVelocity(PSM.baseVelocity, directionRight);
+                PSM.baseVelocity -= currentDragSideway * Time.fixedDeltaTime;
+                currentDragSideway = stats.bonusVelocityDrag * ExtensionMethods.resultingVelocity(PSM.bonusVelocity, directionRight);
+                PSM.bonusVelocity -= currentDragSideway * Time.fixedDeltaTime;
+            }
         }
         #endregion
 
-        if (!isSnapping && initialAirMovementTimer < stats.initialAirMovementTime)
+        if (initialAirMovementTimer < stats.initialAirMovementTime)
         {
             PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.InitialAirMovementAcceleration;
             initialAirMovementTimer += Time.deltaTime;
         }
-        else if(!isSnapping)
+        else 
         {
             PSM.baseVelocity += direction * Time.fixedDeltaTime * stats.AirMovementAcceleration;
         }
@@ -80,19 +83,11 @@ public class PlayerInTheAir : State
         {
             PSM.isWallJumping = false;
         }
-        GravityAndClamp();
+       
+            GravityAndClamp();
+        
 
-        if (isSnapping && PSM.closestRail != null)
-        {
-            Vector3 PathDirection = PSM.closestRail.pathCreator.path.GetDirectionAtDistance(PSM.currentDistance);
-            Vector3 SideWaysVelocity = ExtensionMethods.resultingVelocity(PSM.baseVelocity, PathDirection);
-            PSM.baseVelocity -= SideWaysVelocity;
-            SideWaysVelocity = ExtensionMethods.resultingVelocity(PSM.bonusVelocity, PathDirection);
-            PSM.bonusVelocity -= SideWaysVelocity;
-            PSM.baseVelocity.y = 0;
-            PSM.bonusVelocity.y = 0;
-        }
-
+      
         if (!isSnapping)
         {
             controller.Move(PSM.playerVelocity * Time.fixedDeltaTime / stats.AirVelocityFactor);
@@ -252,12 +247,11 @@ public class PlayerInTheAir : State
                     PSM.foldInputBool = false;
                     PSM.jumpInputBool = false;
                     //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
-                    PSM.bonusVelocity += directionToWall * acceleration;
                     floatingTimer = 0;
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     ObjectManager.instance.animationStateController.TriggerDoubleJump();
 
-                    PSM.ladderSizeStateMachine.OnLadderPush();
+                    PSM.ladderSizeStateMachine.OnLadderPush(directionToWall * acceleration);
                     PlayerFollowTarget.instance.DoAdjustY(true);
                     if (VoiceManager.Instance != null)
                         VoiceManager.Instance.TryToJumpSound();
@@ -287,11 +281,10 @@ public class PlayerInTheAir : State
                     PSM.baseVelocity.y = y;
                     targetVelocity -= PSM.baseVelocity;
                     */
-                    PSM.bonusVelocity = targetVelocity;
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     ObjectManager.instance.animationStateController.TriggerDoubleJump();
 
-                    PSM.ladderSizeStateMachine.OnLadderPush();
+                    PSM.ladderSizeStateMachine.OnLadderPush(targetVelocity);
                     PlayerFollowTarget.instance.DoAdjustY(true);
                     if (VoiceManager.Instance != null)
                         VoiceManager.Instance.TryToJumpSound();
