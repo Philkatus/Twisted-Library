@@ -155,7 +155,7 @@ public class UILogic : MonoBehaviour
                 }
             }
 
-            startCanvas.transform.position = Vector3.MoveTowards(startCanvas.transform.position, new Vector3(-1000f, 0, 0), 30f);
+            startCanvas.transform.position = Vector3.MoveTowards(startCanvas.transform.position, new Vector3(-1000f, 0, 0), 70f);
             startCamera.transform.position = Vector3.MoveTowards(startCamera.transform.position, playCamera.transform.position, .15f);
             startCamera.transform.rotation = Quaternion.Lerp(startCamera.transform.rotation, playCamera.transform.rotation, .1f);
 
@@ -202,8 +202,8 @@ public class UILogic : MonoBehaviour
         if (optionGotSelected && startCanvas.activeSelf)
         {
             options.SetActive(true);
-            options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(0, 0, 0), 30f);
-            startCanvas.transform.position = Vector3.MoveTowards(startCanvas.transform.position, new Vector3(1253f, 0, 0), 30f);
+            options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(0, 0, 0), 70f);
+            startCanvas.transform.position = Vector3.MoveTowards(startCanvas.transform.position, new Vector3(1253f, 0, 0), 70f);
 
             if (Vector3.Distance(options.transform.position, new Vector3(0, 0, 0)) < 0.001f)
             {
@@ -215,7 +215,7 @@ public class UILogic : MonoBehaviour
         if (optionGotSelected && !startCanvas.activeSelf)
         {
             options.SetActive(true);
-            options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(0, 0, 0), 30f);
+            options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(0, 0, 0), 70f);
             Time.timeScale = 0;
 
             if (Vector3.Distance(options.transform.position, new Vector3(0, 0, 0)) < 0.001f)
@@ -226,7 +226,7 @@ public class UILogic : MonoBehaviour
         }
         if (!startGotPressed && optionGotDeselected && !startCanvas.activeSelf)
         {
-            options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(-1253f, 0, 0), 30f);
+            options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(-1253f, 0, 0), 70f);
             Time.timeScale = 1;
 
             if (Vector3.Distance(options.transform.position, new Vector3(-1253f, 0, 0)) < 0.001f)
@@ -245,8 +245,8 @@ public class UILogic : MonoBehaviour
         }
         if (optionGotDeselected && startCanvas.activeSelf)
         {
-            options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(-1253f, 0, 0), 30f);
-            startCanvas.transform.position = Vector3.MoveTowards(startCanvas.transform.position, new Vector3(0, 0, 0), 30f);
+            options.transform.position = Vector3.MoveTowards(options.transform.position, new Vector3(-1253f, 0, 0), 70f);
+            startCanvas.transform.position = Vector3.MoveTowards(startCanvas.transform.position, new Vector3(0, 0, 0), 70f);
 
             if (Vector3.Distance(startCanvas.transform.position, new Vector3(0, 0, 0)) < 0.001f)
             {
