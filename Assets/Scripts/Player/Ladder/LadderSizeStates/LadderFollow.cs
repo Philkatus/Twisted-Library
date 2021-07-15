@@ -21,7 +21,6 @@ public class LadderFollow : State
         stats = PSM.stats;
         time = ExtensionMethods.Remap(LadderSizeStateMachine.ladderLength, stats.ladderLengthSmall, stats.ladderLengthBig, stats.foldingTime, 0);
         isLerpGoing = true;
-        AudioManager.Instance.PlayRandom("LadderFold", LadderSizeStateMachine.transform.position + PSM.ladderDirection * stats.ladderLengthBig);
         ladderVisualLocalposition = LadderSizeStateMachine.LadderVisuals.localPosition;
         ladserVisualLocalRotation = LadderSizeStateMachine.LadderVisuals.localRotation;
 

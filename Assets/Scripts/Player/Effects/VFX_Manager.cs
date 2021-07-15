@@ -204,6 +204,17 @@ public class VFX_Manager : MonoBehaviour
             SlidingSparkleIntensity(sparkleBurstLeft);
             SlidingSparkleIntensity(sparkleBurstRight);
         }
+
+        if (pSM.isOnWater)
+        {
+            waterStepsLeft.enabled = true;
+            waterStepsRight.enabled = true;
+        }
+        else
+        {
+            waterStepsLeft.enabled = false;
+            waterStepsRight.enabled = false;
+        }
     }
     private void OnApplicationQuit()
     {
