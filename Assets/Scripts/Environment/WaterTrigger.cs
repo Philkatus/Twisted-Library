@@ -16,7 +16,6 @@ public class WaterTrigger : MonoBehaviour
         if (collider.tag == "Player" && !psm.isOnWater)
         {
             psm.isOnWater = true;
-            Debug.Log("went into water");
             ObjectManager.instance.pSM.effects.SetActiveShadow(false);
         }
     }
@@ -25,7 +24,6 @@ public class WaterTrigger : MonoBehaviour
     {
         if (collider.tag == "Player" && psm.isOnWater)
         {
-            Debug.Log("left water");
             psm.isOnWater = false;
             ObjectManager.instance.pSM.effects.SetActiveShadow(true);
         }
