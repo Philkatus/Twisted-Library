@@ -252,12 +252,11 @@ public class PlayerInTheAir : State
                     PSM.foldInputBool = false;
                     PSM.jumpInputBool = false;
                     //pSM.baseVelocity = pSM.resultingVelocity(pSM.playerVelocity, (pSM.transform.position - target).normalized);
-                    PSM.bonusVelocity += directionToWall * acceleration;
                     floatingTimer = 0;
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     ObjectManager.instance.animationStateController.TriggerDoubleJump();
 
-                    PSM.ladderSizeStateMachine.OnLadderPush();
+                    PSM.ladderSizeStateMachine.OnLadderPush(directionToWall * acceleration);
                     PlayerFollowTarget.instance.DoAdjustY(true);
                     if (VoiceManager.Instance != null)
                         VoiceManager.Instance.TryToJumpSound();
@@ -287,11 +286,10 @@ public class PlayerInTheAir : State
                     PSM.baseVelocity.y = y;
                     targetVelocity -= PSM.baseVelocity;
                     */
-                    PSM.bonusVelocity = targetVelocity;
                     //Debug.DrawLine(PlayerStateMachine.transform.position, target, Color.white, 5);
                     ObjectManager.instance.animationStateController.TriggerDoubleJump();
 
-                    PSM.ladderSizeStateMachine.OnLadderPush();
+                    PSM.ladderSizeStateMachine.OnLadderPush(targetVelocity);
                     PlayerFollowTarget.instance.DoAdjustY(true);
                     if (VoiceManager.Instance != null)
                         VoiceManager.Instance.TryToJumpSound();
