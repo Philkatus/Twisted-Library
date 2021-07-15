@@ -32,12 +32,13 @@ public class WaterTrigger : MonoBehaviour
     }
     IEnumerator WaterExitDelay()
     {
+        psm.stillOnWater = false;
         yield return new WaitForSeconds(0.5f);
         if (!psm.stillOnWater)
         {
             psm.isOnWater = false;
             ObjectManager.instance.pSM.effects.SetActiveShadow(true);
         }
-        psm.stillOnWater = false;
+       
     }
 }
