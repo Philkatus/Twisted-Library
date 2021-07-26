@@ -161,7 +161,7 @@ public class VFX_Manager : MonoBehaviour
         if (wallProjecting)
         {
             wallProjector.transform.position = lastPositionWall;
-            wallBubbles.transform.position = wallProjector.transform.position + wallProjector.transform.forward * 0.2f + Vector3.down * 0.5f;
+            wallBubbles.transform.position = wallProjector.transform.position + wallProjector.transform.forward * -0.5f + Vector3.down * 0.5f;
         }
 
 
