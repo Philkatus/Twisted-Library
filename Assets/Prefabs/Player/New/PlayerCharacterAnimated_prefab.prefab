@@ -48,7 +48,10 @@ VisualEffect:
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
-      m_Array: []
+      m_Array:
+      - m_Value: 60
+        m_Name: _LinesMultiplier
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -8886,13 +8889,14 @@ MonoBehaviour:
   startingSlidingInput: 0
   currentSlidingSpeed: 0
   dismounting: 0
+  stillOnWater: 0
   didLadderPush: 0
   isWallJumping: 0
   animationControllerisFoldingJumped: 0
-  expandAfterSnap: 0
   dismountedNoEffect: 0
   isOnWater: 0
   controlsDisabled: 0
+  stopSwinging: 0
   baseVelocity: {x: 0, y: 0, z: 0}
   bonusVelocity: {x: 0, y: 0, z: 0}
   railCheckLadderPosition: {x: 0, y: 0, z: 0}
