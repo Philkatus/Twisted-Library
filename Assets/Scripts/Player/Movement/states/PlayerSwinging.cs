@@ -503,6 +503,10 @@ public class PlayerSwinging : State
             else
                 firstRound = false;
         }
+        if (PSM.stopSwinging)
+        {
+            DecelerationForce();
+        }
         // if (PSM.swingInputBool)
         // {
         //     AccelerationForce();
@@ -675,6 +679,11 @@ public class PlayerSwinging : State
                 VoiceManager.Instance.TryToSwigningSound();
             }
         }
+    }
+    void DecelerationForce()
+    {
+        inputForce = -currentVelocity.normalized * stats.swingingAcceleration * dt * accelerationFactor * 0.01f;
+        currentVelocity += inputForce;
     }
 
     void RepellingForce()
