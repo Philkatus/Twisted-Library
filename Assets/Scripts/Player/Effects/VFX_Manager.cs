@@ -84,10 +84,13 @@ public class VFX_Manager : MonoBehaviour
     }
     #endregion
     #region INSPECTOR
-    [SerializeField] GameObject player, sparkleBurstL, sparkleBurstR, speedLinesS;
+    [SerializeField] GameObject player, sparkleBurstL, sparkleBurstR;
     [SerializeField] bool useFadeOut, useNewWallProjector;
     [SerializeField] VisualEffect ladderPushLeft, ladderPushRight, upgradeCloud, stepLeft, stepRight;
     [SerializeField] Material[] railMats;
+    [Header("Sliding")]
+    [SerializeField] VisualEffect speedLinesSliding;
+    [SerializeField] VisualEffect slidingTrail;
     [Header("Wheel Light Up")]
     [SerializeField] Material wheelMat;
     [SerializeField] float wheelIntensity = 5000000;
@@ -128,7 +131,7 @@ public class VFX_Manager : MonoBehaviour
     bool smokeOn = false, inWater = false, freshOutOfWater = false;
     float smokeTimer = .5f, inAirTimer = 0, wallOffsetUp, wallOffsetBack;
 
-    VisualEffect sparkleBurstLeft, sparkleBurstRight, speedLinesSliding;
+    VisualEffect sparkleBurstLeft, sparkleBurstRight;
     bool weAreSliding = false;
     bool inStage = false, inAir, wallProjecting;
     #endregion
@@ -148,9 +151,6 @@ public class VFX_Manager : MonoBehaviour
         //Set Burst Visual Effect
         sparkleBurstLeft = sparkleBurstL.GetComponent<VisualEffect>();
         sparkleBurstRight = sparkleBurstR.GetComponent<VisualEffect>();
-
-        //set Sliding Speedlines
-        speedLinesSliding = speedLinesS.GetComponent<VisualEffect>();
     }
 
     void Update()
@@ -158,12 +158,16 @@ public class VFX_Manager : MonoBehaviour
         //offsets
         transform.GetChild(0).transform.position = player.transform.position + offset;
         transform.GetChild(0).transform.rotation = player.transform.rotation;
+
+
+
         if (wallProjecting)
         {
             wallProjector.transform.position = lastPositionWall;
             wallBubbles.transform.position = wallProjector.transform.position + wallProjector.transform.forward * -0.5f + Vector3.down * 0.5f;
         }
-
+        slidingTrail.transform.position = ladder.transform.position -ladder.transform.up * (pSM.ladderSizeStateMachine.ladderLength - 0.5f);
+        slidingTrail.transform.LookAt(slidingTrail.transform.position-ladder.transform.forward, ladder.transform.up);
 
         MoveSnappingFeedback();
         if (PlayerMovementStateMachine.PlayerState.inTheAir == pSM.playerState)
@@ -241,6 +245,9 @@ public class VFX_Manager : MonoBehaviour
             UpdateShadowSize(true);
         }
         pSM.dismountedNoEffect = false;
+        StopVFX("trail");
+        StopSlidingSparkle(sparkleBurstLeft);
+        StopSlidingSparkle(sparkleBurstRight);
     }
 
     public void OnStateChangedInAir()
@@ -252,6 +259,9 @@ public class VFX_Manager : MonoBehaviour
         {
             StartCoroutine(FadeOutRail());
         }
+        StopVFX("trail");
+        StopSlidingSparkle(sparkleBurstLeft);
+        StopSlidingSparkle(sparkleBurstRight);
     }
 
     public void OnStateChangedSwinging()
@@ -275,11 +285,13 @@ public class VFX_Manager : MonoBehaviour
     {
         StartSlidingSparkle(sparkleBurstLeft);
         StartSlidingSparkle(sparkleBurstRight);
+        PlayVFX("trail");
     }
     public void OnStateChangedSlideEnd()
     {
         StopSlidingSparkle(sparkleBurstLeft);
         StopSlidingSparkle(sparkleBurstRight);
+        StopVFX("trail");
     }
     #endregion
 
@@ -337,12 +349,16 @@ public class VFX_Manager : MonoBehaviour
     }
     #endregion
 
-    #region Namin's VFX
+    #region LADDER PUSH
     void StartLadderPushVFX(VisualEffect vfx)
     {
         vfx.SendEvent("_Start");
         smokeOn = true;
     }
+    #endregion
+
+    #region Sliding
+    // Namins Code
     void StartSlidingSparkle(VisualEffect vfx)
     {
         vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 0));
@@ -395,11 +411,11 @@ public class VFX_Manager : MonoBehaviour
 
         if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) >= 0f)
         {
-            speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward, (directon * pSM.slidingInput) * -1f, lerpSpeed);
+            speedLinesSliding.transform.forward = Vector3.Lerp(speedLinesSliding.transform.forward, (directon * pSM.slidingInput) * -1f, lerpSpeed);
         }
         if (Vector3.Dot(directon * pSM.slidingInput, Camera.main.transform.forward) < -.75f)
         {
-            speedLinesS.transform.forward = Vector3.Lerp(speedLinesS.transform.forward, Camera.main.transform.forward * -1, lerpSpeed);
+            speedLinesSliding.transform.forward = Vector3.Lerp(speedLinesSliding.transform.forward, Camera.main.transform.forward * -1, lerpSpeed);
         }
     }
     #endregion
@@ -512,12 +528,31 @@ public class VFX_Manager : MonoBehaviour
                 vfx.transform.position = snappingPoint;
                 vfx.transform.LookAt(snappingPoint + pSM.closestRail.pathCreator.path.GetNormalAtDistance(distance));
                 break;
+            case "trail":
+                vfx = slidingTrail;
+                break;
             default:
                 vfx = new VisualEffect();
                 Debug.Log("This doesnt exist");
                 break;
         }
         vfx.SendEvent("_Start");
+    }
+    public void StopVFX(string effectName)
+    {
+        VisualEffect vfx;
+        switch (effectName)
+        {
+            case "trail":
+                Debug.Log("A");
+                vfx = slidingTrail;
+                break;
+            default:
+                vfx = new VisualEffect();
+                Debug.Log("This doesnt exist");
+                break;
+        }
+        vfx.SendEvent("_End");
     }
     #endregion
 

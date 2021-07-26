@@ -223,8 +223,6 @@ public class PlayerSwinging : State
         }
         #endregion
 
-        PSM.effects.OnStateChangedSlide();
-
         if (!stats.useNewSnapping)
         {
             PSM.playerVelocity = Vector3.zero;
@@ -1209,7 +1207,6 @@ public class PlayerSwinging : State
         #region Finish Sliding
         PSM.closestRail = null;
         Time.fixedDeltaTime = 0.02f;
-        PSM.effects.OnStateChangedSlideEnd();
         AudioManager.Instance.StopSlidingSound();
         if (VoiceManager.Instance != null)
             VoiceManager.Instance.resetHighSpeedTimer();

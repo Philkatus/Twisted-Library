@@ -28,7 +28,26 @@ public class PlayerMovementStateMachine : StateMachine
     public float slideRightInput;
     public float slidingInput;
     public float startingSlidingInput;
-    public float currentSlidingSpeed;
+
+    public float currentSlidingSpeed
+    {
+        get
+        {
+            return CurrentSlidingSpeed;
+        }
+        set 
+        { 
+            if (value <= 0 && CurrentSlidingSpeed > 0)
+            {
+                effects.OnStateChangedSlideEnd();
+            }
+            else if (value > 0 && CurrentSlidingSpeed <= 0)
+            {
+                effects.OnStateChangedSlide();
+            }
+            CurrentSlidingSpeed = value; 
+        }
+    }
 
     public bool dismounting;
     public bool stillOnWater;
@@ -160,6 +179,7 @@ public class PlayerMovementStateMachine : StateMachine
     #endregion
     #region Private
     float railCheckTimer;
+    float CurrentSlidingSpeed = 0;
     RailSearchManager railAllocator;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
