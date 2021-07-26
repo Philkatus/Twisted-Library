@@ -38,7 +38,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool dismountedNoEffect;
     public bool isOnWater;
     public bool controlsDisabled;
-    public bool stopWaterCoroutine;
+    public bool stopSwinging;
 
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
@@ -355,7 +355,8 @@ public class PlayerMovementStateMachine : StateMachine
         jumpAction.performed += context => SaveInput(0, stats.jumpInputTimer);
         snapAction.performed += context => SaveInput(1, stats.snapInputTimer);
         foldAction.performed += context => SaveInput(2, stats.foldInputTimer);
-        swingAction.performed += context => SaveInput(3, stats.swingInputTimer);
+        swingAction.canceled += context => { if (!stopSwinging) { SaveInput(3, stats.swingInputTimer); } stopSwinging = false; };
+        swingAction.performed += context => stopSwinging = true;
     }
     #endregion
 
