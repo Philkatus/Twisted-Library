@@ -121,12 +121,14 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] VisualEffect doubleJumpSpray, bigDoubleJumpSpray;
     [Header("Splash")]
     [SerializeField] VisualEffect splash;
+    [Header("Evironment")]
+    [SerializeField] float waterfallTime = 2;
     #endregion
 
     #region PRIVATE
     PlayerMovementStateMachine pSM;
 
-    Vector3 offset, wallbubbleOffsetBack, lastPositionWall, sprayPosition;
+    Vector3 offset, lastPositionWall, sprayPosition;
 
     bool smokeOn = false, inWater = false, freshOutOfWater = false;
     float smokeTimer = .5f, inAirTimer = 0, wallOffsetUp, wallOffsetBack;
@@ -145,7 +147,6 @@ public class VFX_Manager : MonoBehaviour
 
         wallOffsetUp = wallProjector.transform.position.y - ladder.transform.position.y;
         wallOffsetBack = wallProjector.transform.position.z - ladder.transform.position.z;
-        wallbubbleOffsetBack = wallBubbles.transform.position - wallProjector.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
 
         //Set Burst Visual Effect
@@ -168,7 +169,7 @@ public class VFX_Manager : MonoBehaviour
         }
         Vector3 nextTrailPos = ladder.transform.position - ladder.transform.up * (pSM.ladderSizeStateMachine.ladderLength - 1f);
         slidingTrail.transform.position = Vector3.Lerp(slidingTrail.transform.position, nextTrailPos, 0.8f);
-        slidingTrail.transform.LookAt(slidingTrail.transform.position-ladder.transform.forward, ladder.transform.up);
+        slidingTrail.transform.LookAt(slidingTrail.transform.position - ladder.transform.forward, ladder.transform.up);
 
         MoveSnappingFeedback();
         if (PlayerMovementStateMachine.PlayerState.inTheAir == pSM.playerState)
@@ -887,5 +888,25 @@ public class VFX_Manager : MonoBehaviour
         SetProperty(railMats, "_GD", toWidth2);
     }
 
+    #endregion
+
+    #region ENVIRONMENT
+    public IEnumerator TriggerStartWaterfall(float waterfallHeight, GameObject waterfall, GameObject waterfallFoam)
+    {
+        Material water = new Material(waterfall.GetComponent<MeshRenderer>().material);
+        water.SetFloat("_Height", waterfallHeight);
+        waterfall.GetComponent<MeshRenderer>().material = water;
+        float timer = 0;
+        float t = 0;
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (timer < waterfallTime) // fills up the waterfall
+        {
+            t = timer / waterfallTime;
+            water.SetFloat("_Time", t);
+            timer += Time.deltaTime;
+            yield return delay;
+        }
+        waterfallFoam.SetActive(true);
+    }
     #endregion
 }
