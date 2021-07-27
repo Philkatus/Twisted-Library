@@ -166,7 +166,8 @@ public class VFX_Manager : MonoBehaviour
             wallProjector.transform.position = lastPositionWall;
             wallBubbles.transform.position = wallProjector.transform.position + wallProjector.transform.forward * -0.5f + Vector3.down * 0.5f;
         }
-        slidingTrail.transform.position = ladder.transform.position -ladder.transform.up * (pSM.ladderSizeStateMachine.ladderLength - 0.5f);
+        Vector3 nextTrailPos = ladder.transform.position - ladder.transform.up * (pSM.ladderSizeStateMachine.ladderLength - 1f);
+        slidingTrail.transform.position = Vector3.Lerp(slidingTrail.transform.position, nextTrailPos, 0.8f);
         slidingTrail.transform.LookAt(slidingTrail.transform.position-ladder.transform.forward, ladder.transform.up);
 
         MoveSnappingFeedback();
@@ -246,6 +247,7 @@ public class VFX_Manager : MonoBehaviour
         }
         pSM.dismountedNoEffect = false;
         StopVFX("trail");
+        StopVFX("speedlines");
         StopSlidingSparkle(sparkleBurstLeft);
         StopSlidingSparkle(sparkleBurstRight);
     }
@@ -271,6 +273,8 @@ public class VFX_Manager : MonoBehaviour
         StartCoroutine(LightRailUp());
         SetProperty(railMats, "_EmissionColor", swingingColor, lightUpTime);
         PlayVFX("snap");
+        PlayVFX("speedlines");
+        PlayVFX("trail");
     }
 
     public void OnResnap()
@@ -286,12 +290,14 @@ public class VFX_Manager : MonoBehaviour
         StartSlidingSparkle(sparkleBurstLeft);
         StartSlidingSparkle(sparkleBurstRight);
         PlayVFX("trail");
+        PlayVFX("speedlines");
     }
     public void OnStateChangedSlideEnd()
     {
         StopSlidingSparkle(sparkleBurstLeft);
         StopSlidingSparkle(sparkleBurstRight);
         StopVFX("trail");
+        StopVFX("speedlines");
     }
     #endregion
 
@@ -524,12 +530,14 @@ public class VFX_Manager : MonoBehaviour
                 vfx = snappingVFX;
                 Vector3 snappingPoint = pSM.closestRail.pathCreator.path.GetClosestPointOnPath(transform.GetChild(0).position);
                 float distance = pSM.closestRail.pathCreator.path.GetClosestDistanceAlongPath(snappingPoint);
-
                 vfx.transform.position = snappingPoint;
                 vfx.transform.LookAt(snappingPoint + pSM.closestRail.pathCreator.path.GetNormalAtDistance(distance));
                 break;
             case "trail":
                 vfx = slidingTrail;
+                break;
+            case "speedlines":
+                vfx = speedLinesSliding;
                 break;
             default:
                 vfx = new VisualEffect();
@@ -544,8 +552,10 @@ public class VFX_Manager : MonoBehaviour
         switch (effectName)
         {
             case "trail":
-                Debug.Log("A");
                 vfx = slidingTrail;
+                break;
+            case "speedlines":
+                vfx = speedLinesSliding;
                 break;
             default:
                 vfx = new VisualEffect();
