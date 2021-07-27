@@ -126,6 +126,8 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] float waterfallTime = 2;
     [SerializeField] VisualEffect wind;
     [SerializeField] GameObject windParent;
+    [Header("Upgrades")]
+    [SerializeField] float maxIntensityUpgrades = 100000;
     #endregion
 
     #region PRIVATE
@@ -978,5 +980,56 @@ public class VFX_Manager : MonoBehaviour
         }
         wind.SendEvent("_End");
     }
+    #endregion
+
+    #region UPGRADES
+    public void MakeUpgradeGlow(MeshRenderer enabledMesh)
+    {
+        StartCoroutine(UpgradeGlow(enabledMesh));
+    }
+    public IEnumerator UpgradeGlow(MeshRenderer enabledMesh)
+    {
+        yield return new WaitForSeconds(3f);
+
+        List<Material> mats = new List<Material>();
+
+        enabledMesh.GetMaterials(mats);
+
+        float timeLeft = 4;
+        float timer = 0;
+        float t;
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (timer < timeLeft)
+        {
+            t = timer / timeLeft;
+            timer += Time.deltaTime;
+            foreach (Material mat in mats)
+            {
+                if (mat.name != "Dark")
+                    mat.SetFloat("_Intensity", Mathf.Lerp(0, maxIntensityUpgrades, t));
+            }
+            yield return delay;
+        }
+
+        timer = 0;
+        while (timer < timeLeft)
+        {
+            t = timer / timeLeft;
+            timer += Time.deltaTime;
+            foreach (Material mat in mats)
+            {
+                if (mat.name != "Dark")
+                    mat.SetFloat("_Intensity", Mathf.Lerp(maxIntensityUpgrades, 0, t));
+            }
+            yield return delay;
+
+        }
+        foreach (Material mat in mats)
+        {
+            if (mat.name != "Dark")
+                mat.SetFloat("_Intensity", 0);
+        }
+    }
+
     #endregion
 }
