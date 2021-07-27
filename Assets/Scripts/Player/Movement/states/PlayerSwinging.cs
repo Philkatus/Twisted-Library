@@ -1138,7 +1138,7 @@ public class PlayerSwinging : State
         LadderSizeStateMachine lSM = PSM.ladderSizeStateMachine;
         Vector3 boxExtents = new Vector3(0.25f, 2, 0.025f);
 
-        if (Physics.BoxCast(PSM.ladder.position + PSM.ladder.transform.up * -2f + PSM.ladder.forward * -0.5f, boxExtents, moveDirection.normalized, out hit, PSM.ladder.rotation, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
+        if (Physics.BoxCast(PSM.ladder.position + PSM.ladder.transform.up * -2f + PSM.ladder.forward * -1.0f, boxExtents, moveDirection.normalized, out hit, PSM.ladder.rotation, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
         {
             return true;
         }
