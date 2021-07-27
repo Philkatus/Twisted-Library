@@ -35,8 +35,8 @@ public class PlayerMovementStateMachine : StateMachine
         {
             return CurrentSlidingSpeed;
         }
-        set 
-        { 
+        set
+        {
             if (value <= 0 && CurrentSlidingSpeed > 0)
             {
                 effects.OnStateChangedSlideEnd();
@@ -45,7 +45,7 @@ public class PlayerMovementStateMachine : StateMachine
             {
                 effects.OnStateChangedSlide();
             }
-            CurrentSlidingSpeed = value; 
+            CurrentSlidingSpeed = value;
         }
     }
 
@@ -54,6 +54,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool didLadderPush;
     public bool isWallJumping;
     public bool animationControllerisFoldingJumped;
+    public bool expandAfterSnap;
     public bool dismountedNoEffect;
     public bool isOnWater;
     public bool controlsDisabled;

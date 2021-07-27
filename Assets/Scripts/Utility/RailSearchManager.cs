@@ -4,6 +4,8 @@ using UnityEditor;
 
 public class RailSearchManager : MonoBehaviour
 {
+    public bool useAllSkils;
+    [Space]
     public static RailSearchManager instance;
     public Rail[] allRails;
     public List<Rail> railsInRange;
