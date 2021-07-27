@@ -16,9 +16,21 @@ public class UpgradeScripts : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         stats = player.GetComponentInChildren<PlayerMovementStateMachine>().stats;
-        stats.canLadderFold = false;
-        stats.canLadderPush = false;
-        stats.canSlide = false;
+#if UNITY_EDITOR
+        Cursor.visible = true;
+        if (!RailSearchManager.instance.useAllSkils)
+        {
+            stats.canLadderFold = false;
+            stats.canLadderPush = false;
+            stats.canSlide = false;
+        }
+        else
+        {
+            stats.canLadderFold = true;
+            stats.canLadderPush = true;
+            stats.canSlide = true;
+        }
+#endif
         uILogic = ObjectManager.instance.uILogic;
     }
 
