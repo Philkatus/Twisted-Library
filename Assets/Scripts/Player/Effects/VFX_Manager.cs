@@ -10,6 +10,7 @@ public class VFX_Manager : MonoBehaviour
 {
     #region PUBLIC
     public float lerpSpeed = .01f;
+    [HideInInspector] public GameObject nextLandmark;
     #endregion
     #region GET/SET
     int RandomColor;
@@ -123,6 +124,8 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] VisualEffect splash;
     [Header("Evironment")]
     [SerializeField] float waterfallTime = 2;
+    [SerializeField] VisualEffect wind;
+    [SerializeField] GameObject windParent;
     #endregion
 
     #region PRIVATE
@@ -170,6 +173,7 @@ public class VFX_Manager : MonoBehaviour
         Vector3 nextTrailPos = ladder.transform.position - ladder.transform.up * (pSM.ladderSizeStateMachine.ladderLength - 1f);
         slidingTrail.transform.position = Vector3.Lerp(slidingTrail.transform.position, nextTrailPos, 0.8f);
         slidingTrail.transform.LookAt(slidingTrail.transform.position - ladder.transform.forward, ladder.transform.up);
+        wind.transform.parent.position = Vector3.Lerp(wind.transform.parent.position, windParent.transform.position, 0.8f);
 
         MoveSnappingFeedback();
         if (PlayerMovementStateMachine.PlayerState.inTheAir == pSM.playerState)
@@ -364,7 +368,7 @@ public class VFX_Manager : MonoBehaviour
     }
     #endregion
 
-    #region Sliding
+    #region SLIDING
     // Namins Code
     void StartSlidingSparkle(VisualEffect vfx)
     {
@@ -907,6 +911,66 @@ public class VFX_Manager : MonoBehaviour
             yield return delay;
         }
         waterfallFoam.SetActive(true);
+    }
+    public IEnumerator MoveWindIn(GameObject construct)
+    {
+        float generalTime = 1;
+        wind.SendEvent("_Start");
+        Vector3 startPosition = player.transform.position;
+        Vector3 endPosition = construct.transform.position;
+        Vector3 startPosition2 = wind.transform.localPosition;
+        Vector3 endPosition2 = new Vector3(2, 0, 0);
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        float timer = 0;
+        float t = 0;
+        windParent.transform.position = startPosition;
+
+        // move the wind to the construct
+        float movetime = 1 * generalTime;
+        while (timer < movetime)
+        {
+            t = timer / movetime;
+            windParent.transform.position = Vector3.Lerp(startPosition, endPosition, t);
+            wind.transform.localPosition = Vector3.Lerp(startPosition2, endPosition2, t);
+            timer += Time.deltaTime;
+            yield return delay;
+        }
+
+        timer = 0;
+        float rotateTime = 2 * generalTime;
+        Vector3 startEuler = wind.transform.parent.eulerAngles;
+        Vector3 endEuler = new Vector3(0, 1080, 0);
+        startPosition = construct.transform.position;
+        endPosition = construct.transform.position + Vector3.up * 2;
+        startPosition2 = wind.transform.localPosition;
+        endPosition2 = new Vector3(0, 0, 0);
+
+        // move the wind around the construct
+        // move the wind back to the parent
+        while (timer < rotateTime)
+        {
+            t = timer / rotateTime;
+            wind.transform.parent.eulerAngles = Vector3.Lerp(startEuler, endEuler, t);
+            windParent.transform.position = Vector3.Lerp(startPosition, endPosition, t);
+            wind.transform.localPosition = Vector3.Lerp(startPosition2, endPosition2, t);
+            timer += Time.deltaTime;
+            yield return delay;
+        }
+
+        timer = 0;
+        float landmarkTime = 1.2f * generalTime;
+        startPosition = windParent.transform.position;
+        endPosition = (nextLandmark.transform.position - windParent.transform.position).normalized * 10 + windParent.transform.position;
+
+        // move the wind towards the next landmark
+        while (timer < landmarkTime)
+        {
+            t = timer / landmarkTime;
+            windParent.transform.position = Vector3.Lerp(startPosition, endPosition, t);
+            timer += Time.deltaTime;
+            yield return delay;
+        }
+        wind.SendEvent("_End");
     }
     #endregion
 }
