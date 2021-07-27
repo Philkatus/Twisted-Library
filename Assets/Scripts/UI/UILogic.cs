@@ -24,6 +24,7 @@ public class UILogic : MonoBehaviour
     [SerializeField] Camera playCamera;
     [SerializeField] Image controlsImage;
     [SerializeField] GameObject startCanvas;
+    [SerializeField] GameObject creditsCanvas;
     [SerializeField] Toggle invertedSlidingToggle;
     [SerializeField] Toggle jumpForLadderPushToggle;
     [SerializeField] GameObject slidingUpgradeUI;
@@ -595,4 +596,13 @@ public class UILogic : MonoBehaviour
     }
 
     #endregion
+
+    public IEnumerator ShowCredits()
+    {
+        creditsCanvas.SetActive(true);
+        ExtensionMethods.CrossFadeAlphaFixed(creditsCanvas.transform.GetChild(0).gameObject, 1, 1f);
+        Camera.main.GetComponent<Animation>().CrossFade("CameraCredits");
+        yield return new WaitForSeconds(20f);
+        creditsCanvas.transform.GetChild(0).gameObject.GetComponent<Image>().CrossFadeAlpha(0f, 1f, false);
+    }
 }

@@ -12,7 +12,7 @@ public class Landmark : MonoBehaviour
     [HideInInspector] public bool lerpScaleToBig;
     [HideInInspector] public bool lerpScaleToSmall;
     float timer;
-    bool landmarkComplete;
+    public bool landmarkComplete;
     [SerializeField] bool isWindChimes;
 
     // Start is called before the first frame update
@@ -64,6 +64,10 @@ public class Landmark : MonoBehaviour
             if (VoiceManager.Instance != null)
             {
                 VoiceManager.Instance.TryToAchievementSound();
+            }
+            if (ChallengeManager.instance.volcano.landmarkComplete && ChallengeManager.instance.windChimes.landmarkComplete)
+            {
+                ObjectManager.instance.uILogic.StartCoroutine(ObjectManager.instance.uILogic.ShowCredits());
             }
         }
     }
