@@ -11,6 +11,7 @@ public class PlayerSwinging : State
         inWallLimits,
         firstRound = true;
     bool stoppedSwingingToDismount;
+    bool swingInOtherDirectionOnWall;
 
     float dt = 0.01f,
         accumulator = 0f,
@@ -139,14 +140,15 @@ public class PlayerSwinging : State
             onWall = false;
             inputGiven = false;
         }
-      
-            ropeLength =stats.ladderLengthBig;
-        
+
+        ropeLength = stats.ladderLengthBig;
+
         #endregion
     }
 
     public override void Initialize()
     {
+        swingInOtherDirectionOnWall = true;
         PSM.jumpInputBool = false;
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
         ObjectManager.instance.animationStateController.EnterOnLadderState();
@@ -164,7 +166,7 @@ public class PlayerSwinging : State
         currentVelocity = PSM.slidingStartVelocity;
         #endregion
 
-       // SnappingOrientation();
+        // SnappingOrientation();
 
         #region Set Variables Sliding
         var inverstedSlidingAdjustment = PSM.stats.useInvertedSliding ? -1 : 1;
@@ -243,7 +245,7 @@ public class PlayerSwinging : State
     }
     void SnappingOrientation()
     {
-        
+
 
         #region LadderPlacement
         Vector3 startingPoint = pathCreator.path.GetClosestPointOnPath(PSM.transform.position);
@@ -371,12 +373,12 @@ public class PlayerSwinging : State
     }
     public override void Movement()
     {
-        
+
         RotateAroundY();
         if (!PSM.expandAfterSnap)
         {
             if (!PSM.useRelativeBobPosition)
-            { 
+            {
                 //CalculateCentrifugalForce();
             }
             SlidingMovement();
@@ -384,7 +386,7 @@ public class PlayerSwinging : State
         }
         else
             ExpandAfterSnap();
-        
+
     }
 
     #region SWINGING Functions
@@ -416,14 +418,14 @@ public class PlayerSwinging : State
         #region SwingingRotation
         float alpha = accumulator / dt;
         Vector3 newPosition = currentStatePosition * alpha + previousStatePosition * (1f - alpha);
-     
-            Vector3 axis = PSM.Bob_Pivot.right;
-            float rotateByAngle = (Vector3.SignedAngle(-PSM.Bob_Pivot.up, newPosition, axis));
-            Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
-            PSM.Bob_Pivot.rotation = targetRotation * PSM.Bob_Pivot.rotation;
-            axis = ladder.right;
-            targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
-            PSM.ladder.rotation = targetRotation * PSM.ladder.rotation;
+
+        Vector3 axis = PSM.Bob_Pivot.right;
+        float rotateByAngle = (Vector3.SignedAngle(-PSM.Bob_Pivot.up, newPosition, axis));
+        Quaternion targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
+        PSM.Bob_Pivot.rotation = targetRotation * PSM.Bob_Pivot.rotation;
+        axis = ladder.right;
+        targetRotation = Quaternion.AngleAxis(rotateByAngle, axis);
+        PSM.ladder.rotation = targetRotation * PSM.ladder.rotation;
         #endregion
     }
 
@@ -625,6 +627,7 @@ public class PlayerSwinging : State
         #region Acceleration & Final Calculations
         inputForce = Vector3.zero;
         currentVelocity = Vector3.ClampMagnitude(currentVelocity, stats.maxRepellingVelocity);
+
         if (!PSM.dismounting)
         {
             if (PSM.swingInputBool)
@@ -638,13 +641,18 @@ public class PlayerSwinging : State
                 else
                     firstRound = false;
             }
+            if (swingInOtherDirectionOnWall)
+            {
+                swingInOtherDirectionOnWall = false;
+                inputForce = bobForward * stats.swingingAcceleration * dt;
+                currentVelocity += inputForce;
+            }
             currentVelocity = currentVelocity.normalized * Mathf.Clamp(currentVelocity.magnitude, 0, stats.maxSwingSpeed);
         }
         else
         {
             currentVelocity = currentVelocity * 100;
         }
-
         // Get only the forward/backward force
         playerVelocity = bobForward * ExtensionMethods.resultingSpeed(bobForward, currentVelocity);
         SetCurrentPlayerVelocity(ladder.transform.position);
@@ -687,6 +695,12 @@ public class PlayerSwinging : State
     void DecelerationForce()
     {
         inputForce = -currentVelocity.normalized * stats.swingingAcceleration * dt * accelerationFactor * 0.01f;
+        currentVelocity += inputForce;
+    }
+
+    void OtherDirectionForce()
+    {
+        inputForce = -currentVelocity.normalized * stats.swingingAcceleration * dt * accelerationFactor * 2.2f;
         currentVelocity += inputForce;
     }
 
@@ -1128,12 +1142,12 @@ public class PlayerSwinging : State
         if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
         {
             return true;
-        } 
+        }
         return false;
     }
 
     protected bool CheckForCollisionLadder(Vector3 moveDirection)
-    { 
+    {
         RaycastHit hit;
         LadderSizeStateMachine lSM = PSM.ladderSizeStateMachine;
         Vector3 boxExtents = new Vector3(0.25f, 2, 0.025f);
