@@ -18,7 +18,7 @@ public class WaterTrigger : MonoBehaviour
             if (!psm.isOnWater)
                 ObjectManager.instance.pSM.effects.SetActiveShadow(false);
             psm.isOnWater = true;
-            psm.stillOnWater = true;
+            StartCoroutine(WaterEnterDelay());
 
         }
     }
@@ -39,6 +39,11 @@ public class WaterTrigger : MonoBehaviour
             psm.isOnWater = false;
             ObjectManager.instance.pSM.effects.SetActiveShadow(true);
         }
-       
+
+    }
+    IEnumerator WaterEnterDelay()
+    {
+        yield return new WaitForSeconds(0.1f);
+        psm.stillOnWater = true;
     }
 }

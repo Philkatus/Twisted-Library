@@ -114,8 +114,8 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] VisualEffect wallBubbles;
     [SerializeField] float wallTime;
     [Header("Water Steps")]
-    [SerializeField] DecalProjector waterStepsLeft;
-    [SerializeField] DecalProjector waterStepsRight;
+    [SerializeField] VisualEffect waterStepsLeft;
+    [SerializeField] VisualEffect waterStepsRight;
     [SerializeField] float waterSpeed;
     [Header("Double Jump")]
     [SerializeField] DecalProjector doubleJump;
@@ -531,6 +531,12 @@ public class VFX_Manager : MonoBehaviour
             case "stepRight":
                 vfx = stepRight;
                 break;
+            case "leftWater":
+                vfx = waterStepsLeft;
+                break;
+            case "rightWater":
+                vfx = waterStepsRight;
+                break;
             case "snap":
                 vfx = snappingVFX;
                 Vector3 snappingPoint = pSM.closestRail.pathCreator.path.GetClosestPointOnPath(transform.GetChild(0).position);
@@ -795,19 +801,19 @@ public class VFX_Manager : MonoBehaviour
     #region WATER STEPS
     public void TriggerLeftFoot()
     {
-        // if (inWater)
-        //     StartCoroutine(ExtendWater("left"));
-        // else
-        //     PlayVFX("stepLeft");
+        if (inWater)
+            PlayVFX("leftWater");
+        else
+            PlayVFX("stepLeft");
     }
     public void TriggerRightFoot()
     {
-        // if (inWater)
-        //     StartCoroutine(ExtendWater("right"));
-        // else
-        //     PlayVFX("stepRight");
+        if (inWater)
+            PlayVFX("rightWater");
+        else
+            PlayVFX("stepRight");
     }
-    IEnumerator ExtendWater(string side)
+    /*IEnumerator ExtendWater(string side)
     {
         float timer = 0;
         while (timer < waterSpeed)
@@ -839,7 +845,7 @@ public class VFX_Manager : MonoBehaviour
             waterStepsRight.material.SetFloat("_Alpha", 1);
         }
 
-    }
+    }*/
     #endregion
 
     #region ANSNAPPEN
