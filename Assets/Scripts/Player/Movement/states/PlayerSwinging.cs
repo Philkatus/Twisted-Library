@@ -1128,17 +1128,17 @@ public class PlayerSwinging : State
         if (Physics.CapsuleCast(p1, p2, controller.radius, moveDirection.normalized, out hit, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
         {
             return true;
-        }
+        } 
         return false;
     }
 
     protected bool CheckForCollisionLadder(Vector3 moveDirection)
-    {
+    { 
         RaycastHit hit;
         LadderSizeStateMachine lSM = PSM.ladderSizeStateMachine;
         Vector3 boxExtents = new Vector3(0.25f, 2, 0.025f);
 
-        if (Physics.BoxCast(PSM.ladder.position + PSM.ladder.transform.up * -2f, boxExtents, moveDirection.normalized, out hit, PSM.ladder.rotation, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
+        if (Physics.BoxCast(PSM.ladder.position + PSM.ladder.transform.up * -2f + PSM.ladder.forward * -0.5f, boxExtents, moveDirection.normalized, out hit, PSM.ladder.rotation, 0.1f, LayerMask.GetMask("SlidingObstacle", "Environment"), QueryTriggerInteraction.Ignore))
         {
             return true;
         }
