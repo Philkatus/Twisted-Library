@@ -17,6 +17,5 @@ public class StartWaterfall : MonoBehaviour
     public void StartTheWaterfall()
     {
         StartCoroutine(ObjectManager.instance.pSM.effects.TriggerStartWaterfall(27.48489f * 3, waterFall, waterbase));
-        Debug.Log("start waterfall");
     }
 }

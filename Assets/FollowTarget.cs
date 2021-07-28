@@ -9,7 +9,7 @@ public class FollowTarget : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (target != null)
+        if (target != null && ObjectManager.instance.pSM.closestRail != null)
         {
             if (ObjectManager.instance.pSM.closestRail.railType == Rail.RailType.OnWall)
             {
@@ -24,7 +24,7 @@ public class FollowTarget : MonoBehaviour
 
     public void SetRotation()
     {
-        if(target != null)
+        if (target != null)
         {
             transform.rotation = Quaternion.Euler(transform.eulerAngles.x, target.eulerAngles.y, transform.eulerAngles.z);
         }

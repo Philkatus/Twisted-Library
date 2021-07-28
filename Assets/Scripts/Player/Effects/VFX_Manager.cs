@@ -908,7 +908,6 @@ public class VFX_Manager : MonoBehaviour
         Material water = new Material(waterfall.GetComponent<MeshRenderer>().material);
         water.SetFloat("_Height", waterfallHeight);
         waterfall.GetComponent<MeshRenderer>().material = water;
-        Debug.Log(water.name);
         float timer = 0;
         float t;
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
