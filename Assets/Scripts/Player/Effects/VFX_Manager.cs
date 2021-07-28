@@ -908,14 +908,14 @@ public class VFX_Manager : MonoBehaviour
         Material water = new Material(waterfall.GetComponent<MeshRenderer>().material);
         water.SetFloat("_Height", waterfallHeight);
         waterfall.GetComponent<MeshRenderer>().material = water;
+        Debug.Log(water.name);
         float timer = 0;
-        float t = 0;
+        float t;
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
         while (timer < waterfallTime) // fills up the waterfall
         {
-            Debug.Log("rime");
             t = timer / waterfallTime;
-            water.SetFloat("_Time", t);
+            water.SetFloat("_WaterTime", t);
             timer += Time.deltaTime;
             yield return delay;
         }
