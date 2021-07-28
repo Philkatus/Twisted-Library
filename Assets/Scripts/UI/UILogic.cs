@@ -601,7 +601,8 @@ public class UILogic : MonoBehaviour
     {
         creditsCanvas.SetActive(true);
         ExtensionMethods.CrossFadeAlphaFixed(creditsCanvas.transform.GetChild(0).gameObject, 1, 1f);
-        Camera.main.GetComponent<Animation>().CrossFade("CameraCredits");
+        // Lila hier kamera ^^
+        //Camera.main.GetComponent<Animation>().CrossFade("CameraCredits");
         yield return new WaitForSeconds(20f);
         creditsCanvas.transform.GetChild(0).gameObject.GetComponent<Image>().CrossFadeAlpha(0f, 1f, false);
     }
