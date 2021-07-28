@@ -49,7 +49,6 @@ public class CameraController : MonoBehaviour
         ladderCam.Priority += 5;
         current = ladderCam;
         PlayerFollowTarget.instance.FollowLadder();
-
     }
 
     public void SwitchToPlayerCam()

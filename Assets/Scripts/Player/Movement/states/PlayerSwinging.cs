@@ -1168,7 +1168,7 @@ public class PlayerSwinging : State
             RaycastHit hit;
             Vector3 boxExtents = new Vector3(1.540491f * 0.5f, 0.4483852f * 0.5f, 1.37359f * 0.5f);
             if (dismountTimer >= stats.ladderDismountTimer
-            && !Physics.BoxCast(controller.transform.position + Vector3.up * 1.2f + controller.transform.forward * -1, boxExtents,
+            && !Physics.BoxCast(controller.transform.position + Vector3.up * 1.2f + controller.transform.forward * -2.5f, boxExtents,
             controller.transform.forward, out hit, controller.transform.rotation, 4f, LayerMask.GetMask("SlidingObstacle", "Environment")))
             {
                 if (hit.collider != controller.gameObject)
@@ -1177,7 +1177,6 @@ public class PlayerSwinging : State
                     dismountStartPos = PSM.transform.position;
                     PSM.dismounting = true;
                     ObjectManager.instance.animationStateController.DismountLadder();
-
                 }
             }
         }
@@ -1190,7 +1189,7 @@ public class PlayerSwinging : State
     void Dismount()
     {
         // 1 is how much units the player needs to move up to be on top of the rail.
-        if ((PSM.transform.position - dismountStartPos).magnitude <= 0.9f && !dismountedHalfways)
+        if ((PSM.transform.position - dismountStartPos).magnitude <= 1.7f && !dismountedHalfways)
         {
             PSM.heightOnLadder += stats.ladderDismountSpeed * Time.fixedDeltaTime;
             PSM.transform.position = ladder.transform.position + PSM.ladderDirection * ladderSizeState.ladderLength * PSM.heightOnLadder;
@@ -1202,7 +1201,7 @@ public class PlayerSwinging : State
         }
 
         // Make one step forward on the rail before changing to walking state.
-        if ((PSM.transform.position - dismountStartPos).magnitude <= 0.7f && dismountedHalfways)
+        if ((PSM.transform.position - dismountStartPos).magnitude <= 0.4f && dismountedHalfways)
         {
             PSM.transform.position += ladder.transform.forward * stats.ladderDismountSpeed * Time.fixedDeltaTime;
         }
