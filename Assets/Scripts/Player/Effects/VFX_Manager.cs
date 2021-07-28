@@ -10,6 +10,7 @@ public class VFX_Manager : MonoBehaviour
 {
     #region PUBLIC
     public float lerpSpeed = .01f;
+    [HideInInspector] public GameObject nextLandmark;
     #endregion
     #region GET/SET
     int RandomColor;
@@ -113,20 +114,26 @@ public class VFX_Manager : MonoBehaviour
     [SerializeField] VisualEffect wallBubbles;
     [SerializeField] float wallTime;
     [Header("Water Steps")]
-    [SerializeField] DecalProjector waterStepsLeft;
-    [SerializeField] DecalProjector waterStepsRight;
+    [SerializeField] VisualEffect waterStepsLeft;
+    [SerializeField] VisualEffect waterStepsRight;
     [SerializeField] float waterSpeed;
     [Header("Double Jump")]
     [SerializeField] DecalProjector doubleJump;
     [SerializeField] VisualEffect doubleJumpSpray, bigDoubleJumpSpray;
     [Header("Splash")]
     [SerializeField] VisualEffect splash;
+    [Header("Evironment")]
+    [SerializeField] float waterfallTime = 2;
+    [SerializeField] VisualEffect wind;
+    [SerializeField] GameObject windParent;
+    [Header("Upgrades")]
+    [SerializeField] float maxIntensityUpgrades = 100000;
     #endregion
 
     #region PRIVATE
     PlayerMovementStateMachine pSM;
 
-    Vector3 offset, wallbubbleOffsetBack, lastPositionWall, sprayPosition;
+    Vector3 offset, lastPositionWall, sprayPosition;
 
     bool smokeOn = false, inWater = false, freshOutOfWater = false;
     float smokeTimer = .5f, inAirTimer = 0, wallOffsetUp, wallOffsetBack;
@@ -145,7 +152,6 @@ public class VFX_Manager : MonoBehaviour
 
         wallOffsetUp = wallProjector.transform.position.y - ladder.transform.position.y;
         wallOffsetBack = wallProjector.transform.position.z - ladder.transform.position.z;
-        wallbubbleOffsetBack = wallBubbles.transform.position - wallProjector.transform.position;
         pSM = player.GetComponent<PlayerMovementStateMachine>();
 
         //Set Burst Visual Effect
@@ -168,7 +174,8 @@ public class VFX_Manager : MonoBehaviour
         }
         Vector3 nextTrailPos = ladder.transform.position - ladder.transform.up * (pSM.ladderSizeStateMachine.ladderLength - 1f);
         slidingTrail.transform.position = Vector3.Lerp(slidingTrail.transform.position, nextTrailPos, 0.8f);
-        slidingTrail.transform.LookAt(slidingTrail.transform.position-ladder.transform.forward, ladder.transform.up);
+        slidingTrail.transform.LookAt(slidingTrail.transform.position - ladder.transform.forward, ladder.transform.up);
+        wind.transform.parent.position = Vector3.Lerp(wind.transform.parent.position, windParent.transform.position, 0.8f);
 
         MoveSnappingFeedback();
         if (PlayerMovementStateMachine.PlayerState.inTheAir == pSM.playerState)
@@ -363,7 +370,7 @@ public class VFX_Manager : MonoBehaviour
     }
     #endregion
 
-    #region Sliding
+    #region SLIDING
     // Namins Code
     void StartSlidingSparkle(VisualEffect vfx)
     {
@@ -525,6 +532,12 @@ public class VFX_Manager : MonoBehaviour
                 break;
             case "stepRight":
                 vfx = stepRight;
+                break;
+            case "leftWater":
+                vfx = waterStepsLeft;
+                break;
+            case "rightWater":
+                vfx = waterStepsRight;
                 break;
             case "snap":
                 vfx = snappingVFX;
@@ -790,19 +803,19 @@ public class VFX_Manager : MonoBehaviour
     #region WATER STEPS
     public void TriggerLeftFoot()
     {
-        // if (inWater)
-        //     StartCoroutine(ExtendWater("left"));
-        // else
-        //     PlayVFX("stepLeft");
+        if (inWater)
+            PlayVFX("leftWater");
+        else
+            PlayVFX("stepLeft");
     }
     public void TriggerRightFoot()
     {
-        // if (inWater)
-        //     StartCoroutine(ExtendWater("right"));
-        // else
-        //     PlayVFX("stepRight");
+        if (inWater)
+            PlayVFX("rightWater");
+        else
+            PlayVFX("stepRight");
     }
-    IEnumerator ExtendWater(string side)
+    /*IEnumerator ExtendWater(string side)
     {
         float timer = 0;
         while (timer < waterSpeed)
@@ -834,7 +847,7 @@ public class VFX_Manager : MonoBehaviour
             waterStepsRight.material.SetFloat("_Alpha", 1);
         }
 
-    }
+    }*/
     #endregion
 
     #region ANSNAPPEN
@@ -885,6 +898,137 @@ public class VFX_Manager : MonoBehaviour
         SetProperty(railMats, "_Multiplicator", toIntensity);
         SetProperty(railMats, "_VD", toWidth);
         SetProperty(railMats, "_GD", toWidth2);
+    }
+
+    #endregion
+
+    #region ENVIRONMENT
+    public IEnumerator TriggerStartWaterfall(float waterfallHeight, GameObject waterfall, GameObject waterfallFoam)
+    {
+        Material water = new Material(waterfall.GetComponent<MeshRenderer>().material);
+        water.SetFloat("_Height", waterfallHeight);
+        waterfall.GetComponent<MeshRenderer>().material = water;
+        float timer = 0;
+        float t = 0;
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (timer < waterfallTime) // fills up the waterfall
+        {
+            t = timer / waterfallTime;
+            water.SetFloat("_Time", t);
+            timer += Time.deltaTime;
+            yield return delay;
+        }
+        waterfallFoam.SetActive(true);
+    }
+    public IEnumerator MoveWindIn(GameObject construct)
+    {
+        float generalTime = 1;
+        wind.SendEvent("_Start");
+        Vector3 startPosition = player.transform.position;
+        Vector3 endPosition = construct.transform.position;
+        Vector3 startPosition2 = wind.transform.localPosition;
+        Vector3 endPosition2 = new Vector3(2, 0, 0);
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        float timer = 0;
+        float t = 0;
+        windParent.transform.position = startPosition;
+
+        // move the wind to the construct
+        float movetime = 1 * generalTime;
+        while (timer < movetime)
+        {
+            t = timer / movetime;
+            windParent.transform.position = Vector3.Lerp(startPosition, endPosition, t);
+            wind.transform.localPosition = Vector3.Lerp(startPosition2, endPosition2, t);
+            timer += Time.deltaTime;
+            yield return delay;
+        }
+
+        timer = 0;
+        float rotateTime = 2 * generalTime;
+        Vector3 startEuler = wind.transform.parent.eulerAngles;
+        Vector3 endEuler = new Vector3(0, 1080, 0);
+        startPosition = construct.transform.position;
+        endPosition = construct.transform.position + Vector3.up * 2;
+        startPosition2 = wind.transform.localPosition;
+        endPosition2 = new Vector3(0, 0, 0);
+
+        // move the wind around the construct
+        // move the wind back to the parent
+        while (timer < rotateTime)
+        {
+            t = timer / rotateTime;
+            wind.transform.parent.eulerAngles = Vector3.Lerp(startEuler, endEuler, t);
+            windParent.transform.position = Vector3.Lerp(startPosition, endPosition, t);
+            wind.transform.localPosition = Vector3.Lerp(startPosition2, endPosition2, t);
+            timer += Time.deltaTime;
+            yield return delay;
+        }
+
+        timer = 0;
+        float landmarkTime = 1.2f * generalTime;
+        startPosition = windParent.transform.position;
+        endPosition = (nextLandmark.transform.position - windParent.transform.position).normalized * 10 + windParent.transform.position;
+
+        // move the wind towards the next landmark
+        while (timer < landmarkTime)
+        {
+            t = timer / landmarkTime;
+            windParent.transform.position = Vector3.Lerp(startPosition, endPosition, t);
+            timer += Time.deltaTime;
+            yield return delay;
+        }
+        wind.SendEvent("_End");
+    }
+    #endregion
+
+    #region UPGRADES
+    public void MakeUpgradeGlow(MeshRenderer enabledMesh)
+    {
+        StartCoroutine(UpgradeGlow(enabledMesh));
+    }
+    public IEnumerator UpgradeGlow(MeshRenderer enabledMesh)
+    {
+        yield return new WaitForSeconds(3f);
+
+        List<Material> mats = new List<Material>();
+
+        enabledMesh.GetMaterials(mats);
+
+        float timeLeft = 4;
+        float timer = 0;
+        float t;
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (timer < timeLeft)
+        {
+            t = timer / timeLeft;
+            timer += Time.deltaTime;
+            foreach (Material mat in mats)
+            {
+                if (mat.name != "Dark")
+                    mat.SetFloat("_Intensity", Mathf.Lerp(0, maxIntensityUpgrades, t));
+            }
+            yield return delay;
+        }
+
+        timer = 0;
+        while (timer < timeLeft)
+        {
+            t = timer / timeLeft;
+            timer += Time.deltaTime;
+            foreach (Material mat in mats)
+            {
+                if (mat.name != "Dark")
+                    mat.SetFloat("_Intensity", Mathf.Lerp(maxIntensityUpgrades, 0, t));
+            }
+            yield return delay;
+
+        }
+        foreach (Material mat in mats)
+        {
+            if (mat.name != "Dark")
+                mat.SetFloat("_Intensity", 0);
+        }
     }
 
     #endregion

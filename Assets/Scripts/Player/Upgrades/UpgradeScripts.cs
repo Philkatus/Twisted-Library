@@ -7,6 +7,7 @@ public class UpgradeScripts : MonoBehaviour
     private GameObject player;
 
     private ValuesScriptableObject stats;
+    private PlayerMovementStateMachine psm;
 
     public Upgrade upgrade;
 
@@ -16,6 +17,7 @@ public class UpgradeScripts : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player");
         stats = player.GetComponentInChildren<PlayerMovementStateMachine>().stats;
+        psm = ObjectManager.instance.pSM;
 #if UNITY_EDITOR
         Cursor.visible = true;
         if (!RailSearchManager.instance.useAllSkils)
@@ -42,19 +44,22 @@ public class UpgradeScripts : MonoBehaviour
             if (upgrade == Upgrade.canLadderFold)
             {
                 stats.canLadderFold = true;
-                ObjectManager.instance.pSM.ladderSizeStateMachine.upGrades[0].enabled = true;
+                psm.ladderSizeStateMachine.upGrades[0].enabled = true;
+                psm.effects.MakeUpgradeGlow(psm.ladderSizeStateMachine.upGrades[0]);
                 uILogic.StartCoroutine(uILogic.ShowAndHideCatapultExplanation());
             }
             else if (upgrade == Upgrade.canLadderPush)
             {
                 stats.canLadderPush = true;
-                ObjectManager.instance.pSM.ladderSizeStateMachine.upGrades[1].enabled = true;
+                psm.ladderSizeStateMachine.upGrades[1].enabled = true;
+                psm.effects.MakeUpgradeGlow(psm.ladderSizeStateMachine.upGrades[1]);
                 uILogic.StartCoroutine(uILogic.ShowAndHideLadderPushExplanation());
             }
             else if (upgrade == Upgrade.canSlide)
             {
                 stats.canSlide = true;
-                ObjectManager.instance.pSM.ladderSizeStateMachine.upGrades[2].enabled = true;
+                psm.ladderSizeStateMachine.upGrades[2].enabled = true;
+                psm.effects.MakeUpgradeGlow(psm.ladderSizeStateMachine.upGrades[2]);
                 uILogic.StartCoroutine(uILogic.ShowAndHideSlidingExplanation());
             }
 
