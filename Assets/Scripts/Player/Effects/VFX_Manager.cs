@@ -913,6 +913,7 @@ public class VFX_Manager : MonoBehaviour
         WaitForEndOfFrame delay = new WaitForEndOfFrame();
         while (timer < waterfallTime) // fills up the waterfall
         {
+            Debug.Log("rime");
             t = timer / waterfallTime;
             water.SetFloat("_Time", t);
             timer += Time.deltaTime;

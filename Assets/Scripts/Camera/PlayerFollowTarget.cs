@@ -154,6 +154,7 @@ public class PlayerFollowTarget : MonoBehaviour
         {
             StopCoroutine(switchCoroutine);
         }
+        LadderTarget.GetComponent<FollowTarget>().SetRotation();
         switchCoroutine = StartCoroutine(MoveTowards(LadderTarget));
     }
 

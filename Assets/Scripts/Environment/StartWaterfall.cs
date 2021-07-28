@@ -5,19 +5,18 @@ using UnityEngine;
 
 public class StartWaterfall : MonoBehaviour
 {
-    [SerializeField] VisualEffect waterFall;
+    [SerializeField] GameObject waterFall;
+    [SerializeField] GameObject waterbase;
     [SerializeField] GameObject water;
 
     void Start()
     {
-        water.SetActive(false);
+        waterbase.SetActive(false);
     }
 
     public void StartTheWaterfall()
     {
-        // StartVFX
-        //waterFall.SendEvent("_Start");
-        water.SetActive(true);
+        StartCoroutine(ObjectManager.instance.pSM.effects.TriggerStartWaterfall(27.48489f * 3, waterFall, waterbase));
         Debug.Log("start waterfall");
     }
 }
