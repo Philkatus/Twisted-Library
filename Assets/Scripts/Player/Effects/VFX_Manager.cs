@@ -923,7 +923,8 @@ public class VFX_Manager : MonoBehaviour
     }
     public void StartFountain(GameObject fountain)
     {
-        fountain.GetComponentInChildren<VisualEffect>().SendEvent("_Play");
+        foreach (VisualEffect vfx in fountain.GetComponentsInChildren<VisualEffect>())
+            vfx.SendEvent("_Play");
     }
     public IEnumerator MoveWindIn(GameObject construct)
     {
