@@ -920,6 +920,11 @@ public class VFX_Manager : MonoBehaviour
         }
         waterfallFoam.SetActive(true);
     }
+    public void StartFountain(GameObject fountain)
+    {
+        foreach (VisualEffect vfx in fountain.GetComponentsInChildren<VisualEffect>())
+            vfx.SendEvent("_Play");
+    }
     public IEnumerator MoveWindIn(GameObject construct)
     {
         float generalTime = 1;
