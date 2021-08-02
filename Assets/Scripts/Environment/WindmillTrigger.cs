@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class WindmillTrigger : MonoBehaviour
 {
+    [SerializeField] GameObject[] fountains;
     bool toDestroy = false;
     private void OnTriggerEnter(Collider other)
     {
@@ -11,6 +12,10 @@ public class WindmillTrigger : MonoBehaviour
         {
             toDestroy = true;
             ObjectManager.instance.pSM.effects.MoveWind(this.gameObject);
+            /*foreach ()
+            {
+
+            }*/
         }
         if (toDestroy)
             DestroyMe();

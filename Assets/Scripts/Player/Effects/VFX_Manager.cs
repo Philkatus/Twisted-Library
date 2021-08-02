@@ -924,6 +924,13 @@ public class VFX_Manager : MonoBehaviour
     {
         foreach (VisualEffect vfx in fountain.GetComponentsInChildren<VisualEffect>())
             vfx.SendEvent("_Play");
+        foreach (Transform foam in fountain.GetComponentsInChildren<Transform>())
+        {
+            if (!foam.gameObject.activeInHierarchy)
+            {
+                foam.gameObject.SetActive(true);
+            }
+        }
     }
     public void MoveWind(GameObject construct)
     {
@@ -946,7 +953,6 @@ public class VFX_Manager : MonoBehaviour
 
         yield return delaySec;
         windParent.transform.position = startPosition;
-        Debug.Log("A");
         yield return delaySec;
 
         wind.SendEvent("_Start");
