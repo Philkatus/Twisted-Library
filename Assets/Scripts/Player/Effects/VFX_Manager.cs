@@ -10,7 +10,7 @@ public class VFX_Manager : MonoBehaviour
 {
     #region PUBLIC
     public float lerpSpeed = .01f;
-    [HideInInspector] public GameObject nextLandmark;
+    public bool windIsBlowing;
     #endregion
     #region GET/SET
     int RandomColor;
@@ -925,18 +925,33 @@ public class VFX_Manager : MonoBehaviour
         foreach (VisualEffect vfx in fountain.GetComponentsInChildren<VisualEffect>())
             vfx.SendEvent("_Play");
     }
-    public IEnumerator MoveWindIn(GameObject construct)
+    public void MoveWind(GameObject construct)
     {
-        float generalTime = 1;
-        wind.SendEvent("_Start");
+        if (!windIsBlowing)
+            StartCoroutine(MoveWindIn(construct));
+        else
+            StartCoroutine(QueueWindCoroutine(construct));
+    }
+    IEnumerator MoveWindIn(GameObject construct)
+    {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        WaitForSeconds delaySec = new WaitForSeconds(0.1f);
+        windIsBlowing = true;
+        float generalTime = 0.8f;
+
         Vector3 startPosition = player.transform.position;
         Vector3 endPosition = construct.transform.position;
         Vector3 startPosition2 = wind.transform.localPosition;
-        Vector3 endPosition2 = new Vector3(2, 0, 0);
-        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        Vector3 endPosition2 = new Vector3(4, 0, 0);
+
+        yield return delaySec;
+        windParent.transform.position = startPosition;
+        Debug.Log("A");
+        yield return delaySec;
+
+        wind.SendEvent("_Start");
         float timer = 0;
         float t = 0;
-        windParent.transform.position = startPosition;
 
         // move the wind to the construct
         float movetime = 1 * generalTime;
@@ -948,13 +963,12 @@ public class VFX_Manager : MonoBehaviour
             timer += Time.deltaTime;
             yield return delay;
         }
-
         timer = 0;
         float rotateTime = 2 * generalTime;
         Vector3 startEuler = wind.transform.parent.eulerAngles;
-        Vector3 endEuler = new Vector3(0, 1080, 0);
+        Vector3 endEuler = new Vector3(0, 1440, 0);
         startPosition = construct.transform.position;
-        endPosition = construct.transform.position + Vector3.up * 2;
+        endPosition = construct.transform.position + Vector3.up * 8;
         startPosition2 = wind.transform.localPosition;
         endPosition2 = new Vector3(0, 0, 0);
 
@@ -971,9 +985,9 @@ public class VFX_Manager : MonoBehaviour
         }
 
         timer = 0;
-        float landmarkTime = 1.2f * generalTime;
+        float landmarkTime = 0.8f * generalTime;
         startPosition = windParent.transform.position;
-        endPosition = (nextLandmark.transform.position - windParent.transform.position).normalized * 10 + windParent.transform.position;
+        endPosition = (pSM.nextLandmark - windParent.transform.position).normalized * 10 + windParent.transform.position;
 
         // move the wind towards the next landmark
         while (timer < landmarkTime)
@@ -984,6 +998,17 @@ public class VFX_Manager : MonoBehaviour
             yield return delay;
         }
         wind.SendEvent("_End");
+        windIsBlowing = false;
+    }
+    IEnumerator QueueWindCoroutine(GameObject construct)
+    {
+        WaitForEndOfFrame delay = new WaitForEndOfFrame();
+        while (windIsBlowing)
+        {
+            yield return delay;
+        }
+
+        StartCoroutine(MoveWindIn(construct));
     }
     #endregion
 
