@@ -922,15 +922,23 @@ public class VFX_Manager : MonoBehaviour
     }
     public void StartFountain(GameObject fountain)
     {
+        Debug.Log("start");
         foreach (VisualEffect vfx in fountain.GetComponentsInChildren<VisualEffect>())
-            vfx.SendEvent("_Play");
-        foreach (Transform foam in fountain.GetComponentsInChildren<Transform>())
         {
-            if (!foam.gameObject.activeInHierarchy)
+            vfx.SendEvent("_Start");
+            Debug.Log("fountain");
+        }
+
+        for (int i = 0; i < fountain.transform.childCount; i++)
+        {
+            GameObject currentChild = fountain.transform.GetChild(i).gameObject;
+            if (!currentChild.gameObject.activeInHierarchy)
             {
-                foam.gameObject.SetActive(true);
+                Debug.Log("foam");
+                currentChild.gameObject.SetActive(true);
             }
         }
+        Debug.Log("emd");
     }
     public void MoveWind(GameObject construct)
     {
