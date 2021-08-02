@@ -59,7 +59,28 @@ public class PlayerMovementStateMachine : StateMachine
     public bool isOnWater;
     public bool controlsDisabled;
     public bool stopSwinging;
+    public int landmarkCount = 2;
+    public int nextLandmarkNo
+    {
+        get { return NextLandmarkNo; }
+        set
+        {
+            int nextValue = value;
 
+            if (activatedLandmarkNos.Contains(value))
+            {
+                nextValue += 1;
+            }
+
+            if (activatedLandmarkNos.Count == allLandmarks.Length)
+            {
+                // all landmarks done
+                nextValue = 0;
+            }
+            NextLandmarkNo = nextValue;
+            nextLandmark = allLandmarks[value];
+        }
+    }
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
     public Vector3 playerVelocity
@@ -75,6 +96,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
     public Vector3 railCheckLadderPosition;
+    public Vector3 nextLandmark;
 
     public Rail closestRail;
     public Transform ladder;
@@ -99,6 +121,7 @@ public class PlayerMovementStateMachine : StateMachine
 
     [HideInInspector] public Vector3 ladderJumpTarget;
     [HideInInspector] public Vector3 slidingStartVelocity;
+
     public Vector3 ladderDirection
     {
         get
@@ -106,7 +129,10 @@ public class PlayerMovementStateMachine : StateMachine
             return ladder.up;
         }
     }
+    [HideInInspector] public Vector3[] allLandmarks;
+
     [HideInInspector] public int snapdirection = 1;
+    [HideInInspector] public List<int> activatedLandmarkNos;
     [HideInInspector] public Coroutine snapCoroutine;
 
     Quaternion ladderWalkingRotation;
@@ -181,6 +207,7 @@ public class PlayerMovementStateMachine : StateMachine
     #region Private
     float railCheckTimer;
     float CurrentSlidingSpeed = 0;
+    int NextLandmarkNo = 0;
     RailSearchManager railAllocator;
     InputActionMap playerControlsMap;
     InputAction jumpAction;
@@ -194,6 +221,7 @@ public class PlayerMovementStateMachine : StateMachine
     private void Awake()
     {
         ObjectManager.instance.pSM = this;
+        allLandmarks = new Vector3[landmarkCount];
     }
 
     private void Start()
@@ -205,6 +233,7 @@ public class PlayerMovementStateMachine : StateMachine
 #endif
         SetState(new PlayerWalking(this));
         GetControls();
+        nextLandmarkNo = 0;
     }
 
     private void Update()

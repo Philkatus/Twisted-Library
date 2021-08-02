@@ -8897,9 +8897,11 @@ MonoBehaviour:
   isOnWater: 0
   controlsDisabled: 0
   stopSwinging: 0
+  landmarkCount: 2
   baseVelocity: {x: 0, y: 0, z: 0}
   bonusVelocity: {x: 0, y: 0, z: 0}
   railCheckLadderPosition: {x: 0, y: 0, z: 0}
+  nextLandmark: {x: 0, y: 0, z: 0}
   closestRail: {fileID: 0}
   ladder: {fileID: 8314935591192245092}
   ladderSizeStateMachine: {fileID: 1728469392201953774}
@@ -8955,7 +8957,9 @@ MonoBehaviour:
     m_SingletonActionBindings: []
   ladderJumpTarget: {x: 0, y: 0, z: 0}
   slidingStartVelocity: {x: 0, y: 0, z: 0}
+  allLandmarks: []
   snapdirection: 1
+  activatedLandmarkNos: 
   coyoteTimer: 0
   myParent: {fileID: 0}
   lastRail: {fileID: 0}
