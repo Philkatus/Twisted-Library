@@ -12,10 +12,10 @@ public class WindmillTrigger : MonoBehaviour
         {
             toDestroy = true;
             ObjectManager.instance.pSM.effects.MoveWind(this.gameObject);
-            /*foreach ()
+            foreach (GameObject fountain in fountains)
             {
-
-            }*/
+                ObjectManager.instance.pSM.effects.StartFountain(fountain);
+            }
         }
         if (toDestroy)
             DestroyMe();
