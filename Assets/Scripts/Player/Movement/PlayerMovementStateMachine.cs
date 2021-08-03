@@ -942,4 +942,32 @@ public class PlayerMovementStateMachine : StateMachine
 
     }
     #endregion
+
+    private void OnDestroy()
+    {
+        Debug.Log("onDestroy");
+        fallFromLadder.performed -= context => State.FallFromLadder();
+        jumpAction.performed -= context => SaveInput(0, stats.jumpInputTimer);
+        snapAction.performed -= context => SaveInput(1, stats.snapInputTimer);
+        foldAction.performed -= context => SaveInput(2, stats.foldInputTimer);
+        swingAction.canceled -= context => { if (!stopSwinging) { SaveInput(3, stats.swingInputTimer); } stopSwinging = false; };
+        swingAction.performed -= context => stopSwinging = true;
+
+        slideLeftAction.started -= context => { if (playerState != PlayerState.swinging) { startingSlidingInput = -1; } };
+        slideRightAction.started -= context => { if (playerState != PlayerState.swinging) { startingSlidingInput = +1; } };
+        slideRightAction.canceled -= context => { if (playerState != PlayerState.swinging) { startingSlidingInput = 0; } };
+        slideLeftAction.canceled -= context => { if (playerState != PlayerState.swinging) { startingSlidingInput = 0; } };
+
+        slideLeftAction.started -= context => SaveInput(1, stats.snapInputTimer);
+        slideRightAction.started -= context => SaveInput(1, stats.snapInputTimer);
+        for (int index = 0; index < inputTimer.Length; index++)
+        {
+            if (inputTimer[index] != null)
+            {
+                StopCoroutine(inputTimer[index]);
+            }
+            inputTimer[index] = null;
+        }
+    }
+    
 }
