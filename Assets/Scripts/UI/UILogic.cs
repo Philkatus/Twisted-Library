@@ -540,10 +540,10 @@ public class UILogic : MonoBehaviour
     {
         ExtensionMethods.CrossFadeAlphaFixed(ladderPushUpgradeUI.transform.GetChild(0).gameObject, 1f, 0.5f);
         playerMovementStateMachine.controlsDisabled = true;
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1.5f);
         playerMovementStateMachine.effects.PlayVFX("cloud");
         AudioManager.Instance.PlayRandom("UpgradeLadder");
-        yield return new WaitForSeconds(3.6f);
+        yield return new WaitForSeconds(2f);
         playerMovementStateMachine.controlsDisabled = false;
         ladderPushUpgradeUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false);
     }
@@ -552,10 +552,10 @@ public class UILogic : MonoBehaviour
     {
         ExtensionMethods.CrossFadeAlphaFixed(catapultUpgradeUI.transform.GetChild(0).gameObject, 1f, 0.5f);
         playerMovementStateMachine.controlsDisabled = true;
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.5f);
         playerMovementStateMachine.effects.PlayVFX("cloud");
         AudioManager.Instance.PlayRandom("UpgradeLadder");
-        yield return new WaitForSeconds(3.6f);
+        yield return new WaitForSeconds(2f);
         playerMovementStateMachine.controlsDisabled = false;
         catapultUpgradeUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false);
     }

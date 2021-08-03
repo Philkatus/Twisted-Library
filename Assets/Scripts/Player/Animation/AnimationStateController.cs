@@ -299,15 +299,16 @@ public class AnimationStateController : MonoBehaviour
 
     public void EnterOnLadderState()
     {
+        //ladderTarget.SetRotation();
         animator.SetBool("OnLadder", true);
 
     }
     public void ExitOnLadderState()
     {
         animator.SetBool("OnLadder", false);
-
     }
 
+    FollowTarget ladderTarget;
     public void CollectUpgrade()
     {
         animator.SetTrigger("Upgrade");

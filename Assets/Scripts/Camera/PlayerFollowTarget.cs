@@ -150,24 +150,28 @@ public class PlayerFollowTarget : MonoBehaviour
 
     public void FollowLadder()
     {
+        Debug.Log("FOllow Ladder");
         if (switchCoroutine != null)
         {
             StopCoroutine(switchCoroutine);
         }
-        LadderTarget.GetComponent<FollowTarget>().SetRotation();
+        LadderTarget.GetComponent<FollowTarget>().SetPosition();
         switchCoroutine = StartCoroutine(MoveTowards(LadderTarget));
     }
 
     Coroutine switchCoroutine;
     IEnumerator MoveTowards(Transform endTarget)
     {
+        Debug.Log("SWITCH TO " + endTarget.name);
         m_DampedPos = transform.position;
         m_CurrentVelocity = Vector3.zero;
         var timer = 0f;
         var startPos = transform.position;
         var maxDuration = .4f;
         tempTarget.position = startPos;
+        tempTarget.position = currentTarget.position;
         currentTarget = tempTarget;
+        
         while (timer < maxDuration)
         {
             var endPos = endTarget.position;
