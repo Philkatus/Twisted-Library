@@ -710,6 +710,7 @@ public class PlayerMovementStateMachine : StateMachine
         snapInputBool = false;
 
         LadderPlacement(ref wallDirection);
+        CameraController.instance.SwitchToLadderCam();
 
         #endregion
 
