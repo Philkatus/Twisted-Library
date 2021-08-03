@@ -11,9 +11,14 @@ public class FollowTarget : MonoBehaviour
     {
         if (target != null)
         {
+            transform.position = target.position + (-(transform.forward * offset.x)) + (-(transform.up * offset.y) + -(transform.right * offset.z));
+            transform.rotation = Quaternion.Euler(transform.eulerAngles.x, target.eulerAngles.y, transform.eulerAngles.z);
+            Debug.Log("Y: " + target.eulerAngles.y);
+            //Debug.Log("EULER: " + target.eulerAngles.y);
             if (ObjectManager.instance.pSM.closestRail.railType == Rail.RailType.OnWall)
             {
-                transform.position = target.position + (-(transform.forward * offset.x)) + (-(transform.up * offset.y) + -(transform.right * offset.z));
+                Debug.Log("ADJUST");
+                //transform.position = target.position + (-(transform.forward * offset.x)) + (-(transform.up * offset.y) + -(transform.right * offset.z));
             }
             else
             {
@@ -27,6 +32,7 @@ public class FollowTarget : MonoBehaviour
         if(target != null)
         {
             transform.rotation = Quaternion.Euler(transform.eulerAngles.x, target.eulerAngles.y, transform.eulerAngles.z);
+            //transform.position = target.position + (-(transform.forward * offset.x)) + (-(transform.up * offset.y) + -(transform.right * offset.z));
         }
     }
 }
