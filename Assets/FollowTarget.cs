@@ -9,7 +9,7 @@ public class FollowTarget : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (target != null)
+        if (target != null && ObjectManager.instance.pSM.closestRail != null)
         {
             transform.position = target.position + (-(transform.forward * offset.x)) + (-(transform.up * offset.y) + -(transform.right * offset.z));
             transform.rotation = Quaternion.Euler(transform.eulerAngles.x, target.eulerAngles.y, transform.eulerAngles.z);
@@ -29,7 +29,7 @@ public class FollowTarget : MonoBehaviour
 
     public void SetRotation()
     {
-        if(target != null)
+        if (target != null)
         {
             transform.rotation = Quaternion.Euler(transform.eulerAngles.x, target.eulerAngles.y, transform.eulerAngles.z);
             //transform.position = target.position + (-(transform.forward * offset.x)) + (-(transform.up * offset.y) + -(transform.right * offset.z));

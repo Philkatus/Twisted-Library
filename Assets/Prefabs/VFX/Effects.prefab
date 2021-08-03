@@ -1186,7 +1186,10 @@ VisualEffect:
   m_ResourceVersion: 1
   m_PropertySheet:
     m_Float:
-      m_Array: []
+      m_Array:
+      - m_Value: 0.05
+        m_Name: _SpawnRate
+        m_Overridden: 1
     m_Vector2f:
       m_Array: []
     m_Vector3f:
@@ -1299,7 +1302,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lerpSpeed: 0.01
-  nextLandmark: {fileID: 0}
+  windIsBlowing: 0
   player: {fileID: 0}
   sparkleBurstL: {fileID: 0}
   sparkleBurstR: {fileID: 0}
@@ -1434,6 +1437,7 @@ MonoBehaviour:
   waterfallTime: 2
   wind: {fileID: 5272941997715353269}
   windParent: {fileID: 3935395809612395883}
+  maxIntensityUpgrades: 100000
 --- !u!1 &8610398051877310352
 GameObject:
   m_ObjectHideFlags: 0

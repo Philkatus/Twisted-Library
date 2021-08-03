@@ -1168,7 +1168,7 @@ public class PlayerSwinging : State
             RaycastHit hit;
             Vector3 boxExtents = new Vector3(1.540491f * 0.5f, 0.4483852f * 0.5f, 1.37359f * 0.5f);
             if (dismountTimer >= stats.ladderDismountTimer
-            && !Physics.BoxCast(controller.transform.position + Vector3.up * 1.2f + controller.transform.forward * -1, boxExtents,
+            && !Physics.BoxCast(controller.transform.position + Vector3.up * 1.2f + controller.transform.forward * -2.5f, boxExtents,
             controller.transform.forward, out hit, controller.transform.rotation, 4f, LayerMask.GetMask("SlidingObstacle", "Environment")))
             {
                 if (hit.collider != controller.gameObject)
@@ -1177,7 +1177,6 @@ public class PlayerSwinging : State
                     dismountStartPos = PSM.transform.position;
                     PSM.dismounting = true;
                     ObjectManager.instance.animationStateController.DismountLadder();
-
                 }
             }
         }
@@ -1211,7 +1210,6 @@ public class PlayerSwinging : State
             PSM.dismounting = false;
             PSM.dismountedNoEffect = true;
             PSM.OnFall();
-            Debug.Log("dismounted");
         }
     }
     #endregion
