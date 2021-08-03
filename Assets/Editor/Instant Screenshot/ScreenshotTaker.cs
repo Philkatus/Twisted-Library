@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 
 
-[ExecuteInEditMode]
+[ExecuteAlways]
 public class Screenshot : EditorWindow
 {
 
@@ -149,6 +149,20 @@ public class Screenshot : EditorWindow
 		}
 
 		EditorGUILayout.EndHorizontal();
+
+
+		if (Application.isPlaying)
+		{
+			if(ScreenshotHotKey.Instance != null)
+			{
+				if (ScreenshotHotKey.Instance.takeScreen)
+				{
+					takeHiResShot = true;
+					ScreenshotHotKey.Instance.takeScreen = false; //set back false directily
+				}
+			}
+		}
+		
 
 
 		if (takeHiResShot) 
