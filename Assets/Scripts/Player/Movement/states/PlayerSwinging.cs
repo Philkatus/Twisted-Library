@@ -152,7 +152,6 @@ public class PlayerSwinging : State
         PSM.jumpInputBool = false;
         // PLEASE DO NOT COMMENT OUT OR TALK TO LILA IF THIS BREAKS ANYTHING ELSE!
         ObjectManager.instance.animationStateController.EnterOnLadderState();
-        CameraController.instance.SwitchToLadderCam();
         #region  Variable assignment
         stats = PSM.stats;
         ladderSizeState = PSM.ladderSizeStateMachine;
