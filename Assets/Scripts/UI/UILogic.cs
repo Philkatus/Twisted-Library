@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Playables;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using Cinemachine;
 using UnityEngine.EventSystems;
 
 public class UILogic : MonoBehaviour
@@ -29,6 +31,8 @@ public class UILogic : MonoBehaviour
     [SerializeField] GameObject startCanvas;
     [SerializeField] GameObject creditsCanvas;
     [SerializeField] GameObject titleCreditsCutscene;
+    [SerializeField] CinemachineVirtualCamera creditsCamera;
+    [SerializeField] PlayableDirector creditsCameraDirector;
     [SerializeField] Text creditsTextCutscene;
     [SerializeField] Toggle invertedSlidingToggle;
     [SerializeField] Toggle jumpForLadderPushToggle;
@@ -607,8 +611,8 @@ public class UILogic : MonoBehaviour
     public IEnumerator ShowCreditCutscene()
     {
         inGameUI.SetActive(false);
-        // Lila hier kamera ^^
-        //Camera.main.GetComponent<Animation>().CrossFade("CameraCredits");
+        creditsCamera.Priority = 20;
+        creditsCameraDirector.Play();
         yield return creditsTime;
         creditsTextCutscene.text = "Lila Pimpão Niederle";
         ExtensionMethods.CrossFadeAlphaFixed(creditsTextCutscene.gameObject, 1, 1f);
@@ -655,7 +659,8 @@ public class UILogic : MonoBehaviour
         yield return creditsTime;
         yield return creditsTime;
         titleCreditsCutscene.GetComponent<Image>().CrossFadeAlpha(0f, 1f, false);
-
+        creditsCamera.Priority = 10;
+        creditsCameraDirector.Stop();
         inGameUI.SetActive(false);
     }
 
