@@ -867,7 +867,7 @@ public class PlayerMovementStateMachine : StateMachine
         if (!useRelativeBobPosition)
             Bob_Pivot.forward = Bob_Pivot.forward * snapdirection;
 
-
+        FindObjectOfType<FollowTarget>().SetPosition();
     }
 
     ///<summary>
