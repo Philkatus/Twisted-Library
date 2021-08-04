@@ -172,9 +172,9 @@ public class VFX_Manager : MonoBehaviour
             wallProjector.transform.position = lastPositionWall;
             wallBubbles.transform.position = wallProjector.transform.position + wallProjector.transform.forward * -0.5f + Vector3.down * 0.5f;
         }
-        Vector3 nextTrailPos = ladder.transform.position - ladder.transform.up * (pSM.ladderSizeStateMachine.ladderLength - 1f);
-        slidingTrail.transform.position = Vector3.Lerp(slidingTrail.transform.position, nextTrailPos, 0.8f);
-        slidingTrail.transform.LookAt(slidingTrail.transform.position - ladder.transform.forward, ladder.transform.up);
+        
+
+        
         wind.transform.parent.position = Vector3.Lerp(wind.transform.parent.position, windParent.transform.position, 0.8f);
 
         MoveSnappingFeedback();
@@ -200,6 +200,9 @@ public class VFX_Manager : MonoBehaviour
         //sliding
         if (weAreSliding)
         {
+            Vector3 nextTrailPos = ladder.transform.position - ladder.transform.up * (pSM.ladderSizeStateMachine.ladderLength - 1f);
+            slidingTrail.transform.position = Vector3.Lerp(slidingTrail.transform.position, nextTrailPos, 0.8f);
+            slidingTrail.transform.LookAt(slidingTrail.transform.position - ladder.transform.forward, ladder.transform.up);
             if (pSM.slidingInput <= -1 && pSM.currentSlidingSpeed > 0)//Links
             {
                 sparkleBurstL.transform.rotation = Quaternion.Euler(212, 287, 85);
@@ -294,6 +297,7 @@ public class VFX_Manager : MonoBehaviour
     }
     public void OnStateChangedSlide()
     {
+        StartSlidingTrail();
         StartSlidingSparkle(sparkleBurstLeft);
         StartSlidingSparkle(sparkleBurstRight);
         PlayVFX("trail");
@@ -372,8 +376,18 @@ public class VFX_Manager : MonoBehaviour
 
     #region SLIDING
     // Namins Code
+    void StartSlidingTrail() 
+    {
+        slidingTrail.enabled = false;
+        Vector3 nextTrailPos = ladder.transform.position - ladder.transform.up * (pSM.ladderSizeStateMachine.ladderLength - 1f);
+        slidingTrail.transform.position = nextTrailPos;
+        slidingTrail.transform.LookAt(slidingTrail.transform.position - ladder.transform.forward, ladder.transform.up);
+        slidingTrail.enabled = true;
+    }
+
     void StartSlidingSparkle(VisualEffect vfx)
     {
+        
         vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 0));
         vfx.SetInt("_FlameIntensity", 0);
         vfx.SendEvent("_StartBurst");
@@ -403,19 +417,19 @@ public class VFX_Manager : MonoBehaviour
         {
             vfx.SetVector2("_SparkleSpawnCount", new Vector2(.1f, 1));
             vfx.SetInt("_FlameIntensity", 2);
-            speedLinesSliding.SetFloat("_SpeedIntensity", 50);
+            speedLinesSliding.SetFloat("_SpeedIntensity", 40);
         }
         if (pSM.currentSlidingSpeed >= pSM.stats.maxSlidingSpeed && pSM.currentSlidingSpeed > pSM.stats.maxSlidingSpeed * .9)
         {
             vfx.SetVector2("_SparkleSpawnCount", new Vector2(2, 5));
             vfx.SetInt("_FlameIntensity", 5);
-            speedLinesSliding.SetFloat("_SpeedIntensity", 100);
+            speedLinesSliding.SetFloat("_SpeedIntensity", 70);
         }
     }
     void StopSlidingSparkle(VisualEffect vfx)
     {
         vfx.SendEvent("_StopBurst");
-        speedLinesSliding.SetFloat("_SpeedIntensity", 10);
+        speedLinesSliding.SetFloat("_SpeedIntensity", 0);
         weAreSliding = false;
     }
     void CalculateSlideSpeedLineRotation()
