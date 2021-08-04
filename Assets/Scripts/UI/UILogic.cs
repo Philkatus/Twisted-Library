@@ -17,6 +17,9 @@ public class UILogic : MonoBehaviour
     InputAction quitGame;
     InputAction showMoreOptions;
     InputAction back;
+    InputAction credits;
+    WaitForSeconds creditsTime;
+    WaitForSeconds oneSecondTime;
     WaitForSeconds textTime;
     PlayerMovementStateMachine playerMovementStateMachine;
 
@@ -25,6 +28,8 @@ public class UILogic : MonoBehaviour
     [SerializeField] Image controlsImage;
     [SerializeField] GameObject startCanvas;
     [SerializeField] GameObject creditsCanvas;
+    [SerializeField] GameObject titleCreditsCutscene;
+    [SerializeField] Text creditsTextCutscene;
     [SerializeField] Toggle invertedSlidingToggle;
     [SerializeField] Toggle jumpForLadderPushToggle;
     [SerializeField] GameObject slidingUpgradeUI;
@@ -37,8 +42,6 @@ public class UILogic : MonoBehaviour
     [SerializeField] GameObject letgoTutorialUI;
 
     public GameObject options, inGameUI;
-    public GameObject controller;
-    public GameObject keyboard;
     public GameObject[] optionsContent;
     public List<GameObject> uiElements;
     public List<Button> startCanvasButtons;
@@ -50,11 +53,11 @@ public class UILogic : MonoBehaviour
     float timer;
     float uiAlpha;
     bool startGotPressed;
-    bool controlsActive;
     bool moreOptionsSelected;
     bool optionGotSelected;
     bool optionGotDeselected;
     bool startcanvasDisabled;
+    bool showingCredits;
 
     void Awake()
     {
@@ -74,15 +77,19 @@ public class UILogic : MonoBehaviour
         escapeUI = UIControlsMap.FindAction("Escape");
         quitGame = UIControlsMap.FindAction("Quit");
         back = UIControlsMap.FindAction("Back");
+        credits = playerControlsMap.FindAction("Credits");
         showMoreOptions = UIControlsMap.FindAction("MoreOptions");
         showMoreOptions.performed += context => ShowMoreOptions();
-        back.performed += context => Back();
+        back.performed += context => { if (!showingCredits) { Back(); } else { StartCoroutine(HideCredits()); } };
         escapeUI.performed += context => Options();
         quitGame.performed += context => QuitGame();
+        credits.performed += context => { if (!showingCredits && startcanvasDisabled) { ShowCreditsUI(); } else { StartCoroutine(HideCredits()); } };
         playerControlsMap.Disable();
         UIControlsMap.Enable();
         uiAlpha = ObjectManager.instance.pSM.stats.alphaForTransparentUI;
         textTime = new WaitForSeconds(4f);
+        creditsTime = new WaitForSeconds(3f);
+        titleCreditsCutscene.SetActive(false);
 
         #region Set PlayerPrefs
         if (PlayerPrefs.GetInt("UseInvertedSliding", 0) == 1)
@@ -106,7 +113,7 @@ public class UILogic : MonoBehaviour
             ObjectManager.instance.pSM.stats.useJumpForLadderPush = false;
             jumpForLadderPushToggle.isOn = false;
         }
-
+        //StartCoroutine(ShowCreditCutscene());
         #endregion
     }
 
@@ -597,13 +604,75 @@ public class UILogic : MonoBehaviour
 
     #endregion
 
-    public IEnumerator ShowCredits()
+    public IEnumerator ShowCreditCutscene()
     {
-        creditsCanvas.SetActive(true);
-        ExtensionMethods.CrossFadeAlphaFixed(creditsCanvas.transform.GetChild(0).gameObject, 1, 1f);
+        inGameUI.SetActive(false);
         // Lila hier kamera ^^
         //Camera.main.GetComponent<Animation>().CrossFade("CameraCredits");
-        yield return new WaitForSeconds(20f);
-        creditsCanvas.transform.GetChild(0).gameObject.GetComponent<Image>().CrossFadeAlpha(0f, 1f, false);
+        yield return creditsTime;
+        creditsTextCutscene.text = "Lila Pimpão Niederle";
+        ExtensionMethods.CrossFadeAlphaFixed(creditsTextCutscene.gameObject, 1, 1f);
+        yield return creditsTime;
+        creditsTextCutscene.CrossFadeAlpha(0f, 1f, false);
+        yield return creditsTime;
+        creditsTextCutscene.text = "Namin Hansen";
+        ExtensionMethods.CrossFadeAlphaFixed(creditsTextCutscene.gameObject, 1, 1f);
+        yield return creditsTime;
+        creditsTextCutscene.CrossFadeAlpha(0f, 1f, false);
+        yield return creditsTime;
+        creditsTextCutscene.text = "Daria Pankau";
+        ExtensionMethods.CrossFadeAlphaFixed(creditsTextCutscene.gameObject, 1, 1f);
+        yield return creditsTime;
+        creditsTextCutscene.CrossFadeAlpha(0f, 1f, false);
+        yield return creditsTime;
+        creditsTextCutscene.text = "Philip Hildebrandt";
+        ExtensionMethods.CrossFadeAlphaFixed(creditsTextCutscene.gameObject, 1, 1f);
+        yield return creditsTime;
+        creditsTextCutscene.CrossFadeAlpha(0f, 1f, false);
+        yield return creditsTime;
+        creditsTextCutscene.text = "Maria Fleischer";
+        ExtensionMethods.CrossFadeAlphaFixed(creditsTextCutscene.gameObject, 1, 1f);
+        yield return creditsTime;
+        creditsTextCutscene.CrossFadeAlpha(0f, 1f, false);
+        yield return creditsTime;
+        creditsTextCutscene.text = "Felix Szczesny";
+        ExtensionMethods.CrossFadeAlphaFixed(creditsTextCutscene.gameObject, 1, 1f);
+        yield return creditsTime;
+        creditsTextCutscene.CrossFadeAlpha(0f, 1f, false);
+        yield return creditsTime;
+        creditsTextCutscene.text = "Alexander Tilly";
+        ExtensionMethods.CrossFadeAlphaFixed(creditsTextCutscene.gameObject, 1, 1f);
+        yield return creditsTime;
+        creditsTextCutscene.CrossFadeAlpha(0f, 1f, false);
+        yield return creditsTime;
+        creditsTextCutscene.text = "Maryse Heilig";
+        ExtensionMethods.CrossFadeAlphaFixed(creditsTextCutscene.gameObject, 1, 1f);
+        yield return creditsTime;
+        creditsTextCutscene.CrossFadeAlpha(0f, 1f, false);
+        yield return creditsTime;
+        titleCreditsCutscene.SetActive(true);
+        ExtensionMethods.CrossFadeAlphaFixed(titleCreditsCutscene, 1, 1f);
+        yield return creditsTime;
+        yield return creditsTime;
+        titleCreditsCutscene.GetComponent<Image>().CrossFadeAlpha(0f, 1f, false);
+
+        inGameUI.SetActive(false);
+    }
+
+    public void ShowCreditsUI()
+    {
+        showingCredits = true;
+        creditsCanvas.SetActive(true);
+        ExtensionMethods.CrossFadeAlphaFixed(creditsCanvas.transform.GetChild(0).gameObject, 1, 1f);
+        ExtensionMethods.CrossFadeAlphaFixed(creditsCanvas.transform.GetChild(1).gameObject, 1, 1f);
+    }
+
+    public IEnumerator HideCredits()
+    {
+        creditsCanvas.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 1f, false);
+        creditsCanvas.transform.GetChild(1).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 1f, false);
+        yield return new WaitForSeconds(1f);
+        creditsCanvas.SetActive(false);
+        showingCredits = false;
     }
 }

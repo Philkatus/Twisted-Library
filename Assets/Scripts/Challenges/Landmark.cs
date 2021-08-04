@@ -77,7 +77,7 @@ public class Landmark : MonoBehaviour
             }
             if (ChallengeManager.instance.volcano.landmarkComplete && ChallengeManager.instance.windChimes.landmarkComplete)
             {
-                ObjectManager.instance.uILogic.StartCoroutine(ObjectManager.instance.uILogic.ShowCredits());
+                ObjectManager.instance.uILogic.StartCoroutine(ObjectManager.instance.uILogic.ShowCreditCutscene());
             }
         }
     }
