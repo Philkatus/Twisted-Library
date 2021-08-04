@@ -855,9 +855,13 @@ public class PlayerMovementStateMachine : StateMachine
                 snapdirection = 1;
             }
         }
-        else
+        else if(wallDirection.y<0)
         {
 
+            snapdirection = -1;
+        }
+        else 
+        {
             snapdirection = 1;
         }
         if (wallDirection.y < 0)
