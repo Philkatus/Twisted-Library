@@ -96,10 +96,8 @@ public class PlayerFollowTarget : MonoBehaviour
         }
         else
         {
-            transform.position = currentTarget.position;
+            transform.position = pos;
         }
-            
-        
     }
 
     private bool CheckIfFalling()
@@ -150,24 +148,24 @@ public class PlayerFollowTarget : MonoBehaviour
 
     public void FollowLadder()
     {
-        Debug.Log("FOllow Ladder");
         if (switchCoroutine != null)
         {
             StopCoroutine(switchCoroutine);
         }
-        LadderTarget.GetComponent<FollowTarget>().SetPosition();
+        //LadderTarget.GetComponent<FollowTarget>().SetPosition();
         switchCoroutine = StartCoroutine(MoveTowards(LadderTarget));
     }
 
     Coroutine switchCoroutine;
     IEnumerator MoveTowards(Transform endTarget)
     {
-        Debug.Log("SWITCH TO " + endTarget.name);
+        var adjust = doNotAdjust;
+        doNotAdjust = false;
         m_DampedPos = transform.position;
         m_CurrentVelocity = Vector3.zero;
         var timer = 0f;
         var startPos = transform.position;
-        var maxDuration = .4f;
+        var maxDuration = .2f;
         tempTarget.position = startPos;
         tempTarget.position = currentTarget.position;
         currentTarget = tempTarget;
@@ -181,5 +179,7 @@ public class PlayerFollowTarget : MonoBehaviour
         }
         currentTarget = endTarget;
         switchCoroutine = null;
+        doNotAdjust = adjust;
+        Debug.Log(currentTarget.name);
     }
 }
