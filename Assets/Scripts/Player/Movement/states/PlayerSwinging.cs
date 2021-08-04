@@ -1233,6 +1233,7 @@ public class PlayerSwinging : State
         AudioManager.Instance.StopSlidingSound();
         if (VoiceManager.Instance != null)
             VoiceManager.Instance.resetHighSpeedTimer();
+        PSM.currentSlidingSpeed = 0;
         #endregion
 
         ladderSizeState.OnShrink();
