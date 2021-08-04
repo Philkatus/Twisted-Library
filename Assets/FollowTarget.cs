@@ -23,8 +23,6 @@ public class FollowTarget : MonoBehaviour
         transform.rotation = Quaternion.LookRotation(cameraOrientation, Vector3.up);
 
         Vector3 finalPosition = target.position + (offset.x * transform.forward + offset.y * transform.up + offset.z * transform.right);
-        var velocity = Vector3.zero;
-        //transform.position = Vector3.SmoothDamp(target.position, finalPosition, ref velocity, 0.9f);
         transform.position = finalPosition;
     }
     void FixedUpdate()
@@ -32,25 +30,6 @@ public class FollowTarget : MonoBehaviour
         if (pSM.playerState == PlayerMovementStateMachine.PlayerState.swinging)
         {
             SetPosition();
-
-            //if(timer < maxDuration)
-            //{
-            //    transform.position = Vector3.Lerp(transform.position, finalPosition, timer/maxDuration);
-            //    timer += Time.deltaTime;
-            //}
-            //else
-            //{
-            //    timer = 0;
-            //}
-            //if (pSM.closestRail.railType == Rail.RailType.OnWall)
-            //{
-            //    //Debug.Log("ADJUST");
-            //    //transform.position = target.position + (-(transform.forward * offset.x)) + (-(transform.up * offset.y) + -(transform.right * offset.z));
-            //}
-            //else
-            //{
-            //    transform.position = target.position;
-            //}
         }
     }
 }
