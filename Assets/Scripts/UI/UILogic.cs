@@ -598,6 +598,7 @@ public class UILogic : MonoBehaviour
 
     public IEnumerator ShowTutorialExplanationBeginning()
     {
+        yield return creditsTime;
         ExtensionMethods.CrossFadeAlphaFixed(moveTutorialUI.transform.GetChild(0).gameObject, 0.7f, 0.5f);
         yield return textTime;
         moveTutorialUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false); ;
