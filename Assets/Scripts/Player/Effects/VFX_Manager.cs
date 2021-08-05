@@ -172,9 +172,9 @@ public class VFX_Manager : MonoBehaviour
             wallProjector.transform.position = lastPositionWall;
             wallBubbles.transform.position = wallProjector.transform.position + wallProjector.transform.forward * -0.5f + Vector3.down * 0.5f;
         }
-        
 
-        
+
+
         wind.transform.parent.position = Vector3.Lerp(wind.transform.parent.position, windParent.transform.position, 0.8f);
 
         MoveSnappingFeedback();
@@ -376,7 +376,7 @@ public class VFX_Manager : MonoBehaviour
 
     #region SLIDING
     // Namins Code
-    void StartSlidingTrail() 
+    void StartSlidingTrail()
     {
         slidingTrail.enabled = false;
         Vector3 nextTrailPos = ladder.transform.position - ladder.transform.up * (pSM.ladderSizeStateMachine.ladderLength - 1f);
@@ -387,7 +387,7 @@ public class VFX_Manager : MonoBehaviour
 
     void StartSlidingSparkle(VisualEffect vfx)
     {
-        
+
         vfx.SetVector2("_SparkleSpawnCount", new Vector2(0, 0));
         vfx.SetInt("_FlameIntensity", 0);
         vfx.SendEvent("_StartBurst");
@@ -936,11 +936,9 @@ public class VFX_Manager : MonoBehaviour
     }
     public void StartFountain(GameObject fountain)
     {
-        Debug.Log("start");
         foreach (VisualEffect vfx in fountain.GetComponentsInChildren<VisualEffect>())
         {
             vfx.SendEvent("_Start");
-            Debug.Log("fountain");
         }
 
         for (int i = 0; i < fountain.transform.childCount; i++)
@@ -948,11 +946,9 @@ public class VFX_Manager : MonoBehaviour
             GameObject currentChild = fountain.transform.GetChild(i).gameObject;
             if (!currentChild.gameObject.activeInHierarchy)
             {
-                Debug.Log("foam");
                 currentChild.gameObject.SetActive(true);
             }
         }
-        Debug.Log("emd");
     }
     public void MoveWind(GameObject construct)
     {
@@ -1015,7 +1011,19 @@ public class VFX_Manager : MonoBehaviour
         timer = 0;
         float landmarkTime = 0.8f * generalTime;
         startPosition = windParent.transform.position;
-        endPosition = (pSM.nextLandmark - windParent.transform.position).normalized * 10 + windParent.transform.position;
+        if (!ChallengeManager.instance.volcano.landmarkComplete)
+        {
+
+            endPosition = (ChallengeManager.instance.volcano.transform.position - windParent.transform.position).normalized * 10 + windParent.transform.position;
+        }
+        else if (!ChallengeManager.instance.windChimes.landmarkComplete)
+        {
+            endPosition = (ChallengeManager.instance.windChimes.transform.position - windParent.transform.position).normalized * 10 + windParent.transform.position;
+        }
+        else
+        {
+            endPosition = windParent.transform.position;
+        }
 
         // move the wind towards the next landmark
         while (timer < landmarkTime)
@@ -1045,6 +1053,7 @@ public class VFX_Manager : MonoBehaviour
     {
         StartCoroutine(UpgradeGlow(enabledMesh));
     }
+
     public IEnumerator UpgradeGlow(MeshRenderer enabledMesh)
     {
         yield return new WaitForSeconds(3f);
