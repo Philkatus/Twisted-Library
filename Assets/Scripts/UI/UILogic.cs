@@ -32,6 +32,7 @@ public class UILogic : MonoBehaviour
     [SerializeField] GameObject creditsCanvas;
     [SerializeField] GameObject titleCreditsCutscene;
     [SerializeField] CinemachineVirtualCamera creditsCamera;
+    [SerializeField] CinemachineVirtualCamera startCameraNew;
     [SerializeField] PlayableDirector creditsCameraDirector;
     [SerializeField] Text creditsTextCutscene;
     [SerializeField] Toggle invertedSlidingToggle;
@@ -136,6 +137,7 @@ public class UILogic : MonoBehaviour
     {
         if (startGotPressed)
         {
+            startCameraNew.Priority = 0;
             inGameUI.SetActive(true);
             timer += Time.deltaTime;
 
