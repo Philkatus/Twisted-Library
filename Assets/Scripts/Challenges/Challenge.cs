@@ -33,6 +33,7 @@ public class Challenge : MonoBehaviour
         {
             if (value == true && !challengeCompleted)
             {
+                challengeCompleted = value;
                 gameObject.SendMessage("OnAllComponentsCompleted");
                 landmark.CheckIfAllChallengesComplete();
                 landmark.ShowChallengeCompletionInUI(this);

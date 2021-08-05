@@ -60,27 +60,7 @@ public class PlayerMovementStateMachine : StateMachine
     public bool controlsDisabled;
     public bool stopSwinging;
     public int landmarkCount = 2;
-    public int nextLandmarkNo
-    {
-        get { return NextLandmarkNo; }
-        set
-        {
-            int nextValue = value;
 
-            if (activatedLandmarkNos.Contains(value))
-            {
-                nextValue += 1;
-            }
-
-            if (activatedLandmarkNos.Count == allLandmarks.Length)
-            {
-                // all landmarks done
-                nextValue = 0;
-            }
-            NextLandmarkNo = nextValue;
-            nextLandmark = allLandmarks[value];
-        }
-    }
     public Vector3 baseVelocity;
     public Vector3 bonusVelocity;
     public Vector3 playerVelocity
@@ -129,7 +109,6 @@ public class PlayerMovementStateMachine : StateMachine
             return ladder.up;
         }
     }
-    [HideInInspector] public Vector3[] allLandmarks;
 
     [HideInInspector] public int snapdirection = 1;
     [HideInInspector] public List<int> activatedLandmarkNos;
@@ -221,7 +200,6 @@ public class PlayerMovementStateMachine : StateMachine
     private void Awake()
     {
         ObjectManager.instance.pSM = this;
-        allLandmarks = new Vector3[landmarkCount];
     }
 
     private void Start()
@@ -233,7 +211,6 @@ public class PlayerMovementStateMachine : StateMachine
 #endif
         SetState(new PlayerWalking(this));
         GetControls();
-        nextLandmarkNo = 0;
     }
 
     private void Update()
@@ -855,12 +832,12 @@ public class PlayerMovementStateMachine : StateMachine
                 snapdirection = 1;
             }
         }
-        else if(wallDirection.y<0)
+        else if (wallDirection.y < 0)
         {
 
             snapdirection = -1;
         }
-        else 
+        else
         {
             snapdirection = 1;
         }
@@ -974,5 +951,5 @@ public class PlayerMovementStateMachine : StateMachine
             inputTimer[index] = null;
         }
     }
-    
+
 }

@@ -15,14 +15,12 @@ public class Landmark : MonoBehaviour
     float timer;
     public bool landmarkComplete;
     [SerializeField] bool isWindChimes;
-    [SerializeField] int landmarkNo;
     PlayerMovementStateMachine psm;
 
     // Start is called before the first frame update
     void Start()
     {
         psm = ObjectManager.instance.pSM;
-        psm.allLandmarks[landmarkNo] = transform.position;
     }
 
     // Update is called once per frame
@@ -65,11 +63,6 @@ public class Landmark : MonoBehaviour
         {
             ObjectManager.instance.uILogic.OnLandmarkComplete(groundUI);
             landmarkComplete = true;
-            if (psm.nextLandmarkNo == landmarkNo)
-            {
-                psm.nextLandmarkNo++;
-                psm.activatedLandmarkNos.Add(landmarkNo);
-            }
 
             if (VoiceManager.Instance != null)
             {
