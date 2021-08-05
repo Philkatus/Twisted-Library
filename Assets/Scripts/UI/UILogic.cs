@@ -32,6 +32,7 @@ public class UILogic : MonoBehaviour
     [SerializeField] GameObject creditsCanvas;
     [SerializeField] GameObject titleCreditsCutscene;
     [SerializeField] CinemachineVirtualCamera creditsCamera;
+    [SerializeField] CinemachineVirtualCamera startCameraNew;
     [SerializeField] PlayableDirector creditsCameraDirector;
     [SerializeField] Text creditsTextCutscene;
     [SerializeField] Toggle invertedSlidingToggle;
@@ -136,6 +137,7 @@ public class UILogic : MonoBehaviour
     {
         if (startGotPressed)
         {
+            startCameraNew.Priority = 0;
             inGameUI.SetActive(true);
             timer += Time.deltaTime;
 
@@ -596,7 +598,9 @@ public class UILogic : MonoBehaviour
 
     public IEnumerator ShowTutorialExplanationBeginning()
     {
+        yield return creditsTime;
         ExtensionMethods.CrossFadeAlphaFixed(moveTutorialUI.transform.GetChild(0).gameObject, 0.7f, 0.5f);
+        CameraController.instance.cam01.m_Transitions.m_InheritPosition = true;
         yield return textTime;
         moveTutorialUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false); ;
         yield return textTime;
