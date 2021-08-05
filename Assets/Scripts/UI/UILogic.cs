@@ -603,7 +603,7 @@ public class UILogic : MonoBehaviour
         CameraController.instance.cam01.m_Transitions.m_InheritPosition = true;
         yield return textTime;
         moveTutorialUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false); ;
-        yield return textTime;
+        yield return creditsTime;
         ExtensionMethods.CrossFadeAlphaFixed(jumpTutorialUI.transform.GetChild(0).gameObject, 0.7f, 0.5f);
         yield return textTime;
         jumpTutorialUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false); ;
@@ -670,6 +670,7 @@ public class UILogic : MonoBehaviour
 
     public void ShowCreditsUI()
     {
+        playerMovementStateMachine.controlsDisabled = true;
         showingCredits = true;
         creditsCanvas.SetActive(true);
         ExtensionMethods.CrossFadeAlphaFixed(creditsCanvas.transform.GetChild(0).gameObject, 1, 1f);
@@ -678,6 +679,7 @@ public class UILogic : MonoBehaviour
 
     public IEnumerator HideCredits()
     {
+        playerMovementStateMachine.controlsDisabled = false;
         creditsCanvas.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 1f, false);
         creditsCanvas.transform.GetChild(1).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 1f, false);
         yield return new WaitForSeconds(1f);
