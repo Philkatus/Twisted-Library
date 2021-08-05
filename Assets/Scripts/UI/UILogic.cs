@@ -600,6 +600,7 @@ public class UILogic : MonoBehaviour
     {
         yield return creditsTime;
         ExtensionMethods.CrossFadeAlphaFixed(moveTutorialUI.transform.GetChild(0).gameObject, 0.7f, 0.5f);
+        CameraController.instance.cam01.m_Transitions.m_InheritPosition = true;
         yield return textTime;
         moveTutorialUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false); ;
         yield return textTime;

@@ -16,7 +16,7 @@ public class CameraController : MonoBehaviour
             Destroy(this);
     }
     [SerializeField] Camera mainCam;
-    [SerializeField] CinemachineFreeLook cam01, cam02, ladderCam;
+    [SerializeField] public CinemachineFreeLook cam01, cam02, ladderCam;
     [SerializeField] CinemachineBrain brain;
 
     CinemachineFreeLook current;
