@@ -21,8 +21,8 @@ public class UILogic : MonoBehaviour
     InputAction back;
     InputAction credits;
     WaitForSeconds creditsTime;
-    WaitForSeconds oneSecondTime;
     WaitForSeconds textTime;
+    WaitForSeconds oneSecondTime;
     PlayerMovementStateMachine playerMovementStateMachine;
 
     [SerializeField] Camera startCamera;
@@ -31,6 +31,9 @@ public class UILogic : MonoBehaviour
     [SerializeField] GameObject startCanvas;
     [SerializeField] GameObject creditsCanvas;
     [SerializeField] GameObject titleCreditsCutscene;
+    [SerializeField] GameObject fadeCreditsCutscene;
+    [SerializeField] GameObject waterfallCreditsCutscene;
+    [SerializeField] GameObject windmillCreditsCutscene;
     [SerializeField] CinemachineVirtualCamera creditsCamera;
     [SerializeField] CinemachineVirtualCamera startCameraNew;
     [SerializeField] PlayableDirector creditsCameraDirector;
@@ -93,7 +96,8 @@ public class UILogic : MonoBehaviour
         UIControlsMap.Enable();
         uiAlpha = ObjectManager.instance.pSM.stats.alphaForTransparentUI;
         textTime = new WaitForSeconds(4f);
-        creditsTime = new WaitForSeconds(3f);
+        creditsTime = new WaitForSeconds(3.45f);
+        oneSecondTime = new WaitForSeconds(1f);
         titleCreditsCutscene.SetActive(false);
 
         #region Set PlayerPrefs
@@ -598,12 +602,12 @@ public class UILogic : MonoBehaviour
 
     public IEnumerator ShowTutorialExplanationBeginning()
     {
-        yield return creditsTime;
+        yield return new WaitForSeconds(3f);
         ExtensionMethods.CrossFadeAlphaFixed(moveTutorialUI.transform.GetChild(0).gameObject, 0.7f, 0.5f);
         CameraController.instance.cam01.m_Transitions.m_InheritPosition = true;
         yield return textTime;
         moveTutorialUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false); ;
-        yield return textTime;
+        yield return new WaitForSeconds(3f);
         ExtensionMethods.CrossFadeAlphaFixed(jumpTutorialUI.transform.GetChild(0).gameObject, 0.7f, 0.5f);
         yield return textTime;
         jumpTutorialUI.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 0.5f, false); ;
@@ -614,9 +618,16 @@ public class UILogic : MonoBehaviour
 
     public IEnumerator ShowCreditCutscene()
     {
+        ExtensionMethods.CrossFadeAlphaFixed(fadeCreditsCutscene, 1, 0.5f);
+        yield return oneSecondTime;
         inGameUI.SetActive(false);
         creditsCamera.Priority = 20;
         creditsCameraDirector.Play();
+        yield return oneSecondTime;
+        yield return oneSecondTime;
+        fadeCreditsCutscene.GetComponent<Image>().CrossFadeAlpha(0f, 1f, false);
+        yield return oneSecondTime;
+        yield return creditsTime;
         yield return creditsTime;
         creditsTextCutscene.text = "Lila Pimpão Niederle";
         ExtensionMethods.CrossFadeAlphaFixed(creditsTextCutscene.gameObject, 1, 1f);
@@ -653,23 +664,33 @@ public class UILogic : MonoBehaviour
         yield return creditsTime;
         creditsTextCutscene.CrossFadeAlpha(0f, 1f, false);
         yield return creditsTime;
+        waterfallCreditsCutscene.GetComponent<Animator>().SetTrigger("windmill09");
+        waterfallCreditsCutscene.GetComponent<StartWaterfall>().StartTheWaterfall();
         creditsTextCutscene.text = "Maryse Heilig";
         ExtensionMethods.CrossFadeAlphaFixed(creditsTextCutscene.gameObject, 1, 1f);
         yield return creditsTime;
         creditsTextCutscene.CrossFadeAlpha(0f, 1f, false);
         yield return creditsTime;
+        windmillCreditsCutscene.GetComponent<Animator>().SetTrigger("windmill03");
+        yield return oneSecondTime;
         titleCreditsCutscene.SetActive(true);
         ExtensionMethods.CrossFadeAlphaFixed(titleCreditsCutscene, 1, 1f);
         yield return creditsTime;
-        yield return creditsTime;
+        yield return oneSecondTime;
         titleCreditsCutscene.GetComponent<Image>().CrossFadeAlpha(0f, 1f, false);
+        yield return oneSecondTime;
+        ExtensionMethods.CrossFadeAlphaFixed(fadeCreditsCutscene, 1, 0.5f);
+        yield return oneSecondTime;
         creditsCamera.Priority = 10;
         creditsCameraDirector.Stop();
+        yield return creditsTime;
         inGameUI.SetActive(false);
+        fadeCreditsCutscene.GetComponent<Image>().CrossFadeAlpha(0f, 0.5f, false);
     }
 
     public void ShowCreditsUI()
     {
+        playerMovementStateMachine.controlsDisabled = true;
         showingCredits = true;
         creditsCanvas.SetActive(true);
         ExtensionMethods.CrossFadeAlphaFixed(creditsCanvas.transform.GetChild(0).gameObject, 1, 1f);
@@ -678,6 +699,7 @@ public class UILogic : MonoBehaviour
 
     public IEnumerator HideCredits()
     {
+        playerMovementStateMachine.controlsDisabled = false;
         creditsCanvas.transform.GetChild(0).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 1f, false);
         creditsCanvas.transform.GetChild(1).gameObject.GetComponent<Text>().CrossFadeAlpha(0f, 1f, false);
         yield return new WaitForSeconds(1f);
